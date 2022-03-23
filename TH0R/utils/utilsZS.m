@@ -54,7 +54,7 @@
 #import "kernel_call.h"
 #import "machswap2.h"
 #include <sys/sysctl.h>
-//#include "ViewController.h"
+#include "wasteoftime.h"
 
 bool runShenPatchOWO = false;
 
@@ -450,6 +450,21 @@ uint64_t find_kernel_base_sockpuppet() {
     return 0;
 }
 
+uint64_t find_kernel_base_timewaste() {
+    uint64_t hostport_addr = find_port_address_timewaste(mach_host_self(), MACH_MSG_TYPE_COPY_SEND);
+    uint64_t realhost = ReadKernel64(hostport_addr + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_KOBJECT));
+    
+    uint64_t base = realhost & ~0xfffULL;
+    // walk down to find the magic:
+    for (int i = 0; i < 0x10000; i++) {
+        if (ReadKernel32(base) == 0xfeedfacf) {
+            return base;
+        }
+        base -= 0x1000;
+    }
+    return 0;
+}
+
 
 void runVoucherSwap() {
     voucher_swap();
@@ -524,6 +539,49 @@ void runSockPuppet()
     
 }
 
+void runTIMEWaste()
+{
+    ourprogressMeter();
+    get_tfp0_waste();
+    
+    if (MACH_PORT_VALID(tfp0))
+    {
+        kbase = find_kernel_base_timewaste();
+        kernel_slide = (kbase - KADD_SEARCH);
+        runShenPatchOWO = true;
+        
+    }
+    if (tfp0 == 0) {
+        util_info("ERROR!");
+        NSString *str = [NSString stringWithFormat:@"ERROR TFP0: 0x%x", tfp0];
+        showMSG(str, true, false);
+        
+        dispatch_sync( dispatch_get_main_queue(), ^{
+            UIApplication *app = [UIApplication sharedApplication];
+            [app performSelector:@selector(suspend)];
+
+            //wait 2 seconds while app is going background
+            [NSThread sleepForTimeInterval:1.0];
+
+            //exit app when app is in background
+            exit(0);
+
+        });
+        
+
+        
+    } else {
+        util_info("TFP0: 0x%x", tfp0);
+        util_info("KERNEL BASE: 0x%llx", kbase);
+        util_info("KERNEL SLIDE: 0x%llx", kernel_slide);
+
+        util_info("UID: %u", getuid());
+        util_info("GID: %u", getgid());
+        ourprogressMeter();
+    }
+    
+}
+
 void runExploit(int expType)
 {
     //0 = MachSwap
@@ -546,6 +604,21 @@ void runExploit(int expType)
     {
         runSockPuppet();
         
+        if (MACH_PORT_VALID(kernel_task_port))
+        {
+            set_tfp0(kernel_task_port);
+            kernel_slide_init();
+            kbase = (kernel_slide + KADD_SEARCH);
+            NSString *str = [NSString stringWithFormat:@"TFP0: 0x%x", tfp0];
+            showMSG(str, true, false);
+        }
+        
+    } else if (expType == 4)
+    {
+        runTIMEWaste();
+        printf("TFP0: 0x%x\n", tfp0);
+        printf("TFP0 from tw: 0x%x\n", tfp0_exportedBYTW);
+
         if (MACH_PORT_VALID(kernel_task_port))
         {
             set_tfp0(kernel_task_port);
@@ -1367,7 +1440,7 @@ void renameSnapshot(int rootfd, const char* rootFsMountPoint, const char **snaps
     
     // Reboot.
     close(rootfd);
-    if (kCFCoreFoundationVersionNumber >= 1535.12) {
+    if (kCFCoreFoundationVersionNumber >= 1570.15) {
         showMSG(NSLocalizedString(@"RootFS Renamed! Pyshc, can't rename yet, use another jb tool to rename snap first.", nil), 1, 1);
         dispatch_sync( dispatch_get_main_queue(), ^{
             UIApplication *app = [UIApplication sharedApplication];

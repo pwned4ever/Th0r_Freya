@@ -61,7 +61,8 @@ uint32_t kernel_offsets_11_0[] = {
     
     0x14, // KSTRUCT_OFFSET_IPC_SPACE_IS_TABLE_SIZE
     0x20, // KSTRUCT_OFFSET_IPC_SPACE_IS_TABLE
-    
+    0x28,  // KSTRUCT_OFFSET_IPC_SPACE_IS_TASK
+
     0xd8, // KSTRUCT_OFFSET_VNODE_V_MOUNT
     0x78, // KSTRUCT_OFFSET_VNODE_VU_SPECINFO
     0x0, // KSTRUCT_OFFSET_VNODE_V_LOCK
@@ -110,6 +111,10 @@ uint32_t kernel_offsets_11_0[] = {
     0x11, // KVTABLE_OFFSET_OSSTRING_GETLENGTH
     
     0x6c, // KFREE_ADDR_OFFSET
+    
+    0xdd0, // IOSURFACE_CREATE_OUTSIZE
+    
+    0xb8,  // getExternalTrapForIndex
 };
 
 uint32_t kernel_offsets_11_3[] = {
@@ -161,7 +166,8 @@ uint32_t kernel_offsets_11_3[] = {
     
     0x14, // KSTRUCT_OFFSET_IPC_SPACE_IS_TABLE_SIZE
     0x20, // KSTRUCT_OFFSET_IPC_SPACE_IS_TABLE
-    
+    0x28,  // KSTRUCT_OFFSET_IPC_SPACE_IS_TASK
+
     0xd8, // KSTRUCT_OFFSET_VNODE_V_MOUNT
     0x78, // KSTRUCT_OFFSET_VNODE_VU_SPECINFO
     0x0, // KSTRUCT_OFFSET_VNODE_V_LOCK
@@ -210,6 +216,10 @@ uint32_t kernel_offsets_11_3[] = {
     0x11, // KVTABLE_OFFSET_OSSTRING_GETLENGTH
     
     0x6c, // KFREE_ADDR_OFFSET
+    
+    0xdd0, // IOSURFACE_CREATE_OUTSIZE
+    
+    0xb8,  // getExternalTrapForIndex
 };
 
 uint32_t kernel_offsets_12_0[] = {
@@ -277,7 +287,8 @@ uint32_t kernel_offsets_12_0[] = {
     
     0x14, // KSTRUCT_OFFSET_IPC_SPACE_IS_TABLE_SIZE
     0x20, // KSTRUCT_OFFSET_IPC_SPACE_IS_TABLE
-    
+    0x28,  // KSTRUCT_OFFSET_IPC_SPACE_IS_TASK
+
     0xd8, // KSTRUCT_OFFSET_VNODE_V_MOUNT
     0x78, // KSTRUCT_OFFSET_VNODE_VU_SPECINFO
     0x0, // KSTRUCT_OFFSET_VNODE_V_LOCK
@@ -326,6 +337,10 @@ uint32_t kernel_offsets_12_0[] = {
     0x11, // KVTABLE_OFFSET_OSSTRING_GETLENGTH
     
     0x6c, // KFREE_ADDR_OFFSET
+    
+    0xdd0, // IOSURFACE_CREATE_OUTSIZE
+    
+    0xb7,  // OFFSET_GETFI / getExternalTrapForInde
 };
 
 uint32_t koffset(enum kernel_offset offset)

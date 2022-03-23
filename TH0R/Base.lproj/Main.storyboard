@@ -298,7 +298,7 @@ Jailbreak</string>
                                                                 <rect key="frame" x="24" y="30" width="89" height="115"/>
                                                                 <subviews>
                                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cnZ-mN-oLo">
-                                                                        <rect key="frame" x="0.0" y="0.0" width="89" height="23"/>
+                                                                        <rect key="frame" x="0.0" y="0.0" width="89" height="16.5"/>
                                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                         <fontDescription key="fontDescription" name="SFProRounded-Semibold" family="SF Pro Rounded" pointSize="17"/>
                                                                         <state key="normal" title="VS">
@@ -315,7 +315,7 @@ Jailbreak</string>
                                                                         </connections>
                                                                     </button>
                                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="o2D-uC-hca">
-                                                                        <rect key="frame" x="0.0" y="31" width="89" height="22.5"/>
+                                                                        <rect key="frame" x="0.0" y="24.5" width="89" height="16.5"/>
                                                                         <color key="backgroundColor" red="0.42745098039215684" green="0.52549019607843139" blue="0.81568627450980391" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                         <fontDescription key="fontDescription" name="SFProRounded-Semibold" family="SF Pro Rounded" pointSize="17"/>
                                                                         <state key="normal" title="MS1">
@@ -332,7 +332,7 @@ Jailbreak</string>
                                                                         </connections>
                                                                     </button>
                                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WPt-xM-ZeO">
-                                                                        <rect key="frame" x="0.0" y="61.5" width="89" height="23"/>
+                                                                        <rect key="frame" x="0.0" y="49" width="89" height="17"/>
                                                                         <color key="backgroundColor" red="0.42745098039215684" green="0.52549019607843139" blue="0.81568627450980391" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                         <fontDescription key="fontDescription" name="SFProRounded-Semibold" family="SF Pro Rounded" pointSize="17"/>
                                                                         <state key="normal" title="MS2">
@@ -349,7 +349,7 @@ Jailbreak</string>
                                                                         </connections>
                                                                     </button>
                                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="i38-mJ-9UE">
-                                                                        <rect key="frame" x="0.0" y="92.5" width="89" height="22.5"/>
+                                                                        <rect key="frame" x="0.0" y="74" width="89" height="16.5"/>
                                                                         <color key="backgroundColor" red="0.42745098040000001" green="0.52549019610000003" blue="0.81568627449999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                         <fontDescription key="fontDescription" name="SFProRounded-Semibold" family="SF Pro Rounded" pointSize="16"/>
                                                                         <color key="tintColor" red="0.42745098040000001" green="0.52549019610000003" blue="0.81568627449999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -364,6 +364,24 @@ Jailbreak</string>
                                                                         </userDefinedRuntimeAttributes>
                                                                         <connections>
                                                                             <action selector="SP_Action:" destination="cbb-OQ-T38" eventType="touchUpInside" id="ecm-4d-BnE"/>
+                                                                        </connections>
+                                                                    </button>
+                                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ttd-ho-Oh0" userLabel="TWOutlet">
+                                                                        <rect key="frame" x="0.0" y="98.5" width="89" height="16.5"/>
+                                                                        <color key="backgroundColor" red="0.42745098040000001" green="0.52549019610000003" blue="0.81568627449999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                                        <fontDescription key="fontDescription" name="SFProRounded-Semibold" family="SF Pro Rounded" pointSize="16"/>
+                                                                        <color key="tintColor" red="0.42745098040000001" green="0.52549019610000003" blue="0.81568627449999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                                        <state key="normal" title="TW">
+                                                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                                        </state>
+                                                                        <userDefinedRuntimeAttributes>
+                                                                            <userDefinedRuntimeAttribute type="boolean" keyPath="clipsToBounds" value="YES"/>
+                                                                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                                                <integer key="value" value="8"/>
+                                                                            </userDefinedRuntimeAttribute>
+                                                                        </userDefinedRuntimeAttributes>
+                                                                        <connections>
+                                                                            <action selector="TW_Action:" destination="cbb-OQ-T38" eventType="touchUpInside" id="zKL-Rr-kjp"/>
                                                                         </connections>
                                                                     </button>
                                                                 </subviews>
@@ -631,6 +649,7 @@ Jailbreak</string>
                         <outlet property="MS2_Outlet" destination="WPt-xM-ZeO" id="pzr-9c-Brt"/>
                         <outlet property="SP_Outlet" destination="i38-mJ-9UE" id="PF1-Es-KCp"/>
                         <outlet property="Sileo_Outlet" destination="S0H-7P-GqD" id="5o9-nV-8Jc"/>
+                        <outlet property="TWOutlet" destination="Ttd-ho-Oh0" id="LtU-rC-ygS"/>
                         <outlet property="VS_Outlet" destination="cnZ-mN-oLo" id="5Na-D5-W4X"/>
                         <outlet property="Zebra_Outlet" destination="boH-Pl-dLK" id="ik4-TO-bAt"/>
                         <outlet property="backGroundView" destination="RXn-ci-c8f" id="MTy-MA-Spg"/>

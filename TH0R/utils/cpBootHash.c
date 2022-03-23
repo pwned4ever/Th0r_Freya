@@ -8,7 +8,8 @@
 
 #include "cpBootHash.h"
 
-#include "IOKit.h"
+#include "iokit.h"
+#include "IOKitLibTW.h"
 
 char *copyBootHash(void) {
     unsigned char buf[1024];

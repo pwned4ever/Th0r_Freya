@@ -210,7 +210,7 @@ void wannaSliceOfMe() {
     //1 = MachSwap2
     //2 = Voucher_Swap
     //3 = SockPuppet
-    
+    //4 = timewaste
     runExploit(getExploitType()); //Change this depending on what device you have...
     
 

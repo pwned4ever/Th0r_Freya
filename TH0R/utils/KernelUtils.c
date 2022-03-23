@@ -15,7 +15,14 @@
 #include "mach_vm.h"
 
 uint64_t cached_task_self_addr = 0;
+uint64_t our_port_addr_exportedBYTW = 0;
+uint64_t our_task_addr_exportedBYTW = 0;
+uint64_t our_procStruct_addr_exported = 0;
+uint64_t kernelbase_exportedBYTW = 0;
+mach_port_t tfp0_exportedBYTW = MACH_PORT_NULL;
+
 bool found_offs = false;
+
 uint64_t task_self_addr()
 {
     if (cached_task_self_addr == 0) {
@@ -200,4 +207,140 @@ bool kmem_free(uint64_t kaddr, uint64_t size)
     return true;
 }
 
+
+
+//twaste below
+
+static mach_port_t tfpzerotw;
+static uint64_t task_selftw;
+
+void init_kernel_memorytw(mach_port_t tfp0tw, uint64_t our_port_addrtw) {
+    tfpzerotw = tfp0tw;
+    task_selftw = our_port_addrtw;
+}
+
+uint64_t kalloctw(vm_size_t size) {
+    mach_vm_address_t address = 0;
+    mach_vm_allocate(tfpzerotw, (mach_vm_address_t *)&address, size, VM_FLAGS_ANYWHERE);
+    return address;
+}
+
+void kfreetw(mach_vm_address_t address, vm_size_t size) {
+    mach_vm_deallocate(tfpzerotw, address, size);
+}
+
+size_t kreadtw(uint64_t where, void *p, size_t size) {
+    int rv;
+    size_t offset = 0;
+    while (offset < size) {
+        mach_vm_size_t sz, chunk = 2048;
+        if (chunk > size - offset) {
+            chunk = size - offset;
+        }
+        rv = mach_vm_read_overwrite(tfpzerotw, where + offset, chunk, (mach_vm_address_t)p + offset, &sz);
+        if (rv || sz == 0) {
+            printf("[-] error on kread(0x%016llx)\n", where);
+            break;
+        }
+        offset += sz;
+    }
+    return offset;
+}
+
+uint32_t rk32tw(uint64_t where) {
+    uint32_t out;
+    kreadtw(where, &out, sizeof(uint32_t));
+    return out;
+}
+
+uint64_t rk64tw(uint64_t where) {
+    uint64_t out;
+    kreadtw(where, &out, sizeof(uint64_t));
+    return out;
+}
+
+size_t kwritetw(uint64_t where, const void *p, size_t size) {
+    int rv;
+    size_t offset = 0;
+    while (offset < size) {
+        size_t chunk = 2048;
+        if (chunk > size - offset) {
+            chunk = size - offset;
+        }
+        rv = mach_vm_write(tfpzerotw, where + offset, (mach_vm_offset_t)p + offset, (int)chunk);
+        if (rv) {
+            printf("[-] error on kwrite(0x%016llx)\n", where);
+            break;
+        }
+        offset += chunk;
+    }
+    return offset;
+}
+
+void wk32tw(uint64_t where, uint32_t what) {
+    uint32_t _what = what;
+    kwritetw(where, &_what, sizeof(uint32_t));
+}
+
+
+void wk64tw(uint64_t where, uint64_t what) {
+    uint64_t _what = what;
+    kwritetw(where, &_what, sizeof(uint64_t));
+}
+
+unsigned long kstrlentw(uint64_t string) {
+    if (!string) return 0;
+    
+    unsigned long len = 0;
+    char ch = 0;
+    int i = 0;
+    while (true) {
+        kreadtw(string + i, &ch, 1);
+        if (!ch) break;
+        len++;
+        i++;
+    }
+    return len;
+}
+
+int kstrcmptw(uint64_t string1, uint64_t string2) {
+    unsigned long len1 = kstrlentw(string1);
+    unsigned long len2 = kstrlentw(string2);
+    
+    char *s1 = malloc(len1);
+    char *s2 = malloc(len2);
+    kreadtw(string1, s1, len1);
+    kreadtw(string2, s2, len2);
+    
+    int ret = strcmp(s1, s2);
+    free(s1);
+    free(s2);
+    
+    return ret;
+}
+
+int kstrcmp_utw(uint64_t string1, char *string2) {
+    unsigned long len1 = kstrlentw(string1);
+    
+    char *s1 = malloc(len1);
+    kreadtw(string1, s1, len1);
+ 
+    int ret = strcmp(s1, string2);
+    free(s1);
+    
+    return ret;
+}
+
+uint64_t find_porttw(mach_port_name_t port) {
+    uint64_t task_addr = rk64tw(task_selftw + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_KOBJECT));
+    uint64_t itk_space = rk64tw(task_addr + koffset(KSTRUCT_OFFSET_TASK_ITK_SPACE));
+    uint64_t is_table = rk64tw(itk_space + koffset(KSTRUCT_OFFSET_IPC_SPACE_IS_TABLE));
+    
+    uint32_t port_index = port >> 8;
+    const int sizeof_ipc_entry_t = 0x18;
+    
+    uint64_t port_addr = rk64tw(is_table + (port_index * sizeof_ipc_entry_t));
+    
+    return port_addr;
+}
 

@@ -12,6 +12,8 @@
 #include "PFOffs.h"
 #include "remap_tfp_set_hsp.h"
 #include "OffsetHolder.h"
+#include "IOKitLibTW.h"
+//#include "IOKitLib.h"
 
 #if !__arm64e__
 static mach_port_t prepare_user_client()
@@ -20,7 +22,7 @@ static mach_port_t prepare_user_client()
     mach_port_t user_client;
     io_service_t service = IOServiceGetMatchingService(kIOMasterPortDefault, IOServiceMatching("IOSurfaceRoot"));
     
-    if (service == IO_OBJECT_NULL) {
+    if (service == IO_OBJECT_NULLK) {
         LOG("unable to find service");
         exit(EXIT_FAILURE);
     }

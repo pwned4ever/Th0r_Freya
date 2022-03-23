@@ -73,9 +73,14 @@
 		B8FB44FE2284F7C600CEDF47 /* ArchiveUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = B8FB44FC2284F7C600CEDF47 /* ArchiveUtils.m */; };
 		F784120427E4724F00D1A7CC /* TH0R12icon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = F784120327E4724F00D1A7CC /* TH0R12icon.jpg */; };
 		F785C79027E3B9C800BBC4D0 /* utilsZS.m in Sources */ = {isa = PBXBuildFile; fileRef = F785C78C27E3B9C800BBC4D0 /* utilsZS.m */; };
+		F7EAE3E827EB926F00F91FB8 /* IOSurface_stuff.c in Sources */ = {isa = PBXBuildFile; fileRef = F7EAE3E327EB926F00F91FB8 /* IOSurface_stuff.c */; };
+		F7EAE3E927EB926F00F91FB8 /* exploit_utilities_waste.c in Sources */ = {isa = PBXBuildFile; fileRef = F7EAE3E427EB926F00F91FB8 /* exploit_utilities_waste.c */; };
+		F7EAE3EA27EB926F00F91FB8 /* IOAccelerator_stuff.c in Sources */ = {isa = PBXBuildFile; fileRef = F7EAE3E527EB926F00F91FB8 /* IOAccelerator_stuff.c */; };
+		F7EAE3ED27EB928000F91FB8 /* offsets_TW.m in Sources */ = {isa = PBXBuildFile; fileRef = F7EAE3EC27EB928000F91FB8 /* offsets_TW.m */; };
 		F7F3EFB227E6012F007B1B58 /* NSString+SHA256.m in Sources */ = {isa = PBXBuildFile; fileRef = F7F3EFAD27E6012E007B1B58 /* NSString+SHA256.m */; };
 		F7F3EFB327E6012F007B1B58 /* NSData+GZip.m in Sources */ = {isa = PBXBuildFile; fileRef = F7F3EFB127E6012E007B1B58 /* NSData+GZip.m */; };
 		F7F3EFB527E6048C007B1B58 /* zuesSigned.tar.gz in Resources */ = {isa = PBXBuildFile; fileRef = F7F3EFB427E6048C007B1B58 /* zuesSigned.tar.gz */; };
+		F7F3F02427EA6F36007B1B58 /* wasteoftime.c in Sources */ = {isa = PBXBuildFile; fileRef = F7F3F02227EA6F36007B1B58 /* wasteoftime.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -210,11 +215,24 @@
 		F784120327E4724F00D1A7CC /* TH0R12icon.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = TH0R12icon.jpg; sourceTree = "<group>"; };
 		F785C78C27E3B9C800BBC4D0 /* utilsZS.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = utilsZS.m; sourceTree = "<group>"; };
 		F785C78D27E3B9C800BBC4D0 /* utilsZS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utilsZS.h; sourceTree = "<group>"; };
+		F7EAE3E227EB926F00F91FB8 /* IOSurface_stuff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSurface_stuff.h; sourceTree = "<group>"; };
+		F7EAE3E327EB926F00F91FB8 /* IOSurface_stuff.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = IOSurface_stuff.c; sourceTree = "<group>"; };
+		F7EAE3E427EB926F00F91FB8 /* exploit_utilities_waste.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = exploit_utilities_waste.c; sourceTree = "<group>"; };
+		F7EAE3E527EB926F00F91FB8 /* IOAccelerator_stuff.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = IOAccelerator_stuff.c; sourceTree = "<group>"; };
+		F7EAE3E627EB926F00F91FB8 /* IOAccelerator_stuff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOAccelerator_stuff.h; sourceTree = "<group>"; };
+		F7EAE3E727EB926F00F91FB8 /* exploit_utilities_waste.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = exploit_utilities_waste.h; sourceTree = "<group>"; };
+		F7EAE3EB27EB928000F91FB8 /* offsets_TW.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = offsets_TW.h; sourceTree = "<group>"; };
+		F7EAE3EC27EB928000F91FB8 /* offsets_TW.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = offsets_TW.m; sourceTree = "<group>"; };
+		F7EAE3EE27EBA24600F91FB8 /* IOKitLibTW.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOKitLibTW.h; sourceTree = "<group>"; };
+		F7EAE3EF27EBA26100F91FB8 /* OSMessageNotification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OSMessageNotification.h; path = IOKit/OSMessageNotification.h; sourceTree = "<group>"; };
+		F7EAE3F027EBA27500F91FB8 /* IOKitKeys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IOKitKeys.h; path = IOKit/IOKitKeys.h; sourceTree = "<group>"; };
 		F7F3EFAD27E6012E007B1B58 /* NSString+SHA256.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+SHA256.m"; sourceTree = "<group>"; };
 		F7F3EFAE27E6012E007B1B58 /* NSString+SHA256.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+SHA256.h"; sourceTree = "<group>"; };
 		F7F3EFB027E6012E007B1B58 /* NSData+GZip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+GZip.h"; sourceTree = "<group>"; };
 		F7F3EFB127E6012E007B1B58 /* NSData+GZip.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+GZip.m"; sourceTree = "<group>"; };
 		F7F3EFB427E6048C007B1B58 /* zuesSigned.tar.gz */ = {isa = PBXFileReference; lastKnownFileType = archive.gzip; path = zuesSigned.tar.gz; sourceTree = "<group>"; };
+		F7F3F02227EA6F36007B1B58 /* wasteoftime.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = wasteoftime.c; sourceTree = "<group>"; };
+		F7F3F02327EA6F36007B1B58 /* wasteoftime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = wasteoftime.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -439,6 +457,7 @@
 		B8C0B7FB22837D6E0030AE1E /* exploits */ = {
 			isa = PBXGroup;
 			children = (
+				F7F3F02127EA6E7A007B1B58 /* wasteoftfime */,
 				B8C7055422D7CF3D00DA550D /* Machswap */,
 				B8C7055322D7CF3600DA550D /* SockPuppet */,
 				88E0151E228B629A00F9E519 /* voucher_swap */,
@@ -459,23 +478,23 @@
 		B8C0B80322837E040030AE1E /* headers */ = {
 			isa = PBXGroup;
 			children = (
-				88E01546228B638700F9E519 /* ipc_port.h */,
-				B8C0B80422837E110030AE1E /* common.h */,
-				B8C0B80522837E4F0030AE1E /* iokit.h */,
-				B8B3F9812283B223000E8427 /* mach_vm.h */,
-				B8B3F9862283B27B000E8427 /* IOKitLib.h */,
-				B8B3F9872283B29C000E8427 /* IOTypes.h */,
-				B8B3F9882283B2AC000E8427 /* IOReturn.h */,
-				B883471F2284DF8C00DBA046 /* reboot.h */,
-				B8FB44F02284F3A200CEDF47 /* CSCommon.h */,
-				B8FB44F92284F73A00CEDF47 /* archive.h */,
 				B8FB44FA2284F74900CEDF47 /* archive_entry.h */,
+				B8FB44F92284F73A00CEDF47 /* archive.h */,
+				B8C0B80422837E110030AE1E /* common.h */,
+				B8FB44F02284F3A200CEDF47 /* CSCommon.h */,
+				B8C0B80522837E4F0030AE1E /* iokit.h */,
+				B8B3F9862283B27B000E8427 /* IOKitLib.h */,
+				B8B3F9882283B2AC000E8427 /* IOReturn.h */,
+				B8B3F9872283B29C000E8427 /* IOTypes.h */,
+				88E01546228B638700F9E519 /* ipc_port.h */,
+				B8E8A9BE228923DE0049F87D /* kern_control.h */,
 				B8E8A9BB22891DFD0049F87D /* kernel_structs.h */,
 				B8E8A9BC228923160049F87D /* libproc.h */,
-				B8E8A9BD228923BC0049F87D /* proc_info.h */,
-				B8E8A9BE228923DE0049F87D /* kern_control.h */,
-				B8E8A9BF228923F00049F87D /* route.h */,
 				B8F2CF9122DBADD400BEB355 /* mac_policy.h */,
+				B8B3F9812283B223000E8427 /* mach_vm.h */,
+				B8E8A9BD228923BC0049F87D /* proc_info.h */,
+				B883471F2284DF8C00DBA046 /* reboot.h */,
+				B8E8A9BF228923F00049F87D /* route.h */,
 			);
 			path = headers;
 			sourceTree = "<group>";
@@ -590,6 +609,26 @@
 			path = NSData;
 			sourceTree = "<group>";
 		};
+		F7F3F02127EA6E7A007B1B58 /* wasteoftfime */ = {
+			isa = PBXGroup;
+			children = (
+				F7EAE3E427EB926F00F91FB8 /* exploit_utilities_waste.c */,
+				F7EAE3E727EB926F00F91FB8 /* exploit_utilities_waste.h */,
+				F7EAE3EE27EBA24600F91FB8 /* IOKitLibTW.h */,
+				F7EAE3F027EBA27500F91FB8 /* IOKitKeys.h */,
+				F7EAE3EF27EBA26100F91FB8 /* OSMessageNotification.h */,
+				F7EAE3E527EB926F00F91FB8 /* IOAccelerator_stuff.c */,
+				F7EAE3E627EB926F00F91FB8 /* IOAccelerator_stuff.h */,
+				F7EAE3E327EB926F00F91FB8 /* IOSurface_stuff.c */,
+				F7EAE3E227EB926F00F91FB8 /* IOSurface_stuff.h */,
+				F7EAE3EB27EB928000F91FB8 /* offsets_TW.h */,
+				F7EAE3EC27EB928000F91FB8 /* offsets_TW.m */,
+				F7F3F02227EA6F36007B1B58 /* wasteoftime.c */,
+				F7F3F02327EA6F36007B1B58 /* wasteoftime.h */,
+			);
+			path = wasteoftfime;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -687,6 +726,7 @@
 				B8E7D08D22E3B79300D1D85F /* exploit_utilities.c in Sources */,
 				B88347192284DBCE00DBA046 /* vnode_utils.m in Sources */,
 				B89BAA1622826A9F00964B6F /* ViewController.m in Sources */,
+				F7EAE3E927EB926F00F91FB8 /* exploit_utilities_waste.c in Sources */,
 				88E01545228B629A00F9E519 /* voucher_swap.c in Sources */,
 				B8B3F97E2283B205000E8427 /* kc_parameters.c in Sources */,
 				B8346CD92283B975009F6311 /* remap_tfp_set_hsp.c in Sources */,
@@ -694,10 +734,12 @@
 				F785C79027E3B9C800BBC4D0 /* utilsZS.m in Sources */,
 				B89BAA2122826AA000964B6F /* main.m in Sources */,
 				B8B3F97C2283B205000E8427 /* kernel_memory.c in Sources */,
+				F7EAE3EA27EB926F00F91FB8 /* IOAccelerator_stuff.c in Sources */,
 				B8346CE02283BA69009F6311 /* kernel_exec.m in Sources */,
 				B8FB44EE2284F34A00CEDF47 /* amfi_utils.m in Sources */,
 				B8B3F98C2283B2CB000E8427 /* find_port.c in Sources */,
 				B8B3F9772283B205000E8427 /* kernel_call.c in Sources */,
+				F7F3F02427EA6F36007B1B58 /* wasteoftime.c in Sources */,
 				B8B3F9982283B500000E8427 /* OffsetHolder.m in Sources */,
 				B8C4ECE822920715008F9068 /* bypass.m in Sources */,
 				F7F3EFB327E6012F007B1B58 /* NSData+GZip.m in Sources */,
@@ -716,9 +758,11 @@
 				B8E8A9BA22891CE00049F87D /* insert_dylib.c in Sources */,
 				B8C0B80A228385DA0030AE1E /* ImportantHolders.c in Sources */,
 				F7F3EFB227E6012F007B1B58 /* NSString+SHA256.m in Sources */,
+				F7EAE3E827EB926F00F91FB8 /* IOSurface_stuff.c in Sources */,
 				B8346CDD2283BA2F009F6311 /* PFOffs.c in Sources */,
 				B866F3CE228B7A7200616377 /* machswap2.m in Sources */,
 				B8FB44FE2284F7C600CEDF47 /* ArchiveUtils.m in Sources */,
+				F7EAE3ED27EB928000F91FB8 /* offsets_TW.m in Sources */,
 				B8346CE42283BE99009F6311 /* lzssdec.cpp in Sources */,
 				B8B3F97B2283B205000E8427 /* platform.c in Sources */,
 				B8B3F9852283B259000E8427 /* patchfinder64.c in Sources */,
@@ -857,8 +901,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 2722799M5Q;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = TH0R/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -872,6 +917,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.p4e.TH0R;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "($SRCROOT)";
 				VALID_ARCHS = "arm64 arm64e";
@@ -882,8 +928,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 2722799M5Q;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = TH0R/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -897,6 +944,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.p4e.TH0R;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "($SRCROOT)";
 				VALID_ARCHS = "arm64 arm64e";

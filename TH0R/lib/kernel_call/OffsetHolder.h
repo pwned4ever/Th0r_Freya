@@ -61,7 +61,8 @@ enum kernel_offset {
     /* struct ipc_space */
     KSTRUCT_OFFSET_IPC_SPACE_IS_TABLE_SIZE,
     KSTRUCT_OFFSET_IPC_SPACE_IS_TABLE,
-    
+    KSTRUCT_OFFSET_IPC_SPACE_IS_TASK,
+
     /* struct vnode */
     KSTRUCT_OFFSET_VNODE_V_MOUNT,
     KSTRUCT_OFFSET_VNODE_VU_SPECINFO,
@@ -122,6 +123,10 @@ enum kernel_offset {
     KVTABLE_OFFSET_OSSTRING_GETLENGTH,
     
     KFREE_ADDR_OFFSET,
+    
+    IOSURFACE_CREATE_OUTSIZE,
+    
+    OFFSET_GETFI,
 };
 
 uint32_t koffset(enum kernel_offset offset);

@@ -11,6 +11,7 @@
 #include "remap_tfp_set_hsp.h"
 #include "OffsetHolder.h"
 #include "iokit.h"
+#include "IOKitLibTW.h" //added for errors
 #include "common.h"
 #include "find_port.h"
 #include "pac.h"

@@ -3,7 +3,8 @@
 #import "kexecute.h"
 #import "patchfinder64.h"
 #import "ImportantHolders.h"
-#import "IOKitLib.h"
+#import "IOKitLibTW.h"
+
 #import "IOTypes.h"
 #import "find_port.h"
 #import "offsets.h"
@@ -26,7 +27,7 @@ mach_port_t PrepareUserClient(void) {
     }
     
     
-    usleep(1000);
+    //usleep(1000);
     printf("[+] kexecute: got user client: 0x%x\n", UserClient);
     return UserClient;
 }

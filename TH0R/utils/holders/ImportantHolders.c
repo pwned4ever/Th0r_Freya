@@ -6,7 +6,7 @@
 //  Copyright © 2019 Tanay Findley. All rights reserved.
 //
 #include <mach/port.h>
-
+#include "KernelUtils.h"
 mach_port_t tfp0 = MACH_PORT_NULL;
 uint64_t kbase;
 uint64_t ktask;
@@ -16,6 +16,9 @@ uint64_t selfproc_ffs = 0;
 
 uint64_t get_selfproc()
 {
+    if (our_procStruct_addr_exported != 0) {
+        return our_procStruct_addr_exported;
+    }
     return selfproc_ffs;
 }
 

@@ -49,6 +49,9 @@
     //0 = MS
     //1 = MS2
     //2 = VS
+    //3 = SP
+    //4 = TW
+    
     if (getExploitType() == 0)
     {
         [_MS1_OUTLET sendActionsForControlEvents:UIControlEventTouchUpInside];
@@ -61,6 +64,9 @@
     } else if (getExploitType() == 3)
     {
         [_SP_Outlet sendActionsForControlEvents:UIControlEventTouchUpInside];
+    } else if (getExploitType() == 4)
+    {
+        [_TWOutlet sendActionsForControlEvents:UIControlEventTouchUpInside];
     }
     
     if (shouldRestoreFS())
@@ -82,17 +88,17 @@
 
 - (void)viewDidAppear:(BOOL)animated{
     
-//    CAGradientLayer *gradient2 = [CAGradientLayer layer];
-//
-//    gradient2.frame = self.settingsGradientView.bounds;
-//    gradient2.colors = @[(id)[[UIColor colorWithRed:0.49 green:0.43 blue:0.84 alpha:1.0] CGColor], (id)[[UIColor colorWithRed:0.36 green:0.64 blue:0.80 alpha:1.0] CGColor]];
-//
-//    [UIView animateWithDuration:1.0f animations:^{
-//
-//        [self.settingsGradientView setAlpha:1.0];
-//        [self.settingsGradientView.layer insertSublayer:gradient2 atIndex:0];
-//
-//    }];
+    CAGradientLayer *gradient2 = [CAGradientLayer layer];
+
+    gradient2.frame = self.settingsGradientView.bounds;
+    gradient2.colors = @[(id)[[UIColor colorWithRed:0.49 green:0.43 blue:0.84 alpha:1.0] CGColor], (id)[[UIColor colorWithRed:0.36 green:0.64 blue:0.80 alpha:1.0] CGColor]];
+
+    [UIView animateWithDuration:1.0f animations:^{
+
+        [self.settingsGradientView setAlpha:1.0];
+        [self.settingsGradientView.layer insertSublayer:gradient2 atIndex:0];
+
+    }];
     
     
     }
@@ -190,6 +196,54 @@
     
 }
 
+- (IBAction)SP_Action:(UIButton *)sender {
+    
+    saveCustomSetting(@"ExploitType", 3);
+    
+    UIColor *purple = [UIColor colorWithRed:0.43 green:0.53 blue:0.82 alpha:1.0];
+    UIColor *white = [UIColor colorWithRed:1.00 green:1.00 blue:1.00 alpha:1.0];;
+    UIColor *black = [UIColor colorWithRed:0.00 green:0.00 blue:0.00 alpha:1.0];;
+    
+    
+    self.VS_Outlet.backgroundColor = purple;
+    self.MS1_OUTLET.backgroundColor = purple;
+    self.MS2_Outlet.backgroundColor = purple;
+    self.SP_Outlet.backgroundColor = white;
+    
+    
+    //button label color
+    [self.VS_Outlet setTitleColor:white forState:UIControlStateNormal];
+    [self.MS1_OUTLET setTitleColor:white forState:UIControlStateNormal];
+    [self.MS2_Outlet setTitleColor:white forState:UIControlStateNormal];
+    [self.SP_Outlet setTitleColor:black forState:UIControlStateNormal];
+    
+}
+
+- (IBAction)TW_Action:(UIButton *)sender {
+    
+    saveCustomSetting(@"ExploitType", 4);
+    
+    UIColor *purple = [UIColor colorWithRed:0.43 green:0.53 blue:0.82 alpha:1.0];
+    UIColor *white = [UIColor colorWithRed:1.00 green:1.00 blue:1.00 alpha:1.0];;
+    UIColor *black = [UIColor colorWithRed:0.00 green:0.00 blue:0.00 alpha:1.0];;
+    
+    
+    self.VS_Outlet.backgroundColor = purple;
+    self.MS1_OUTLET.backgroundColor = purple;
+    self.MS2_Outlet.backgroundColor = purple;
+    self.SP_Outlet.backgroundColor = purple;
+    self.TWOutlet.backgroundColor = white;
+
+    
+    //button label color
+    [self.VS_Outlet setTitleColor:white forState:UIControlStateNormal];
+    [self.MS1_OUTLET setTitleColor:white forState:UIControlStateNormal];
+    [self.MS2_Outlet setTitleColor:white forState:UIControlStateNormal];
+    [self.SP_Outlet setTitleColor:white forState:UIControlStateNormal];
+    [self.TWOutlet setTitleColor:black forState:UIControlStateNormal];
+
+}
+
 - (IBAction)Cydia_Button:(UIButton *)sender {
     
     saveCustomSetting(@"PackagerType", 0);
@@ -248,28 +302,6 @@
     [self.Sileo_Outlet setTitleColor:black forState:UIControlStateNormal];
 }
 
-- (IBAction)SP_Action:(UIButton *)sender {
-    
-    saveCustomSetting(@"ExploitType", 3);
-    
-    UIColor *purple = [UIColor colorWithRed:0.43 green:0.53 blue:0.82 alpha:1.0];
-    UIColor *white = [UIColor colorWithRed:1.00 green:1.00 blue:1.00 alpha:1.0];;
-    UIColor *black = [UIColor colorWithRed:0.00 green:0.00 blue:0.00 alpha:1.0];;
-    
-    
-    self.VS_Outlet.backgroundColor = purple;
-    self.MS1_OUTLET.backgroundColor = purple;
-    self.MS2_Outlet.backgroundColor = purple;
-    self.SP_Outlet.backgroundColor = white;
-    
-    
-    //button label color
-    [self.VS_Outlet setTitleColor:white forState:UIControlStateNormal];
-    [self.MS1_OUTLET setTitleColor:white forState:UIControlStateNormal];
-    [self.MS2_Outlet setTitleColor:white forState:UIControlStateNormal];
-    [self.SP_Outlet setTitleColor:black forState:UIControlStateNormal];
-    
-}
 - (IBAction)Restore_FS_Switch_Action:(UISwitch *)sender {
     if ([sender isOn])
     {
