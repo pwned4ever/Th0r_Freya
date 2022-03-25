@@ -25,6 +25,7 @@ int saved_errno = errno; \
 LOG("__assert(%d:%s)@%s:%u[%s]", saved_errno, #test, __FILENAME__, __LINE__, __FUNCTION__); \
 } \
 while (false)
+void xFinishFailed(void);
 
 void util_hexprint(void *data, size_t len, const char *desc);
 void util_hexprint_width(void *data, size_t len, int width, const char *desc);

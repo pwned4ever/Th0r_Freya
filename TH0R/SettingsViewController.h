@@ -19,7 +19,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (strong, nonatomic) IBOutlet UIView *backGroundView;
 @property (weak, nonatomic) IBOutlet UIView *settingsGradientView;
 
+- (IBAction)fukbut:(id)sender;
 //SWITCH FUNCTIONS
+
 - (IBAction)Restore_FS_Switch_Action:(UISwitch *)sender;
 
 //Fucking Switched

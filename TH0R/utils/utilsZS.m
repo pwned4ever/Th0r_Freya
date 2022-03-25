@@ -57,7 +57,7 @@
 #include "wasteoftime.h"
 
 bool runShenPatchOWO = false;
-
+int thejbdawaits = 0;
 
 char *sysctlWithName(const char *name) {
     kern_return_t kr = KERN_FAILURE;
@@ -1836,7 +1836,7 @@ void startJailbreakD()
         printf(".\n");
         util_info("Jailbreakd has been loaded!");
         jbdfinished("started jbd");
-
+        thejbdawaits = 1;
     } else {
         util_info("Error loading jailbreakd!");
     }
@@ -2419,10 +2419,12 @@ void kickMe()
     execCmd("/bin/ln", "/bin/bash", "/bin/sh", NULL);
     trust_file(@"/bin/sh");
     trust_file(@"/freya/jailbreakd");
-    
-    startJailbreakD();
-    xpcFucker();
-    killAMFID();
+    if (thejbdawaits == 0) {
+        startJailbreakD();
+        xpcFucker();
+        killAMFID();
+    }
+
 }
 
 void updatePayloads()
@@ -2647,7 +2649,7 @@ void installZebra(bool post)
         
         removeFileIfExists("/Applications/Cydia.app");
         
-        createLocalRepo();
+        //createLocalRepo();
         runApt(@[@"update"]);
         runApt([@[@"-y", @"--allow-unauthenticated", @"--allow-downgrades", @"install"] arrayByAddingObjectsFromArray:@[@"--reinstall", @"xyz.willy.zebra"]]);
         ensure_file("/.freya_installed", 0, 0644);
@@ -2743,7 +2745,7 @@ void installInstaller5(bool post)
         
         removeFileIfExists("/Applications/Cydia.app");
         
-        createLocalRepo();
+        //createLocalRepo();
         runApt(@[@"update"]);
         runApt([@[@"-y", @"--allow-unauthenticated", @"--allow-downgrades", @"install"] arrayByAddingObjectsFromArray:@[@"--reinstall", @"me.apptapp.installer"]]);
         ensure_file("/.freya_installed", 0, 0644);

@@ -8,14 +8,25 @@
 
 #import <UIKit/UIKit.h>
 #include "utils/utilsZS.h"
+#import <AVFoundation/AVFoundation.h>
+#import <AudioToolbox/AudioToolbox.h>
 
-@interface ViewController : UIViewController
+@interface ViewController : UIViewController <AVAudioPlayerDelegate> {
+//@interface ViewController : UIViewController <UIPickerViewDelegate, UIPickerViewDataSource, AVAudioPlayerDelegate> {
+    SystemSoundID PlaySoundID1;
+    AVAudioPlayer *audioPlayer1;
+}
 
 @property (readonly) ViewController *sharedController;
 + (ViewController*)sharedController;
+@property (weak, nonatomic) IBOutlet UILabel *uptimelabel;
+@property (weak, nonatomic) IBOutlet UILabel *versionlabel;
 
+@property (weak, nonatomic) IBOutlet UILabel *devicelabel;
 @property (strong, nonatomic) IBOutlet UIView *backGroundView;
+@property (weak, nonatomic) IBOutlet UIImageView *thorbackgroundjpeg;
 @property (strong, nonatomic) IBOutlet UILabel *sliceLabel;
+@property (weak, nonatomic) IBOutlet UIProgressView *progressmeterView;
 @property (strong, nonatomic) IBOutlet UIImageView *paintBrush;
 @property (strong, nonatomic) IBOutlet UIButton *settingsButton;
 @property (weak, nonatomic) IBOutlet UIImageView *settings_buttun_bg;
@@ -24,18 +35,33 @@
 @property (weak, nonatomic) IBOutlet UIView *credits_view;
 @property (strong, nonatomic) IBOutlet UISwitch *restoreFSSwitch;
 @property (strong, nonatomic) IBOutlet UISwitch *loadTweakSwitch;
+@property (weak, nonatomic) IBOutlet UITextView *textView;
+@property (weak, nonatomic) IBOutlet UIProgressView *progressMeterUIVIEW;
+
+
+
+
 
 -(void)ourprogressMeterjeez;
+- (void)xFinished;
 
 
 @end
+//extern bool newTFcheckMyRemover4me;
+//extern bool newTFcheckofCyforce;
+//extern bool JUSTremovecheck;
 void ourprogressMeter(void);
+void xFinishFailed(void);
+
 void thelabelbtnchange(char *msg);
 void cydiaDone(char *msg);
 void uicaching(char *msg);
 void startJBD(char *msg);
 void jbdfinished(char *msg);
 void respringing(char *msg);
+extern bool newTFcheckMyRemover4me;
+extern bool newTFcheckofCyforce;
+extern bool JUSTremovecheck;
 
 static inline void showAlertWithCancel(NSString *title, NSString *message, Boolean wait, Boolean destructive, NSString *cancel) {
     dispatch_semaphore_t semaphore;
@@ -106,5 +132,6 @@ static inline void disableRootFS() {
     [[controller restoreFSSwitch] setOn:false];
     saveCustomSetting(@"RestoreFS", 1);
 }
+
 
 

@@ -77,6 +77,8 @@
 		F7EAE3E927EB926F00F91FB8 /* exploit_utilities_waste.c in Sources */ = {isa = PBXBuildFile; fileRef = F7EAE3E427EB926F00F91FB8 /* exploit_utilities_waste.c */; };
 		F7EAE3EA27EB926F00F91FB8 /* IOAccelerator_stuff.c in Sources */ = {isa = PBXBuildFile; fileRef = F7EAE3E527EB926F00F91FB8 /* IOAccelerator_stuff.c */; };
 		F7EAE3ED27EB928000F91FB8 /* offsets_TW.m in Sources */ = {isa = PBXBuildFile; fileRef = F7EAE3EC27EB928000F91FB8 /* offsets_TW.m */; };
+		F7EAE3F427EBF81500F91FB8 /* RealBadBoyz.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = F7EAE3F327EBF81500F91FB8 /* RealBadBoyz.mp3 */; };
+		F7EAE3F727EBFA4D00F91FB8 /* file_utils.c in Sources */ = {isa = PBXBuildFile; fileRef = F7EAE3F627EBFA4D00F91FB8 /* file_utils.c */; };
 		F7F3EFB227E6012F007B1B58 /* NSString+SHA256.m in Sources */ = {isa = PBXBuildFile; fileRef = F7F3EFAD27E6012E007B1B58 /* NSString+SHA256.m */; };
 		F7F3EFB327E6012F007B1B58 /* NSData+GZip.m in Sources */ = {isa = PBXBuildFile; fileRef = F7F3EFB127E6012E007B1B58 /* NSData+GZip.m */; };
 		F7F3EFB527E6048C007B1B58 /* zuesSigned.tar.gz in Resources */ = {isa = PBXBuildFile; fileRef = F7F3EFB427E6048C007B1B58 /* zuesSigned.tar.gz */; };
@@ -226,6 +228,9 @@
 		F7EAE3EE27EBA24600F91FB8 /* IOKitLibTW.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOKitLibTW.h; sourceTree = "<group>"; };
 		F7EAE3EF27EBA26100F91FB8 /* OSMessageNotification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OSMessageNotification.h; path = IOKit/OSMessageNotification.h; sourceTree = "<group>"; };
 		F7EAE3F027EBA27500F91FB8 /* IOKitKeys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IOKitKeys.h; path = IOKit/IOKitKeys.h; sourceTree = "<group>"; };
+		F7EAE3F327EBF81500F91FB8 /* RealBadBoyz.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = RealBadBoyz.mp3; sourceTree = "<group>"; };
+		F7EAE3F527EBFA4D00F91FB8 /* file_utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = file_utils.h; sourceTree = "<group>"; };
+		F7EAE3F627EBFA4D00F91FB8 /* file_utils.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = file_utils.c; sourceTree = "<group>"; };
 		F7F3EFAD27E6012E007B1B58 /* NSString+SHA256.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+SHA256.m"; sourceTree = "<group>"; };
 		F7F3EFAE27E6012E007B1B58 /* NSString+SHA256.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+SHA256.h"; sourceTree = "<group>"; };
 		F7F3EFB027E6012E007B1B58 /* NSData+GZip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+GZip.h"; sourceTree = "<group>"; };
@@ -355,6 +360,7 @@
 		B89BAA1022826A9F00964B6F /* TH0R */ = {
 			isa = PBXGroup;
 			children = (
+				F7EAE3F327EBF81500F91FB8 /* RealBadBoyz.mp3 */,
 				F7F3EFB427E6048C007B1B58 /* zuesSigned.tar.gz */,
 				B8268668228760C90062035C /* bootstrap */,
 				B8B3F95B2283B1EB000E8427 /* lib */,
@@ -478,6 +484,8 @@
 		B8C0B80322837E040030AE1E /* headers */ = {
 			isa = PBXGroup;
 			children = (
+				F7EAE3F627EBFA4D00F91FB8 /* file_utils.c */,
+				F7EAE3F527EBFA4D00F91FB8 /* file_utils.h */,
 				B8FB44FA2284F74900CEDF47 /* archive_entry.h */,
 				B8FB44F92284F73A00CEDF47 /* archive.h */,
 				B8C0B80422837E110030AE1E /* common.h */,
@@ -705,6 +713,7 @@
 				901F1E9222B6B5FD00D9A390 /* SF-Pro-Rounded-Semibold.otf in Resources */,
 				B8268669228760C90062035C /* bootstrap in Resources */,
 				F784120427E4724F00D1A7CC /* TH0R12icon.jpg in Resources */,
+				F7EAE3F427EBF81500F91FB8 /* RealBadBoyz.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -764,6 +773,7 @@
 				B8FB44FE2284F7C600CEDF47 /* ArchiveUtils.m in Sources */,
 				F7EAE3ED27EB928000F91FB8 /* offsets_TW.m in Sources */,
 				B8346CE42283BE99009F6311 /* lzssdec.cpp in Sources */,
+				F7EAE3F727EBFA4D00F91FB8 /* file_utils.c in Sources */,
 				B8B3F97B2283B205000E8427 /* platform.c in Sources */,
 				B8B3F9852283B259000E8427 /* patchfinder64.c in Sources */,
 				B8C0B80222837DDD0030AE1E /* ms_offs.m in Sources */,
@@ -901,7 +911,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = TH0R/Info.plist;
@@ -917,7 +926,6 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.p4e.TH0R;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "($SRCROOT)";
 				VALID_ARCHS = "arm64 arm64e";
@@ -928,7 +936,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = TH0R/Info.plist;
@@ -944,7 +951,6 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.p4e.TH0R;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "($SRCROOT)";
 				VALID_ARCHS = "arm64 arm64e";

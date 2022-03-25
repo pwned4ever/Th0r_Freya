@@ -7,7 +7,12 @@
 //
 
 #import "SettingsViewController.h"
+#import "ViewController.h"
 #import "utils/utilsZS.h"
+#include "cs_blob.h"
+#include "file_utils.h"
+#define localize(key) NSLocalizedString(key, @"")
+#define postProgress(prg) [[NSNotificationCenter defaultCenter] postNotificationName: @"JB" object:nil userInfo:@{@"JBProgress": prg}]
 
 @interface SettingsViewController ()
 
@@ -15,19 +20,25 @@
 
 @implementation SettingsViewController
 
+- (IBAction)jbbutton:(id)sender {
+    
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    
     CAGradientLayer *gradient = [CAGradientLayer layer];
-    
+
     gradient.frame = self.backGroundView.bounds;
-    gradient.colors = @[(id)[[UIColor colorWithRed:0.26 green:0.81 blue:0.64 alpha:1.0] CGColor], (id)[[UIColor colorWithRed:0.09 green:0.35 blue:0.62 alpha:1.0] CGColor]];
-    
+    //gradient.colors = @[(id)[[UIColor colorWithRed:0.26 green:0.81 blue:0.64 alpha:1.0] CGColor], (id)[[UIColor colorWithRed:0.09 green:0.35 blue:0.62 alpha:1.0] CGColor]];
+    gradient.colors = @[(id)[[UIColor colorWithRed:0.02 green:0.02 blue:0.02 alpha:1.0] CGColor], (id)[[UIColor colorWithRed:0.29 green:0.05 blue:0.22 alpha:1.0] CGColor]];
     [self.backGroundView.layer insertSublayer:gradient atIndex:0];
-    
+    [self.settingsGradientView.layer insertSublayer:gradient atIndex:0];
     if (shouldLoadTweaks())
     {
+        //self.loadView =
+        //[_buttontext setTitle:localize(@"𝓢Ⓗ⒜𝕽ᴱ Th0r?") forState:UIControlStateNormal];
+
         [_loadTweaksSwitch setOn:true];
     } else {
         [_loadTweaksSwitch setOn:false];
@@ -71,8 +82,12 @@
     
     if (shouldRestoreFS())
     {
+        //[ViewController.sharedController.buttontext setTitle:localize(@"Remove Freya?") forState:UIControlStateNormal];
+        JUSTremovecheck = true;
         [_restoreFSSwitch setOn:true];
     } else {
+        //[ViewController.sharedController.buttontext setTitle:localize(@"Enable Freya?") forState:UIControlStateNormal];
+        //JUSTremovecheck = false;
         [_restoreFSSwitch setOn:false];
     }
     
@@ -140,8 +155,10 @@
     self.MS1_OUTLET.backgroundColor = white;
     self.MS2_Outlet.backgroundColor = purple;
     self.SP_Outlet.backgroundColor = purple;
-    
+    self.TWOutlet.backgroundColor = purple;
+
     //button label color
+    [self.TWOutlet setTitleColor:black forState:UIControlStateNormal];
     [self.VS_Outlet setTitleColor:white forState:UIControlStateNormal];
     [self.MS1_OUTLET setTitleColor:black forState:UIControlStateNormal];
     [self.MS2_Outlet setTitleColor:white forState:UIControlStateNormal];
@@ -162,9 +179,11 @@
     self.MS1_OUTLET.backgroundColor = purple;
     self.MS2_Outlet.backgroundColor = white;
     self.SP_Outlet.backgroundColor = purple;
+    self.TWOutlet.backgroundColor = purple;
 
     
     //button label color
+    [self.TWOutlet setTitleColor:black forState:UIControlStateNormal];
     [self.VS_Outlet setTitleColor:white forState:UIControlStateNormal];
     [self.MS1_OUTLET setTitleColor:white forState:UIControlStateNormal];
     [self.MS2_Outlet setTitleColor:black forState:UIControlStateNormal];
@@ -185,9 +204,11 @@
     self.MS1_OUTLET.backgroundColor = purple;
     self.MS2_Outlet.backgroundColor = purple;
     self.SP_Outlet.backgroundColor = purple;
+    self.TWOutlet.backgroundColor = purple;
 
     
     //button label color
+    [self.TWOutlet setTitleColor:black forState:UIControlStateNormal];
     [self.VS_Outlet setTitleColor:black forState:UIControlStateNormal];
     [self.MS1_OUTLET setTitleColor:white forState:UIControlStateNormal];
     [self.MS2_Outlet setTitleColor:white forState:UIControlStateNormal];
@@ -209,14 +230,16 @@
     self.MS1_OUTLET.backgroundColor = purple;
     self.MS2_Outlet.backgroundColor = purple;
     self.SP_Outlet.backgroundColor = white;
-    
+    self.TWOutlet.backgroundColor = purple;
+
     
     //button label color
     [self.VS_Outlet setTitleColor:white forState:UIControlStateNormal];
     [self.MS1_OUTLET setTitleColor:white forState:UIControlStateNormal];
     [self.MS2_Outlet setTitleColor:white forState:UIControlStateNormal];
     [self.SP_Outlet setTitleColor:black forState:UIControlStateNormal];
-    
+    [self.TWOutlet setTitleColor:black forState:UIControlStateNormal];
+
 }
 
 - (IBAction)TW_Action:(UIButton *)sender {
@@ -302,11 +325,53 @@
     [self.Sileo_Outlet setTitleColor:black forState:UIControlStateNormal];
 }
 
+
+//ViewController *sharedController = nil;
+static ViewController *currentViewController;
+
 - (IBAction)Restore_FS_Switch_Action:(UISwitch *)sender {
+    #define CS_OPS_STATUS       0   /* return status */
+    uint32_t flags;
+    csops(getpid(), CS_OPS_STATUS, &flags, 0);
+    int checkuncovermarker = (file_exists("/.installed_unc0ver"));
+    int checkth0rmarker = (file_exists("/.freya_installed"));
+    int checkChimeramarker = (file_exists("/.bootstrapped_chimera"));
+    printf("Uncover marker exists?: %d\n",checkuncovermarker);
+    printf("Th0r marker exists?: %d\n",checkth0rmarker);
+    printf("Chimera marker exists?: %d\n",checkChimeramarker);
+    [ViewController.sharedController.buttontext setEnabled:true];
+
     if ([sender isOn])
     {
-        saveCustomSetting(@"RestoreFS", 0);
+        if ((checkth0rmarker == 1) && (checkuncovermarker == 0) && (checkChimeramarker == 0)){
+            [ViewController.sharedController.buttontext setTitle:localize(@"Remove Freya?") forState:UIControlStateNormal];
+            newTFcheckMyRemover4me = TRUE;
+        } else if ((checkuncovermarker == 1) && (checkth0rmarker == 0) && (checkChimeramarker == 0)) {
+            [ViewController.sharedController.buttontext setTitle:localize(@"Remove u0?") forState:UIControlStateNormal];
+            newTFcheckMyRemover4me = TRUE;
+        } else if ((checkuncovermarker == 0) && (checkChimeramarker == 1) && (checkth0rmarker == 0)){
+            [ViewController.sharedController.buttontext setTitle:localize(@"Remove Chimera?") forState:UIControlStateNormal];
+            newTFcheckMyRemover4me = TRUE;
+        } else {
+            [ViewController.sharedController.buttontext setTitle:localize(@"Remove JB?") forState:UIControlStateNormal];
+            newTFcheckMyRemover4me = TRUE;
+        }
+    JUSTremovecheck = true;
+    saveCustomSetting(@"RestoreFS", 0);
     } else {
+        if ((checkth0rmarker == 1) && (checkuncovermarker == 0) && (checkChimeramarker == 0)){
+            [ViewController.sharedController.buttontext setTitle:localize(@"Enable Freya?") forState:UIControlStateNormal];
+        } else if ((checkuncovermarker == 1) && (checkth0rmarker == 0) && (checkChimeramarker == 0)) {
+            [ViewController.sharedController.buttontext setTitle:localize(@"Remove u0 1st") forState:UIControlStateNormal];
+            [ViewController.sharedController.buttontext setEnabled:false];
+        } else if ((checkuncovermarker == 0) && (checkChimeramarker == 1) && (checkth0rmarker == 0)){
+            [ViewController.sharedController.buttontext setTitle:localize(@"Remove Chimera 1st") forState:UIControlStateNormal];
+            [ViewController.sharedController.buttontext setEnabled:false];
+        } else {
+            [ViewController.sharedController.buttontext setTitle:localize(@"Jailbreak") forState:UIControlStateNormal];
+        }
+        newTFcheckMyRemover4me = false;
+        JUSTremovecheck = false;
         saveCustomSetting(@"RestoreFS", 1);
     }
 }
@@ -318,17 +383,15 @@
     } else {
         saveCustomSetting(@"LoadTweaks", 1);
     }
-    
 }
-
-
-
 
 - (IBAction)dismissSwipe:(UISwipeGestureRecognizer *)sender {
     
     [self dismissViewControllerAnimated:YES completion:nil];
+    
 }
 - (IBAction)dismissButton:(UIButton *)sender {
+    
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -367,6 +430,8 @@
     [self.rooted_Switch setTitleColor:white forState:UIControlStateNormal];
     
     
+}
+- (IBAction)fukbut:(id)sender {
 }
 @end
 
