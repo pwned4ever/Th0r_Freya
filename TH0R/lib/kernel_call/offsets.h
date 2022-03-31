@@ -44,7 +44,8 @@ extern unsigned off_v_ubcinfo; // 0x78
 extern unsigned off_v_flags; // 0x54
 extern unsigned off_v_mount; // 0xD8; // vnode::v_mount
 extern unsigned off_v_specinfo; // 0x78; // vnode::v_specinfo
-
+extern unsigned off_v_name;
+extern unsigned off_v_parent;
 // ubc_info
 extern unsigned off_ubcinfo_csblobs; // 0x50; // ubc_info::csblobs
 
@@ -62,9 +63,13 @@ extern unsigned off_csb_cd; // 0x80
 extern unsigned off_t_flags; // 0x3A0
 
 // mount
+extern unsigned off_mnt_devvp;
+extern unsigned off_mnt_next;
+extern unsigned off_mnt_vnodelist;
 extern unsigned off_specflags; // 0x10
 extern unsigned off_mnt_flag; // 0x70
 extern unsigned off_mnt_data; // 0x8F8
+extern unsigned off_apfs_data_flag;
 
 
 extern unsigned off_special; // 2 * sizeof(long)

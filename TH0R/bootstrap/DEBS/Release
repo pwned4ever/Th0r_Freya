@@ -1,8 +1,8 @@
-Origin: Ziyou
-Label: Ziyou
+Origin: Freya
+Label: Freya
 Suite: stable
 Version: 0.1
-Codename: Ziyou
+Codename: Freya
 Architectures: iphoneos-arm
 Components: main
-Description: Ziyou Resources
+Description: Freya Resources

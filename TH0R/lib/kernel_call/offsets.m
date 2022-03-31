@@ -52,6 +52,10 @@ unsigned off_v_ubcinfo = 0x78;
 unsigned off_v_flags = 0x54;
 unsigned off_v_mount = 0xD8; // vnode::v_mount
 unsigned off_v_specinfo = 0x78; // vnode::v_specinfo
+unsigned off_v_name = 0xb8;
+unsigned off_v_parent = 0xc0;
+
+
 
 // ubc_info
 unsigned off_ubcinfo_csblobs = 0x50; // ubc_info::csblobs
@@ -70,10 +74,14 @@ unsigned off_csb_cd = 0x80;
 unsigned off_t_flags = 0x3A0;
 
 // mount
+unsigned off_mnt_devvp = 0x980;
+unsigned off_mnt_next = 0x0;
+unsigned off_mnt_vnodelist = 0x40;
 unsigned off_specflags = 0x10;
 unsigned off_mnt_flag = 0x70;
 unsigned off_mnt_data = 0x8F8;
-
+//apfs
+unsigned off_apfs_data_flag = 0x31;
 
 unsigned off_special = 2 * sizeof(long);
 unsigned off_ipc_space_is_table = 0x20;

@@ -55,6 +55,9 @@
 #import "machswap2.h"
 #include <sys/sysctl.h>
 #include "wasteoftime.h"
+#include "remount.h"
+#include "amfi.h"
+#include "file_utils.h"
 
 bool runShenPatchOWO = false;
 int thejbdawaits = 0;
@@ -542,6 +545,7 @@ void runSockPuppet()
 void runTIMEWaste()
 {
     ourprogressMeter();
+    
     get_tfp0_waste();
     
     if (MACH_PORT_VALID(tfp0))
@@ -824,6 +828,7 @@ dictionary[@(name)] = ADDRSTRING(value); \
 #undef CACHEADDR
     if (![[NSMutableDictionary dictionaryWithContentsOfFile:offsetsFile] isEqual:dictionary]) {
         util_info("Saving Offsets For JelbrekD...");
+        savedoffs();
         _assert(([dictionary writeToFile:offsetsFile atomically:YES]), @"Failed to save offsets.", true);
         _assert(createFile(offsetsFile.UTF8String, 0, 0644), @"Failed to save offsets.", true);
         util_info("Successfully saved offsets!");
@@ -914,6 +919,7 @@ kptr_t swap_sandbox(kptr_t proc, kptr_t sandbox) {
 
 void getOffsets() {
     
+    findoffs();
     util_info("Initializing patchfinder64...");
     const char *original_kernel_cache_path = "/System/Library/Caches/com.apple.kernelcaches/kernelcache";
     
@@ -943,14 +949,14 @@ void getOffsets() {
         _assert(false, @"Failed to initialize patchfinder64.", true);
     }
     if (auth_ptrs) {
-        util_info("Detected A12 Device.");
+        printf("Detected A12 Device.\n");
         pmap_load_trust_cache = _pmap_load_trust_cache;
         setA12(1);
     }
     if (monolithic_kernel) {
-        util_info("Detected monolithic kernel.");
+        printf("Detected monolithic kernel.\n");
     }
-    util_info("Successfully initialized patchfinder64.");
+    printf("Successfully initialized patchfinder64.\n");
     
     //This has to be a define rather than its own void. damn.
     #define findPFOffset(x) do { \
@@ -1033,7 +1039,7 @@ void getOffsets() {
     
     if (runShenPatchOWO)
     {
-        util_info("We are going to use the shenanigans patch.");
+        printf("We are going to use the shenanigans patch.\n");
         runShenPatch();
     }
     
@@ -1060,6 +1066,24 @@ void setUID (uid_t uid, uint64_t proc) {
     WriteKernel32(ucred + off_ucred_cr_ruid, uid);
     WriteKernel32(ucred + off_ucred_cr_svuid, uid);
     util_info("Overwritten UID to %i for proc 0x%llx", uid, proc);
+}
+
+void removeFileIfExists(const char *fileToRemove)
+{
+    NSString *fileToRM = [NSString stringWithUTF8String:fileToRemove];
+    NSError *error;
+    if ([[NSFileManager defaultManager] fileExistsAtPath:fileToRM])
+    {
+        [[NSFileManager defaultManager] removeItemAtPath:fileToRM error:&error];
+        if (error)
+        {
+            LOG("ERROR REMOVING FILE! ERROR REPORTED: %@", error);
+        } else {
+            LOG("REMOVED FILE: %@", fileToRM);
+        }
+    } else {
+        LOG("File Doesn't exist. Not removing.");
+    }
 }
 
 extern char **environ;
@@ -1263,9 +1287,27 @@ bool mod_plist_file(NSString *filename, void (^function)(id)) {
 
 void restoreRootFS()
 {
-    struct passwd *const root_pw = getpwnam("root");
+    int checkuncovermarker = (file_exists("/.installed_unc0ver"));
+    int checkth0rmarker = (file_exists("/.freya_bootstrap"));
+    int checkth0rmarkerFinal = (file_exists("/.freya_installed"));
+    int checkchimeramarker = (file_exists("/.procursus_strapped"));
+    int checkJBRemoverMarker = (file_exists("/var/mobile/Media/.bootstrapped_Th0r_remover"));
+    int checkjailbreakdRun = (file_exists("/var/tmp/jailbreakd.pid"));
+    int checkpspawnhook = (file_exists("/var/run/pspawn_hook.ts"));
+    printf("JUSTremovecheck exists?: %d\n",JUSTremovecheck);
+    printf("Uncover marker exists?: %d\n", checkuncovermarker);
+    printf("pspawnhook marker exists?: %d\n", checkpspawnhook);
+    printf("Uncover marker exists?: %d\n", checkuncovermarker);
+    printf("JBRemover marker exists?: %d\n", checkJBRemoverMarker);
+    printf("Th0r marker exists?: %d\n", checkth0rmarker);
+    printf("Th0r Final marker exists?: %d\n", checkth0rmarkerFinal);
+    printf("chimera marker exists?: %d\n", checkchimeramarker);
+    printf("Jailbreakd Run marker exists?: %d\n", checkjailbreakdRun);
     
+    struct passwd *const root_pw = getpwnam("root");
+    removethejb();
     util_info("Restoring RootFS....");
+    
     int const rootfd = open("/", O_RDONLY);
     _assert(rootfd > 0, localize(@"Unable to open RootFS."), true);
     const char **snapshots = snapshot_list(rootfd);
@@ -1287,33 +1329,69 @@ void restoreRootFS()
     free(systemSnapshot);
     systemSnapshot = NULL;
 
-    char *const systemSnapshotMountPoint = "/private/var/tmp/jb/mnt2";
-    if (is_mountpoint(systemSnapshotMountPoint)) {
-        _assert(unmount(systemSnapshotMountPoint, MNT_FORCE) == ERR_SUCCESS, localize(@"Unable to unmount old snapshot mount point."), true);
-    }
-    _assert(clean_file(systemSnapshotMountPoint), localize(@"Unable to clean old snapshot mount point."), true);
-    _assert(ensure_directory(systemSnapshotMountPoint, root_pw->pw_uid, 0755), localize(@"Unable to create snapshot mount point."), true);
-    _assert(fs_snapshot_mount(rootfd, systemSnapshotMountPoint, snapshot, 0) == ERR_SUCCESS, localize(@"Unable to mount original snapshot."), true);
-    const char *systemSnapshotLaunchdPath = [@(systemSnapshotMountPoint) stringByAppendingPathComponent:@"sbin/launchd"].UTF8String;
-    _assert(waitFF(systemSnapshotLaunchdPath) == ERR_SUCCESS, localize(@"Unable to verify mounted snapshot."), true);
-    extractFile(get_bootstrap_file(@"restoreUtils.tar"), @"/");
-    _assert(execCmd("/usr/bin/rsync", "-vaxcH", "--progress", "--delete", [@(systemSnapshotMountPoint) stringByAppendingPathComponent:@"Applications/."].UTF8String, "/Applications", NULL) == 0, localize(@"Unable to sync /Applications."), true);
-    _assert(unmount(systemSnapshotMountPoint, MNT_FORCE) == ERR_SUCCESS, localize(@"Unable to unmount original snapshot mount point."), true);
-    close(rootfd);
     
+    
+    if (checkuncovermarker == 1) {
+        char *const systemSnapshotMountPoint = "/private/var/tmp/jb/mnt1";
+        if (is_mountpoint(systemSnapshotMountPoint)) {
+            _assert(unmount(systemSnapshotMountPoint, MNT_FORCE) == ERR_SUCCESS, localize(@"Unable to unmount old snapshot mount point."), true);
+        }
+        _assert(clean_file(systemSnapshotMountPoint), localize(@"Unable to clean old snapshot mount point."), true);
+        _assert(ensure_directory(systemSnapshotMountPoint, root_pw->pw_uid, 0755), localize(@"Unable to create snapshot mount point."), true);
+        _assert(fs_snapshot_mount(rootfd, systemSnapshotMountPoint, snapshot, 0) == ERR_SUCCESS, localize(@"Unable to mount original snapshot."), true);
+        const char *systemSnapshotLaunchdPath = [@(systemSnapshotMountPoint) stringByAppendingPathComponent:@"sbin/launchd"].UTF8String;
+        _assert(waitFF(systemSnapshotLaunchdPath) == ERR_SUCCESS, localize(@"Unable to verify mounted snapshot."), true);
+        _assert(clean_file("/usr/bin/uicache"), localize(@"Unable to clean old uicache binary."), true);
+        unlink("/usr/bin/uicache");
+        removeFileIfExists("/usr/bin/uicache");
+        extractFile(get_bootstrap_file(@"restoreUtils.tar"), @"/");
+        _assert(execCmd("/usr/bin/rsync", "-vaxcH", "--progress", "--delete", [@(systemSnapshotMountPoint) stringByAppendingPathComponent:@"Applications/."].UTF8String, "/Applications", NULL) == 0, localize(@"Unable to sync /Applications."), true);
+        _assert(unmount(systemSnapshotMountPoint, MNT_FORCE) == ERR_SUCCESS, localize(@"Unable to unmount original snapshot mount point."), true);
+        close(rootfd);
+        
+    } else {
+        char *const systemSnapshotMountPoint = "/var/MobileSoftwareUpdate/mnt1";
+        if (is_mountpoint(systemSnapshotMountPoint)) {
+            _assert(unmount(systemSnapshotMountPoint, MNT_FORCE) == ERR_SUCCESS, localize(@"Unable to unmount old snapshot mount point."), true);
+        }
+        _assert(clean_file(systemSnapshotMountPoint), localize(@"Unable to clean old snapshot mount point."), true);
+        _assert(ensure_directory(systemSnapshotMountPoint, root_pw->pw_uid, 0755), localize(@"Unable to create snapshot mount point."), true);
+        _assert(fs_snapshot_mount(rootfd, systemSnapshotMountPoint, snapshot, 0) == ERR_SUCCESS, localize(@"Unable to mount original snapshot."), true);
+        const char *systemSnapshotLaunchdPath = [@(systemSnapshotMountPoint) stringByAppendingPathComponent:@"sbin/launchd"].UTF8String;
+        _assert(waitFF(systemSnapshotLaunchdPath) == ERR_SUCCESS, localize(@"Unable to verify mounted snapshot."), true);
+        _assert(clean_file("/usr/bin/uicache"), localize(@"Unable to clean old uicache binary."), true);
+        unlink("/usr/bin/uicache");
+        removeFileIfExists("/usr/bin/uicache");
+        extractFile(get_bootstrap_file(@"restoreUtils.tar"), @"/");
+        _assert(execCmd("/usr/bin/rsync", "-vaxcH", "--progress", "--delete", [@(systemSnapshotMountPoint) stringByAppendingPathComponent:@"Applications/."].UTF8String, "/Applications", NULL) == 0, localize(@"Unable to sync /Applications."), true);
+        _assert(unmount(systemSnapshotMountPoint, MNT_FORCE) == ERR_SUCCESS, localize(@"Unable to unmount original snapshot mount point."), true);
+        close(rootfd);
+        
+    }
+    //char *const systemSnapshotMountPoint = "/var/MobileSoftwareUpdate/mnt1";
+
     free(snapshot);
     snapshot = NULL;
     
     free(snapshots);
     snapshots = NULL;
-    
+    if (checkuncovermarker == 1) {
+
+        _assert(clean_file("/private/var/tmp/jb/mnt1"), localize(@"Unable to clean mnt1."), true);
+    }
+    else {
+        _assert(clean_file("/var/MobileSoftwareUpdate/mnt1"), localize(@"Unable to clean mnt1."), true);
+
+    }
+    uicaching("uicache");
     _assert(execCmd("/usr/bin/uicache", NULL) >= 0, localize(@"Unable to refresh icon cache."), true);
     _assert(clean_file("/usr/bin/uicache"), localize(@"Unable to clean uicache binary."), true);
+
     _assert(clean_file("/usr/bin/find"), localize(@"Unable to clean find binary."), true);
     util_info("Successfully reverted back RootFS remount.");
     
     // Clean up.
-    
+   
     util_info("Cleaning up...");
     NSArray *const cleanUpFileList = @[@"/var/cache",
                                        @"/var/lib",
@@ -1322,12 +1400,170 @@ void restoreRootFS()
                                        @"/var/mobile/Library/Cydia",
                                        @"/var/mobile/Library/Caches/com.saurik.Cydia",
                                        @"/etc/apt/sources.list.d",
+                                       @"/var/MobileSoftwareUpdate/mnt1",
                                        @"/etc/apt/sources.list",
+                                       @"/private/etc/apt",
+                                       @"/private/etc/alternatives",
+                                       @"/private/etc/default",
+                                       @"/private/etc/dpkg",
+                                       @"/private/etc/dropbear",
+                                       @"/private/etc/motd",
+                                       @"/private/etc/pam.d",
+                                       @"/private/etc/profile",
+                                       @"/private/etc/profile.d",
+                                       @"/private/etc/profile.ro",
+                                       @"/private/etc/rc.d",
+                                       @"/private/etc/ssh",
+                                       @"/private/etc/ssl",
+                                       @"/private/etc/wgetrc",
+                                       @"/private/etc/symlibs.dylib",
+                                       @"/private/etc/zshrc",
+                                       @"/private/private",
+                                       @"/private/var/containers/Bundle/dylibs",
+                                       @"/private/var/containers/Bundle/iosbinpack64",
+                                       @"/private/var/containers/Bundle/tweaksupport",
+                                       @"/private/var/log/jailbreakd-stderr.log",
+                                       @"/private/var/log/jailbreakd-stdout.log",
+                                       @"/private/var/backups",
+                                       @"/private/var/empty",
+                                       
+                                       @"/private/var/bin",
+                                       @"/private/var/cache",
+                                       @"/private/var/cercube_stashed",
+
+                                       @"/private/var/db/stash",
+                                       @"/private/var/dropbear",
+                                       @"/private/var/Ext3nder-Installer",
+                                       @"/private/var/lib",
+                                       @"/var/lib",
+                                       @"/private/var/LIB",
+                                       @"/private/var/local",
+                                       @"/private/var/log/apt",
+                                       @"/private/var/log/dpkg",
+                                      // @"/private/var/db/sudo", NULL, NULL }, (char **)&myenviron);
+                                        //waitpid(pd, NULL, 0);
+
+                                       @"/private/var/log/testbin.log",
+                                       @"/private/var/lock",
+                                       @"/private/var/mobile/Library/Activator",
+                                       @"/private/var/mobile/Library/Preferences/ws.hbang.Terminal.plist",
+                                       @"/private/var/mobile/Library/SplashBoard/Snapshots/com.saurik.Cydia",
+
+                                       @"/private/var/mobile/Library/Application\ Support/Activator",
+                                       @"/private/var/mobile/Library/Application\ Support/Flex3",
+                                       @"/private/var/mobile/Library/Saved\ Application\ State/ws.hbang.Terminal.savedState",
+                                       @"/private/var/mobile/Library/Saved\ Application\ State/org.coolstar.SileoStore.savedState",
+                                       @"/private/var/mobile/Library/Saved\ Application\ State/com.saurik.Cydia.savedState",
+                                   //    @"/private/var/mobile/Library/UserNotificationsServer/Library.plist/root/objects/item###/com.tigisoftware.Filza", NULL, NULL }, (char **)&myenviron);
+                                   //    waitpid(pd, NULL, 0);
+
+                                       @"/private/var/mobile/Library/com.saurik.Cydia",
+                                       @"/private/var/mobile/Library/Cr4shed",
+                                       @"/private/var/mobile/Library/CT4",
+                                       @"/private/var/mobile/Library/CT3",
+                                       @"/private/var/mobile/Library/Cydia",
+                                       @"/private/var/mobile/Library/Flex3",
+                                       @"/private/var/mobile/Library/Filza",
+                                       @"/private/var/mobile/Library/Fingal",
+                                       @"/private/var/mobile/Library/iWidgets",
+                                       @"/private/var/mobile/Library/LockHTML",
+                                       
+                                       @"/private/var/mobile/Library/Logs/Cydia",
+                                       
+                                       @"/private/var/mobile/Library/Notchification",
+                                       @"/private/var/mobile/Library/unlimapps_tweaks_resources",
+                                       @"/private/var/mobile/Library/Sileo",
+                                       @"/private/var/mobile/Library/SBHTML",
+                                       @"/private/var/mobile/Library/Toonsy",
+                                       @"/private/var/mobile/Library/Widgets",
+                                       @"/private/var/mobile/Library/Caches/libactivator.plist",
+                                       @"/private/var/mobile/Library/Caches/com.johncoates.Flex",
+                                       @"/private/var/mobile/Library/Caches/com.saurik.Cydia",
+                                       @"/private/var/mobile/Library/Caches/AmyCache",
+                                       @"/private/var/mobile/Library/Caches/org.coolstar.SileoStore",
+                                       @"/private/var/mobile/Library/Caches/com.saurik.Cydia",
+                                       @"/private/var/mobile/Library/Caches/com.saurik.Cydia",
+                                       @"/private/var/mobile/Library/Caches/com.tigisoftware.Filza",
+                                       @"/private/var/mobile/Library/Caches/Snapshots/com.saurik.Cydia",
+                                       @"/private/var/mobile/Library/Caches/Snapshots/com.tigisoft.Filza",
+                                       @"/private/var/mobile/Library/Caches/Snapshots/com.johncoates.Flex",
+                                       @"/private/var/mobile/Library/Caches/Snapshots/org.coolstar.SafeMode",
+                                       @"/private/var/mobile/Library/Caches/Snapshots/ws.hbang.Terminal",
+                                       @"/private/var/mobile/Library/Caches/Snapshots/org.coolstar.Sileo",
+                                       @"/private/var/mobile/Library/Preferences/com.saurik.Cydia.plist",
+
+                                       @"/private/var/mobile/Library/libactivator.plist",
+
+                                       @"/private/var/motd",
+                                       @"/private/var/profile",
+                                       @"/private/var/run/pspawn_hook.ts",
+                                       @"/private/var/run/utmp",
+                                       @"/private/var/sbin",
+                                       @"/private/var/spool",
+                                       @"/private/var/tmp/cydia.log",
+                                       @"/private/var/tweak",
+                                       @"/private/var/unlimapps_tweak_resources",
+                                       @"/Library/Alkaline",
+                                       @"/Library/Activator",
+                                       @"/Library/Application\ Support/Snoverlay",
+                                       @"/Library/Application\ Support/Flame",
+                                       @"/Library/Application\ Support/CallBlocker",
+                                       @"/Library/Application\ Support/CCSupport",
+                                       @"/Library/Application\ Support/Compatimark",
+                                       @"/Library/Application\ Support/Malipo",
+                                       @"/Library/Application\ Support/SafariPlus.bundle",
+                                       @"/Library/Application\ Support/Activator",
+                                       @"/Library/Application\ Support/Cylinder",
+                                       @"/Library/Application\ Support/Barrel",
+                                       @"/Library/Application\ Support/BarrelSettings",
+                                       @"/Library/Application\ Support/libGitHubIssues",
+                                       @"/Library/Barrel",
+                                       @"/Library/BarrelSettings",
+                                       @"/Library/Cylinder",
+                                       @"/Library/dpkg",
+                                       @"/Library/Flipswitch",
+                                       @"/Library/Frameworks",
+                                       @"/Library/LaunchDaemons",
+                                       @"/Library/MobileSubstrate",
+                                       @"/Library/PreferenceBundles",
+                                       @"/Library/PreferenceLoader",
+                                       @"/Library/SBInject",
+                                       @"/Library/Switches",
+                                       @"/Library/test_inject_springboard.cy",
+                                       @"/Library/Themes",
+                                       @"/Library/TweakInject",
+                                       @"/Library/Zeppelin",
+                                       @"/Library/.DS_Store",
+                                       @"/System/Library/PreferenceBundles/AppList.bundle",
+                                       @"/System/Library/Themes",
+                                       @"/System/Library/KeyboardDictionaries",
+                                       @"/usr/lib/libform.dylib",
+                                       @"/usr/lib/libncurses.5.dylib",
+                                       @"/usr/lib/libresolv.dylib",
+                                       @"/usr/lib/liblzma.dylib",
+                                       @"/usr/include",
+                                       @"/usr/share/aclocal",
+                                       @"/usr/share/bigboss",
+                                       @"/share/common-lisp",
+                                       @"/usr/share/dict",
+                                       @"/usr/share/dpkg",
+                                       @"/usr/share/git-core",
+                                       @"/usr/share/git-gui",
+                                       @"/usr/share/gnupg",
+                                       @"/usr/share/gitk",
+                                       @"/usr/share/gitweb",
+                                       @"/usr/share/libgpg-error",
+                                       @"/usr/share/man",
+                                       @"/usr/share/p11-kit",
+                                       @"/usr/share/tabset",
+                                       @"/usr/share/terminfo",
+                                       
                                        @"/.freya_installed",
                                        @"/.freya_bootstrap"];
     for (id file in cleanUpFileList) {
         clean_file([file UTF8String]);
     }
+    
     
     
     //Dude, really?
@@ -1356,9 +1592,10 @@ void restoreRootFS()
     _assert(mod_plist_file(jetsamFile, ^(id plist) {
         plist[@"Version4"][@"System"][@"Override"][@"Global"][@"UserHighWaterMark"] = nil;
     }), localize(@"Unable to update Jetsam plist to restore memory limit."), true);
-
+    spotless();
     ourprogressMeter();
     util_info("Rebooting...");
+
     showMSG(NSLocalizedString(@"RootFS Restored! We are going to reboot your device.", nil), 1, 1);
     dispatch_sync( dispatch_get_main_queue(), ^{
         UIApplication *app = [UIApplication sharedApplication];
@@ -1450,7 +1687,7 @@ void renameSnapshot(int rootfd, const char* rootFsMountPoint, const char **snaps
             [NSThread sleepForTimeInterval:1.0];
             exit(0);
             //exit app when app is in background
-            //reboot(RB_QUICK);
+            reboot(RB_QUICK);
 
         });
     } else {
@@ -1461,7 +1698,7 @@ void renameSnapshot(int rootfd, const char* rootFsMountPoint, const char **snaps
 
             //wait 2 seconds while app is going background
             [NSThread sleepForTimeInterval:1.0];
-
+            exit(0);
             //exit app when app is in background
             reboot(RB_QUICK);
 
@@ -1475,7 +1712,8 @@ void preMountFS(const char *thedisk, int root_fs, const char **snapshots, const 
     util_info("Pre-Mounting RootFS...");
 
     _assert(!is_mountpoint("/var/MobileSoftwareUpdate/mnt1"), invalidRootMessage, true);
-    char *const rootFsMountPoint = "/private/var/tmp/jb/mnt1";
+    char *const rootFsMountPoint = "/var/MobileSoftwareUpdate/mnt1";
+//char *const rootFsMountPoint = "/private/var/tmp/jb/mnt1";
     if (is_mountpoint(rootFsMountPoint)) {
         _assert(unmount(rootFsMountPoint, MNT_FORCE) == ERR_SUCCESS, localize(@"Unable to unmount old RootFS mount point."), true);
     }
@@ -1543,18 +1781,19 @@ bool copyMe(const char *from, const char *to)
 
 
 
-struct hfs_mount_args {
-    char    *fspec;            /* block special device to mount */
-    uid_t    hfs_uid;        /* uid that owns hfs files (standard HFS only) */
-    gid_t    hfs_gid;        /* gid that owns hfs files (standard HFS only) */
-    mode_t    hfs_mask;        /* mask to be applied for hfs perms  (standard HFS only) */
-    u_int32_t hfs_encoding;    /* encoding for this volume (standard HFS only) */
-    struct    timezone hfs_timezone;    /* user time zone info (standard HFS only) */
-    int        flags;            /* mounting flags, see below */
-    int     journal_tbuffer_size;   /* size in bytes of the journal transaction buffer */
-    int        journal_flags;          /* flags to pass to journal_open/create */
-    int        journal_disable;        /* don't use journaling (potentially dangerous) */
-};
+/*struct hfs_mount_args {
+    char    *fspec;            // block special device to mount /
+    uid_t    hfs_uid;        // uid that owns hfs files (standard HFS only) /
+    gid_t    hfs_gid;        // gid that owns hfs files (standard HFS only) /
+    mode_t    hfs_mask;        // mask to be applied for hfs perms  (standard HFS only) /
+    u_int32_t hfs_encoding;    // encoding for this volume (standard HFS only) /
+    struct    timezone hfs_timezone;    // user time zone info (standard HFS only) /
+    int        flags;            // mounting flags, see below /
+    int     journal_tbuffer_size;   // size in bytes of the journal transaction buffer /
+    int        journal_flags;          // flags to pass to journal_open/create /
+    int        journal_disable;        // don't use journaling (potentially dangerous) /
+};*/
+
 
 
 
@@ -1564,6 +1803,53 @@ struct hfs_mount_args {
 void remountFS(bool shouldRestore) {
     
     //Vars
+    uint64_t islaunchdProcstruct = get_proc_struct_for_pid(1);
+    printf("launchd procStruct: 0x%llx\n", islaunchdProcstruct);
+    bool resultofMountattempt = remount(islaunchdProcstruct);
+    printf("resultofMountattempt true = 1: %d\n", resultofMountattempt);
+    if (need_initialSSRenamed == 3) {
+        ourprogressMeter();
+        util_info("Rebooting...");
+        showMSG(NSLocalizedString(@"RootFS snapshot renamed! We are going to reboot your device.", nil), 1, 1);
+        dispatch_sync( dispatch_get_main_queue(), ^{
+            UIApplication *app = [UIApplication sharedApplication];
+            [app performSelector:@selector(suspend)];
+
+            //wait 2 seconds while app is going background
+            [NSThread sleepForTimeInterval:1.0];
+
+            //exit app when app is in background
+            reboot(RB_QUICK);
+        });
+        
+    }
+    //  bootstrap rootfs
+    //NSString *dir = [[NSBundle mainBundle] bundlePath];
+    //[[[NSBundle mainBundle] bundlePath] stringByAppendingString:@"/bootstrap/DEBS/"];
+    //[[NSFileManager defaultManager] copyItemAtPath:[NSString stringWithUTF8String:dir("rootfs")] toPath:@"/tmp/rootfs" error:nil];
+    //chmod("/tmp/rootfs", 0755);
+    
+    //  Remount RootFS
+    /*if(!remount(get_proc_struct_for_pid(1)))
+    {
+        util_error("Failed to remount rootfs!");
+    }
+*/
+    
+    /*FILE *f = fopen("/.remount_success", "w");
+    fprintf(f,"Hello World!\n");
+    fclose(f);
+
+    if(access("/.remount_success", F_OK) == -1) {
+        util_info("Failed write file on rootfs.");
+        
+    }
+    util_info("Successfully write file on rootfs.");
+    unlink("/.remount_success");
+*/
+    
+
+    
     int root_fs = open("/", O_RDONLY);
     
     _assert(root_fs > 0, @"Error Opening The Root Filesystem!", true);
@@ -1576,7 +1862,7 @@ void remountFS(bool shouldRestore) {
     if (snapshots == NULL) {
         
         util_info("No System Snapshot Found! Don't worry, I'll Make One!");
-        
+
         //Clear Dev Flags
         uint64_t devVnode = vnodeForPath(root_disk);
         _assert(ISADDR(devVnode), @"Failed to clear dev vnode's si_flags.", true);
@@ -1592,9 +1878,9 @@ void remountFS(bool shouldRestore) {
         
         close(root_fs);
     }
-    
+
     list_all_snapshots(snapshots, origfs, isOriginalFS);
-    
+
     uint64_t rootfs_vnode = vnodeForPath("/");
     LOG("rootfs_vnode = " ADDR, rootfs_vnode);
     _assert(ISADDR(rootfs_vnode), @"Failed to mount", true);
@@ -1615,6 +1901,7 @@ void remountFS(bool shouldRestore) {
     {
         restoreRootFS();
     }
+
     
 }
 
@@ -1787,27 +2074,10 @@ bool doesFileExist(NSString *fileName)
     }
 }
 
-void removeFileIfExists(const char *fileToRemove)
-{
-    NSString *fileToRM = [NSString stringWithUTF8String:fileToRemove];
-    NSError *error;
-    if ([[NSFileManager defaultManager] fileExistsAtPath:fileToRM])
-    {
-        [[NSFileManager defaultManager] removeItemAtPath:fileToRM error:&error];
-        if (error)
-        {
-            LOG("ERROR REMOVING FILE! ERROR REPORTED: %@", error);
-        } else {
-            LOG("REMOVED FILE: %@", fileToRM);
-        }
-    } else {
-        LOG("File Doesn't exist. Not removing.");
-    }
-}
+
 
 void startJailbreakD()
 {
-    startJBD("starting jbd");
     removeFileIfExists("/var/log/pspawn.log");
     
     removeFileIfExists("/freya/jailbreakd.old.log");
@@ -1827,7 +2097,7 @@ void startJailbreakD()
     removeFileIfExists("/var/log/pspawn_hook_xpcproxy.log");
     chmod("/freya/jailbreakd", 4755);
     chown("/freya/jailbreakd", 0, 0);
-    usleep(10000);
+    //usleep(10000);
     _assert(execCmd("/freya/launchctl", "load", "/freya/LD/jailbreakd.plist", NULL) == ERR_SUCCESS, @"Failed to load jailbreakd", true);
     usleep(10000);
 
@@ -1862,6 +2132,8 @@ pid_t pidOfProcess(const char *name) {
 }
 
 bool reBack() {
+    //execCmd("/usr/bin/sbreload");
+
     pid_t backboardd_pid = pidOfProcess("/usr/libexec/backboardd");
     if (!(backboardd_pid > 1)) {
         util_info("Unable to find backboardd pid.");
@@ -1871,6 +2143,7 @@ bool reBack() {
         util_info("Unable to terminate backboardd.");
         return false;
     }
+    
     return true;
 }
 
@@ -2136,12 +2409,18 @@ void createLocalRepo()
 
 
 void yesdebsinstall() {
+    debsinstalling();
     //Run DPKG on itself and readline is needed
      //Run DPKG on itself and readline is needed
      //Run DPKG on itself and readline is needed
-     installDeb([get_debian_file(@"dpkg_1.18.25-9_iphoneos-arm.deb") UTF8String], true);
-     installDeb([get_debian_file(@"readline_7.0.5-2_iphoneos-arm.deb") UTF8String], true);
-     
+    //trust_file(@"/usr/local/lib/liblzma.5.dylib");
+    //trust_file(@"/usr/lib/liblzma.5.dylib");
+
+    installDeb([get_debian_file(@"dpkg_1.18.25-9_iphoneos-arm.deb") UTF8String], true);
+    //trust_file(@"/usr/lib/libreadline.7.dylib");
+    installDeb([get_debian_file(@"readline_7.0.5-2_iphoneos-arm.deb") UTF8String], true);
+    //trust_file(@"/usr/lib/libreadline.7.dylib");
+
      //PRE-DEPENDS
      installDeb([get_debian_file(@"tar.deb") UTF8String], true);
      installDeb([get_debian_file(@"debianutils.deb") UTF8String], true);
@@ -2150,7 +2429,7 @@ void yesdebsinstall() {
      installDeb([get_debian_file(@"system-cmds.deb") UTF8String], true);
      installDeb([get_debian_file(@"cydia-lproj.deb") UTF8String], true);
      installDeb([get_debian_file(@"cydia.deb") UTF8String], true);
-     trust_file(@"/usr/lib/libcrypto.1.0.0.dylib");
+/*     trust_file(@"/usr/lib/libcrypto.1.0.0.dylib");
     trust_file(@"/Applications/Cydia.app/Cydia");
     trust_file(@"/Library/LaunchDaemons/com.saurik.Cydia.Startup.plist");
     trust_file(@"/private/etc/apt/trusted.gpg.d/bigboss.gpg");
@@ -2164,21 +2443,25 @@ void yesdebsinstall() {
     trust_file(@"/usr/libexec/cydia/cydo");trust_file(@"/usr/libexec/cydia/finish.sh");
     trust_file(@"/usr/libexec/cydia/asuser");trust_file(@"/usr/libexec/cydia/du");
     trust_file(@"/usr/libexec/cydia/free.sh");trust_file(@"/usr/libexec/cydia/move.sh");
-
+*/
+    
      
      //Idk why we need to do this bullshit.
      for (NSString *pkg in getPackages([get_debian_file(@"Packages") UTF8String]))
      {
-         if (![pkg  isEqual: @"tar.deb"] && ![pkg  isEqual: @"installer.deb"] && ![pkg  isEqual: @"debianutils.deb"] && ![pkg  isEqual: @"darwintools.deb"] && ![pkg  isEqual: @"uikit.deb"] && ![pkg  isEqual: @"system-cmds.deb"] && ![pkg  isEqual: @"cydia.deb"] && ![pkg isEqual: @"xyz.willy.zebra_1.0_beta15_iphoneos-arm.deb"] && ![pkg  isEqual: @"readline_7.0.5-2_iphoneos-arm.deb"] && ![pkg  isEqual: @"dpkg_1.18.25-9_iphoneos-arm.deb"])
-         {
+
+         if (![pkg  isEqual: @"tar.deb"] && ![pkg  isEqual: @"debianutils.deb"] && ![pkg  isEqual: @"darwintools.deb"] && ![pkg  isEqual: @"org.coolstar.tweakinject_1.1.1-sileo.deb"] && ![pkg  isEqual: @"mobilesubstrate_99.0_iphoneos-arm.deb"] && ![pkg  isEqual: @"com.ex.libsubstitute_0.1.0-coolstar.deb"] && ![pkg  isEqual: @"uikit.deb"] && ![pkg  isEqual: @"system-cmds.deb"] && ![pkg  isEqual: @"cydia.deb"] && ![pkg  isEqual: @"readline_7.0.5-2_iphoneos-arm.deb"] && ![pkg  isEqual: @"dpkg_1.18.25-9_iphoneos-arm.deb"] && ![pkg  isEqual: @"mterminal_1.4-6_iphoneos-arm.deb"] && ![pkg  isEqual: @"launchctl_25_iphoneos-arm.deb"] && ![pkg  isEqual: @"jbctl_0.2.3-1_iphoneos-arm.deb"] && ![pkg  isEqual: @"jailbreak-resources_1.0~rc1_iphoneos-arm.deb"])
+         /*if (![pkg  isEqual: @"tar.deb"] && ![pkg  isEqual: @"installer.deb"] && ![pkg  isEqual: @"debianutils.deb"] && ![pkg  isEqual: @"darwintools.deb"] && ![pkg  isEqual: @"tweakinject.deb"] && ![pkg  isEqual: @"mobilesubstrate.deb"] && ![pkg  isEqual: @"substitute.deb"] && ![pkg  isEqual: @"me.chr0nict.comex.substitute_1.0_iphoneos-arm.deb"] && ![pkg  isEqual: @"uikit.deb"] && ![pkg  isEqual: @"system-cmds.deb"] && ![pkg  isEqual: @"cydia.deb"] && ![pkg isEqual: @"xyz.willy.zebra_1.0_beta15_iphoneos-arm.deb"] && ![pkg  isEqual: @"readline_7.0.5-2_iphoneos-arm.deb"] && ![pkg  isEqual: @"dpkg_1.18.25-9_iphoneos-arm.deb"])
+*/       {
              
              installDeb([get_debian_file(pkg) UTF8String], true);
-             trust_file(@"/usr/lib/libcrypto.1.0.0.dylib");
+             //trust_file(@"/usr/lib/libcrypto.1.0.0.dylib");
 
          }
      }
     
     installDeb([get_debian_file(@"cydia.deb") UTF8String], true);
+    execCmd("/usr/bin/dpkg", "--configure", "-a", NULL);
 
     
     
@@ -2217,8 +2500,15 @@ void yesdebsinstall() {
     installDeb([get_debian_file(@"launchctl_25_iphoneos-arm.deb") UTF8String], true);
      installDeb([get_debian_file(@"jbctl_0.2.3-1_iphoneos-arm.deb") UTF8String], true);
     installDeb([get_debian_file(@"jailbreak-resources_1.0~rc1_iphoneos-arm.deb") UTF8String], true);
-    installDeb([get_debian_file(@"substitute.deb") UTF8String], true);
-    installDeb([get_debian_file(@"tweakinject.deb") UTF8String], true);
+    
+    //installDeb([get_debian_file(@"substitute.deb") UTF8String], true);
+    installDeb([get_debian_file(@"com.ex.libsubstitute_0.1.0-coolstar.deb") UTF8String], true);
+    installDeb([get_debian_file(@"mobilesubstrate_99.0_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"org.coolstar.tweakinject_1.1.1-sileo.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"mobilesubstrate.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"tweakinject.deb") UTF8String], true);
+    cydiaDone("Cydia done");
+    //cydiaDone(")
    /*installDeb([get_debian_file(@"openssh-client_8.4-2_iphoneos-arm.deb") UTF8String], true);
     installDeb([get_debian_file(@"openssh-server_8.4-2_iphoneos-arm.deb") UTF8String], true);
     installDeb([get_debian_file(@"openssh-global-listener_8.4-2_iphoneos-arm.deb") UTF8String], true);
@@ -2418,11 +2708,17 @@ void kickMe()
     execCmd("/bin/rm", "-rdf", "/bin/sh", NULL);
     execCmd("/bin/ln", "/bin/bash", "/bin/sh", NULL);
     trust_file(@"/bin/sh");
-    trust_file(@"/freya/jailbreakd");
+    //trust_file(@"/freya/jailbreakd");
     if (thejbdawaits == 0) {
         startJailbreakD();
         xpcFucker();
         killAMFID();
+        /*platformize(our_procStruct_addr_exported);
+        grabEntitlements(our_procStruct_addr_exported);
+        
+        pid_t amfid_pid = pidOfProcess("/usr/libexec/amfid");
+        takeoverAmfid(amfid_pid);*/
+        
     }
 
 }
@@ -2437,14 +2733,14 @@ void updatePayloads()
     removeFileIfExists("/usr/libexec/xpcproxy.sliced");
     
     copyMe("/usr/lib/TweakInject", "/usr/lib/TweakInject.bak");
-    removeFileIfExists("/usr/bin/sbreload");
-    removeFileIfExists("/usr/bin/rebackboardd");
+    //removeFileIfExists("/usr/bin/sbreload");
+    //removeFileIfExists("/usr/bin/rebackboardd");
     //extractFile(get_bootstrap_file(@"AIO2.tar"), @"/");
     extractFile(get_bootstrap_file(@"aJBDofSorts.tar.gz"), @"/");
     chmod("/freya/jailbreakd", 0755);
     chown("/freya/jailbreakd", 0, 0);
 
-    trust_file(@"/freya/jailbreakd");
+    //trust_file(@"/freya/jailbreakd");
 
     copyMe("/usr/lib/TweakInject/Safemode.dylib", "/usr/lib/TweakInject.bak/Safemode.dylib");
     copyMe("/usr/lib/TweakInject/Safemode.plist", "/usr/lib/TweakInject.bak/Safemode.plist");
@@ -2520,14 +2816,37 @@ void installCydia(bool post)
     if (post == false)
     {
         //Initial Resources
+
+        //pid_t pd;
+        
+        thelabelbtnchange("waiting on Cydia");
+        /*_assert(ensure_directory("/freya", 0, 0755), @"yo wtf?", true);
+
+        extractFile(get_bootstrap_file(@"tar.gz"), @"/freya/");
+        chmod("/freya/tar", 0755);
+        chown("/freya/tar", 0, 0);
+        _assert(ensure_directory("/freya/tar", 0, 0755), @"tar?", true);
+        chmod("/freya/tar", 0755);
+        chown("/freya/tar", 0, 0);
+*/
+        //execCmd("/freya/tar", NULL);
+        //NSString *ourdir = get_bootstrap_file(@"zuesstrap.tar.gz");
+        //posix_spawn(&pd, "/freya/tar", NULL, NULL, (char **)&(const char*[]){ "/freya/tar", "--preserve-permissions", "-xvpf", [ourdir UTF8String], "-C", "/", NULL }, NULL);
+        //waitpid(pd, NULL, 0);
+        
+       // extractFileWithoutInjection(get_bootstrap_file(@"zuesstrap.tar.gz"), @"/");
+        //extractFileWithoutInjection(get_bootstrap_file(@"Resources.tar.gz"), @"/");
         extractFile(get_bootstrap_file(@"Resources.tar.gz"), @"/");
         fixFS();
         //Firmware Package
         systemCmd("/usr/libexec/cydia/firmware.sh");
         //Jailbreakd, Pspawn, Amfid
         //extractFile(get_bootstrap_file(@"AIO2.tar"), @"/");
+        startJBD("starting jbd");
         extractFile(get_bootstrap_file(@"aJBDofSorts.tar.gz"), @"/");
         //Start all the payloads
+
+        
         kickMe();
         yesdebsinstall();
         ensure_file("/.freya_bootstrap", 0, 0644);
@@ -2535,9 +2854,15 @@ void installCydia(bool post)
         trust_file(@"/usr/bin/uicache");
         uicaching("uicache");
         execCmd("/usr/bin/uicache", NULL);
+        
+        //ensure_file("/.freya_installed", 0, 0644);
+        
+
     } else {
         
         //Initial Resources
+        thelabelbtnchange("waiting on Cydia");
+
         extractFile(get_bootstrap_file(@"Resources.tar.gz"), @"/");
         fixFS();
         //Firmware Package
@@ -2548,7 +2873,7 @@ void installCydia(bool post)
         //Start all the payloads
         kickMe();
         yesdebsinstall();
-        //createLocalRepo();
+        createLocalRepo();
         runApt(@[@"update"]);
         runApt([@[@"-y", @"--allow-unauthenticated", @"--allow-downgrades", @"install"] arrayByAddingObjectsFromArray:@[@"--reinstall", @"cydia"]]);
         ensure_file("/.freya_installed", 0, 0644);
@@ -2775,9 +3100,7 @@ void initInstall(int packagerType)
         {
             if (packagerType == 0)
             {
-                thelabelbtnchange("waiting on Cydia");
                 installCydia(false);
-                cydiaDone("Cydia done");
                 ourprogressMeter();
             } else if (packagerType == 1)
             {
@@ -2798,6 +3121,18 @@ void initInstall(int packagerType)
                 reboot(RB_QUICK);
 
             });
+            
+            
+            /*char *targettype = sysctlWithName("hw.targettype");
+            _assert(targettype != NULL, localize(@"Unable to get hardware targettype."), true);
+            NSString *const jetsamFile = [NSString stringWithFormat:@"/System/Library/LaunchDaemons/com.apple.jetsamproperties.%s.plist", targettype];
+            free(targettype);
+            targettype = NULL;
+            _assert(mod_plist_file(jetsamFile, ^(id plist) {
+                plist[@"Version4"][@"System"][@"Override"][@"Global"][@"UserHighWaterMark"] = [NSNumber numberWithInteger:[plist[@"Version4"][@"PListDevice"][@"MemoryCapacity"] integerValue]];
+            }), localize(@"Unable to update Jetsam plist to increase memory limit."), true);
+*/
+            
             
         } else {
             if (packagerType == 0)

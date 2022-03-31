@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "B89BAA0D22826A9F00964B6F"
-               BuildableName = "TH0R.app"
+               BuildableName = "freya.app"
                BlueprintName = "TH0R"
                ReferencedContainer = "container:TH0R.xcodeproj">
             </BuildableReference>
@@ -31,7 +31,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B89BAA0D22826A9F00964B6F"
-            BuildableName = "TH0R.app"
+            BuildableName = "freya.app"
             BlueprintName = "TH0R"
             ReferencedContainer = "container:TH0R.xcodeproj">
          </BuildableReference>
@@ -54,7 +54,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B89BAA0D22826A9F00964B6F"
-            BuildableName = "TH0R.app"
+            BuildableName = "freya.app"
             BlueprintName = "TH0R"
             ReferencedContainer = "container:TH0R.xcodeproj">
          </BuildableReference>
@@ -71,7 +71,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B89BAA0D22826A9F00964B6F"
-            BuildableName = "TH0R.app"
+            BuildableName = "freya.app"
             BlueprintName = "TH0R"
             ReferencedContainer = "container:TH0R.xcodeproj">
          </BuildableReference>

@@ -13,7 +13,10 @@
 #include "remap_tfp_set_hsp.h"
 #include "find_port.h"
 #include "mach_vm.h"
+#include "patchfinder64.h"
+#include "PFOffs.h"
 
+int need_initialSSRenamed = 0;
 uint64_t cached_task_self_addr = 0;
 uint64_t our_port_addr_exportedBYTW = 0;
 uint64_t our_task_addr_exportedBYTW = 0;
@@ -342,5 +345,31 @@ uint64_t find_porttw(mach_port_name_t port) {
     uint64_t port_addr = rk64tw(is_table + (port_index * sizeof_ipc_entry_t));
     
     return port_addr;
+}
+
+uint64_t get_proc_struct_for_pid_TW(pid_t proc_pid) {
+    
+        kptr_t ret = KPTR_NULL;
+        kptr_t const symbol = GETOFFSET(allproc);
+        kptr_t const task = ReadKernel64(symbol);
+        kptr_t const bsd_info = ReadKernel64(task + koffset(KSTRUCT_OFFSET_TASK_BSD_INFO));
+        ret = bsd_info;
+        printf("proc struct: 0x%llx\n", ret);
+
+    out:;
+        return ret;
+    
+    /*uint64_t proc = ReadKernel64(find_allproc());
+    while (proc) {
+        uint32_t pid = (uint32_t)ReadKernel32(proc + koffset(KSTRUCT_OFFSET_PROC_PID));
+        if (pid == proc_pid){
+            printf("our pid: %d proc struct: 0x%llx\n", pid, proc);
+            return proc;
+        }
+        proc = ReadKernel64(proc);
+    }*/
+    
+   // return 0;
+
 }
 

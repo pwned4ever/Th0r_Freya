@@ -56,6 +56,95 @@ bool JUSTremovecheck;
 extern void (*log_UI)(const char *text);
 void log_toView(const char *text);
 
+char *_cur_deviceModel = NULL;
+char *get_current_deviceModel(){
+    if(_cur_deviceModel)
+        return _cur_deviceModel;
+    struct utsname systemInfo;
+    uname(&systemInfo);
+    NSString* code = [NSString stringWithCString:systemInfo.machine
+                                        encoding:NSUTF8StringEncoding];
+    static NSDictionary* deviceNamesByCode = nil;
+    if (!deviceNamesByCode) {
+        deviceNamesByCode = @{@"i386"      : @"Simulator",
+                              @"x86_64"    : @"Simulator",
+                              @"iPod1,1"   : @"iPod Touch",        // (Original)
+                              @"iPod2,1"   : @"iPod Touch",        // (Second Generation)
+                              @"iPod3,1"   : @"iPod Touch",        // (Third Generation)
+                              @"iPod4,1"   : @"iPod Touch",        // (Fourth Generation)
+                              @"iPod7,1"   : @"iPod Touch",        // (6th Generation)
+                              @"iPhone1,1" : @"iPhone",            // (Original)
+                              @"iPhone1,2" : @"iPhone",            // (3G)
+                              @"iPhone2,1" : @"iPhone",            // (3GS)
+                              @"iPad1,1"   : @"iPad",              // (Original)
+                              @"iPad2,1"   : @"iPad 2",            //
+                              @"iPad3,1"   : @"iPad",              // (3rd Generation)
+                              @"iPhone3,1" : @"iPhone 4",          // (GSM)
+                              @"iPhone3,3" : @"iPhone 4",          // (CDMA/Verizon/Sprint)
+                              @"iPhone4,1" : @"iPhone 4S",         //
+                              @"iPhone5,1" : @"iPhone 5",          // (model A1428, AT&T/Canada)
+                              @"iPhone5,2" : @"iPhone 5",          // (model A1429, everything else)
+                              @"iPad3,4"   : @"iPad",              // (4th Generation)
+                              @"iPad2,5"   : @"iPad Mini",         // (Original)
+                              @"iPhone5,3" : @"iPhone 5c",         // (model A1456, A1532 | GSM)
+                              @"iPhone5,4" : @"iPhone 5c",         // (model A1507, A1516, A1526 (China), A1529 | Global)
+                              @"iPhone6,1" : @"iPhone 5s",         // (model A1433, A1533 | GSM)
+                              @"iPhone6,2" : @"iPhone 5s",         // (model A1457, A1518, A1528 (China), A1530 | Global)
+                              @"iPhone7,1" : @"iPhone 6 Plus",     //
+                              @"iPhone7,2" : @"iPhone 6",          //
+                              @"iPhone8,1" : @"iPhone 6S",         //
+                              @"iPhone8,2" : @"iPhone 6S Plus",    //
+                              @"iPhone8,4" : @"iPhone SE",         //
+                              @"iPhone9,1" : @"iPhone 7",          //
+                              @"iPhone9,3" : @"iPhone 7",          //
+                              @"iPhone9,2" : @"iPhone 7 Plus",     //
+                              @"iPhone9,4" : @"iPhone 7 Plus",     //
+                              @"iPhone10,1": @"iPhone 8",          // CDMA
+                              @"iPhone10,4": @"iPhone 8",          // GSM
+                              @"iPhone10,2": @"iPhone 8 Plus",     // CDMA
+                              @"iPhone10,5": @"iPhone 8 Plus",     // GSM
+                              @"iPhone10,3": @"iPhone X",          // CDMA
+                              @"iPhone10,6": @"iPhone X",          // GSM
+                              @"iPhone11,2": @"iPhone XS",         //
+                              @"iPhone11,4": @"iPhone XS Max",     //
+                              @"iPhone11,6": @"iPhone XS Max",     // China
+                              @"iPhone11,8": @"iPhone XR",         //
+                              @"iPhone12,1": @"iPhone 11",         //
+                              @"iPhone12,3": @"iPhone 11 Pro",     //
+                              @"iPhone12,5": @"iPhone 11 Pro Max", //
+                              
+                              @"iPad4,1"   : @"iPad Air",          // 5th Generation iPad (iPad Air) - Wifi
+                              @"iPad4,2"   : @"iPad Air",          // 5th Generation iPad (iPad Air) - Cellular
+                              @"iPad4,4"   : @"iPad Mini",         // (2nd Generation iPad Mini - Wifi)
+                              @"iPad4,5"   : @"iPad Mini",         // (2nd Generation iPad Mini - Cellular)
+                              @"iPad4,7"   : @"iPad Mini",         // (3rd Generation iPad Mini - Wifi (model A1599))
+                              @"iPad6,7"   : @"iPad Pro (12.9\")", // iPad Pro 12.9 inches - (model A1584)
+                              @"iPad6,8"   : @"iPad Pro (12.9\")", // iPad Pro 12.9 inches - (model A1652)
+                              @"iPad6,3"   : @"iPad Pro (9.7\")",  // iPad Pro 9.7 inches - (model A1673)
+                              @"iPad6,4"   : @"iPad Pro (9.7\")"   // iPad Pro 9.7 inches - (models A1674 and A1675)
+        };
+    }
+    NSString* deviceName = [deviceNamesByCode objectForKey:code];
+    if (!deviceName) {
+        // Not found on database. At least guess main device type from string contents:
+        
+        if ([code rangeOfString:@"iPod"].location != NSNotFound) {
+            deviceName = @"iPod Touch";
+        }
+        else if([code rangeOfString:@"iPad"].location != NSNotFound) {
+            deviceName = @"iPad";
+        }
+        else if([code rangeOfString:@"iPhone"].location != NSNotFound){
+            deviceName = @"iPhone";
+        }
+        else {
+            deviceName = @"Unknown";
+        }
+    }
+    _cur_deviceModel = strdup([deviceName UTF8String]);
+    return _cur_deviceModel;
+}
+
 @interface ViewController ()
 
 @end
@@ -97,6 +186,10 @@ double uptime(){
     [audioPlayer1 play];
 }
 
+NSString *freyaversion = @"0.1⚡️";
+char *freyaupdateDate = "7:37PM 03/28/22";
+char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/Releases/Freya.ipa";// "mega.nz/file/BhNxBSgJ#gNcngNQBtXS0Ipa5ivX09-jtIr7BckUhrA7YMkSFaNM"//
+
 
 - (void)shareTh0r {
     struct utsname u = { 0 };
@@ -109,12 +202,19 @@ double uptime(){
     //util_info("release: %s", u.release);
     //char *devicemodel = u.machine;
     //[NSString stringWithUTF8String:u.machine
+    int theups = uptime();
+    int therealups = ((theups / 60) / 60) / 24;
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.devicelabel setText:[NSString stringWithUTF8String:u.machine]];
+        [self.devicelabel setText: [NSString stringWithUTF8String: get_current_deviceModel()]];//[NSString stringWithUTF8String:u.machine] ];
         [self.versionlabel setText:[[UIDevice currentDevice] systemVersion] ];
+        if (therealups == 1) {
+            [self.uptimelabel setText:[NSString stringWithFormat:localize(@"uptime: %d day🍻" ), therealups]];//[NSString stringWithUTF8String:up]];//(*devicemodel)];
 
+        }else {
+            [self.uptimelabel setText:[NSString stringWithFormat:localize(@"uptime: %d days🍻" ), therealups]];//[NSString stringWithUTF8String:up]];//(*devicemodel)];
+        }
     });
-//    [_uptimelabel setText:[NSString stringWithUTF8String:up]];//(*devicemodel)];
+
     //(*devicemodel)];
 //    u.sysname;  /* [XSI] Name of OS */
   //  u.nodename; /* [XSI] Name of this network node */
@@ -124,26 +224,30 @@ double uptime(){
     
     //[self.jailbreak setEnabled:NO];
     //[self.jailbreak setHidden:YES];
+    
+
     [NSString stringWithUTF8String:u.machine];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0ul), ^{
-        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Wanna Share Th0r Jailbreak", nil) message:NSLocalizedString(@"𝓢Ⓗ⒜𝕽ᴱ Th0r 👍🏽 Jailbreak?", nil) preferredStyle:UIAlertControllerStyleAlert];UIAlertAction *OK = [UIAlertAction actionWithTitle:NSLocalizedString(@"Ya of course", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Wanna Share Freya Jailbreak", nil) message:NSLocalizedString(@"𝓢Ⓗ⒜𝕽ᴱ Freya 👍🏽 Jailbreak?", nil) preferredStyle:UIAlertControllerStyleAlert];UIAlertAction *OK = [UIAlertAction actionWithTitle:NSLocalizedString(@"Ya of course", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 //[self.buttontext setEnabled:YES];
-                UIActivityViewController *activityViewController = [[UIActivityViewController alloc] initWithActivityItems:@[[NSString stringWithFormat:localize(@"I'm using Th0r-Freya - Jailbreak Toolkit for iOS 12.0 - 12.5.5, Updated 03/23/22 5:00PM-EDT. By:@%@ 🍻, to jailbreak my %@ iOS %@. You can download it now @ %@" ), @pwned4ever_TEAM_TWITTER_HANDLE, [NSString stringWithUTF8String:u.machine],[[UIDevice currentDevice] systemVersion], @pwned4ever_URL]] applicationActivities:nil];
+                UIActivityViewController *activityViewController = [[UIActivityViewController alloc] initWithActivityItems:@[[NSString stringWithFormat:localize(@"I'm using Freya %@ - Jailbreak Toolkit for all iOS 12.x.x, Updated %s. By:@%@ 🍻, to jailbreak my %@ iOS %@. You can download it now @ %s" ), freyaversion, freyaupdateDate, @pwned4ever_TEAM_TWITTER_HANDLE, [NSString stringWithUTF8String: get_current_deviceModel()]//[NSString stringWithUTF8String:u.machine] ];freyaurlDownload
+,[[UIDevice currentDevice] systemVersion], freyaurlDownload]] applicationActivities:nil];
+                //,[[UIDevice currentDevice] systemVersion], @pwned4ever_URL]] applicationActivities:nil];
                 activityViewController.excludedActivityTypes = @[UIActivityTypePrint, UIActivityTypeCopyToPasteboard, UIActivityTypeAssignToContact, UIActivityTypeSaveToCameraRoll, UIActivityTypeAirDrop, UIActivityTypeOpenInIBooks, UIActivityTypeMarkupAsPDF];
                 if ([activityViewController respondsToSelector:@selector(popoverPresentationController)] ) {
                     activityViewController.popoverPresentationController.sourceView = self.buttontext;
                 }
                 [self presentViewController:activityViewController animated:YES completion:nil];
-                [self.buttontext setEnabled:NO];
-                [self.buttontext setHidden:YES];
+                [self.buttontext setEnabled:YES];
+                [self.buttontext setHidden:NO];
                 
             });
         }];
         UIAlertAction *Cancel = [UIAlertAction actionWithTitle:NSLocalizedString(@"Nah, don't want anyone to know", nil) style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self.buttontext setEnabled:NO];
-                [self.buttontext setHidden:YES];
+                [self.buttontext setEnabled:YES];
+                [self.buttontext setHidden:NO];
             });
         }];
         [alertController addAction:OK];
@@ -157,12 +261,32 @@ double uptime(){
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    uint32_t flags;
+    csops(getpid(), CS_OPS_STATUS, &flags, 0);
+    int checkuncovermarker = (file_exists("/.installed_unc0ver"));
+    int checkth0rmarker = (file_exists("/.freya_bootstrap"));
+    int checkth0rmarkerFinal = (file_exists("/.freya_installed"));
+    int checkchimeramarker = (file_exists("/.procursus_strapped"));
+    int checkJBRemoverMarker = (file_exists("/var/mobile/Media/.bootstrapped_Th0r_remover"));
+    int checkjailbreakdRun = (file_exists("/var/tmp/jailbreakd.pid"));
+    int checkjailbreakdrRun = (file_exists("/var/run/jailbreakd.pid"));
+    int checkpspawnhook = (file_exists("/var/run/pspawn_hook.ts"));
+    printf("JUSTremovecheck exists?: %d\n",JUSTremovecheck);
+    printf("Uncover marker exists?: %d\n", checkuncovermarker);
+    printf("pspawnhook marker exists?: %d\n", checkpspawnhook);
+    printf("Uncover marker exists?: %d\n", checkuncovermarker);
+    printf("JBRemover marker exists?: %d\n", checkJBRemoverMarker);
+    printf("Th0r marker exists?: %d\n", checkth0rmarker);
+    printf("Th0r Final marker exists?: %d\n", checkth0rmarkerFinal);
+    printf("Chimera marker exists?: %d\n", checkchimeramarker);
+    printf("Jailbreakd Run marker exists?: %d\n", checkjailbreakdRun);
+    printf("Jailbreakd Run marker exists?: %d\n", checkjailbreakdrRun);
     
     [[NSUserDefaults standardUserDefaults] setValue:@(NO) forKey:@"_UIConstraintBasedLayoutLogUnsatisfiable"];
-    //runExploit(4);
     currentViewController = self;
-    initSettingsIfNotExist();
     sharedController = self;
+
+    initSettingsIfNotExist();
     //self.textView.layer.borderWidth = 1.0;
     self.textView.layer.borderColor = UIColor.greenColor.CGColor;
     self.textView.text = @"";
@@ -175,8 +299,8 @@ double uptime(){
     CAGradientLayer *gradient = [CAGradientLayer layer];
 
     gradient.frame = self.backGroundView.bounds;
-    //gradient.colors = @[(id)[[UIColor colorWithRed:0.26 green:0.81 blue:0.64 alpha:1.0] CGColor], (id)[[UIColor colorWithRed:0.09 green:0.35 blue:0.62 alpha:1.0] CGColor]];
-    gradient.colors = @[(id)[[UIColor colorWithRed:0.02 green:0.02 blue:0.02 alpha:1.0] CGColor], (id)[[UIColor colorWithRed:0.29 green:0.05 blue:0.22 alpha:1.0] CGColor]];
+    gradient.colors = @[(id)[[UIColor colorWithRed:0.26 green:0.02 blue:0.04 alpha:1.0] CGColor], (id)[[UIColor colorWithRed:0.09 green:0.35 blue:0.62 alpha:1.0] CGColor]];
+    //gradient.colors = @[(id)[[UIColor colorWithRed:0.02 green:0.02 blue:0.02 alpha:1.0] CGColor], (id)[[UIColor colorWithRed:0.29 green:0.05 blue:0.22 alpha:1.0] CGColor]];
 
     [self.progressMeterUIVIEW.layer insertSublayer: gradient atIndex:1];
     [self.backGroundView.layer insertSublayer:gradient atIndex:0];
@@ -196,32 +320,25 @@ double uptime(){
         setplaymusic = 1;
     }
     
-    uint32_t flags;
-    csops(getpid(), CS_OPS_STATUS, &flags, 0);
-    int checkuncovermarker = (file_exists("/.installed_unc0ver"));
-    int checkth0rmarker = (file_exists("/.freya_installed"));
-    int checkelectramarker = (file_exists("/.bootstrapped_chimera"));
-    int checkJBRemoverMarker = (file_exists("/var/mobile/Media/.bootstrapped_Th0r_remover"));
-    int checkjailbreakdRun = (file_exists("/var/tmp/jailbreakd.pid"));
-    int checkpspawnhook = (file_exists("/var/run/pspawn_hook.ts"));
-    printf("JUSTremovecheck exists?: %d\n",JUSTremovecheck);
-    printf("Uncover marker exists?: %d\n", checkuncovermarker);
-    printf("pspawnhook marker exists?: %d\n", checkpspawnhook);
-    printf("Uncover marker exists?: %d\n", checkuncovermarker);
-    printf("JBRemover marker exists?: %d\n", checkJBRemoverMarker);
-    printf("Th0r marker exists?: %d\n", checkth0rmarker);
-    printf("Electra marker exists?: %d\n", checkelectramarker);
-    printf("Jailbreakd Run marker exists?: %d\n", checkjailbreakdRun);
+
     [self.uptimelabel setHidden:YES];
     [self.devicelabel setHidden:NO];
     struct utsname u = { 0 };
     uname(&u);
     [[UIDevice currentDevice] systemVersion];
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.devicelabel setText:[NSString stringWithUTF8String:u.machine] ];
+        [self.devicelabel setText: [NSString stringWithUTF8String: get_current_deviceModel()]];//[NSString stringWithUTF8String:u.machine] ];
         [self.versionlabel setText:[[UIDevice currentDevice] systemVersion] ];
     });
-        if ((checkjailbreakdRun == 1) && (checkpspawnhook == 1) && (checkth0rmarker == 1) && (checkuncovermarker == 0) && (checkelectramarker == 0)){
+
+   /* if ((flags & CS_PLATFORM_BINARY)){
+        [ViewController.sharedController.buttontext setTitle:localize(@"𝓢Ⓗ⒜𝕽ᴱ Th0r?") forState:UIControlStateNormal];
+
+        
+    }
+*/
+    
+        if ((checkjailbreakdRun == 1) && (checkpspawnhook == 1) && (checkth0rmarker == 1) && (checkuncovermarker == 0) && (checkchimeramarker == 0)){
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.buttontext setHidden:NO];
                 [self.buttontext setTitle:localize(@"𝓢Ⓗ⒜𝕽ᴱ Th0r?") forState:UIControlStateNormal];
@@ -236,9 +353,8 @@ double uptime(){
                 [self.thorbackgroundjpeg setHidden:NO];
             });
             [self shareTh0r];
-            goto end;
-        }
-        if ((checkjailbreakdRun == 1) && (checkth0rmarker == 1) && (checkuncovermarker == 0) && (checkelectramarker == 0)) {
+            
+        } else if ((checkjailbreakdRun == 1) && (checkth0rmarker == 1) && (checkuncovermarker == 0) && (checkchimeramarker == 0)) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.buttontext setEnabled:YES];
                 [self.settingsButton setHidden:YES];
@@ -253,10 +369,9 @@ double uptime(){
                 [self.thorbackgroundjpeg setHidden:NO];
             });
             [self shareTh0r];
-            goto end;
-            return;
-        }
-        if ((checkth0rmarker == 1) && (checkuncovermarker == 0) && (checkelectramarker == 0) && (checkjailbreakdRun == 0) && (checkpspawnhook == 0)){
+            //goto end;
+            //return;
+        }else if ((checkth0rmarker == 1) && (checkth0rmarkerFinal == 1) && (checkuncovermarker == 0) && (checkchimeramarker == 0) && (checkjailbreakdRun == 0) && (checkpspawnhook == 0)){
             if (shouldRestoreFS())
             {
                 [_buttontext setTitle:localize(@"Remove Freya?") forState:UIControlStateNormal];
@@ -268,51 +383,88 @@ double uptime(){
                 [_restoreFSSwitch setOn:false];
             }
             goto end;
-        }
-        
-        if ((checkuncovermarker == 1) && (checkpspawnhook == 0) && (checkth0rmarker == 0) && (checkjailbreakdRun == 0)){
+        } else if ((checkuncovermarker == 1) && (flags & CS_PLATFORM_BINARY)){
             //[_enableTweaks setEnabled:NO];
+            saveCustomSetting(@"RestoreFS", 0);
+            [_buttontext setTitle:localize(@"Remove u0 1st") forState:UIControlStateNormal];
+            JUSTremovecheck = true;
             [self.buttontext setEnabled:NO];
-            if (shouldRestoreFS())
-            {
-                [_buttontext setTitle:localize(@"Remove u0 JB?") forState:UIControlStateNormal];
-                JUSTremovecheck = true;
-                [_restoreFSSwitch setOn:true];
-            } else {
-                [_buttontext setTitle:localize(@"Remove u0 JB") forState:UIControlStateNormal];
-                JUSTremovecheck = false;
-                [_restoreFSSwitch setOn:false];
-            }
+            [_restoreFSSwitch setOn:true];
+            [_progressMeterUIVIEW setHidden:true];
+            [ViewController.sharedController.progressMeterUIVIEW setHidden:YES];
+
+            [ViewController.sharedController.restoreFSSwitch setEnabled:NO];
+            [ViewController.sharedController.settingsButton setEnabled:NO];
+            [ViewController.sharedController.settings_buttun_bg setHidden:YES];
+            [ViewController.sharedController.restoreFSSwitch setUserInteractionEnabled:NO];
             goto end;
             return;
-        }
-
-        if (((checkuncovermarker == 1) && (checkjailbreakdRun == 0) && (checkpspawnhook == 0)) || ((checkelectramarker == 1) && (checkjailbreakdRun == 0) && (checkpspawnhook == 0))){
+        } else if ((checkuncovermarker == 1) && !(flags & CS_PLATFORM_BINARY)){
+            //[_enableTweaks setEnabled:NO];
+            [_restoreFSSwitch setEnabled:NO];
             [self.buttontext setEnabled:YES];
-            if (shouldRestoreFS())
-            {
-                [_buttontext setTitle:localize(@"Remove Chimera?") forState:UIControlStateNormal];
-                JUSTremovecheck = true;
-                [_restoreFSSwitch setOn:true];
-            } else {
-                [_buttontext setTitle:localize(@"Remove Chimera") forState:UIControlStateNormal];
-                JUSTremovecheck = false;
-                [_restoreFSSwitch setOn:false];
-            }
+            [_buttontext setTitle:localize(@"Remove u0?") forState:UIControlStateNormal];
+            saveCustomSetting(@"RestoreFS", 0);
+            [_restoreFSSwitch setEnabled:NO];
+            [self.buttontext setEnabled:YES];
+            JUSTremovecheck = true;
+            [ViewController.sharedController.restoreFSSwitch setEnabled:NO];
+            [ViewController.sharedController.settingsButton setEnabled:YES];
+            [ViewController.sharedController.settings_buttun_bg setHidden:NO];
+            [ViewController.sharedController.restoreFSSwitch setUserInteractionEnabled:NO];
             goto end;
-            
-        }
 
-        if(((checkjailbreakdRun == 0) && (checkpspawnhook == 0) && (checkth0rmarker == 0) && (checkuncovermarker == 0)) && (checkelectramarker == 0)){
+    } else if ((checkjailbreakdrRun == 1) && (checkchimeramarker == 1)){
+        saveCustomSetting(@"RestoreFS", 0);
+        //[_enableTweaks setEnabled:NO];
+        [_restoreFSSwitch setEnabled:NO];
+        [self.buttontext setEnabled:NO];
+        [_buttontext setTitle:localize(@"Remove Chimera 1st") forState:UIControlStateNormal];
+        JUSTremovecheck = true;
+        [ViewController.sharedController.progressMeterUIVIEW setHidden:YES];
+        [ViewController.sharedController.restoreFSSwitch setEnabled:NO];
+        [ViewController.sharedController.settingsButton setEnabled:NO];
+        [ViewController.sharedController.settings_buttun_bg setHidden:YES];
+        [ViewController.sharedController.restoreFSSwitch setUserInteractionEnabled:NO];
+        goto end;
+    } else if ((checkjailbreakdrRun == 0) && (checkchimeramarker == 1)){
+        saveCustomSetting(@"RestoreFS", 0);
+        //[_enableTweaks setEnabled:NO];
+        [_restoreFSSwitch setEnabled:NO];
+        [self.buttontext setEnabled:YES];
+        [_buttontext setTitle:localize(@"Remove Chimera?") forState:UIControlStateNormal];
+        JUSTremovecheck = true;
+        [ViewController.sharedController.restoreFSSwitch setEnabled:NO];
+        [ViewController.sharedController.settingsButton setEnabled:YES];
+        [ViewController.sharedController.settings_buttun_bg setHidden:NO];
+        [ViewController.sharedController.restoreFSSwitch setUserInteractionEnabled:NO];
+        goto end;
+        
+    } else if(((checkjailbreakdRun == 0) && (checkpspawnhook == 0) && (checkth0rmarker == 0) && (checkuncovermarker == 0)) && (checkchimeramarker == 0)){
             newTFcheckMyRemover4me = FALSE;
             [self.buttontext setEnabled:YES];
+            [_buttontext setTitle:localize(@"Jailbreak") forState:UIControlStateNormal];
+            JUSTremovecheck = false;
+            [self.restoreFSSwitch setOn:false];
+            saveCustomSetting(@"RestoreFS", 1);
+
+            //[_buttontext setTitleColor:localize(GL_BLUE) forState:UIControlStateNormal];
+
+            newTFcheckofCyforce = FALSE;
+            //newTFcheckMyRemover4me = TRUE;
+            goto end;
+
+        } else if(((checkjailbreakdRun == 0) && (checkpspawnhook == 0) && (checkth0rmarker == 1) && (checkth0rmarkerFinal == 0) && (checkuncovermarker == 0)) && (checkchimeramarker == 0)){
+            newTFcheckMyRemover4me = FALSE;
+            [self.buttontext setEnabled:YES];
+            
             if (shouldRestoreFS())
             {
-                [_buttontext setTitle:localize(@"Remove Jailbreak?") forState:UIControlStateNormal];
+                [_buttontext setTitle:localize(@"Remove Freya?") forState:UIControlStateNormal];
                 JUSTremovecheck = true;
                 [_restoreFSSwitch setOn:true];
             } else {
-                [_buttontext setTitle:localize(@"Jailbreak") forState:UIControlStateNormal];
+                [_buttontext setTitle:localize(@"Enable Freya?") forState:UIControlStateNormal];
                 JUSTremovecheck = false;
                 [_restoreFSSwitch setOn:false];
             }
@@ -321,31 +473,34 @@ double uptime(){
             newTFcheckofCyforce = FALSE;
             newTFcheckMyRemover4me = TRUE;
         }
+        
     end:
 
-    gettimeofday(&tv1, NULL);
+    //gettimeofday(&tv1, NULL);
 
-    setgid(0);
-    uint32_t gid = getgid();
-    NSLog(@"getgid() returns %u\n", gid);
-    setuid(0);
-    uint32_t uid = getuid();
-    NSLog(@"getuid() returns %u\n", uid);
+    //setgid(0);
+    //uint32_t gid = getgid();
+    //NSLog(@"getgid() returns %u\n", gid);
+    //setuid(0);
+    //uint32_t uid = getuid();
+    //NSLog(@"getuid() returns %u\n", uid);
        /* dispatch_async(dispatch_get_main_queue(), ^{
             [_buttontext setTitle:localize(@"Patch $hit?") forState:UIControlStateNormal];
         });*/
 
-    gettimeofday(&tv2, NULL);
-    uint64_t cost = (tv2.tv_sec - tv1.tv_sec) * 1000 * 1000 + tv2.tv_usec - tv1.tv_usec;
-    printf("load time: %.4f mins & seconds", ((cost / 1000000.0) / 60));
+    //gettimeofday(&tv2, NULL);
+    //uint64_t cost = (tv2.tv_sec - tv1.tv_sec) * 1000 * 1000 + tv2.tv_usec - tv1.tv_usec;
+   // printf("load time: %.4f mins & seconds", ((cost / 1000000.0) / 60));
     //ourprogressMeter();
 
 
 
-    LOG("Starting the jailbreak...");
-    
+   // LOG("Starting the jailbreak...");
+    //runExploit(getExploitType()); //Change this depending on what device you have...
+
 err:
-    printf("oof");
+    
+    printf("oof\n");
     
 }
 
@@ -474,56 +629,122 @@ int packagerType = 0;
 void wannaSliceOfMe() {
     //Run The Exploit
     
+    uint32_t flags;
+    csops(getpid(), CS_OPS_STATUS, &flags, 0);
+    int checkuncovermarker = (file_exists("/.installed_unc0ver"));
+    int checkth0rmarker = (file_exists("/.freya_bootstrap"));
+    int checkth0rmarkerFinal = (file_exists("/.freya_installed"));
+    int checkchimeramarker = (file_exists("/.procursus_strapped"));
+    int checkJBRemoverMarker = (file_exists("/var/mobile/Media/.bootstrapped_Th0r_remover"));
+    int checkjailbreakdRun = (file_exists("/var/tmp/jailbreakd.pid"));
+    int checkpspawnhook = (file_exists("/var/run/pspawn_hook.ts"));
+    printf("JUSTremovecheck exists?: %d\n",JUSTremovecheck);
+    printf("Uncover marker exists?: %d\n", checkuncovermarker);
+    printf("pspawnhook marker exists?: %d\n", checkpspawnhook);
+    printf("Uncover marker exists?: %d\n", checkuncovermarker);
+    printf("JBRemover marker exists?: %d\n", checkJBRemoverMarker);
+    printf("Th0r marker exists?: %d\n", checkth0rmarker);
+    printf("Th0r Final marker exists?: %d\n", checkth0rmarkerFinal);
+    printf("chimera marker exists?: %d\n", checkchimeramarker);
+    printf("Jailbreakd Run marker exists?: %d\n", checkjailbreakdRun);
     
-    runOnMainQueueWithoutDeadlocking(^{
-        logSlice("Jailbreaking");});
-        //INIT. EXPLOIT. HERE WE ACHIEVE THE FOLLOWING:
-    //[*] TFP0
-    //[*] ROOT
-    //[*] UNSANDBOX
-    //[*] OFFSETS
-    
-    
-    //0 = MachSwap
-    //1 = MachSwap2
-    //2 = Voucher_Swap
-    //3 = SockPuppet
-    //4 = timewaste
-    //usleep(30000);
-    runExploit(getExploitType()); //Change this depending on what device you have...
-    
-    ourprogressMeter();
-    
-    getOffsets();
-    offs_init();
-    //usleep(1000);
-    
-    //MID-POINT. HERE WE ACHIEVE THE FOLLOWING:
-    //[*] INIT KEXECUTE
-    //[*] REMOUNT //
-    //[*] REQUIRED FILES TO FINISH ARE EXTRACTED
-    //[*] REMAP
-    
-    init_kexecute();
-    //usleep(10000);
+    [[NSUserDefaults standardUserDefaults] setValue:@(NO) forKey:@"_UIConstraintBasedLayoutLogUnsatisfiable"];
+    //currentViewController = self;
+    //sharedController = self;
+    if ((checkjailbreakdRun == 1) && (checkpspawnhook == 1) && (checkth0rmarker == 1) && (checkuncovermarker == 0) && (checkchimeramarker == 0)){
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [ViewController.sharedController.buttontext setHidden:NO];//setTitle:localize(@"Remove Freya?") forState:UIControlStateNormal];
+           // [ViewController.buttontext setHidden:NO];
+            [ViewController.sharedController.buttontext setTitle:localize(@"𝓢Ⓗ⒜𝕽ᴱ Th0r?") forState:UIControlStateNormal];
+            [ViewController.sharedController.uptimelabel setHidden:NO];
+            [ViewController.sharedController.devicelabel setHidden:NO];
+            [ViewController.sharedController.settingsButton setHidden:YES];
+            [ViewController.sharedController.progressmeterView setHidden:YES];
+            [ViewController.sharedController.progressMeterUIVIEW setHidden:YES];
+            [ViewController.sharedController.settingsButton setEnabled:NO];
+            [ViewController.sharedController.settings_buttun_bg setHidden:YES];
+            [ViewController.sharedController.settings_buttun_bg setUserInteractionEnabled:NO];
+            [ViewController.sharedController.thorbackgroundjpeg setHidden:NO];
+        });
+        [ViewController.sharedController shareTh0r];
+        goto end;
+    } else if ((checkjailbreakdRun == 1) && (checkth0rmarker == 1) && (checkuncovermarker == 0) && (checkchimeramarker == 0)) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [ViewController.sharedController.buttontext setEnabled:YES];
+            [ViewController.sharedController.settingsButton setHidden:YES];
+            [ViewController.sharedController.settings_buttun_bg setHidden:YES];
+            [ViewController.sharedController.settings_buttun_bg setUserInteractionEnabled:NO];
+            [ViewController.sharedController.settingsButton setEnabled:NO];
+            [ViewController.sharedController.buttontext setTitle:localize(@"𝓢Ⓗ⒜𝕽ᴱ Th0r?👍🏽") forState:UIControlStateNormal];
+            [ViewController.sharedController.uptimelabel setHidden:NO];
+            [ViewController.sharedController.devicelabel setHidden:NO];
+            [ViewController.sharedController.progressmeterView setHidden:YES];
+            [ViewController.sharedController.progressMeterUIVIEW setHidden:YES];
+            [ViewController.sharedController.thorbackgroundjpeg setHidden:NO];
+        });
+        [ViewController.sharedController shareTh0r];
+        goto end;
+        //return;
+    }else {
+            
+        runOnMainQueueWithoutDeadlocking(^{
+            logSlice("Jailbreaking");});
+            //INIT. EXPLOIT. HERE WE ACHIEVE THE FOLLOWING:
+        //[*] TFP0
+        //[*] ROOT
+        //[*] UNSANDBOX
+        //[*] OFFSETS
+        
+        
+        //0 = MachSwap
+        //1 = MachSwap2
+        //2 = Voucher_Swap
+        //3 = SockPuppet
+        //4 = timewaste
+        //usleep(30000);
+        dothesploit();
+        //usleep(1000);
+        runExploit(getExploitType()); //Change this depending on what device you have...
+        dothepatch();
+        ourprogressMeter();
+        usleep(1000);
+        getOffsets();
+        offs_init();
+        usleep(1000);
+        
+        //MID-POINT. HERE WE ACHIEVE THE FOLLOWING:
+        //[*] INIT KEXECUTE
+        //[*] REMOUNT //
+        //[*] REQUIRED FILES TO FINISH ARE EXTRACTED
+        //[*] REMAP
+        usleep(1000);
+        init_kexecute();
+        //usleep(10000);
+        usleep(1000);
 
-    remountFS(restore_fs);
-    //ourprogressMeter();
-    createWorkingDir();
-    saveOffs();
-    ourprogressMeter();
-    setHSP4();
-    initInstall(getPackagerType());
-    ourprogressMeter();
-    term_kexecute();
-    ourprogressMeter();
-    finish(loadTweaks);
+        yeasnapshot();
+        remountFS(restore_fs);
+        //ourprogressMeter();
+        usleep(1000);
+        createWorkingDir();
+        usleep(1000);
+        saveOffs();
+        ourprogressMeter();
+        usleep(1000);
+        setHSP4();
+        usleep(1000);
+        initInstall(getPackagerType());
+        ourprogressMeter();
+        term_kexecute();
+        ourprogressMeter();
+        finish(loadTweaks);
+        
+        
+    }
+        
     
-    
-    
-    
-    
-    
+end:
+    printf("swell seeing you here\n");
     
     
 }
@@ -577,12 +798,38 @@ void wannaSliceOfMe() {
     if (theprogressis < 1.000000001) {
         theprogressis = theprogressis + 0.100000000;
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self->_progressMeterUIVIEW setProgress: theprogressis];
-            [self->_buttontext setTitle:@"oh ya" forState: normal];
+            self.progressMeterUIVIEW.progress = theprogressis;
         });
+
     }
 }
 
+-(void)findingoffsoutput{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self->_buttontext setTitle:@"Finding Offsets" forState: normal];
+    });
+}
+
+-(void)savedoffsoutput{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self->_buttontext setTitle:@"Saved Offsets" forState: normal];
+    });
+}
+-(void)sploitn{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self->_buttontext setTitle:@"exploiting" forState: normal];
+    });
+}
+-(void)patchnshit{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self->_buttontext setTitle:@"patching" forState: normal];
+    });
+}
+-(void)remountsnap{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self->_buttontext setTitle:@"remounting" forState: normal];
+    });
+}
 -(void)updatingthejbbuttonlabel{
     runOnMainQueueWithoutDeadlocking(^{
         [self.buttontext setTitle:[NSString stringWithFormat:@"extracting strap"] forState:UIControlStateNormal];
@@ -590,15 +837,25 @@ void wannaSliceOfMe() {
 }
 
 -(void)cydiafinish{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self->_buttontext setTitle:@"cydia done" forState: normal];
+    });
+   // runOnMainQueueWithoutDeadlocking(^{
+     //   [self.buttontext setTitle:[NSString stringWithFormat:@"cydia done"] forState:UIControlStateNormal];
+   // });
+}
+-(void)installingDs{
     runOnMainQueueWithoutDeadlocking(^{
-        [self.buttontext setTitle:[NSString stringWithFormat:@"cydia done"] forState:UIControlStateNormal];
+        [self.buttontext setTitle:[NSString stringWithFormat:@"installing debs"] forState:UIControlStateNormal];
     });
 }
+
 -(void)respring{
     runOnMainQueueWithoutDeadlocking(^{
         [self.buttontext setTitle:[NSString stringWithFormat:@"respringing"] forState:UIControlStateNormal];
     });
 }
+
 -(void)thecacheofcaching{
     runOnMainQueueWithoutDeadlocking(^{
         [self.buttontext setTitle:[NSString stringWithFormat:@"uicache"] forState:UIControlStateNormal];
@@ -606,13 +863,30 @@ void wannaSliceOfMe() {
 }
 
 -(void)RunningTheD{
-    runOnMainQueueWithoutDeadlocking(^{
-        [self.buttontext setTitle:[NSString stringWithFormat:@"Jailbreakd..."] forState:UIControlStateNormal];
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self->_buttontext setTitle:@"Jailbreakd..." forState: normal];
     });
 }
+
+-(void)spotlessclean{
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self->_buttontext setTitle:@"spotless..." forState: normal];
+    });
+}
+
+-(void)jbremoving{
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self->_buttontext setTitle:@"Cleaning🧹🧺files" forState: normal];
+    });
+}
+
+
 -(void)TheDstarted{
-    runOnMainQueueWithoutDeadlocking(^{
-        [self.buttontext setTitle:[NSString stringWithFormat:@"JBD started"] forState:UIControlStateNormal];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self->_buttontext setTitle:@"JBD started..." forState: normal];
     });
 }
 
@@ -622,7 +896,6 @@ void wannaSliceOfMe() {
     if (shouldRestoreFS())
     {
         restore_fs = true;
-        saveCustomSetting(@"RestoreFS", 1);
     } else {
         restore_fs = false;
     }
@@ -686,8 +959,34 @@ void respringing(char *msg){
 
 }
 void ourprogressMeter(){
-    
     [[ViewController currentViewController] ourprogressMeterjeez];
-    
-    
+}
+
+void savedoffs() {
+    [[ViewController currentViewController] savedoffsoutput];
+}
+void findoffs() {
+    [[ViewController currentViewController] findingoffsoutput];
+}
+
+void dothesploit() {
+    [[ViewController currentViewController] sploitn];
+}
+void yeasnapshot() {
+    [[ViewController currentViewController] remountsnap];
+}
+
+void dothepatch() {
+    [[ViewController currentViewController] patchnshit];
+}
+void debsinstalling() {
+    [[ViewController currentViewController] installingDs];
+
+}
+void removethejb() {
+    [[ViewController currentViewController] jbremoving];
+}
+
+void spotless() {
+    [[ViewController currentViewController] spotlessclean];
 }

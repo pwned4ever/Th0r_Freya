@@ -3,143 +3,151 @@
     {
       "size" : "20x20",
       "idiom" : "iphone",
-      "filename" : "th0r12_40x40-1.jpg",
+      "filename" : "freya12_40x40.jpg",
       "scale" : "2x"
     },
     {
       "size" : "20x20",
       "idiom" : "iphone",
-      "filename" : "th0r12_60x60-1.jpg",
+      "filename" : "freya12_60x60.jpg",
       "scale" : "3x"
     },
     {
       "size" : "29x29",
       "idiom" : "iphone",
-      "filename" : "th0r12_29x29jpg.jpg",
+      "filename" : "freya12_29x29.jpg",
       "scale" : "1x"
     },
     {
       "size" : "29x29",
       "idiom" : "iphone",
-      "filename" : "th0r12_58x58-1.jpg",
+      "filename" : "freya12_58x58.jpg",
       "scale" : "2x"
     },
     {
       "size" : "29x29",
       "idiom" : "iphone",
-      "filename" : "th0r12_87x87.jpg",
+      "filename" : "freya12_87x87.jpg",
       "scale" : "3x"
     },
     {
       "size" : "40x40",
       "idiom" : "iphone",
-      "filename" : "th0r12_80x80.jpg",
+      "filename" : "freya12_80x80.jpg",
       "scale" : "2x"
     },
     {
       "size" : "40x40",
       "idiom" : "iphone",
-      "filename" : "th0r12_120x120-1.jpg",
+      "filename" : "freya12_120x120.jpg",
       "scale" : "3x"
     },
     {
-      "idiom" : "iphone",
       "size" : "57x57",
+      "idiom" : "iphone",
+      "filename" : "freya12_57x57.jpg",
       "scale" : "1x"
     },
     {
-      "idiom" : "iphone",
       "size" : "57x57",
+      "idiom" : "iphone",
+      "filename" : "freya12_114x114.jpg",
       "scale" : "2x"
     },
     {
       "size" : "60x60",
       "idiom" : "iphone",
-      "filename" : "th0r12_120x120.jpg",
+      "filename" : "freya12_120x120-1.jpg",
       "scale" : "2x"
     },
     {
       "size" : "60x60",
       "idiom" : "iphone",
-      "filename" : "th0r12_180x180.jpg",
+      "filename" : "freya12_180x180.jpg",
       "scale" : "3x"
     },
     {
-      "idiom" : "ipad",
       "size" : "20x20",
+      "idiom" : "ipad",
+      "filename" : "freya12_20x20.jpg",
       "scale" : "1x"
     },
     {
-      "idiom" : "ipad",
       "size" : "20x20",
+      "idiom" : "ipad",
+      "filename" : "freya12_40x40-1.jpg",
       "scale" : "2x"
     },
     {
-      "idiom" : "ipad",
       "size" : "29x29",
+      "idiom" : "ipad",
+      "filename" : "freya12_29x29-1.jpg",
       "scale" : "1x"
     },
     {
-      "idiom" : "ipad",
       "size" : "29x29",
+      "idiom" : "ipad",
+      "filename" : "freya12_58x58-1.jpg",
       "scale" : "2x"
     },
     {
-      "idiom" : "ipad",
       "size" : "40x40",
+      "idiom" : "ipad",
+      "filename" : "freya12_40x40-2.jpg",
       "scale" : "1x"
     },
     {
-      "idiom" : "ipad",
       "size" : "40x40",
+      "idiom" : "ipad",
+      "filename" : "freya12_80x80-1.jpg",
       "scale" : "2x"
     },
     {
       "size" : "50x50",
       "idiom" : "ipad",
-      "filename" : "TH0R12icon-20.jpg",
+      "filename" : "freya12_50x50.jpg",
       "scale" : "1x"
     },
     {
       "size" : "50x50",
       "idiom" : "ipad",
-      "filename" : "TH0R12icon-19.jpg",
+      "filename" : "freya12_100x100.jpg",
       "scale" : "2x"
     },
     {
       "size" : "72x72",
       "idiom" : "ipad",
-      "filename" : "TH0R12icon-18.jpg",
+      "filename" : "freya12_72x72.jpg",
       "scale" : "1x"
     },
     {
       "size" : "72x72",
       "idiom" : "ipad",
-      "filename" : "TH0R12icon-17.jpg",
+      "filename" : "freya12_144x144.jpg",
       "scale" : "2x"
     },
     {
       "size" : "76x76",
       "idiom" : "ipad",
-      "filename" : "Icon-76.png",
+      "filename" : "freya12_76x76.jpg",
       "scale" : "1x"
     },
     {
       "size" : "76x76",
       "idiom" : "ipad",
-      "filename" : "Icon-152.png",
+      "filename" : "freya12_152x152.jpg",
       "scale" : "2x"
     },
     {
       "size" : "83.5x83.5",
       "idiom" : "ipad",
-      "filename" : "TH0R12icon-16.jpg",
+      "filename" : "freya12_167x167.jpg",
       "scale" : "2x"
     },
     {
       "size" : "1024x1024",
       "idiom" : "ios-marketing",
-      "filename" : "TH0R12icon-15.jpg",
+      "filename" : "freya12_1024x1024.jpg",
       "scale" : "1x"
     },
     {
@@ -191,13 +199,6 @@
       "idiom" : "mac",
       "size" : "512x512",
       "scale" : "2x"
-    },
-    {
-      "size" : "108x108",
-      "idiom" : "watch",
-      "scale" : "2x",
-      "role" : "quickLook",
-      "subtype" : "44mm"
     },
     {
       "size" : "44x44",
@@ -207,11 +208,18 @@
       "subtype" : "40mm"
     },
     {
-      "size" : "86x86",
+      "size" : "27.5x27.5",
+      "idiom" : "watch",
+      "scale" : "2x",
+      "role" : "notificationCenter",
+      "subtype" : "42mm"
+    },
+    {
+      "size" : "108x108",
       "idiom" : "watch",
       "scale" : "2x",
       "role" : "quickLook",
-      "subtype" : "38mm"
+      "subtype" : "44mm"
     },
     {
       "size" : "98x98",
@@ -221,11 +229,11 @@
       "subtype" : "42mm"
     },
     {
-      "size" : "27.5x27.5",
+      "size" : "86x86",
       "idiom" : "watch",
       "scale" : "2x",
-      "role" : "notificationCenter",
-      "subtype" : "42mm"
+      "role" : "quickLook",
+      "subtype" : "38mm"
     },
     {
       "size" : "24x24",
@@ -259,11 +267,6 @@
       "scale" : "2x",
       "role" : "appLauncher",
       "subtype" : "44mm"
-    },
-    {
-      "idiom" : "watch-marketing",
-      "size" : "1024x1024",
-      "scale" : "1x"
     }
   ],
   "info" : {

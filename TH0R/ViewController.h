@@ -52,6 +52,14 @@
 //extern bool JUSTremovecheck;
 void ourprogressMeter(void);
 void xFinishFailed(void);
+void savedoffs(void);
+void findoffs(void);
+void dothesploit(void);
+void dothepatch(void);
+void debsinstalling(void);
+void yeasnapshot(void);
+void spotless(void);
+void removethejb(void);
 
 void thelabelbtnchange(char *msg);
 void cydiaDone(char *msg);
