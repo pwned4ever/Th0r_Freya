@@ -1,0 +1,8 @@
+Origin: Freya
+Label: Freya
+Suite: stable
+Version: 0.1
+Codename: Freya
+Architectures: iphoneos-arm
+Components: main
+Description: Freya Resources

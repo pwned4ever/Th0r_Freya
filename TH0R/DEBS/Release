@@ -1,0 +1,8 @@
+Origin: Ziyou
+Label: Ziyou
+Suite: stable
+Version: 0.1
+Codename: Ziyou
+Architectures: iphoneos-arm
+Components: main
+Description: Ziyou Resources
