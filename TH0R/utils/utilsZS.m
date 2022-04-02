@@ -194,6 +194,7 @@ int autoSelectExploit()
     //1 = MachSwap2
     //2 = Voucher_Swap
     //3 = SockPuppet
+    //4 = timewaste
     if (supportsExploit(0))
     {
         return 0;
@@ -204,7 +205,7 @@ int autoSelectExploit()
     {
         return 2;
     } else {
-        return 3;
+        return 4;
     }
     
 }
@@ -230,7 +231,10 @@ NSString *getNameFromInt(int exp_int)
     } else if (exp_int == 3)
     {
         return @"SockPuppet";
-    } else {
+    } else if (exp_int == 4)
+    {
+        return @"Timewaste";
+    }else {
         return @"ERROR";
     }
 }
@@ -1245,11 +1249,11 @@ void list_all_snapshots(const char **snapshots, const char *origfs, bool has_ori
 
 int waitFF(const char *filename) {
     int rv = 0;
-    usleep(10000);
+    //usleep(10000);
     printf(".");
     rv = access(filename, F_OK);
     for (int i = 0; !(i >= 100 || rv == ERR_SUCCESS); i++) {
-        usleep(100000);
+        usleep(400000);
         printf(".");
         rv = access(filename, F_OK);
     }
@@ -1336,7 +1340,7 @@ void restoreRootFS()
 
     
     
-    if (checkuncovermarker == 1) {
+    if (checkchimeramarker == 1) {
         char *const systemSnapshotMountPoint = "/var/rootfsmnt";
         if (is_mountpoint(systemSnapshotMountPoint)) {
             _assert(unmount(systemSnapshotMountPoint, MNT_FORCE) == ERR_SUCCESS, localize(@"Unable to unmount old snapshot mount point."), true);
@@ -1358,8 +1362,30 @@ void restoreRootFS()
         _assert(unmount(systemSnapshotMountPoint, MNT_FORCE) == ERR_SUCCESS, localize(@"Unable to unmount original snapshot mount point."), true);
         close(rootfd);
         
+    } else if (checkuncovermarker == 1) {
+        char *const systemSnapshotMountPoint = "/private/var/mnt";
+        if (is_mountpoint(systemSnapshotMountPoint)) {
+            _assert(unmount(systemSnapshotMountPoint, MNT_FORCE) == ERR_SUCCESS, localize(@"Unable to unmount old snapshot mount point."), true);
+        }
+        _assert(clean_file(systemSnapshotMountPoint), localize(@"Unable to clean old snapshot mount point."), true);
+        _assert(ensure_directory(systemSnapshotMountPoint, root_pw->pw_uid, 0755), localize(@"Unable to create snapshot mount point."), true);
+        _assert(fs_snapshot_mount(rootfd, systemSnapshotMountPoint, snapshot, 0) == ERR_SUCCESS, localize(@"Unable to mount original snapshot."), true);
+        const char *systemSnapshotLaunchdPath = [@(systemSnapshotMountPoint) stringByAppendingPathComponent:@"sbin/launchd"].UTF8String;
+        _assert(waitFF(systemSnapshotLaunchdPath) == ERR_SUCCESS, localize(@"Unable to verify mounted snapshot."), true);
+        //int runtest = execCmd("/bin/bash", NULL);
+        if (checkbash == 1) {
+            _assert(clean_file("/usr/bin/uicache"), localize(@"Unable to clean old uicache binary."), true);
+            unlink("/usr/bin/uicache");
+            removeFileIfExists("/usr/bin/uicache");
+            
+            extractFile(get_bootstrap_file(@"restoreUtils.tar"), @"/");
+            _assert(execCmd("/usr/bin/rsync", "-vaxcH", "--progress", "--delete", [@(systemSnapshotMountPoint) stringByAppendingPathComponent:@"Applications/."].UTF8String, "/Applications", NULL) == 0, localize(@"Unable to sync /Applications."), true);
+        }
+        _assert(unmount(systemSnapshotMountPoint, MNT_FORCE) == ERR_SUCCESS, localize(@"Unable to unmount original snapshot mount point."), true);
+        close(rootfd);
+        
     } else {
-        char *const systemSnapshotMountPoint = "/var/rootfsmnt";
+        char *const systemSnapshotMountPoint = "/private/var/mnt";
         if (is_mountpoint(systemSnapshotMountPoint)) {
             _assert(unmount(systemSnapshotMountPoint, MNT_FORCE) == ERR_SUCCESS, localize(@"Unable to unmount old snapshot mount point."), true);
         }
@@ -1388,14 +1414,7 @@ void restoreRootFS()
     
     free(snapshots);
     snapshots = NULL;
-    if (checkuncovermarker == 1) {
 
-        //_assert(clean_file("/private/var/tmp/jb/mnt1"), localize(@"Unable to clean mnt1."), true);
-    }
-    else {
-        //_assert(clean_file("/var/MobileSoftwareUpdate/mnt1"), localize(@"Unable to clean mnt1."), true);
-
-    }
     if (checkuicache == 1) {
 
         uicaching("uicache");

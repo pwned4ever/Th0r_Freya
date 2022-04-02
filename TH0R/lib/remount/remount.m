@@ -37,8 +37,8 @@ bool remount(uint64_t launchd_proc) {
     //let mntpathSW = "/var/rootfsmnt" ios 13 odyssey
    // let mntpath = strdup("/var/rootfsmnt")
     
-    mntpathSW = "/var/rootfsmnt";
-    mntpath = strdup("/var/rootfsmnt");
+    mntpathSW = "/private/var/mnt";
+    mntpath = strdup("/private/var/mnt");
     uint64_t rootvnode = findRootVnode(launchd_proc);
     printf("rootvnode: 0x%llx\n", rootvnode);
     
@@ -69,7 +69,7 @@ bool remount(uint64_t launchd_proc) {
             return false;
         }
         
-        int fd = open("/var/rootfsmnt", O_RDONLY, 0);
+        int fd = open("/private/var/mnt", O_RDONLY, 0);
         if(fd <= 0
            || fs_snapshot_revert(fd, bootSnapshot, 0) != 0) {
             printf("fs_snapshot_revert failed\n");
@@ -100,7 +100,7 @@ bool remount(uint64_t launchd_proc) {
             return false;
         }
         
-        int fd2 = open("/var/rootfsmnt", O_RDONLY, 0);
+        int fd2 = open("/private/var/mnt", O_RDONLY, 0);
         if(fd <= 0
            || fs_snapshot_rename(fd2, bootSnapshot, "orig-fs", 0) != 0) {
             printf("fs_snapshot_rename failed\n");
