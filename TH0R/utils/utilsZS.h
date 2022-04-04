@@ -25,6 +25,12 @@ int saved_errno = errno; \
 LOG("__assert(%d:%s)@%s:%u[%s]", saved_errno, #test, __FILENAME__, __LINE__, __FUNCTION__); \
 } \
 while (false)
+
+const char *userGenerator(void);
+const char *genToSet(void);
+#define K_GENERATOR "generator"
+#define K_freya_GENERATOR "0x1111111111111111"
+
 void xFinishFailed(void);
 
 void util_hexprint(void *data, size_t len, const char *desc);

@@ -6,7 +6,7 @@
 #define OSArray_ItemCount(arr) ReadKernel32(arr+0x14)
 #define OSArray_ItemBuffer(arr) ReadKernel64(arr+32)
 
-
+uint64_t zm_fix_addr2(uint64_t addr);
 int OSDictionary_SetItem(uint64_t dict, const char *key, uint64_t val);
 uint64_t OSDictionary_GetItem(uint64_t dict, const char *key);
 int OSDictionary_Merge(uint64_t dict, uint64_t aDict);

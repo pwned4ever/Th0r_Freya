@@ -32,9 +32,9 @@ uint64_t zm_fix_addr(uint64_t addr) {
     if (zm_hdr.start == 0) {
         // xxx ReadKernel64(0) ?!
         // uint64_t zone_map_ref = find_zone_map_ref();
-        LOG("zone_map_ref: %llx ", GETOFFSET(zone_map_ref));
+        LOG("zone_map_ref: 0x%llx ", GETOFFSET(zone_map_ref));
         uint64_t zone_map = ReadKernel64(GETOFFSET(zone_map_ref));
-        LOG("zone_map: %llx ", zone_map);
+        LOG("zone_map: 0x%llx ", zone_map);
         // hdr is at offset 0x10, mutexes at start
         size_t r = kreadOwO(zone_map + 0x10, &zm_hdr, sizeof(zm_hdr));
         LOG("zm_range: 0x%llx - 0x%llx (read 0x%zx, exp 0x%zx)", zm_hdr.start, zm_hdr.end, r, sizeof(zm_hdr));

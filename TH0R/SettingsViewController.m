@@ -7,6 +7,8 @@
 #import "utils/utilsZS.h"
 #include "cs_blob.h"
 #include "file_utils.h"
+#include "offsets.h"
+
 #define localize(key) NSLocalizedString(key, @"")
 #define postProgress(prg) [[NSNotificationCenter defaultCenter] postNotificationName: @"JB" object:nil userInfo:@{@"JBProgress": prg}]
 
@@ -15,6 +17,10 @@
 @end
 
 @implementation SettingsViewController
+
+- (IBAction)setthenoncewith:(id)sender {
+    [self.noncesettertxtfeild setValue:@"0x1111111111111111" forKey:@"Nonce"];
+}
 
 - (IBAction)jbbutton:(id)sender {
     
@@ -60,7 +66,9 @@
     {
         [_Sileo_Outlet sendActionsForControlEvents:UIControlEventTouchUpInside];
     }
-    
+    [self.setnoncebtn setEnabled:FALSE];
+    [self.setnoncebtn setHidden:TRUE];
+
     //0 = MS
     //1 = MS2
     //2 = VS
@@ -112,21 +120,42 @@
         [ViewController.sharedController.restoreFSSwitch setEnabled:NO];
         [ViewController.sharedController.restoreFSSwitch setUserInteractionEnabled:NO];
         //    goto end;
-    }
-
-
-    if (shouldRestoreFS())
-    {
-        //[ViewController.sharedController.buttontext setTitle:localize(@"Remove Freya?") forState:UIControlStateNormal];
-        JUSTremovecheck = true;
-        [_restoreFSSwitch setOn:true];
+    } else if ((checkth0rmarker == 1) && (checkuncovermarker == 0) && (checkchimeramarker == 0)) {
+        if (shouldRestoreFS())
+        {
+            JUSTremovecheck = true;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [ViewController.sharedController.buttontext setTitle:localize(@"Remove Freya?") forState:UIControlStateNormal];
+                [self.restoreFSSwitch setOn:true];
+                [self.setnoncebtn setEnabled:FALSE];
+                [self.setnoncebtn setHidden:TRUE];
+            });
+        } else {
+            
+            JUSTremovecheck = false;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [ViewController.sharedController.buttontext setTitle:localize(@"Enable Freya?") forState:UIControlStateNormal];
+                [self.restoreFSSwitch setOn:false];
+                [self.setnoncebtn setEnabled:TRUE];
+                [self.setnoncebtn setHidden:FALSE];
+                [ViewController.sharedController.loadTweakSwitch setEnabled:YES];
+                [ViewController.sharedController.loadTweakSwitch setOn:TRUE];
+            });
+        }
+    }else {
+            if (shouldRestoreFS())
+            {
+                //[ViewController.sharedController.buttontext setTitle:localize(@"Remove Freya?") forState:UIControlStateNormal];
+                JUSTremovecheck = true;
+                [_restoreFSSwitch setOn:true];
+                
+            } else {
+                //[ViewController.sharedController.buttontext setTitle:localize(@"Enable Freya?") forState:UIControlStateNormal];
+                JUSTremovecheck = false;
+                [_restoreFSSwitch setOn:false];
+            }
+        }
         
-    } else {
-        //[ViewController.sharedController.buttontext setTitle:localize(@"Enable Freya?") forState:UIControlStateNormal];
-        //JUSTremovecheck = false;
-        [_restoreFSSwitch setOn:false];
-    }
-    
     if (isRootless())
     {
         [_rootless_Switch sendActionsForControlEvents:UIControlEventTouchUpInside];
@@ -415,6 +444,9 @@ static ViewController *currentViewController;
     } else {
         if ((checkth0rmarker == 1) && (checkuncovermarker == 0) && (checkchimeramarker == 0)){
             [ViewController.sharedController.buttontext setTitle:localize(@"Enable Freya?") forState:UIControlStateNormal];
+            [_setnoncebtn setHidden:NO];
+            [_setnoncebtn setEnabled:YES];
+
         } else if ((checkuncovermarker == 1) && (checkth0rmarker == 0) && (checkchimeramarker == 0)) {
             [ViewController.sharedController.buttontext setTitle:localize(@"Remove u0 1st") forState:UIControlStateNormal];
             newTFcheckMyRemover4me = TRUE;
@@ -442,6 +474,9 @@ static ViewController *currentViewController;
             [ViewController.sharedController.buttontext setEnabled:false];
 
         } else {
+            [_setnoncebtn setHidden:NO];
+            [_setnoncebtn setEnabled:NO];
+
             [ViewController.sharedController.buttontext setTitle:localize(@"Jailbreak") forState:UIControlStateNormal];
         }
         newTFcheckMyRemover4me = false;
@@ -508,5 +543,58 @@ static ViewController *currentViewController;
 - (IBAction)fukbut:(id)sender {
     
 }
+- (IBAction)creditspressed:(id)sender {
+    //show confirmation message to user
+    UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Credits To:"
+                                                 message:@"@YcS_dev for helping out with remount & pushing me to make this project.\n@Chr0nicT for teaching me some general basics.\nEveryone whom helped to create ziyou and published it on github.\nThank you! for using Freya to jailbreak your device!"
+                                                delegate:self
+                                       cancelButtonTitle: nil
+                                       otherButtonTitles:@"OK", nil];
+    [alert show];
+}
+
+- (IBAction)setnoncepressedbtn:(id)sender {
+    __block NSString *generatorToSet = nil;
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:localize(@"Set the system boot nonce on jailbreak") message:localize(@"Enter the generator for the nonce you want the system to generate on boot") preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addAction:[UIAlertAction actionWithTitle:localize(@"Cancel") style:UIAlertActionStyleDefault handler:nil]];
+    UIAlertAction *set = [UIAlertAction actionWithTitle:localize(@"Set") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        const char *generatorInput = [alertController.textFields.firstObject.text UTF8String];
+        char compareString[22];
+        uint64_t rawGeneratorValue;
+        sscanf(generatorInput, "0x%16llx",&rawGeneratorValue);
+        sprintf(compareString, "0x%016llx", rawGeneratorValue);
+        if(strcmp(compareString, generatorInput) != 0) {
+            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:localize(@"Error") message:localize(@"Failed to validate generator") preferredStyle:UIAlertControllerStyleAlert];
+            [alertController addAction:[UIAlertAction actionWithTitle:localize(@"OK") style:UIAlertActionStyleDefault handler:nil]];
+            [self presentViewController:alertController animated:YES completion:nil];
+            return;
+        }
+        generatorToSet = [NSString stringWithUTF8String:generatorInput];
+        [userDefaults setObject:generatorToSet forKey:@K_GENERATOR];
+        [userDefaults synchronize];
+        uint32_t flags;
+        csops(getpid(), CS_OPS_STATUS, &flags, 0);
+        UIAlertController *alertController = nil;
+        if ((flags & CS_PLATFORM_BINARY)) {
+            alertController = [UIAlertController alertControllerWithTitle:localize(@"Notice") message:localize(@"The system boot nonce will be set the next time you enable your jailbreak") preferredStyle:UIAlertControllerStyleAlert];
+            
+        } else {
+            alertController = [UIAlertController alertControllerWithTitle:localize(@"Notice") message:localize(@"The system boot nonce will be set once you enable the jailbreak") preferredStyle:UIAlertControllerStyleAlert];
+            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+            [defaults setInteger:0 forKey:@"SetNonce"];
+            
+        }
+        [alertController addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+        [self presentViewController:alertController animated:YES completion:nil];
+    }];
+    [alertController addAction:set];
+    [alertController setPreferredAction:set];
+    [alertController addTextFieldWithConfigurationHandler:^(UITextField *textField) {
+        textField.placeholder = [NSString stringWithFormat:@"%s", genToSet()];
+    }];
+    [self presentViewController:alertController animated:YES completion:nil];
+}
+
 @end
 

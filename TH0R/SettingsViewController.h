@@ -14,8 +14,12 @@ NS_ASSUME_NONNULL_BEGIN
 @property (strong, nonatomic) IBOutlet UIView *backGroundView;
 @property (weak, nonatomic) IBOutlet UIView *settingsGradientView;
 
+@property (weak, nonatomic) IBOutlet UITextField *noncesettertxtfeild;
+
 - (IBAction)fukbut:(id)sender;
 //SWITCH FUNCTIONS
+@property (weak, nonatomic) IBOutlet UIButton *creditsbutton;
+@property (weak, nonatomic) IBOutlet UIButton *setnoncebtn;
 
 - (IBAction)Restore_FS_Switch_Action:(UISwitch *)sender;
 

@@ -23,6 +23,7 @@
 #include "machswap.h"
 #include "cs_blob.h"
 #include "file_utils.h"
+#include "unlocknvram.h"
 
 #define localize(key) NSLocalizedString(key, @"")
 #define postProgress(prg) [[NSNotificationCenter defaultCenter] postNotificationName: @"JB" object:nil userInfo:@{@"JBProgress": prg}]
@@ -178,8 +179,8 @@ double uptime(){
     [audioPlayer1 play];
 }
 
-NSString *freyaversion = @"0.1⚡️";
-char *freyaupdateDate = "10:00PM 04/01/22";
+NSString *freyaversion = @"0.2⚡️";
+char *freyaupdateDate = "11:00PM 04/03/22";
 char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/blob/main/Releases/Freya.ipa";// "mega.nz/file/BhNxBSgJ#gNcngNQBtXS0Ipa5ivX09-jtIr7BckUhrA7YMkSFaNM"//
 
 - (void)u0alertreboot {
@@ -385,11 +386,14 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/blob/main/Releases/Fr
         
     }
 */
-    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+
+    [defaults setInteger:1 forKey:@"SetNonce"];
+
         if ((checkjailbreakdRun == 1) && (checkpspawnhook == 1) && (checkth0rmarker == 1) && (checkuncovermarker == 0) && (checkchimeramarker == 0)){
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.buttontext setHidden:NO];
-                [self.buttontext setTitle:localize(@"𝓢Ⓗ⒜𝕽ᴱ Th0r?") forState:UIControlStateNormal];
+                [self.buttontext setTitle:localize(@"𝓢Ⓗ⒜𝕽ᴱ Freya?") forState:UIControlStateNormal];
                 [self.uptimelabel setHidden:NO];
                 [self.devicelabel setHidden:NO];
                 [self.settingsButton setHidden:YES];
@@ -409,7 +413,7 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/blob/main/Releases/Fr
                 [self.settings_buttun_bg setHidden:YES];
                 [self.settings_buttun_bg setUserInteractionEnabled:NO];
                 [self.settingsButton setEnabled:NO];
-                [self.buttontext setTitle:localize(@"𝓢Ⓗ⒜𝕽ᴱ Th0r?👍🏽") forState:UIControlStateNormal];
+                [self.buttontext setTitle:localize(@"𝓢Ⓗ⒜𝕽ᴱ Freya?👍🏽") forState:UIControlStateNormal];
                 [self.uptimelabel setHidden:NO];
                 [self.devicelabel setHidden:NO];
                 [self.progressmeterView setHidden:YES];
@@ -431,6 +435,7 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/blob/main/Releases/Fr
 
                 });
             } else {
+                
                 JUSTremovecheck = false;
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self.buttontext setTitle:localize(@"Enable Freya?") forState:UIControlStateNormal];
@@ -710,7 +715,7 @@ void wannaSliceOfMe() {
         dispatch_async(dispatch_get_main_queue(), ^{
             [ViewController.sharedController.buttontext setHidden:NO];//setTitle:localize(@"Remove Freya?") forState:UIControlStateNormal];
            // [ViewController.buttontext setHidden:NO];
-            [ViewController.sharedController.buttontext setTitle:localize(@"𝓢Ⓗ⒜𝕽ᴱ Th0r?") forState:UIControlStateNormal];
+            [ViewController.sharedController.buttontext setTitle:localize(@"𝓢Ⓗ⒜𝕽ᴱ Freya?") forState:UIControlStateNormal];
             [ViewController.sharedController.uptimelabel setHidden:NO];
             [ViewController.sharedController.devicelabel setHidden:NO];
             [ViewController.sharedController.settingsButton setHidden:YES];
@@ -730,7 +735,7 @@ void wannaSliceOfMe() {
             [ViewController.sharedController.settings_buttun_bg setHidden:YES];
             [ViewController.sharedController.settings_buttun_bg setUserInteractionEnabled:NO];
             [ViewController.sharedController.settingsButton setEnabled:NO];
-            [ViewController.sharedController.buttontext setTitle:localize(@"𝓢Ⓗ⒜𝕽ᴱ Th0r?👍🏽") forState:UIControlStateNormal];
+            [ViewController.sharedController.buttontext setTitle:localize(@"𝓢Ⓗ⒜𝕽ᴱ Freya?👍🏽") forState:UIControlStateNormal];
             [ViewController.sharedController.uptimelabel setHidden:NO];
             [ViewController.sharedController.devicelabel setHidden:NO];
             [ViewController.sharedController.progressmeterView setHidden:YES];
@@ -762,10 +767,10 @@ void wannaSliceOfMe() {
         runExploit(getExploitType()); //Change this depending on what device you have...
         dothepatch();
         ourprogressMeter();
-        usleep(1000);
+        //usleep(1000);
         getOffsets();
         offs_init();
-        usleep(1000);
+        //usleep(1000);
         
         //MID-POINT. HERE WE ACHIEVE THE FOLLOWING:
         //[*] INIT KEXECUTE
@@ -775,20 +780,34 @@ void wannaSliceOfMe() {
         usleep(1000);
         init_kexecute();
         //usleep(10000);
-        usleep(1000);
+//        usleep(1000);
 
+        setHSP4();
+        usleep(1000);
+        
         yeasnapshot();
+
         remountFS(restore_fs);
         //ourprogressMeter();
-        usleep(1000);
+    //    usleep(1000);
         createWorkingDir();
-        usleep(1000);
+        //usleep(1000);
         saveOffs();
         ourprogressMeter();
         usleep(1000);
-        setHSP4();
-        usleep(1000);
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        if ([defaults integerForKey:@"SetNonce"] == 0) {
+        //if ([defaults objectForKey:@"SetNonce"] == 0) {
+            usleep(10000);
+            unlocknvram();
+            usleep(10000);
+            setNonce(genToSet(), TRUE);
+            locknvram();
+        }
+        
+
         initInstall(getPackagerType());
+        
         ourprogressMeter();
         term_kexecute();
         ourprogressMeter();

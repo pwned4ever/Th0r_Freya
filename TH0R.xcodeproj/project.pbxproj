@@ -43,6 +43,7 @@
 		B8E8A9BA22891CE00049F87D /* insert_dylib.c in Sources */ = {isa = PBXBuildFile; fileRef = B8E8A9B822891CE00049F87D /* insert_dylib.c */; };
 		B8FB44F22284F3F700CEDF47 /* libmis.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = B8FB44F12284F3F700CEDF47 /* libmis.tbd */; };
 		B8FB44FB2284F76100CEDF47 /* libarchive.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = B8FB44F72284F70A00CEDF47 /* libarchive.tbd */; };
+		F707DA8A27FA5D0500D0B926 /* jelbrekLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F707DA8927FA5D0500D0B926 /* jelbrekLib.a */; };
 		F784120427E4724F00D1A7CC /* TH0R12icon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = F784120327E4724F00D1A7CC /* TH0R12icon.jpg */; };
 		F785C79027E3B9C800BBC4D0 /* utilsZS.m in Sources */ = {isa = PBXBuildFile; fileRef = F785C78C27E3B9C800BBC4D0 /* utilsZS.m */; };
 		F7A70C3B27F65C4700839E5E /* PFOffs.c in Sources */ = {isa = PBXBuildFile; fileRef = F7A70BEC27F65C4700839E5E /* PFOffs.c */; };
@@ -158,6 +159,8 @@
 		B8FB44F72284F70A00CEDF47 /* libarchive.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libarchive.tbd; path = usr/lib/libarchive.tbd; sourceTree = SDKROOT; };
 		B8FB44F92284F73A00CEDF47 /* archive.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = archive.h; sourceTree = "<group>"; };
 		B8FB44FA2284F74900CEDF47 /* archive_entry.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = archive_entry.h; sourceTree = "<group>"; };
+		F707DA8827FA5D0500D0B926 /* jelbrekLib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jelbrekLib.h; sourceTree = "<group>"; };
+		F707DA8927FA5D0500D0B926 /* jelbrekLib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = jelbrekLib.a; sourceTree = "<group>"; };
 		F784120327E4724F00D1A7CC /* TH0R12icon.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = TH0R12icon.jpg; sourceTree = "<group>"; };
 		F785C78C27E3B9C800BBC4D0 /* utilsZS.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = utilsZS.m; sourceTree = "<group>"; };
 		F785C78D27E3B9C800BBC4D0 /* utilsZS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utilsZS.h; sourceTree = "<group>"; };
@@ -250,6 +253,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B8FB44FB2284F76100CEDF47 /* libarchive.tbd in Frameworks */,
+				F707DA8A27FA5D0500D0B926 /* jelbrekLib.a in Frameworks */,
 				B8FB44F22284F3F700CEDF47 /* libmis.tbd in Frameworks */,
 				88EFC47B228369E8005FA5BB /* IOKit.framework in Frameworks */,
 			);
@@ -366,6 +370,8 @@
 		B8C0B80322837E040030AE1E /* headers */ = {
 			isa = PBXGroup;
 			children = (
+				F707DA8927FA5D0500D0B926 /* jelbrekLib.a */,
+				F707DA8827FA5D0500D0B926 /* jelbrekLib.h */,
 				F7EAE3F627EBFA4D00F91FB8 /* file_utils.c */,
 				F7EAE3F527EBFA4D00F91FB8 /* file_utils.h */,
 				B8FB44FA2284F74900CEDF47 /* archive_entry.h */,
@@ -930,12 +936,18 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
+				ENABLE_BITCODE = YES;
 				INFOPLIST_FILE = TH0R/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/TH0R/headers",
+				);
+				MARKETING_VERSION = 0.2;
 				OTHER_LDFLAGS = (
 					"-framework",
 					IOKit,
@@ -957,12 +969,18 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
+				ENABLE_BITCODE = YES;
 				INFOPLIST_FILE = TH0R/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/TH0R/headers",
+				);
+				MARKETING_VERSION = 0.2;
 				OTHER_LDFLAGS = (
 					"-framework",
 					IOKit,

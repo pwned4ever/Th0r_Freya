@@ -22,6 +22,8 @@ uint64_t our_port_addr_exportedBYTW = 0;
 uint64_t our_task_addr_exportedBYTW = 0;
 uint64_t our_procStruct_addr_exported = 0;
 uint64_t kernelbase_exportedBYTW = 0;
+uint64_t our_kernel_procStruct_exportAstylez = 0;
+uint64_t our_kernel_taskStruct_exportAstylez = 0;
 mach_port_t tfp0_exportedBYTW = MACH_PORT_NULL;
 
 bool found_offs = false;

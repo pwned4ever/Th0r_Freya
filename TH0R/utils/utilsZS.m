@@ -58,6 +58,7 @@
 #include "remount.h"
 #include "amfi.h"
 #include "file_utils.h"
+#include "jelbrekLib.h"
 
 bool runShenPatchOWO = false;
 int thejbdawaits = 0;
@@ -284,6 +285,32 @@ NSString* getBootNonce()
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     return [defaults valueForKey:@"Nonce"];
+}
+
+const char *userGenerator(void) {
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    if ([userDefaults objectForKey:@K_GENERATOR] == nil)
+        return NULL;
+    
+    const char *generator = [[userDefaults objectForKey:@K_GENERATOR] UTF8String];
+    char compareString[22];
+    uint64_t rawGeneratorValue;
+    sscanf(generator, "0x%16llx", &rawGeneratorValue);
+    sprintf(compareString, "0x%016llx", rawGeneratorValue);
+    if(strcmp(compareString, generator) != 0)
+        return NULL;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setInteger:0 forKey:@"SetNonce"];
+    //shouldSetNonce();
+    return generator;
+}
+
+const char *genToSet(void) {
+    const char *generator = userGenerator();
+    if (generator == NULL)
+        generator = strdup(K_freya_GENERATOR);
+    
+    return generator;
 }
 
 void saveCustomSetting(NSString *setting, int settingResult)
@@ -970,10 +997,14 @@ void getOffsets() {
     _assert(ISADDR(GETOFFSET(x)), @"Failed to find " #x " offset.", true); \
     SETOFFSET(x, GETOFFSET(x) + kernel_slide); \
     } while (false)
+    
     //Get Strlen for jailbreakd
     findPFOffset(strlen);
     //Get AllProc for jailbreakd
     findPFOffset(allproc);
+    //find kenrel task
+    findPFOffset(kernel_task);
+
     //Get KFree for jailbreakd
     findPFOffset(kfree);
     //Get cs_gen_count for jailbreakd
@@ -2071,20 +2102,17 @@ void setNonce(const char *nonce, bool shouldSet)
     if (shouldSet)
     {
         //Unlock NVRam
-        unlocknvram();
         
         execCmd("/usr/sbin/nvram", "-p", NULL);
         
         if (execCmd("/usr/sbin/nvram", "com.apple.System.boot-nonce", NULL) != ERR_SUCCESS || strstr(lastSystemOutput.bytes, nonce) == NULL) {
             // Set boot-nonce.
-            
             _assert(execCmd("/usr/sbin/nvram", [NSString stringWithFormat:@"%s=%s", "com.apple.System.boot-nonce", nonce].UTF8String, NULL) == ERR_SUCCESS, localize(@"Unable to set boot nonce."), true);
             _assert(execCmd("/usr/sbin/nvram", [NSString stringWithFormat:@"%s=%s", "IONVRAM-FORCESYNCNOW-PROPERTY", "com.apple.System.boot-nonce"].UTF8String, NULL) == ERR_SUCCESS, localize(@"Unable to synchronize boot nonce."), true);
         }
         
         execCmd("/usr/sbin/nvram", "-p", NULL);
-        
-        locknvram();
+        //LockNVRAM();
     }
 }
 

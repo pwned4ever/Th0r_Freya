@@ -37,6 +37,8 @@ extern uint64_t our_task_addr_exportedBYTW;
 extern uint64_t kernelbase_exportedBYTW;
 extern mach_port_t tfp0_exportedBYTW;
 extern int need_initialSSRenamed;
+extern uint64_t our_kernel_procStruct_exportAstylez;
+extern uint64_t our_kernel_taskStruct_exportAstylez;
 
 uint64_t get_proc_struct_for_pid_TW(pid_t proc_pid);
 

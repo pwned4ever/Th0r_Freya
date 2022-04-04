@@ -21,6 +21,7 @@
 #include "kernel_exec.h"
 #include "kc_parameters.h"
 #include "vnode_utils.h"
+#include "OSObj.h"
 
 static const size_t max_vtable_size = 0x1000;
 static const size_t kernel_buffer_size = 0x4000;
@@ -53,7 +54,7 @@ kptr_t IOMalloc(vm_size_t size) {
     kptr_t ret = KPTR_NULL;
     kptr_t const function = GETOFFSET(IOMalloc);
     ret = kexecute2(function, (kptr_t)size, KPTR_NULL, KPTR_NULL, KPTR_NULL, KPTR_NULL, KPTR_NULL, KPTR_NULL);
-    if (ret != KPTR_NULL) ret = zm_fix_addr(ret);
+    if (ret != KPTR_NULL) ret = zm_fix_addr2(ret);
 out:;
     return ret;
 }
@@ -73,14 +74,17 @@ uint64_t get_iodtnvram_obj(void) {
     static uint64_t IODTNVRAMObj = 0;
     
     if (IODTNVRAMObj == 0) {
+        sleep(1);
         io_service_t IODTNVRAMSrv = IOServiceGetMatchingService(kIOMasterPortDefault, IOServiceMatching("IODTNVRAM"));
         if (!MACH_PORT_VALID(IODTNVRAMSrv)) {
             LOG("Failed to get IODTNVRAM service");
             return 0;
         }
+        sleep(1);
         uint64_t nvram_up = get_address_of_port_OWO(proc_struct_addr(), IODTNVRAMSrv);
         IODTNVRAMObj = ReadKernel64(nvram_up + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_KOBJECT));
-        
+        sleep(1);
+
         LOG("IODTNVRAM obj at 0x%llx", IODTNVRAMObj);
     }
     
@@ -92,12 +96,13 @@ uint64_t fake_vtable = 0;
 uint64_t fake_vtable_xpac = 0;
 
 int unlocknvram(void) {
+    //sleep(1);
+
     uint64_t obj = get_iodtnvram_obj();
     if (obj == 0) {
         LOG("get_iodtnvram_obj failed!");
         return 1;
     }
-    
     orig_vtable = ReadKernel64(obj);
     uint64_t vtable_xpac = kernel_xpacd(orig_vtable);
     
@@ -126,7 +131,8 @@ int unlocknvram(void) {
                                                   VTABLE_PAC_CODES(IODTNVRAM).codes[count]);
 #endif // __arm64e__
     }
-    
+    usleep(2000);
+
     // and copy it back
     kwriteOwO(fake_vtable_xpac, buf, count*sizeof(*buf));
 #if __arm64e__
@@ -151,6 +157,7 @@ int locknvram(void) {
     }
     
     uint64_t obj = get_iodtnvram_obj();
+    sleep(1);
     if (obj == 0) { // would never happen but meh
         LOG("get_iodtnvram_obj failed!");
         return 1;
