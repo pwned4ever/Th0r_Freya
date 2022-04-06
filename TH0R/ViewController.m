@@ -179,8 +179,10 @@ double uptime(){
     [audioPlayer1 play];
 }
 
-NSString *freyaversion = @"0.2⚡️";
-char *freyaupdateDate = "11:00PM 04/03/22";
+NSString *freyaversion = @"0.3⚡️";
+char *freyaversionnew = "0.3⚡️";
+
+char *freyaupdateDate = "10:30PM 04/05/22";
 char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/blob/main/Releases/Freya.ipa";// "mega.nz/file/BhNxBSgJ#gNcngNQBtXS0Ipa5ivX09-jtIr7BckUhrA7YMkSFaNM"//
 
 - (void)u0alertreboot {
@@ -349,6 +351,7 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/blob/main/Releases/Fr
         [self.progressMeterUIVIEW.layer insertSublayer: gradient atIndex:1];
         [self.backGroundView.layer insertSublayer:gradient atIndex:0];
         [self.thorbackgroundjpeg setHidden:YES];
+
     });
     if ([[NSFileManager defaultManager] fileExistsAtPath:@"/tmp/.jailbroken_freya"])
     {
@@ -377,6 +380,8 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/blob/main/Releases/Fr
     [[UIDevice currentDevice] systemVersion];
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.devicelabel setText: [NSString stringWithUTF8String: get_current_deviceModel()]];//[NSString stringWithUTF8String:u.machine] ];
+        [self.appverlabel setText: [NSString stringWithUTF8String:freyaversionnew]];//[NSString stringWithUTF8String:u.machine] ];
+        
         [self.versionlabel setText:[[UIDevice currentDevice] systemVersion] ];
     });
 
@@ -770,8 +775,7 @@ void wannaSliceOfMe() {
         //usleep(1000);
         getOffsets();
         offs_init();
-        //usleep(1000);
-        
+
         //MID-POINT. HERE WE ACHIEVE THE FOLLOWING:
         //[*] INIT KEXECUTE
         //[*] REMOUNT //
@@ -782,14 +786,16 @@ void wannaSliceOfMe() {
         //usleep(10000);
 //        usleep(1000);
 
-        setHSP4();
-        usleep(1000);
-        
+
         yeasnapshot();
 
         remountFS(restore_fs);
-        //ourprogressMeter();
-    //    usleep(1000);
+        ourprogressMeter();
+        usleep(1000);
+
+        setHSP4();
+        usleep(1000);
+        //usleep(1000);
         createWorkingDir();
         //usleep(1000);
         saveOffs();
@@ -798,9 +804,9 @@ void wannaSliceOfMe() {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         if ([defaults integerForKey:@"SetNonce"] == 0) {
         //if ([defaults objectForKey:@"SetNonce"] == 0) {
-            usleep(10000);
+            //usleep(10000);
             unlocknvram();
-            usleep(10000);
+            //usleep(10000);
             setNonce(genToSet(), TRUE);
             locknvram();
         }

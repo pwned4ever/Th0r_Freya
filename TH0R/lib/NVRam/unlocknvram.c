@@ -104,6 +104,7 @@ int unlocknvram(void) {
         return 1;
     }
     orig_vtable = ReadKernel64(obj);
+    
     uint64_t vtable_xpac = kernel_xpacd(orig_vtable);
     
     uint64_t *buf = calloc(1, max_vtable_size);
@@ -131,7 +132,7 @@ int unlocknvram(void) {
                                                   VTABLE_PAC_CODES(IODTNVRAM).codes[count]);
 #endif // __arm64e__
     }
-    usleep(2000);
+    //usleep(40000);
 
     // and copy it back
     kwriteOwO(fake_vtable_xpac, buf, count*sizeof(*buf));
@@ -140,7 +141,8 @@ int unlocknvram(void) {
 #else
     fake_vtable = fake_vtable_xpac;
 #endif
-    
+    usleep(20000);
+
     // replace vtable on IODTNVRAM object
     WriteKernel64(obj, fake_vtable);
     

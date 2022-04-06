@@ -17,6 +17,7 @@
 + (ViewController*)sharedController;
 @property (weak, nonatomic) IBOutlet UILabel *uptimelabel;
 @property (weak, nonatomic) IBOutlet UILabel *versionlabel;
+@property (weak, nonatomic) IBOutlet UILabel *appverlabel;
 
 @property (weak, nonatomic) IBOutlet UILabel *devicelabel;
 @property (strong, nonatomic) IBOutlet UIView *backGroundView;

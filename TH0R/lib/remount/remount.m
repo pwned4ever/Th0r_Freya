@@ -52,6 +52,7 @@ bool remount(uint64_t launchd_proc) {
         
         if(isOTAMounted()) {
             printf("OTA update already mounted\n");
+            need_initialSSRenamed = 0;//
             return false;
         }
         
@@ -123,7 +124,8 @@ bool remount(uint64_t launchd_proc) {
         
         printf("Successfully remounted RootFS! Reboot.\n");
         need_initialSSRenamed = 3;
-        
+        return true;
+
         //sleep(5);
         //reboot(0);
     } else {
@@ -146,10 +148,12 @@ bool remount(uint64_t launchd_proc) {
 
             return true;
         }
+        need_initialSSRenamed = 0;//
         return false;
         
     }
     return true;
+    
 }
 
 uint64_t findRootVnode(uint64_t launchd_proc) {

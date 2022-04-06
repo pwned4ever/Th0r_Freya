@@ -58,8 +58,71 @@
 #include "remount.h"
 #include "amfi.h"
 #include "file_utils.h"
-#include "jelbrekLib.h"
-
+//#include "jelbrekLib.h"
+/*
+ 
+ kCFCoreFoundationVersionNumber =
+ 2.0      478.23
+ * 2.1      478.26
+ * 2.2      478.29
+ * 3.0      478.47
+ * 3.1      478.52
+ * 3.2      478.61
+ * 4.0      550.32
+ * 4.1      550.38
+ * 4.2      550.52
+ * 4.3      550.58
+ * 5.0      675.00
+ * 5.1      690.10
+ * 6.x      793.00
+ * 7.0      847.20
+ * 7.0.3    847.21
+ * 7.1      847.26
+ * 8.0      1140.10
+ * 8.1      1141.14
+ * 8.2      1142.16
+ * 8.3      1144.17
+ * 8.4      1145.15
+ * 9.0      1240.1
+ * 9.1      1241.11
+ * 9.2      1242.13
+ * 9.3      1280.30
+ * 10.0     1348.00
+ * 10.1     1348.00
+ * 10.2     1348.22
+ * 10.3     1349.56
+ * 11.0     1443.00
+ * 11.1     1445.32
+ * 11.2     1450.14
+ * 11.3     1452.23
+ * 11.4     1452.23
+ * 12.0     1556.00
+ * 12.1     1560.10
+ * 12.2     1570.15
+ * 12.3     1575.13
+ * 12.4     1575.17
+ * 12.5     1575.23
+ * 13.0     1665.15
+ * 13.1     1671.101
+ * 13.2     1673.126
+ * 13.3     1674.102
+ * 13.4     1675.129
+ * 13.5     1676.104
+ * 14.0     1751.108
+ * 14.1     1751.108
+ * 14.2     1770.106
+ * 14.3     1770.300
+ * 14.4     1774.101
+ * 14.5     1775.118
+ * 14.6     1776.103
+ * 14.7     1777.103
+ * 14.8     1778.101
+ * 15.0     1854
+ * 15.1     1855.105
+ * 15.2     1856.105
+ * 15.3     1856.105
+ * 15.4     1858.112
+ */
 bool runShenPatchOWO = false;
 int thejbdawaits = 0;
 
@@ -485,8 +548,12 @@ uint64_t find_kernel_base_sockpuppet() {
 }
 
 uint64_t find_kernel_base_timewaste() {
+    
+    if (kernelbase_exportedBYTW !=0) {
+        return kernelbase_exportedBYTW;
+    }
     uint64_t hostport_addr = find_port_address_timewaste(mach_host_self(), MACH_MSG_TYPE_COPY_SEND);
-    uint64_t realhost = ReadKernel64(hostport_addr + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_KOBJECT));
+    uint64_t realhost = ReadKernel64(hostport_addr + koffset_TW(KSTRUCT_OFFSET_IPC_PORT_IP_KOBJECT_TW));
     
     uint64_t base = realhost & ~0xfffULL;
     // walk down to find the magic:
@@ -583,7 +650,7 @@ void runTIMEWaste()
     {
         kbase = find_kernel_base_timewaste();
         kernel_slide = (kbase - KADD_SEARCH);
-        runShenPatchOWO = true;
+        //runShenPatchOWO = true;
         
     }
     if (tfp0 == 0) {
@@ -810,7 +877,6 @@ void saveOffs() {
     
     _assert(chdir("/freya") == ERR_SUCCESS, @"Failed to create jailbreak directory.", true);
     
-    
     NSString *offsetsFile = @"/freya/offsets.plist";
     NSMutableDictionary *dictionary = [NSMutableDictionary new];
 #define ADDRSTRING(val)        [NSString stringWithFormat:@ADDR, val]
@@ -860,6 +926,7 @@ dictionary[@(name)] = ADDRSTRING(value); \
     if (![[NSMutableDictionary dictionaryWithContentsOfFile:offsetsFile] isEqual:dictionary]) {
         util_info("Saving Offsets For JelbrekD...");
         savedoffs();
+
         _assert(([dictionary writeToFile:offsetsFile atomically:YES]), @"Failed to save offsets.", true);
         _assert(createFile(offsetsFile.UTF8String, 0, 0644), @"Failed to save offsets.", true);
         util_info("Successfully saved offsets!");
@@ -1004,6 +1071,8 @@ void getOffsets() {
     findPFOffset(allproc);
     //find kenrel task
     findPFOffset(kernel_task);
+    our_kernel_taskStruct_exportAstylez = GETOFFSET(kernel_task);;// ReadKernel64(GETOFFSET(kernel_task));//
+    our_kernel_taskStruct_exportAstylez = ReadKernel64(our_kernel_taskStruct_exportAstylez);//
 
     //Get KFree for jailbreakd
     findPFOffset(kfree);
@@ -1068,15 +1137,15 @@ void getOffsets() {
     
     //We got offsets.
     found_offs = true;
-    term_kernel();
-    
-    clean_file(decompressed_kernel_cache_path);
-    
+
     if (runShenPatchOWO)
     {
         printf("We are going to use the shenanigans patch.\n");
         runShenPatch();
     }
+    term_kernel();
+    
+    clean_file(decompressed_kernel_cache_path);
     
 }
 
@@ -1343,7 +1412,8 @@ void restoreRootFS()
     printf("Th0r Final marker exists?: %d\n", checkth0rmarkerFinal);
     printf("chimera marker exists?: %d\n", checkchimeramarker);
     printf("Jailbreakd Run marker exists?: %d\n", checkjailbreakdRun);
-    
+    ourprogressMeter();
+
     struct passwd *const root_pw = getpwnam("root");
     removethejb();
     util_info("Restoring RootFS....");
@@ -1439,7 +1509,7 @@ void restoreRootFS()
         
     }
     //char *const systemSnapshotMountPoint = "/var/MobileSoftwareUpdate/mnt1";
-
+    ourprogressMeter();
     free(snapshot);
     snapshot = NULL;
     
@@ -1452,7 +1522,8 @@ void restoreRootFS()
         _assert(execCmd("/usr/bin/uicache", NULL) >= 0, localize(@"Unable to refresh icon cache."), true);
         _assert(clean_file("/usr/bin/uicache"), localize(@"Unable to clean uicache binary."), true);
     }
-    
+    ourprogressMeter();
+
     _assert(clean_file("/usr/bin/find"), localize(@"Unable to clean find binary."), true);
     util_info("Successfully reverted back RootFS remount.");
     
@@ -1615,7 +1686,8 @@ void restoreRootFS()
         clean_file([file UTF8String]);
     }
     
-    
+    ourprogressMeter();
+
     
     //Dude, really?
     [[NSFileManager defaultManager] removeItemAtPath:@"etc/apt/sources.list.d" error:nil];
@@ -1736,9 +1808,9 @@ void renameSnapshot(int rootfd, const char* rootFsMountPoint, const char **snaps
 
             //wait 2 seconds while app is going background
             [NSThread sleepForTimeInterval:1.0];
-            exit(0);
             //exit app when app is in background
             reboot(RB_QUICK);
+            exit(0);
 
         });
     } else {
@@ -1749,9 +1821,9 @@ void renameSnapshot(int rootfd, const char* rootFsMountPoint, const char **snaps
 
             //wait 2 seconds while app is going background
             [NSThread sleepForTimeInterval:1.0];
-            exit(0);
             //exit app when app is in background
             reboot(RB_QUICK);
+            exit(0);
 
         });
     }
@@ -1762,8 +1834,8 @@ void preMountFS(const char *thedisk, int root_fs, const char **snapshots, const 
 {
     util_info("Pre-Mounting RootFS...");
 
-    _assert(!is_mountpoint("/var/MobileSoftwareUpdate/mnt1"), invalidRootMessage, true);
-    char *const rootFsMountPoint = "/var/MobileSoftwareUpdate/mnt1";
+    _assert(!is_mountpoint("/var/rootfsmnt"), invalidRootMessage, true);
+    char *const rootFsMountPoint = "/var/rootfsmnt";
 //char *const rootFsMountPoint = "/private/var/tmp/jb/mnt1";
     if (is_mountpoint(rootFsMountPoint)) {
         _assert(unmount(rootFsMountPoint, MNT_FORCE) == ERR_SUCCESS, localize(@"Unable to unmount old RootFS mount point."), true);
@@ -1856,57 +1928,117 @@ void remountFS(bool shouldRestore) {
     //Vars
     uint64_t islaunchdProcstruct = get_proc_struct_for_pid(1);
     printf("launchd procStruct: 0x%llx\n", islaunchdProcstruct);
-    bool resultofMountattempt = remount(islaunchdProcstruct);
-    printf("resultofMountattempt true = 1: %d\n", resultofMountattempt);
-    if (need_initialSSRenamed == 3) {
-        ourprogressMeter();
-        util_info("Rebooting...");
-        showMSG(NSLocalizedString(@"RootFS snapshot renamed! We are going to reboot your device.", nil), 1, 1);
-        dispatch_sync( dispatch_get_main_queue(), ^{
-            UIApplication *app = [UIApplication sharedApplication];
-            [app performSelector:@selector(suspend)];
+    if (kCFCoreFoundationVersionNumber >= 1532.15) {
+    
+        bool resultofMountattempt = remount(islaunchdProcstruct);
+        printf("resultofMountattempt true = 1: %d\n", resultofMountattempt);
+        if ( resultofMountattempt == 0 ) {
+            printf("failed to remount, please remove update file and reboot or try again after rebooting\n");
+            showMSG(NSLocalizedString(@"failed to remount, please remove update file and reboot or try again after rebooting.", nil), 1, 1);
+            dispatch_sync( dispatch_get_main_queue(), ^{
+                UIApplication *app = [UIApplication sharedApplication];
+                [app performSelector:@selector(suspend)];
 
-            //wait 2 seconds while app is going background
-            [NSThread sleepForTimeInterval:1.0];
+                //wait 2 seconds while app is going background
+                [NSThread sleepForTimeInterval:1.0];
 
-            //exit app when app is in background
-            reboot(RB_QUICK);
-        });
-        
-    } else if (need_initialSSRenamed == 2) {
-        if (shouldRestore)
-        {
-            restoreRootFS();
+                //exit app when app is in background
+                reboot(RB_QUICK);
+            });
+
         }
-        
-    } else {
-        //  bootstrap rootfs
-        //NSString *dir = [[NSBundle mainBundle] bundlePath];
-        //[[[NSBundle mainBundle] bundlePath] stringByAppendingString:@"/bootstrap/DEBS/"];
-        //[[NSFileManager defaultManager] copyItemAtPath:[NSString stringWithUTF8String:dir("rootfs")] toPath:@"/tmp/rootfs" error:nil];
-        //chmod("/tmp/rootfs", 0755);
-        
-        //  Remount RootFS
-        /*if(!remount(get_proc_struct_for_pid(1)))
-        {
-            util_error("Failed to remount rootfs!");
-        }
-    */
-        
-        /*FILE *f = fopen("/.remount_success", "w");
-        fprintf(f,"Hello World!\n");
-        fclose(f);
+        if (need_initialSSRenamed == 3) {
+            ourprogressMeter();
+            util_info("Rebooting...");
+            showMSG(NSLocalizedString(@"RootFS snapshot renamed! We are going to reboot your device.", nil), 1, 1);
+            dispatch_sync( dispatch_get_main_queue(), ^{
+                UIApplication *app = [UIApplication sharedApplication];
+                [app performSelector:@selector(suspend)];
 
-        if(access("/.remount_success", F_OK) == -1) {
-            util_info("Failed write file on rootfs.");
+                //wait 2 seconds while app is going background
+                [NSThread sleepForTimeInterval:1.0];
+
+                //exit app when app is in background
+                reboot(RB_QUICK);
+            });
             
-        }
-        util_info("Successfully write file on rootfs.");
-        unlink("/.remount_success");
-    */
-        
+        } else if (need_initialSSRenamed == 2) {
+            if (shouldRestore)
+            {
+                restoreRootFS();
+            }
+            
+        } else if (need_initialSSRenamed == 1) {
 
-        
+            //  Remount RootFS
+            /*FILE *f = fopen("/.remount_success", "w");
+            fprintf(f,"Hello World!\n");
+            fclose(f);
+
+            if(access("/.remount_success", F_OK) == -1) {
+                util_info("Failed write file on rootfs.");
+                
+            }
+            util_info("Successfully write file on rootfs.");
+            unlink("/.remount_success");
+        */
+            
+
+            
+            int root_fs = open("/", O_RDONLY);
+            
+            _assert(root_fs > 0, @"Error Opening The Root Filesystem!", true);
+            
+            const char **snapshots = snapshot_list(root_fs);
+            const char *origfs = "orig-fs";
+            bool isOriginalFS = false;
+            const char *root_disk = "/dev/disk0s1s1";
+            
+            if (snapshots == NULL) {
+                
+                util_info("No System Snapshot Found! Don't worry, I'll Make One!");
+
+                //Clear Dev Flags
+                uint64_t devVnode = vnodeForPath(root_disk);
+                _assert(ISADDR(devVnode), @"Failed to clear dev vnode's si_flags.", true);
+                uint64_t v_specinfo = ReadKernel64(devVnode + koffset(KSTRUCT_OFFSET_VNODE_VU_SPECINFO));
+                _assert(ISADDR(v_specinfo), @"Failed to clear dev vnode's si_flags.", true);
+                WriteKernel32(v_specinfo + koffset(KSTRUCT_OFFSET_SPECINFO_SI_FLAGS), 0);
+                uint32_t si_flags = ReadKernel32(v_specinfo + koffset(KSTRUCT_OFFSET_SPECINFO_SI_FLAGS));
+                _assert(si_flags == 0, @"Failed to clear dev vnode's si_flags.", true);
+                _assert(_vnode_put(devVnode) == ERR_SUCCESS, @"Failed to clear dev vnode's si_flags.", true);
+                
+                //Pre-Mount
+                preMountFS(root_disk, root_fs, snapshots, origfs);
+                
+                close(root_fs);
+            }
+
+            list_all_snapshots(snapshots, origfs, isOriginalFS);
+
+            uint64_t rootfs_vnode = vnodeForPath("/");
+            LOG("rootfs_vnode = " ADDR, rootfs_vnode);
+            _assert(ISADDR(rootfs_vnode), @"Failed to mount", true);
+            uint64_t v_mount = ReadKernel64(rootfs_vnode + koffset(KSTRUCT_OFFSET_VNODE_V_MOUNT));
+            LOG("v_mount = " ADDR, v_mount);
+            _assert(ISADDR(v_mount), @"Failed to mount", true);
+            uint32_t v_flag = ReadKernel32(v_mount + koffset(KSTRUCT_OFFSET_MOUNT_MNT_FLAG));
+            if ((v_flag & (MNT_RDONLY | MNT_NOSUID))) {
+                v_flag = v_flag & ~(MNT_RDONLY | MNT_NOSUID);
+                WriteKernel32(v_mount + koffset(KSTRUCT_OFFSET_MOUNT_MNT_FLAG), v_flag & ~MNT_ROOTFS);
+                _assert(execCmd("/sbin/mount", "-u", root_disk, NULL) == ERR_SUCCESS, @"Failed to mount", true);
+                WriteKernel32(v_mount + koffset(KSTRUCT_OFFSET_MOUNT_MNT_FLAG), v_flag);
+            }
+            _assert(_vnode_put(rootfs_vnode) == ERR_SUCCESS, @"Failed to mount", true);
+            _assert(execCmd("/sbin/mount", NULL) == ERR_SUCCESS, @"Failed to mount", true);
+            
+            if (shouldRestore)
+            {
+                restoreRootFS();
+            }
+        }
+    }else {
+    
         int root_fs = open("/", O_RDONLY);
         
         _assert(root_fs > 0, @"Error Opening The Root Filesystem!", true);

@@ -220,7 +220,7 @@ static mach_port_t tfpzerotw;
 static uint64_t task_selftw;
 
 void init_kernel_memorytw(mach_port_t tfp0tw, uint64_t our_port_addrtw) {
-    tfpzerotw = tfp0tw;
+    tfp0 = tfpzerotw = tfp0tw;
     task_selftw = our_port_addrtw;
 }
 

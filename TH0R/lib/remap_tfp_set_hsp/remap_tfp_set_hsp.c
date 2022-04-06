@@ -270,8 +270,13 @@ int setHSP4() {
     uint64_t remapped_task_addr = 0;
     // task is smaller than this but it works so meh
     uint64_t sizeof_task = 0x1000;
-    
-    uint64_t kernel_task_kaddr = ReadKernel64(GETOFFSET(kernel_task));
+    uint64_t kernel_task_kaddr = 0;
+    if (our_kernel_taskStruct_exportAstylez != 0) {
+         kernel_task_kaddr = our_kernel_taskStruct_exportAstylez;//
+
+    } else {
+         kernel_task_kaddr = ReadKernel64(GETOFFSET(kernel_task));//our_kernel_taskStruct_exportAstylez;//
+    }
     
     mach_port_t zm_fake_task_port = MACH_PORT_NULL;
     mach_port_t km_fake_task_port = MACH_PORT_NULL;

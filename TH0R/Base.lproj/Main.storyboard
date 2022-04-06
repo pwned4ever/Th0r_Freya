@@ -24,10 +24,10 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.55000000000000004" contentMode="redraw" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="freyashot" translatesAutoresizingMaskIntoConstraints="NO" id="1x6-Pm-yls">
-                                <rect key="frame" x="-150" y="0.0" width="630" height="1060"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.25" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="freyaicestaff.jpg" translatesAutoresizingMaskIntoConstraints="NO" id="1x6-Pm-yls">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="1060" id="3a5-53-zMP"/>
+                                    <constraint firstAttribute="height" constant="568" id="3a5-53-zMP"/>
                                 </constraints>
                             </imageView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1hV-NU-wdO" userLabel="Top containter">
@@ -97,12 +97,21 @@
                                             <action selector="stopbtnMusic:" destination="ZWx-d3-ACN" eventType="touchUpInside" id="3Tp-dv-acB"/>
                                         </connections>
                                     </button>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="appver:" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XpO-ho-497" userLabel="appverlbl">
+                                        <rect key="frame" x="0.0" y="-29" width="320" height="20"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" systemColor="systemOrangeColor" red="1" green="0.58431372550000005" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                 </subviews>
                                 <constraints>
                                     <constraint firstItem="ID7-tC-I8B" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="FgS-vp-896" secondAttribute="trailing" constant="8" symbolic="YES" id="0C0-AP-wl6"/>
                                     <constraint firstAttribute="trailing" secondItem="ID7-tC-I8B" secondAttribute="trailing" constant="10" id="DCA-nq-CAU"/>
+                                    <constraint firstItem="XpO-ho-497" firstAttribute="centerX" secondItem="mkS-6V-QDe" secondAttribute="centerX" id="Iaw-ew-mS3"/>
                                     <constraint firstItem="FgS-vp-896" firstAttribute="leading" secondItem="mkS-6V-QDe" secondAttribute="leading" constant="5" id="NVE-uo-EZs"/>
                                     <constraint firstItem="ID7-tC-I8B" firstAttribute="top" secondItem="mkS-6V-QDe" secondAttribute="top" constant="5" id="NoW-Ix-PDT"/>
+                                    <constraint firstItem="FgS-vp-896" firstAttribute="top" secondItem="XpO-ho-497" secondAttribute="bottom" constant="14" id="Nvk-IV-xOF"/>
+                                    <constraint firstItem="XpO-ho-497" firstAttribute="leading" secondItem="mkS-6V-QDe" secondAttribute="leading" id="Rbp-Lv-Vef"/>
                                     <constraint firstItem="ID7-tC-I8B" firstAttribute="baseline" secondItem="FgS-vp-896" secondAttribute="baseline" id="WNj-kI-4lN"/>
                                 </constraints>
                             </view>
@@ -191,7 +200,7 @@
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <color key="tintColor" red="0.094117647058823528" green="0.3529411764705882" blue="0.61568627450980395" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="1x6-Pm-yls" firstAttribute="centerY" secondItem="fFC-e7-6qZ" secondAttribute="centerY" constant="246" id="0b4-Fq-f0m"/>
+                            <constraint firstItem="1x6-Pm-yls" firstAttribute="centerY" secondItem="fFC-e7-6qZ" secondAttribute="centerY" id="0b4-Fq-f0m"/>
                             <constraint firstItem="1hV-NU-wdO" firstAttribute="top" secondItem="fFC-e7-6qZ" secondAttribute="top" constant="10" id="5m6-9F-qwV"/>
                             <constraint firstItem="Peo-sW-sqE" firstAttribute="trailing" secondItem="iHh-Uy-WOb" secondAttribute="trailing" constant="69" id="8Oo-2t-4hD"/>
                             <constraint firstAttribute="bottom" secondItem="iHh-Uy-WOb" secondAttribute="bottom" constant="6" id="9UG-mZ-Fsg"/>
@@ -204,14 +213,15 @@
                             <constraint firstItem="iHh-Uy-WOb" firstAttribute="leading" secondItem="Peo-sW-sqE" secondAttribute="leading" constant="69" id="ZRh-Yr-7fe"/>
                             <constraint firstItem="1hV-NU-wdO" firstAttribute="leading" secondItem="Peo-sW-sqE" secondAttribute="leading" id="arm-n0-vtI"/>
                             <constraint firstItem="THN-7c-azM" firstAttribute="top" secondItem="1hV-NU-wdO" secondAttribute="bottom" constant="34" id="cBa-Xb-V6u"/>
-                            <constraint firstItem="1x6-Pm-yls" firstAttribute="leading" secondItem="Peo-sW-sqE" secondAttribute="leading" constant="-150" id="ckS-i1-tdh"/>
-                            <constraint firstItem="1x6-Pm-yls" firstAttribute="centerX" secondItem="1hV-NU-wdO" secondAttribute="centerX" constant="5" id="dM4-eo-hRF"/>
+                            <constraint firstItem="1x6-Pm-yls" firstAttribute="leading" secondItem="Peo-sW-sqE" secondAttribute="leading" id="ckS-i1-tdh"/>
+                            <constraint firstItem="1x6-Pm-yls" firstAttribute="centerX" secondItem="1hV-NU-wdO" secondAttribute="centerX" id="dM4-eo-hRF"/>
                             <constraint firstItem="mkS-6V-QDe" firstAttribute="top" secondItem="iHh-Uy-WOb" secondAttribute="top" id="smQ-Uo-txK"/>
                             <constraint firstItem="mkS-6V-QDe" firstAttribute="trailing" secondItem="THN-7c-azM" secondAttribute="trailing" id="uHy-Cw-AC5"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="Peo-sW-sqE"/>
                     </view>
                     <connections>
+                        <outlet property="appverlabel" destination="XpO-ho-497" id="UMX-BB-tYy"/>
                         <outlet property="backGroundView" destination="fFC-e7-6qZ" id="Ura-9H-qYa"/>
                         <outlet property="buttontext" destination="Vx9-qz-bUV" id="ZZA-c3-6ol"/>
                         <outlet property="devicelabel" destination="bz0-lI-Wh5" id="c5W-x4-AVw"/>
@@ -751,7 +761,7 @@ Jailbreak</string>
         <image name="Button" width="288" height="57"/>
         <image name="Cool_Shit" width="185" height="40"/>
         <image name="arrow" width="26" height="11"/>
-        <image name="freyashot" width="1920" height="1080"/>
+        <image name="freyaicestaff.jpg" width="933" height="1002"/>
     </resources>
     <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
 </document>
