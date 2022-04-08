@@ -34,6 +34,12 @@ int mountRealRootfs(uint64_t rootvnode);
 uint64_t findNewMount(uint64_t rootvnode);
 bool unsetSnapshotFlag(uint64_t newmnt);
 unsigned long kstrlen(uint64_t string);
+void util_debug(const char * _Nullable fmt, ...) __printflike(1, 2);
+void util_info(const char * _Nullable fmt, ...) __printflike(1, 2);
+void util_warning(const char * _Nullable fmt, ...) __printflike(1, 2);
+void util_error(const char * _Nullable fmt, ...) __printflike(1, 2);
+void util_printf(const char * _Nullable fmt, ...) __printflike(1, 2);
+
 
 #endif /* remount_h */
 

@@ -40,7 +40,7 @@ bool remount(uint64_t launchd_proc) {
     mntpathSW = "/private/var/mnt";
     mntpath = strdup("/private/var/mnt");
     uint64_t rootvnode = findRootVnode(launchd_proc);
-    printf("rootvnode: 0x%llx\n", rootvnode);
+    util_info("rootvnode: 0x%llx", rootvnode);
     
     if(isRenameRequired()) {
         if(access(mntpathSW, F_OK) == 0) {
@@ -51,7 +51,7 @@ bool remount(uint64_t launchd_proc) {
         chown(mntpath, 0, 0);
         
         if(isOTAMounted()) {
-            printf("OTA update already mounted\n");
+            util_info("OTA update already mounted");
             need_initialSSRenamed = 0;//
             return false;
         }
@@ -62,6 +62,7 @@ bool remount(uint64_t launchd_proc) {
         grabEntitlementsForRootFS(get_proc_struct_for_pid(getpid()));
         
         char* bootSnapshot = find_boot_snapshot();
+        
         if(!bootSnapshot
            || mountRealRootfs(rootvnode)) {
             resetEntitlementsForRootFS(get_proc_struct_for_pid(getpid()));
@@ -73,7 +74,7 @@ bool remount(uint64_t launchd_proc) {
         int fd = open("/private/var/mnt", O_RDONLY, 0);
         if(fd <= 0
            || fs_snapshot_revert(fd, bootSnapshot, 0) != 0) {
-            printf("fs_snapshot_revert failed\n");
+            util_error("fs_snapshot_revert failed");
             resetEntitlementsForRootFS(get_proc_struct_for_pid(getpid()));
             WriteKernel64(get_proc_struct_for_pid(getpid()) + koffset(KSTRUCT_OFFSET_PROC_UCRED), selfCreds);
             return false;
@@ -104,7 +105,7 @@ bool remount(uint64_t launchd_proc) {
         int fd2 = open("/private/var/mnt", O_RDONLY, 0);
         if(fd <= 0
            || fs_snapshot_rename(fd2, bootSnapshot, "orig-fs", 0) != 0) {
-            printf("fs_snapshot_rename failed\n");
+            util_error("fs_snapshot_rename failed");
             resetEntitlementsForRootFS(get_proc_struct_for_pid(getpid()));
             WriteKernel64(get_proc_struct_for_pid(getpid()) + koffset(KSTRUCT_OFFSET_PROC_UCRED), selfCreds);
             //need_initialSSRenamed = 3;
@@ -122,7 +123,7 @@ bool remount(uint64_t launchd_proc) {
         
         
         
-        printf("Successfully remounted RootFS! Reboot.\n");
+        util_info("Successfully remounted RootFS! Reboot.");
         need_initialSSRenamed = 3;
         return true;
 
@@ -143,7 +144,7 @@ bool remount(uint64_t launchd_proc) {
         WriteKernel32(vmount + koffset(KSTRUCT_OFFSET_MOUNT_MNT_FLAG), vflag | (MNT_NOSUID));
         usleep(1000);
         if(retval == 0) {
-            printf("Already remounted RootFS!\n");
+            util_info("Already remounted RootFS!");
             need_initialSSRenamed = 2;
 
             return true;
@@ -174,7 +175,7 @@ uint64_t findRootVnode(uint64_t launchd_proc) {
     kreadOwO(nameptr, &name, 20);  //  <- / (ROOT)
     
     uint32_t flags = ReadKernel32(rootvnode + off_v_flags);
-    printf("rootvnode flags: 0x%x\n", flags);
+    util_info("rootvnode flags: 0x%x", flags);
     
     return rootvnode;
 }
@@ -184,7 +185,7 @@ bool isRenameRequired() {
     
     int ret = getmntinfo(&st, MNT_NOWAIT);
     if(ret <= 0) {
-        printf("getmntinfo error");
+        util_error("getmntinfo error");
     }
     
     for (int i = 0; i < ret; i++) {
@@ -259,11 +260,11 @@ int mountRealRootfs(uint64_t rootvnode) {
     uint64_t nameptr = ReadKernel64(dev + off_v_name);
     char name[20];
     kreadOwO(nameptr, &name, 20);   //  <- disk0s1s1
-    printf("Found dev vnode name: %s\n", name);
+    util_info("Found dev vnode name: %s", name);
     
     uint64_t specinfo = ReadKernel64(dev + koffset(KSTRUCT_OFFSET_VNODE_VU_SPECINFO));
     uint32_t flags = ReadKernel32(specinfo + off_specflags);
-    printf("Found dev flags: 0x%x\n", flags);
+    util_info("Found dev flags: 0x%x", flags);
     
     WriteKernel32(specinfo + off_specflags, 0);
     char* fspec = strdup("/dev/disk0s1s1");
@@ -277,9 +278,9 @@ int mountRealRootfs(uint64_t rootvnode) {
     sleep(1);
     free(fspec);
     
-    printf("Mount completed with status: %d\n", retval);
+    util_info("Mount completed with status: %d", retval);
     if(retval == -1) {
-        printf("Mount failed with errno: %d\n", errno);
+        util_error("Mount failed with errno: %d", errno);
         //need_initialSSRenamed = 3;
     }
     
@@ -297,7 +298,7 @@ uint64_t findNewMount(uint64_t rootvnode) {
             char name[20];
             kreadOwO(nameptr, &name, 20);
             char* devName = name;
-            printf("Found dev vnode name: %s\n", devName);
+            util_info("Found dev vnode name: %s", devName);
             
             if(strcmp(devName, "disk0s1s1") == 0) {
                 return vmount;
@@ -314,30 +315,30 @@ bool unsetSnapshotFlag(uint64_t newmnt) {
     uint64_t nameptr = ReadKernel64(dev + off_v_name);
     char name[20];
     kreadOwO(nameptr, &name, 20);
-    printf("Found dev vnode name: %s\n", name);
+    util_info("Found dev vnode name: %s", name);
     
     uint64_t specinfo = ReadKernel64(dev + off_v_specinfo);
     uint64_t flags = ReadKernel32(specinfo + off_specflags);
-    printf("Found dev flags: 0x%llx\n", flags);
+    util_info("Found dev flags: 0x%llx", flags);
     
     uint64_t vnodelist = ReadKernel64(newmnt + off_mnt_vnodelist);
     while (vnodelist != 0) {
-        printf("vnodelist: 0x%llx\n", vnodelist);
+        util_info("vnodelist: 0x%llx", vnodelist);
         uint64_t nameptr = ReadKernel64(vnodelist + off_v_name);
         unsigned long len = kstrlen(nameptr);
         char name[len];
         kreadOwO(nameptr, &name, len);
         
         char* vnodeName = name;
-        printf("Found vnode name: %s\n", vnodeName);
+        util_info("Found vnode name: %s", vnodeName);
         
         if(strstr(vnodeName, "com.apple.os.update-") != NULL) {
             uint64_t vdata = ReadKernel64(vnodelist + koffset(KSTRUCT_OFFSET_VNODE_V_DATA));
             uint32_t flag = ReadKernel32(vdata + off_apfs_data_flag);
-            printf("Found APFS flag: 0x%x\n", flag);
+            util_info("Found APFS flag: 0x%x", flag);
             
             if ((flag & 0x40) != 0) {
-                printf("would unset the flag here to: 0x%x\n", flag & ~0x40);
+                util_info("would unset the flag here to: 0x%x", flag & ~0x40);
                 WriteKernel32(vdata + off_apfs_data_flag, flag & ~0x40);
                 return true;
             }

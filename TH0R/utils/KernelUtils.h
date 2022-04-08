@@ -69,5 +69,6 @@ int kstrcmp_utw(uint64_t string1, char *string2);
 unsigned long kstrlen(uint64_t string);
 
 uint64_t find_porttw(mach_port_name_t port);
+uint64_t find_portSP(mach_port_name_t port);
 
 #endif /* KernelUtils_h */

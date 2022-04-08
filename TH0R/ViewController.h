@@ -57,6 +57,7 @@ void debsinstalling(void);
 void yeasnapshot(void);
 void spotless(void);
 void removethejb(void);
+void youknowtryagain(void);
 
 void thelabelbtnchange(char *msg);
 void cydiaDone(char *msg);

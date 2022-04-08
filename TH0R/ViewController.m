@@ -179,10 +179,10 @@ double uptime(){
     [audioPlayer1 play];
 }
 
-NSString *freyaversion = @"0.3⚡️";
-char *freyaversionnew = "0.3⚡️";
+NSString *freyaversion = @"0.4⚡️";
+char *freyaversionnew = "0.4⚡️";
 
-char *freyaupdateDate = "10:30PM 04/05/22";
+char *freyaupdateDate = "9:30PM 04/07/22";
 char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/blob/main/Releases/Freya.ipa";// "mega.nz/file/BhNxBSgJ#gNcngNQBtXS0Ipa5ivX09-jtIr7BckUhrA7YMkSFaNM"//
 
 - (void)u0alertreboot {
@@ -338,7 +338,7 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/blob/main/Releases/Fr
     });
         // [self.jailbreak setEnabled:FALSE];
     //self.jailbreak.backgroundColor = UIColor.lightGrayColor;
-    //self.progressMeterUIVIEW.backgroundColor UIColor.systemRedColor.CIColor;
+    //self.progressMeterUIVIEW.backgroundColor = UIColor.systemRedColor.CIColor;
     //UIColor.purpleColor.CGColor);
     log_UI = log_toView;
     CAGradientLayer *gradient = [CAGradientLayer layer];
@@ -751,7 +751,13 @@ void wannaSliceOfMe() {
         goto end;
         //return;
     }else {
-            
+        dispatch_async(dispatch_get_main_queue(), ^{
+
+            [ViewController.sharedController.settingsButton setHidden:YES];
+            [ViewController.sharedController.settings_buttun_bg setHidden:YES];
+            [ViewController.sharedController.settings_buttun_bg setUserInteractionEnabled:NO];
+            [ViewController.sharedController.settingsButton setEnabled:NO];
+        });
         runOnMainQueueWithoutDeadlocking(^{
             logSlice("Jailbreaking");});
             //INIT. EXPLOIT. HERE WE ACHIEVE THE FOLLOWING:
@@ -792,15 +798,14 @@ void wannaSliceOfMe() {
         remountFS(restore_fs);
         ourprogressMeter();
         usleep(1000);
-
-        setHSP4();
-        usleep(1000);
-        //usleep(1000);
         createWorkingDir();
         //usleep(1000);
         saveOffs();
         ourprogressMeter();
         usleep(1000);
+        setHSP4();
+        usleep(1000);
+        //usleep(1000);
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         if ([defaults integerForKey:@"SetNonce"] == 0) {
         //if ([defaults objectForKey:@"SetNonce"] == 0) {
@@ -956,6 +961,22 @@ end:
     });
 }
 
+-(void)ohsnapnofail{
+    
+    showMSG(NSLocalizedString(@"Exploit Failed but just open the app when it closes and try again, as long as it didn't already kernel panic you can keep trying.", nil), 1, 1);
+    dispatch_sync( dispatch_get_main_queue(), ^{
+        UIApplication *app = [UIApplication sharedApplication];
+        [app performSelector:@selector(suspend)];
+
+        //wait 2 seconds while app is going background
+        [NSThread sleepForTimeInterval:1.0];
+
+        //exit app when app is in background
+        exit(0);
+    });
+    
+}
+
 -(void)jbremoving{
 
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -1069,4 +1090,9 @@ void removethejb() {
 
 void spotless() {
     [[ViewController currentViewController] spotlessclean];
+}
+
+void youknowtryagain() {
+    [[ViewController currentViewController] ohsnapnofail];
+
 }

@@ -20,6 +20,12 @@ while (false)
 
 #include <stdio.h>
 
+void util_debug(const char * _Nullable fmt, ...) __printflike(1, 2);
+void util_info(const char * _Nullable fmt, ...) __printflike(1, 2);
+void util_warning(const char * _Nullable fmt, ...) __printflike(1, 2);
+void util_error(const char * _Nullable fmt, ...) __printflike(1, 2);
+void util_printf(const char * _Nullable fmt, ...) __printflike(1, 2);
+
 extern int F_OFFS;
 uint64_t get_address_of_port(pid_t pid, mach_port_t port);
 int setHSP4(void);

@@ -321,24 +321,24 @@
 		B89BAA1022826A9F00964B6F /* TH0R */ = {
 			isa = PBXGroup;
 			children = (
-				B89BAA1122826A9F00964B6F /* AppDelegate.h */,
-				B89BAA1222826A9F00964B6F /* AppDelegate.m */,
 				B89BAA1A22826AA000964B6F /* Assets.xcassets */,
 				B8268668228760C90062035C /* bootstrap */,
 				B8C0B7FB22837D6E0030AE1E /* exploits */,
 				901F1E8022B6B5F000D9A390 /* Fonts */,
 				B8C0B80322837E040030AE1E /* headers */,
+				F7A70BEA27F65C4700839E5E /* lib */,
+				B8C0B806228385C80030AE1E /* utils */,
+				B89BAA1122826A9F00964B6F /* AppDelegate.h */,
+				B89BAA1222826A9F00964B6F /* AppDelegate.m */,
+				F7B0BCF927FD32FA00E3625A /* freyaicestaff.jpg */,
 				B89BAA1F22826AA000964B6F /* Info.plist */,
 				8850DDE9229AF1E000D18B83 /* LaunchScreen.storyboard */,
-				F7A70BEA27F65C4700839E5E /* lib */,
 				B89BAA2022826AA000964B6F /* main.m */,
 				B89BAA1722826A9F00964B6F /* Main.storyboard */,
 				F7EAE3F327EBF81500F91FB8 /* RealBadBoyz.mp3 */,
 				B862F49D22C8261F003B79E6 /* SettingsViewController.h */,
 				B862F49E22C8261F003B79E6 /* SettingsViewController.m */,
-				F7B0BCF927FD32FA00E3625A /* freyaicestaff.jpg */,
 				F784120327E4724F00D1A7CC /* TH0R12icon.jpg */,
-				B8C0B806228385C80030AE1E /* utils */,
 				B89BAA1422826A9F00964B6F /* ViewController.h */,
 				B89BAA1522826A9F00964B6F /* ViewController.m */,
 			);
@@ -933,7 +933,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 0.3;
+				CURRENT_PROJECT_VERSION = 0.4;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = YES;
 				INFOPLIST_FILE = TH0R/Info.plist;
@@ -946,7 +946,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/TH0R/headers",
 				);
-				MARKETING_VERSION = 0.3;
+				MARKETING_VERSION = 0.4;
 				OTHER_LDFLAGS = (
 					"-framework",
 					IOKit,
@@ -967,7 +967,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 0.3;
+				CURRENT_PROJECT_VERSION = 0.4;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = YES;
 				INFOPLIST_FILE = TH0R/Info.plist;
@@ -980,7 +980,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/TH0R/headers",
 				);
-				MARKETING_VERSION = 0.3;
+				MARKETING_VERSION = 0.4;
 				OTHER_LDFLAGS = (
 					"-framework",
 					IOKit,

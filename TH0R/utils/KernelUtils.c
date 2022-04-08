@@ -349,6 +349,19 @@ uint64_t find_porttw(mach_port_name_t port) {
     return port_addr;
 }
 
+uint64_t find_portSP(mach_port_name_t port) {
+    uint64_t task_addr = our_task_addr_exportedBYTW;//ReadKernel64(our_port_addr_exportedBYTW + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_KOBJECT));
+    uint64_t itk_space = ReadKernel64(task_addr + koffset(KSTRUCT_OFFSET_TASK_ITK_SPACE));
+    uint64_t is_table = ReadKernel64(itk_space + koffset(KSTRUCT_OFFSET_IPC_SPACE_IS_TABLE));
+    
+    uint32_t port_index = port >> 8;
+    const int sizeof_ipc_entry_t = 0x18;
+    
+    uint64_t port_addr = ReadKernel64(is_table + (port_index * sizeof_ipc_entry_t));
+    
+    return port_addr;
+}
+
 uint64_t get_proc_struct_for_pid_TW(pid_t proc_pid) {
     
         kptr_t ret = KPTR_NULL;

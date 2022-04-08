@@ -597,21 +597,24 @@ void runVoucherSwap() {
     }
 }
 
-void runSockPuppet()
-{
+void runSockPuppet() {
     ourprogressMeter();
     get_tfp0();
     
     if (MACH_PORT_VALID(tfp0))
     {
-        kbase = find_kernel_base_sockpuppet();
+        if (kernelbase_exportedBYTW != 0) {
+            kbase = kernelbase_exportedBYTW;
+        } else {
+            kbase = find_kernel_base_sockpuppet();
+        }
         kernel_slide = (kbase - KADD_SEARCH);
-        runShenPatchOWO = true;
+       // runShenPatchOWO = true;
         
     }
     if (tfp0 == 0) {
         util_info("ERROR!");
-        NSString *str = [NSString stringWithFormat:@"ERROR TFP0: 0x%x", tfp0];
+        NSString *str = [NSString stringWithFormat:@"Exploit failed, however with sockpuppet. You can open the app up again and just keep trying again until it either, kernel panics or succeeds. tfp: 0x%x", tfp0];
         showMSG(str, true, false);
         
         dispatch_sync( dispatch_get_main_queue(), ^{
@@ -760,7 +763,8 @@ NSString *get_bootstrap_file(NSString *file)
 
 NSString *get_debian_file(NSString *file)
 {
-    return get_path_res([@"bootstrap/DEBS/" stringByAppendingString:file]);
+    return [@"/freya/DEBS/" stringByAppendingString:file];
+    //return get_path_res([@"bootstrap/DEBS/" stringByAppendingString:file]);
 }
 
 bool canRead(const char *file) {
@@ -1071,8 +1075,8 @@ void getOffsets() {
     findPFOffset(allproc);
     //find kenrel task
     findPFOffset(kernel_task);
-    our_kernel_taskStruct_exportAstylez = GETOFFSET(kernel_task);;// ReadKernel64(GETOFFSET(kernel_task));//
-    our_kernel_taskStruct_exportAstylez = ReadKernel64(our_kernel_taskStruct_exportAstylez);//
+    //our_kernel_taskStruct_exportAstylez = GETOFFSET(kernel_task);;// ReadKernel64(GETOFFSET(kernel_task));//
+    //our_kernel_taskStruct_exportAstylez = ReadKernel64(our_kernel_taskStruct_exportAstylez);//
 
     //Get KFree for jailbreakd
     findPFOffset(kfree);
@@ -1138,15 +1142,16 @@ void getOffsets() {
     //We got offsets.
     found_offs = true;
 
+    term_kernel();
+    
+    clean_file(decompressed_kernel_cache_path);
+    
     if (runShenPatchOWO)
     {
         printf("We are going to use the shenanigans patch.\n");
         runShenPatch();
     }
-    term_kernel();
-    
-    clean_file(decompressed_kernel_cache_path);
-    
+
 }
 
 
@@ -1834,8 +1839,8 @@ void preMountFS(const char *thedisk, int root_fs, const char **snapshots, const 
 {
     util_info("Pre-Mounting RootFS...");
 
-    _assert(!is_mountpoint("/var/rootfsmnt"), invalidRootMessage, true);
-    char *const rootFsMountPoint = "/var/rootfsmnt";
+    _assert(!is_mountpoint("/private/var/mnt"), invalidRootMessage, true);
+    char *const rootFsMountPoint = "/private/var/mnt";
 //char *const rootFsMountPoint = "/private/var/tmp/jb/mnt1";
     if (is_mountpoint(rootFsMountPoint)) {
         _assert(unmount(rootFsMountPoint, MNT_FORCE) == ERR_SUCCESS, localize(@"Unable to unmount old RootFS mount point."), true);
@@ -2601,86 +2606,39 @@ void yesdebsinstall() {
      //Run DPKG on itself and readline is needed
     //trust_file(@"/usr/local/lib/liblzma.5.dylib");
     //trust_file(@"/usr/lib/liblzma.5.dylib");
-
-    installDeb([get_debian_file(@"dpkg_1.18.25-9_iphoneos-arm.deb") UTF8String], true);
+    extractFile(get_bootstrap_file(@"alldebs412ios.tar.gz"), @"/freya/");
+    installDeb(("/freya/DEBS/dpkg_1.18.25-9_iphoneos-arm.deb"), true);
+    installDeb(("/freya/dpkg_1.18.25-9_iphoneos-arm.deb"), true);
+    //installDeb([get_debian_file(@"dpkg_1.18.25-9_iphoneos-arm.deb") UTF8String], true);
     //trust_file(@"/usr/lib/libreadline.7.dylib");
-    installDeb([get_debian_file(@"readline_7.0.5-2_iphoneos-arm.deb") UTF8String], true);
+    installDeb(("/freya/DEBS/readline_7.0.5-2_iphoneos-arm.deb"), true);
     //trust_file(@"/usr/lib/libreadline.7.dylib");
 
      //PRE-DEPENDS
-     installDeb([get_debian_file(@"tar.deb") UTF8String], true);
-     installDeb([get_debian_file(@"debianutils.deb") UTF8String], true);
-     installDeb([get_debian_file(@"darwintools.deb") UTF8String], true);
-     installDeb([get_debian_file(@"uikit.deb") UTF8String], true);
-     installDeb([get_debian_file(@"system-cmds.deb") UTF8String], true);
-     installDeb([get_debian_file(@"cydia-lproj.deb") UTF8String], true);
-     installDeb([get_debian_file(@"cydia.deb") UTF8String], true);
-/*     trust_file(@"/usr/lib/libcrypto.1.0.0.dylib");
-    trust_file(@"/Applications/Cydia.app/Cydia");
-    trust_file(@"/Library/LaunchDaemons/com.saurik.Cydia.Startup.plist");
-    trust_file(@"/private/etc/apt/trusted.gpg.d/bigboss.gpg");
-    trust_file(@"/private/etc/apt/trusted.gpg.d/hbang.gpg");
-    trust_file(@"/private/etc/apt/trusted.gpg.d/modmyi.gpg");
-    trust_file(@"/private/etc/apt/trusted.gpg.d/saurik.gpg");
-    trust_file(@"/private/etc/apt/trusted.gpg.d/sbingner.gpg");
-    trust_file(@"/private/etc/apt/trusted.gpg.d/zodttd.gpg");
-    trust_file(@"/usr/libexec/cydia/startup");trust_file(@"/usr/libexec/cydia/setnsfpn");
-    trust_file(@"/usr/libexec/cydia/firmware.sh");trust_file(@"/usr/libexec/cydia/cfversion");
-    trust_file(@"/usr/libexec/cydia/cydo");trust_file(@"/usr/libexec/cydia/finish.sh");
-    trust_file(@"/usr/libexec/cydia/asuser");trust_file(@"/usr/libexec/cydia/du");
-    trust_file(@"/usr/libexec/cydia/free.sh");trust_file(@"/usr/libexec/cydia/move.sh");
-*/
-    
-     
+     installDeb(("/freya/DEBS/tar.deb"), true);
+     installDeb(("/freya/DEBS/debianutils.deb"), true);
+     installDeb(("/freya/DEBS/darwintools.deb"), true);
+     installDeb(("/freya/DEBS/uikit.deb"), true);
+     installDeb(("/freya/DEBS/system-cmds.deb"), true);
+     installDeb(("/freya/DEBS/cydia-lproj.deb"), true);
+     installDeb(("/freya/DEBS/cydia.deb"), true);
      //Idk why we need to do this bullshit.
-     for (NSString *pkg in getPackages([get_debian_file(@"Packages") UTF8String]))
+     for (NSString *pkg in getPackages("/freya/DEBS/Packages"))
      {
 
          if (![pkg  isEqual: @"tar.deb"] && ![pkg  isEqual: @"debianutils.deb"] && ![pkg  isEqual: @"darwintools.deb"] && ![pkg  isEqual: @"org.coolstar.tweakinject_1.1.1-sileo.deb"] && ![pkg  isEqual: @"mobilesubstrate_99.0_iphoneos-arm.deb"] && ![pkg  isEqual: @"com.ex.libsubstitute_0.1.0-coolstar.deb"] && ![pkg  isEqual: @"uikit.deb"] && ![pkg  isEqual: @"system-cmds.deb"] && ![pkg  isEqual: @"cydia.deb"] && ![pkg  isEqual: @"readline_7.0.5-2_iphoneos-arm.deb"] && ![pkg  isEqual: @"dpkg_1.18.25-9_iphoneos-arm.deb"] && ![pkg  isEqual: @"mterminal_1.4-6_iphoneos-arm.deb"] && ![pkg  isEqual: @"launchctl_25_iphoneos-arm.deb"] && ![pkg  isEqual: @"jbctl_0.2.3-1_iphoneos-arm.deb"] && ![pkg  isEqual: @"jailbreak-resources_1.0~rc1_iphoneos-arm.deb"])
          /*if (![pkg  isEqual: @"tar.deb"] && ![pkg  isEqual: @"installer.deb"] && ![pkg  isEqual: @"debianutils.deb"] && ![pkg  isEqual: @"darwintools.deb"] && ![pkg  isEqual: @"tweakinject.deb"] && ![pkg  isEqual: @"mobilesubstrate.deb"] && ![pkg  isEqual: @"substitute.deb"] && ![pkg  isEqual: @"me.chr0nict.comex.substitute_1.0_iphoneos-arm.deb"] && ![pkg  isEqual: @"uikit.deb"] && ![pkg  isEqual: @"system-cmds.deb"] && ![pkg  isEqual: @"cydia.deb"] && ![pkg isEqual: @"xyz.willy.zebra_1.0_beta15_iphoneos-arm.deb"] && ![pkg  isEqual: @"readline_7.0.5-2_iphoneos-arm.deb"] && ![pkg  isEqual: @"dpkg_1.18.25-9_iphoneos-arm.deb"])
 */       {
-             
              installDeb([get_debian_file(pkg) UTF8String], true);
+             //installDeb((@"/freya/DEBS/" && @(pkg) UTF8String, true);
              //trust_file(@"/usr/lib/libcrypto.1.0.0.dylib");
 
          }
      }
     
-    installDeb([get_debian_file(@"cydia.deb") UTF8String], true);
+    installDeb(("/freya/DEBS/cydia.deb"), true);
     execCmd("/usr/bin/dpkg", "--configure", "-a", NULL);
 
-    
-    
-   /* installDeb([get_debian_file(@"dpkg_1.19.7-2_iphoneos-arm.deb") UTF8String], true);
-
-    // installDeb([get_debian_file(@"dpkg_1.18.25-9_iphoneos-arm.deb") UTF8String], true);
-     installDeb([get_debian_file(@"readline_7.0.5-2_iphoneos-arm.deb") UTF8String], true);
-     
-     //PRE-DEPENDS
-     installDeb([get_debian_file(@"tar.deb") UTF8String], true);
-     installDeb([get_debian_file(@"debianutils.deb") UTF8String], true);
-     installDeb([get_debian_file(@"darwintools.deb") UTF8String], true);
-     installDeb([get_debian_file(@"uikit.deb") UTF8String], true);
-     installDeb([get_debian_file(@"system-cmds.deb") UTF8String], true);
-     installDeb([get_debian_file(@"cydia-lproj.deb") UTF8String], true);
-     installDeb([get_debian_file(@"cydia.deb") UTF8String], true);
-     trust_file(@"/usr/lib/libcrypto.1.0.0.dylib");
-
-    
-    //installDeb([get_debian_file(@"dpkg_1.19.7-2_iphoneos-arm.deb") UTF8String], true);
-    installDeb([get_debian_file(@"bash_4.4.23-2_iphoneos-arm.deb") UTF8String], true);
-    installDeb([get_debian_file(@"coreutils_8.30-2_iphoneos-arm.deb") UTF8String], true);
-    installDeb([get_debian_file(@"coreutils-bin_8.30-3_iphoneos-arm.deb") UTF8String], true);
-    installDeb([get_debian_file(@"ncurses5-libs_5.9-1_iphoneos-arm.deb") UTF8String], true);
-    installDeb([get_debian_file(@"ncurses_6.1+20181013-1_iphoneos-arm.deb") UTF8String], true);
-
-    installDeb([get_debian_file(@"diffutils_3.6-1_iphoneos-arm.deb") UTF8String], true);
-    installDeb([get_debian_file(@"openssh_8.4-2_iphoneos-arm.deb") UTF8String], true);
-    installDeb([get_debian_file(@"readline_8.0-1_iphoneos-arm.deb") UTF8String], true);
-    installDeb([get_debian_file(@"trustinjector_0.4~b5_iphoneos-arm.deb") UTF8String], true);
-    //installDeb([get_debian_file(@"signing-certificate_0.0.1_iphoneos-arm.deb") UTF8String], true);
-
-    */
     installDeb([get_debian_file(@"mterminal_1.4-6_iphoneos-arm.deb") UTF8String], true);
 
     installDeb([get_debian_file(@"launchctl_25_iphoneos-arm.deb") UTF8String], true);
@@ -2815,11 +2773,14 @@ void yesdebsinstall() {
    // execCmd("/usr/bin/apt-mark", "hold", "jbctl", NULL);
    // execCmd("/usr/bin/apt-mark", "hold", "Jailbreak Resources", NULL);
     execCmd("/usr/bin/dpkg", "--configure", "-a", NULL);
+    [[NSFileManager defaultManager] removeItemAtPath:@"/freya/DEBS" error:nil];
+    removeFileIfExists("/freya/DEBS");
+
 
 }
 void xpcFucker()
 {
-    LOG("Patching XPCPROXY...");
+    util_info("Patching XPCPROXY...");
     
     const char *patchedExec = "/usr/libexec/xpcproxy.sliced";
     
@@ -2830,7 +2791,7 @@ void xpcFucker()
         //Sleep Here
         sleep(0.2);
         
-        LOG("%s Does Not Exist! Continuing...", patchedExec);
+        util_info("%s Does Not Exist! Continuing...", patchedExec);
         copyMe("/usr/libexec/xpcproxy", "/usr/libexec/xpcproxy.sliced");
         
         //Sleep here
@@ -3034,6 +2995,7 @@ void installCydia(bool post)
 
         
         kickMe();
+
         yesdebsinstall();
         ensure_file("/.freya_bootstrap", 0, 0644);
 
@@ -3375,12 +3337,16 @@ void finish(bool shouldLoadTweaks)
     trust_file(@"/bin/sh");
     copyMe("/freya/launchctl", "/bin/launchctl");
     
+    chmod("/usr/bin/sbreload", 0755);
+    chown("/usr/bin/sbreload", 0, 0);
     
-    systemCmd("chmod +x /usr/bin/sbreload");
-    systemCmd("chown 0:0 /usr/bin/sbreload");
-    
-    systemCmd("chmod +x /usr/bin/rebackboardd");
-    systemCmd("chown 0:0 /usr/bin/rebackboardd");
+    //systemCmd("chmod +x /usr/bin/sbreload");
+    //systemCmd("chown 0:0 /usr/bin/sbreload");
+    chmod("/usr/bin/rebackboardd", 0755);
+    chown("/usr/bin/rebackboardd", 0, 0);
+
+   // systemCmd("chmod +x /usr/bin/rebackboardd");
+   // systemCmd("chown 0:0 /usr/bin/rebackboardd");
     
     createFile("/tmp/.jailbroken_freya", 0, 0644);
     

@@ -50,18 +50,18 @@ uint64_t give_creds_to_process_at_addr(uint64_t proc, uint64_t cred_addr)
 kptr_t get_kernel_proc_struct_addr() {
     kptr_t ret = KPTR_NULL;
     kptr_t const symbol = GETOFFSET(kernel_task);
-    util_info("kernel_task symbol = " ADDR, symbol);
-    if (our_kernel_taskStruct_exportAstylez != 0) {
+    //util_info("kernel_task symbol = " ADDR, symbol);
+    if (our_kernel_procStruct_exportAstylez != 0) {
         kptr_t const task = our_kernel_taskStruct_exportAstylez;//ReadKernel64(symbol);
-        util_info("task of symbol = " ADDR, task);
+        //util_info("task of symbol = " ADDR, task);
         kptr_t const bsd_info = our_kernel_procStruct_exportAstylez;//ReadKernel64(task + koffset(KSTRUCT_OFFSET_TASK_BSD_INFO));
-        util_info("bsd_info of kernel_task is procofKern = " ADDR, bsd_info);
+    //util_info("bsd_info of kernel_task is procofKern = " ADDR, bsd_info);
         ret = bsd_info;
     } else {
         kptr_t const task = ReadKernel64(symbol);
-        util_info("task of symbol = " ADDR, task);
+       // util_info("task of symbol = " ADDR, task);
         kptr_t const bsd_info = ReadKernel64(task + koffset(KSTRUCT_OFFSET_TASK_BSD_INFO));
-        util_info("bsd_info of kernel_task is procofKern = " ADDR, bsd_info);
+       // util_info("bsd_info of kernel_task is procofKern = " ADDR, bsd_info);
         ret = bsd_info;
     }
 out:;
@@ -72,10 +72,10 @@ kptr_t get_kernel_cred_addr()
 {
     kptr_t ret = KPTR_NULL;
     kptr_t const kernel_proc_struct_addr = get_kernel_proc_struct_addr();
-    util_info("kernel_proc_struct_addr = " ADDR, kernel_proc_struct_addr);
+   // util_info("kernel_proc_struct_addr = " ADDR, kernel_proc_struct_addr);
 
     kptr_t const kernel_ucred_struct_addr = ReadKernel64(kernel_proc_struct_addr + koffset(KSTRUCT_OFFSET_PROC_UCRED));
-    util_info("kernel_ucred_struct_addr = " ADDR, kernel_ucred_struct_addr);
+   // util_info("kernel_ucred_struct_addr = " ADDR, kernel_ucred_struct_addr);
     ret = kernel_ucred_struct_addr;
 out:;
     return ret;
@@ -124,7 +124,7 @@ void runShenPatch()
         util_info("Detected corrupted shenanigans pointer.");
         Shenanigans = kernelCredAddr;
     }
-    //WriteKernel64(GETOFFSET(shenanigans), ShenanigansPatch);
+    WriteKernel64(GETOFFSET(shenanigans), ShenanigansPatch);
     uint64_t myOriginalCredAddr = myCredAddr = give_creds_to_process_at_addr(proc, kernelCredAddr);
     util_info("myOriginalCredAddr = " ADDR, myOriginalCredAddr);
     
