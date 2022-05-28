@@ -34,7 +34,7 @@
                                 <rect key="frame" x="0.0" y="10" width="320" height="394"/>
                                 <subviews>
                                     <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" text="text" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="jye-mo-TB9">
-                                        <rect key="frame" x="8" y="63" width="304" height="294"/>
+                                        <rect key="frame" x="8" y="67" width="304" height="290"/>
                                         <color key="textColor" cocoaTouchSystemColor="lightTextColor"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
@@ -63,7 +63,7 @@
                                     <constraint firstAttribute="height" constant="394" id="3UD-qn-KFI"/>
                                     <constraint firstItem="bz0-lI-Wh5" firstAttribute="top" secondItem="1hV-NU-wdO" secondAttribute="top" constant="15" id="460-xK-07N"/>
                                     <constraint firstAttribute="width" constant="320" id="CLp-3G-x5S"/>
-                                    <constraint firstItem="jye-mo-TB9" firstAttribute="top" secondItem="1hV-NU-wdO" secondAttribute="top" constant="63" id="FSt-ib-0LX">
+                                    <constraint firstItem="jye-mo-TB9" firstAttribute="top" secondItem="1hV-NU-wdO" secondAttribute="top" constant="67" id="FSt-ib-0LX">
                                         <variation key="heightClass=compact-widthClass=compact" constant="0.0"/>
                                     </constraint>
                                     <constraint firstItem="LWq-dh-jOL" firstAttribute="trailing" secondItem="Mon-ks-vZq" secondAttribute="trailing" id="GGm-QY-k4U"/>
@@ -376,7 +376,7 @@ Jailbreak</string>
                                                                         <rect key="frame" x="0.0" y="0.0" width="244" height="16.5"/>
                                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                         <fontDescription key="fontDescription" name="SFProRounded-Semibold" family="SF Pro Rounded" pointSize="17"/>
-                                                                        <state key="normal" title="VS">
+                                                                        <state key="normal" title="Voucher Swap">
                                                                             <color key="titleColor" cocoaTouchSystemColor="viewFlipsideBackgroundColor"/>
                                                                         </state>
                                                                         <userDefinedRuntimeAttributes>
@@ -393,7 +393,7 @@ Jailbreak</string>
                                                                         <rect key="frame" x="0.0" y="24.5" width="244" height="16.5"/>
                                                                         <color key="backgroundColor" red="0.42745098039215684" green="0.52549019607843139" blue="0.81568627450980391" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                         <fontDescription key="fontDescription" name="SFProRounded-Semibold" family="SF Pro Rounded" pointSize="17"/>
-                                                                        <state key="normal" title="MS1">
+                                                                        <state key="normal" title="Mach Swap 1">
                                                                             <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                         </state>
                                                                         <userDefinedRuntimeAttributes>
@@ -410,7 +410,7 @@ Jailbreak</string>
                                                                         <rect key="frame" x="0.0" y="49" width="244" height="17"/>
                                                                         <color key="backgroundColor" red="0.42745098039215684" green="0.52549019607843139" blue="0.81568627450980391" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                         <fontDescription key="fontDescription" name="SFProRounded-Semibold" family="SF Pro Rounded" pointSize="17"/>
-                                                                        <state key="normal" title="MS2">
+                                                                        <state key="normal" title="Mach Swap 2">
                                                                             <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                         </state>
                                                                         <userDefinedRuntimeAttributes>
@@ -428,7 +428,7 @@ Jailbreak</string>
                                                                         <color key="backgroundColor" red="0.42745098040000001" green="0.52549019610000003" blue="0.81568627449999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                         <fontDescription key="fontDescription" name="SFProRounded-Semibold" family="SF Pro Rounded" pointSize="16"/>
                                                                         <color key="tintColor" red="0.42745098040000001" green="0.52549019610000003" blue="0.81568627449999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                                        <state key="normal" title="SP">
+                                                                        <state key="normal" title="Sock Puppet">
                                                                             <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                         </state>
                                                                         <userDefinedRuntimeAttributes>
@@ -446,7 +446,7 @@ Jailbreak</string>
                                                                         <color key="backgroundColor" red="0.42745098040000001" green="0.52549019610000003" blue="0.81568627449999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                         <fontDescription key="fontDescription" name="SFProRounded-Semibold" family="SF Pro Rounded" pointSize="16"/>
                                                                         <color key="tintColor" red="0.42745098040000001" green="0.52549019610000003" blue="0.81568627449999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                                        <state key="normal" title="TW">
+                                                                        <state key="normal" title="Time Waste">
                                                                             <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                         </state>
                                                                         <userDefinedRuntimeAttributes>
@@ -542,7 +542,7 @@ Jailbreak</string>
                                                     <constraint firstAttribute="height" constant="28" id="riV-L9-G5P"/>
                                                 </constraints>
                                             </stackView>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="TH0R Version 0.1" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sTm-7g-Qnr">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Freya Version 0.5" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sTm-7g-Qnr">
                                                 <rect key="frame" x="11" y="6" width="270" height="28"/>
                                                 <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <constraints>

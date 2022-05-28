@@ -18,5 +18,7 @@ extern void NSLog(CFStringRef, ...);
 typedef uint64_t kptr_t;
 #define KPTR_NULL ((kptr_t) 0)
 #define KERN_POINTER_VALID(val) ((val) >= 0xffff000000000000 && (val) != 0xffffffffffffffff)
+#define SafeFree(x) do { if (x) free(x); } while(false)
+#define SafeFreeNULL(x) do { SafeFree(x); (x) = NULL; } while(false)
 
 #endif

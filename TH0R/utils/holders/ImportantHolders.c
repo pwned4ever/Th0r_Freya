@@ -10,7 +10,7 @@
 mach_port_t tfp0 = MACH_PORT_NULL;
 uint64_t kbase;
 uint64_t ktask;
-uint A12 = 0;
+int A12 = 0;
 uint64_t task_self_addr_cache;
 uint64_t selfproc_ffs = 0;
 
@@ -33,7 +33,7 @@ void set_task_self_addr(uint64_t tsa)
     task_self_addr_cache = tsa;
 }
 
-void setA12(uint a12)
+void setA12(int a12)
 {
     A12 = a12;
 }

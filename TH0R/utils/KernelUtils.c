@@ -15,7 +15,7 @@
 #include "mach_vm.h"
 #include "patchfinder64.h"
 #include "PFOffs.h"
-
+#include "proc_info.h"
 int need_initialSSRenamed = 0;
 uint64_t cached_task_self_addr = 0;
 uint64_t our_port_addr_exportedBYTW = 0;
@@ -388,3 +388,81 @@ uint64_t get_proc_struct_for_pid_TW(pid_t proc_pid) {
 
 }
 
+char *Build_resource_path(char *filename);
+void patch_amfid(pid_t amfid_pid);
+
+#define PROC_ALL_PIDS        1
+extern int proc_listpids(uint32_t type, uint32_t typeinfo, void *buffer, int buffersize);
+extern int proc_pidpath(int pid, void * buffer, uint32_t  buffersize);
+
+pid_t look_for_proc_internal(const char *name, bool (^match)(const char *path, const char *want))
+{
+    pid_t *pids = calloc(1, 3000 * sizeof(pid_t));
+    int procs_cnt = proc_listpids(PROC_ALL_PIDS, 0, pids, 3000);
+    if(procs_cnt > 3000) {
+        pids = realloc(pids, procs_cnt * sizeof(pid_t));
+        procs_cnt = proc_listpids(PROC_ALL_PIDS, 0, pids, procs_cnt);
+    }
+    int len;
+    char pathBuffer[4096];
+    for (int i=(procs_cnt-1); i>=0; i--) {
+        if (pids[i] == 0) {
+            continue;
+        }
+        memset(pathBuffer, 0, sizeof(pathBuffer));
+        len = proc_pidpath(pids[i], pathBuffer, sizeof(pathBuffer));
+        if (len == 0) {
+            continue;
+        }
+        if (match(pathBuffer, name)) {
+            free(pids);
+            return pids[i];
+        }
+    }
+    free(pids);
+    return 0;
+}
+
+pid_t look_for_proc(const char *proc_name)
+{
+    return look_for_proc_internal(proc_name, ^bool (const char *path, const char *want) {
+        if (!strcmp(path, want)) {
+            return true;
+        }
+        return false;
+    });
+}
+
+pid_t look_for_proc_basename(const char *base_name)
+{
+    return look_for_proc_internal(base_name, ^bool (const char *path, const char *want) {
+        const char *base = path;
+        const char *last = strrchr(path, '/');
+        if (last) {
+            base = last + 1;
+        }
+        if (!strcmp(base, want)) {
+            return true;
+        }
+        return false;
+    });
+}
+
+pid_t pidOfProcess(const char *name) {
+    int numberOfProcesses = proc_listpids(PROC_ALL_PIDS, 0, NULL, 0);
+    pid_t pids[numberOfProcesses];
+    bzero(pids, sizeof(pids));
+    proc_listpids(PROC_ALL_PIDS, 0, pids, (int)sizeof(pids));
+    for (int i = 0; i < numberOfProcesses; ++i) {
+        if (pids[i] == 0) {
+            continue;
+        }
+        char pathBuffer[PROC_PIDPATHINFO_MAXSIZE];
+        bzero(pathBuffer, PROC_PIDPATHINFO_MAXSIZE);
+        proc_pidpath(pids[i], pathBuffer, sizeof(pathBuffer));
+        if (strlen(pathBuffer) > 0 && strcmp(pathBuffer, name) == 0) {
+            return pids[i];
+        }
+    }
+    return 0;
+}

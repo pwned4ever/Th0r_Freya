@@ -56,6 +56,9 @@ void init_kernel_memorytw(mach_port_t tfp0tw, uint64_t our_port_addrtw);
 size_t kreadtw(uint64_t where, void *p, size_t size);
 uint32_t rk32tw(uint64_t where);
 uint64_t rk64tw(uint64_t where);
+pid_t pidOfProcess(const char *name);
+pid_t look_for_proc(const char *proc_name);
+
 
 size_t kwritetw(uint64_t where, const void *p, size_t size);
 void wk32tw(uint64_t where, uint32_t what);

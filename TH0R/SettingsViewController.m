@@ -56,16 +56,18 @@
     
     //0 = Cydia
     //1 = Zebra
-    if (getPackagerType() == 0)
-    {
+   /* if (getPackagerType() == 0)
+    {*/
+    
         [_Cydia_Outlet sendActionsForControlEvents:UIControlEventTouchUpInside];
-    } else if (getPackagerType() == 1)
+   /* } else if (getPackagerType() == 1)
     {
         [_Zebra_Outlet sendActionsForControlEvents:UIControlEventTouchUpInside];
     } else if (getPackagerType() == 2)
     {
         [_Sileo_Outlet sendActionsForControlEvents:UIControlEventTouchUpInside];
-    }
+    }*/
+    
     [self.setnoncebtn setEnabled:FALSE];
     [self.setnoncebtn setHidden:TRUE];
 
@@ -74,6 +76,50 @@
     //2 = VS
     //3 = SP
     //4 = TW
+    /*
+     * 12.0     1556.00
+     * 12.1     1560.10
+     * 12.2     1570.15
+     * 12.3     1575.13
+     * 12.4     1575.17
+     * 12.5     1575.23
+     * 13.0     1665.15
+     * 13.1     1671.101
+     * 13.2     1673.126
+     * 13.3     1674.102
+     * 13.4     1675.129
+     * 13.5     1676.104
+     * 14.0     1751.108
+     * 14.1     1751.108
+     * 14.2     1770.106
+     */
+    UIColor *grey = [UIColor colorWithRed:0.30 green:0.00 blue:0.30 alpha:0.5];;
+
+    if (kCFCoreFoundationVersionNumber > 1575.17) { // > 12.4
+        
+        _MS1_OUTLET.userInteractionEnabled = FALSE;
+        _MS1_OUTLET.enabled = false;
+        _MS1_OUTLET.backgroundColor = grey;
+        _VS_Outlet.userInteractionEnabled = FALSE;
+        _VS_Outlet.enabled = false;
+        _VS_Outlet.backgroundColor = grey;
+        _MS2_Outlet.userInteractionEnabled = FALSE;
+        _MS2_Outlet.enabled = false;
+        _MS2_Outlet.backgroundColor = grey;
+        _SP_Outlet.userInteractionEnabled = FALSE;
+        _SP_Outlet.enabled = false;
+        _SP_Outlet.backgroundColor = grey;
+    } else if (kCFCoreFoundationVersionNumber >= 1570.15) { //12.2
+        _MS1_OUTLET.userInteractionEnabled = FALSE;
+        _MS1_OUTLET.enabled = false;
+        _MS1_OUTLET.backgroundColor = grey;
+        _VS_Outlet.userInteractionEnabled = FALSE;
+        _VS_Outlet.enabled = false;
+        _VS_Outlet.backgroundColor = grey;
+        _MS2_Outlet.userInteractionEnabled = FALSE;
+        _MS2_Outlet.enabled = false;
+        _MS2_Outlet.backgroundColor = grey;
+    }
     
     if (getExploitType() == 0)
     {
@@ -98,8 +144,9 @@
         newTFcheckMyRemover4me = TRUE;
         JUSTremovecheck = true;
         saveCustomSetting(@"RestoreFS", 0);
-        [_loadTweaksSwitch setEnabled:YES];
+        [_loadTweaksSwitch setEnabled:NO];
         [_loadTweaksSwitch setOn:TRUE];
+        [_restoreFSSwitch setOn:true];
 
         [_loadTweaksSwitch setUserInteractionEnabled:NO];
         [_restoreFSSwitch setEnabled:NO];
@@ -112,8 +159,9 @@
         newTFcheckMyRemover4me = TRUE;
         JUSTremovecheck = true;
         saveCustomSetting(@"RestoreFS", 0);
-        [_loadTweaksSwitch setEnabled:YES];
+        [_loadTweaksSwitch setEnabled:NO];
         [_loadTweaksSwitch setOn:TRUE];
+        [_restoreFSSwitch setOn:true];
         [_loadTweaksSwitch setUserInteractionEnabled:NO];
         [_restoreFSSwitch setEnabled:NO];
         [_restoreFSSwitch setUserInteractionEnabled:NO];

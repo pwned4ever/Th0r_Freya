@@ -488,7 +488,7 @@ out:
             }
             overwrite_temp = NULL;
         }
-        util_info("%s: OK", filename);
+        //util_info("%s: OK", filename);
     }
     result = YES;
     _hasReadFiles = YES;

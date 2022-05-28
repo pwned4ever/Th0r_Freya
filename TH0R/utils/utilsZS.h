@@ -16,7 +16,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#define showMSG(msg, wait, destructive) showAlert(@"TH0R", msg, wait, destructive)
+#define showMSG(msg, wait, destructive) showAlert(@"freya", msg, wait, destructive)
 #define showPopup(msg, wait, destructive) showThePopup(@"", msg, wait, destructive)
 #define __FILENAME__ (__builtin_strrchr(__FILE__, '/') ? __builtin_strrchr(__FILE__, '/') + 1 : __FILE__)
 #define _assert(test, message, fatal) do \
@@ -47,16 +47,16 @@ void util_warning(const char *fmt, ...) __printflike(1, 2);
 void util_error(const char *fmt, ...) __printflike(1, 2);
 void util_printf(const char *fmt, ...) __printflike(1, 2);
 
-int util_runCommand(const char *cmd, ...);
+//int util_runCommand(const char *cmd, ...);
 
-void post_exploit(void);
+
 
 
 bool is_mountpoint(const char *filename);
 int run(const char *cmd);
 char* itoa(long n);
 void do_restart(void);
-
+void post_exploit(void);
 
 void runMachswap(void);
 void getOffsets(void);
@@ -91,7 +91,6 @@ BOOL isRootless(void);
 void createWorkingDir_rootless(void);
 void saveOffs_rootless(void);
 void uninstallRJB(void);
-
 //EXPLOIT
 int autoSelectExploit(void);
 

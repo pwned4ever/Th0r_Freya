@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4F14C7B42834082700D03B72 /* post_exploit.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F14C7B32834082700D03B72 /* post_exploit.m */; };
 		8850DDEA229AF1E000D18B83 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8850DDE9229AF1E000D18B83 /* LaunchScreen.storyboard */; };
 		88E01545228B629A00F9E519 /* voucher_swap.c in Sources */ = {isa = PBXBuildFile; fileRef = 88E01537228B629A00F9E519 /* voucher_swap.c */; };
 		88EFC47B228369E8005FA5BB /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88EFC47A228369E8005FA5BB /* IOKit.framework */; };
@@ -88,6 +89,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4F14C7B32834082700D03B72 /* post_exploit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = post_exploit.m; sourceTree = "<group>"; };
 		8850DDE9229AF1E000D18B83 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		888DFDA9229D9E9B004F4F6F /* AVKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVKit.framework; path = System/Library/Frameworks/AVKit.framework; sourceTree = SDKROOT; };
 		88E01537228B629A00F9E519 /* voucher_swap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = voucher_swap.c; sourceTree = "<group>"; };
@@ -406,6 +408,7 @@
 				B8722969230A2D2000440993 /* cpBootHash.h */,
 				F785C78D27E3B9C800BBC4D0 /* utilsZS.h */,
 				F785C78C27E3B9C800BBC4D0 /* utilsZS.m */,
+				4F14C7B32834082700D03B72 /* post_exploit.m */,
 			);
 			path = utils;
 			sourceTree = "<group>";
@@ -489,36 +492,36 @@
 		F7A70BF427F65C4700839E5E /* kernel_call */ = {
 			isa = PBXGroup;
 			children = (
+				F7A70C0127F65C4700839E5E /* kc_parameters.c */,
+				F7A70C0E27F65C4700839E5E /* kc_parameters.h */,
+				F7A70C0D27F65C4700839E5E /* kernel_alloc.c */,
+				F7A70BFC27F65C4700839E5E /* kernel_alloc.h */,
+				F7A70BFB27F65C4700839E5E /* kernel_call.c */,
+				F7A70C0427F65C4700839E5E /* kernel_call.h */,
+				F7A70BFF27F65C4700839E5E /* kernel_exec.h */,
+				F7A70C1027F65C4700839E5E /* kernel_exec.m */,
+				F7A70C0927F65C4700839E5E /* kernel_memory.c */,
 				F7A70BF527F65C4700839E5E /* kernel_memory.h */,
+				F7A70C1127F65C4700839E5E /* kernel_slide.c */,
+				F7A70C0327F65C4700839E5E /* kernel_slide.h */,
+				F7A70C0F27F65C4700839E5E /* kexecute.c */,
+				F7A70C0027F65C4700839E5E /* kexecute.h */,
+				F7A70C0A27F65C4700839E5E /* log.h */,
 				F7A70BF627F65C4700839E5E /* log.m */,
+				F7A70BFA27F65C4700839E5E /* OffsetHolder.h */,
+				F7A70C0527F65C4700839E5E /* OffsetHolder.m */,
+				F7A70BFD27F65C4700839E5E /* offsets.h */,
+				F7A70C0B27F65C4700839E5E /* offsets.m */,
+				F7A70C0827F65C4700839E5E /* pac.c */,
 				F7A70BF727F65C4700839E5E /* pac.h */,
 				F7A70BF827F65C4700839E5E /* parameters.c */,
-				F7A70BF927F65C4700839E5E /* platform_match.c */,
-				F7A70BFA27F65C4700839E5E /* OffsetHolder.h */,
-				F7A70BFB27F65C4700839E5E /* kernel_call.c */,
-				F7A70BFC27F65C4700839E5E /* kernel_alloc.h */,
-				F7A70BFD27F65C4700839E5E /* offsets.h */,
-				F7A70BFE27F65C4700839E5E /* user_client.c */,
-				F7A70BFF27F65C4700839E5E /* kernel_exec.h */,
-				F7A70C0027F65C4700839E5E /* kexecute.h */,
-				F7A70C0127F65C4700839E5E /* kc_parameters.c */,
-				F7A70C0227F65C4700839E5E /* platform.c */,
-				F7A70C0327F65C4700839E5E /* kernel_slide.h */,
-				F7A70C0427F65C4700839E5E /* kernel_call.h */,
-				F7A70C0527F65C4700839E5E /* OffsetHolder.m */,
-				F7A70C0627F65C4700839E5E /* platform_match.h */,
 				F7A70C0727F65C4700839E5E /* parameters.h */,
-				F7A70C0827F65C4700839E5E /* pac.c */,
-				F7A70C0927F65C4700839E5E /* kernel_memory.c */,
-				F7A70C0A27F65C4700839E5E /* log.h */,
-				F7A70C0B27F65C4700839E5E /* offsets.m */,
-				F7A70C0C27F65C4700839E5E /* user_client.h */,
-				F7A70C0D27F65C4700839E5E /* kernel_alloc.c */,
-				F7A70C0E27F65C4700839E5E /* kc_parameters.h */,
-				F7A70C0F27F65C4700839E5E /* kexecute.c */,
-				F7A70C1027F65C4700839E5E /* kernel_exec.m */,
-				F7A70C1127F65C4700839E5E /* kernel_slide.c */,
+				F7A70BF927F65C4700839E5E /* platform_match.c */,
+				F7A70C0627F65C4700839E5E /* platform_match.h */,
+				F7A70C0227F65C4700839E5E /* platform.c */,
 				F7A70C1227F65C4700839E5E /* platform.h */,
+				F7A70BFE27F65C4700839E5E /* user_client.c */,
+				F7A70C0C27F65C4700839E5E /* user_client.h */,
 			);
 			path = kernel_call;
 			sourceTree = "<group>";
@@ -527,9 +530,9 @@
 			isa = PBXGroup;
 			children = (
 				F7A70C1427F65C4700839E5E /* amfi_utils.h */,
-				F7A70C1527F65C4700839E5E /* amfi.m */,
 				F7A70C1627F65C4700839E5E /* amfi_utils.m */,
 				F7A70C1727F65C4700839E5E /* amfi.h */,
+				F7A70C1527F65C4700839E5E /* amfi.m */,
 			);
 			path = amfi;
 			sourceTree = "<group>";
@@ -769,6 +772,7 @@
 				F7A70C3C27F65C4700839E5E /* OSObj.c in Sources */,
 				B8B3F9952283B36E000E8427 /* KernelUtils.c in Sources */,
 				F7A70C4727F65C4700839E5E /* kernel_memory.c in Sources */,
+				4F14C7B42834082700D03B72 /* post_exploit.m in Sources */,
 				B8C0B7FE22837D990030AE1E /* machswap.m in Sources */,
 				F7A70C5927F65C4700839E5E /* remount.m in Sources */,
 				B862F49F22C8261F003B79E6 /* SettingsViewController.m in Sources */,
@@ -933,7 +937,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 0.4;
+				CURRENT_PROJECT_VERSION = 0.5;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = YES;
 				INFOPLIST_FILE = TH0R/Info.plist;
@@ -946,7 +950,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/TH0R/headers",
 				);
-				MARKETING_VERSION = 0.4;
+				MARKETING_VERSION = 0.5;
 				OTHER_LDFLAGS = (
 					"-framework",
 					IOKit,
@@ -967,7 +971,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 0.4;
+				CURRENT_PROJECT_VERSION = 0.5;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = YES;
 				INFOPLIST_FILE = TH0R/Info.plist;
@@ -980,7 +984,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/TH0R/headers",
 				);
-				MARKETING_VERSION = 0.4;
+				MARKETING_VERSION = 0.5;
 				OTHER_LDFLAGS = (
 					"-framework",
 					IOKit,

@@ -1,15 +1,11 @@
 //
 //  amfi.h
-//  LiRa-Rootfs
-//
-//  Created by hoahuynh on 2021/05/29.
-//
 
 #include "amfi.h"
-#include "../../utils/KernelUtils.h"
+#include "KernelUtils.h"
 #include "../kernel_call/OffsetHolder.h"
 #include "../../lib/remap_tfp_set_hsp/remap_tfp_set_hsp.h"
-//#include "../../utils/utilsZS.h"
+#include "OSObj.h"
 #include "cs_blob.h"
 #include "../kernel_call/offsets.h"
 #include "../../utils/shenanigans.h"
@@ -27,12 +23,17 @@
 #include <mach-o/getsect.h>
 #include <mach-o/fat.h>
 #include <stdbool.h>
+//#include "xpc.h"
+//Applications/Xcode11.3.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/xpc
 #include <CommonCrypto/CommonCrypto.h>
 #include <Foundation/Foundation.h>
 
 #define CS_CDHASH_LEN 20
 #define I6S_14_3_AMFID_RET 0x35C8
 #define TF_PLATFORM (0x00000400)
+
+#define _assertu(x)
+
 
 typedef struct {
     mach_msg_header_t Head;
@@ -214,6 +215,137 @@ int get_hash(const CodeDirectory* directory, uint8_t dst[CS_CDHASH_LEN]) {
     return 0;
 }
 
+uint32_t OFFSET_bsd_info_pid = 0x68; // +0x68:  bsd_info->pid
+uint32_t OFFSET_bsd_info_task = 0x10; // +0x10:  bsd_info->task
+uint32_t OFFSET_task_itk_task_access = 0x2F8; // +0x2F8:  task->itk_task_access (ios13.x)
+uint32_t OFFSET_task_t_flags; // for TF_PLATFORM Patch
+uint32_t tfp0_port = 0;
+
+void patch_install_tfp0(uint64_t target_task, uint64_t safe_tfp0){
+    WriteKernel64(target_task + OFFSET_task_itk_task_access, safe_tfp0);
+}
+
+void patch_remove_tfp0(uint64_t target_task){
+    WriteKernel64(target_task + OFFSET_task_itk_task_access, 0);
+}
+
+
+mach_port_t patch_retrieve_tfp0(){
+    tfp0_port = 0;
+    task_get_special_port(mach_task_self(), 8, &tfp0_port); // TASK_ACCESS_PORT is 8 in ios13 (for non-PAC), for PAC is 9
+    return tfp0_port;
+}
+
+void patch_TF_PLATFORM(kptr_t task)
+{
+    uint32_t t_flags = ReadKernel32(task + off_t_flags);//koffset(KSTRUCT_OFFSET_TASK_TFLAGS));//OFFSET(task, t_flags));
+    util_info("old t_flags %#x", t_flags);
+
+    t_flags |= 0x00000400; // TF_PLATFORM
+    WriteKernel32(task + off_t_flags, t_flags);
+    t_flags = ReadKernel32(task + off_t_flags);
+    util_info("new t_flags %#x", t_flags);
+    patch_install_tfp0(task, tfp0_exportedBYTW);
+    // used in kernel func: csproc_get_platform_binary
+}
+
+
+
+pid_t spindump_pid = 0;
+uint64_t spindump_proc_cred = 0;
+uint64_t myold_cred2 = 0;
+uint64_t myold_cred3 = 0;
+uint32_t OFFSET_bsd_info_p_ucred = 0xf8;
+pid_t containermanagerd_pid = 0;
+uint64_t containermanagerd_proc_cred = 0;
+
+void safepatch_swap_containermanagerd_cred(uint64_t target_proc){
+    
+    if(containermanagerd_proc_cred == 0){
+        containermanagerd_pid = 0;
+        if(!(containermanagerd_pid = pidOfProcess("containermanagerd"))){
+            // containermanagerd should always be runnning
+           
+        }
+        uint64_t containermanagerd_proc = get_proc_struct_for_pid(containermanagerd_pid);
+        util_info("containermanagerd_proc: 0x%llx\n",containermanagerd_proc);
+        containermanagerd_proc_cred = ReadKernel64(containermanagerd_proc + OFFSET_bsd_info_p_ucred);
+        util_info("containermanagerd_proc_cred: 0x%llx\n", containermanagerd_proc_cred);
+        uint64_t target_task = ReadKernel64(target_proc + OFFSET_bsd_info_task);
+        util_info("target_task: 0x%llx\n", target_task);
+        patch_TF_PLATFORM(target_task);
+        // this is a must-patch in order to get task-mani api to work
+    }
+    
+    myold_cred3 = ReadKernel64(target_proc + OFFSET_bsd_info_p_ucred);
+    util_info("myold_cred3: 0x%llx\n", myold_cred3);
+    WriteKernel64(target_proc + OFFSET_bsd_info_p_ucred, containermanagerd_proc_cred);
+}
+
+void safepatch_unswap_containermanagerd_cred(uint64_t target_proc){
+    WriteKernel64(target_proc + OFFSET_bsd_info_p_ucred, myold_cred3);
+}
+
+void safepatch_swap_spindump_cred(uint64_t target_proc){
+    posix_spawnattr_t attrp;
+    posix_spawnattr_init(&attrp);
+    posix_spawnattr_setflags(&attrp, POSIX_SPAWN_START_SUSPENDED);
+    pid_t pid;
+    const char *argv[] = {"spindump", NULL};
+
+     if(spindump_proc_cred == 0){
+        spindump_pid = 0;
+        if(!(spindump_pid = pidOfProcess("/usr/sbin/spindump"))){
+        int retVal = posix_spawn(&pid, "/usr/sbin/spindump", NULL, &attrp, (char* const*)argv, environ);
+        if(retVal < 0)
+            printf("failed to spawn spindump\n");
+        //sysdiagnose_pid = pid;
+            
+            // if spindump is not running at moment
+            if(fork() == 0){
+                daemon(1, 1);
+                close(STDIN_FILENO);
+                close(STDOUT_FILENO);
+                close(STDERR_FILENO);
+                execvp("/usr/sbin/spindump", NULL);
+                exit(1);
+            }
+            while(!(spindump_pid = look_for_proc("/usr/sbin/spindump"))){}
+        }
+        kill(spindump_pid, SIGSTOP);
+        uint64_t spindump_proc = get_proc_struct_for_pid(spindump_pid);
+         util_info("spindump_proc: 0x%llx", spindump_proc);
+        spindump_proc_cred = ReadKernel64(spindump_proc + OFFSET_bsd_info_p_ucred);
+         util_info("spindump_proc_cred: 0x%llx", spindump_proc_cred);
+        uint64_t target_task = ReadKernel64(target_proc + OFFSET_bsd_info_task);
+         util_info("target_task: 0x%llx", target_task);
+        patch_TF_PLATFORM(target_task);
+        // this is a must-patch in order to get task-mani api to work
+    }
+    
+    myold_cred2 = ReadKernel64(target_proc + OFFSET_bsd_info_p_ucred);
+    util_info("myold_cred2: 0x%llx", myold_cred2);
+    WriteKernel64(target_proc + OFFSET_bsd_info_p_ucred, spindump_proc_cred);
+    has_entitlements = true;
+
+}
+
+void safepatch_unswap_spindump_cred(uint64_t target_proc){
+    
+    if(spindump_proc_cred){
+        kill(spindump_pid, SIGCONT);
+        kill(spindump_pid, SIGKILL);
+        
+        spindump_pid = 0;
+        spindump_proc_cred = 0;
+    }
+    
+    WriteKernel64(target_proc + OFFSET_bsd_info_p_ucred, myold_cred2);
+}
+
+
+
+
 int parse_superblob(uint8_t *code_dir, uint8_t dst[CS_CDHASH_LEN]) {
     int ret = 1;
     const CS_SuperBlob *sb = (const CS_SuperBlob *)code_dir;
@@ -349,20 +481,180 @@ void amfidWrite64(uint64_t addr, uint64_t data) {
     }
 }
 
+
+kptr_t get_exception_osarray(const char **exceptions, bool is_file_extension) {
+    kptr_t exception_osarray = KPTR_NULL;
+    size_t xmlsize = 0x1000;
+    size_t len = 0;
+    size_t written = 0;
+    char *ents = malloc(xmlsize);
+    if (ents == NULL) return KPTR_NULL;
+    size_t xmlused = sprintf(ents, "<array>");
+    for (const char **exception = exceptions; *exception; exception++) {
+        len = strlen(*exception);
+        len += strlen("<string></string>");
+        while (xmlused + len >= xmlsize) {
+            xmlsize += 0x1000;
+            ents = reallocf(ents, xmlsize);
+            if (!ents) {
+                return 0;
+            }
+        }
+        written = sprintf(ents + xmlused, "<string>%s%s</string>", *exception, is_file_extension ? "/" : "");
+        if (written < 0) {
+            SafeFreeNULL(ents);
+            return 0;
+        }
+        xmlused += written;
+    }
+    len = strlen("</array>");
+    if (xmlused + len >= xmlsize) {
+        xmlsize += len;
+        ents = reallocf(ents, xmlsize);
+        if (!ents) {
+            return 0;
+        }
+    }
+    written = sprintf(ents + xmlused, "</array>");
+    
+    exception_osarray = OSUnserializeXML(ents);
+    SafeFreeNULL(ents);
+    return exception_osarray;
+}
+
+
+char **copy_amfi_entitlements(kptr_t present) {
+    uint32_t itemCount = OSArray_ItemCount(present);
+    kptr_t itemBuffer = OSArray_ItemBuffer(present);
+    size_t bufferSize = 0x1000;
+    size_t bufferUsed = 0;
+    size_t arraySize = (itemCount + 1) * sizeof(char *);
+    char **entitlements = malloc(arraySize + bufferSize);
+    if (entitlements == NULL) return NULL;
+    entitlements[itemCount] = NULL;
+    
+    for (int i = 0; i < itemCount; i++) {
+        kptr_t item = ReadKernel64(itemBuffer + (i * sizeof(kptr_t)));
+        char *entitlementString = OSString_CopyString(item);
+        if (!entitlementString) {
+            SafeFreeNULL(entitlements);
+            return NULL;
+        }
+        size_t len = strlen(entitlementString) + 1;
+        while (bufferUsed + len > bufferSize) {
+            bufferSize += 0x1000;
+            entitlements = realloc(entitlements, arraySize + bufferSize);
+            if (!entitlements) {
+                SafeFreeNULL(entitlementString);
+                return NULL;
+            }
+        }
+        entitlements[i] = (char*)entitlements + arraySize + bufferUsed;
+        strcpy(entitlements[i], entitlementString);
+        bufferUsed += len;
+        SafeFreeNULL(entitlementString);
+    }
+    return entitlements;
+}
+
+
+bool check_for_exception(char **current_exceptions, const char *exception) {
+    bool ret = false;
+    _assertu(current_exceptions != NULL);
+    _assertu(exception != NULL);
+    for (char **entitlement_string = current_exceptions; *entitlement_string && !ret; entitlement_string++) {
+        char *ent = strdup(*entitlement_string);
+        _assertu(ent != NULL);
+        size_t lastchar = strlen(ent) - 1;
+        if (ent[lastchar] == '/') ent[lastchar] = '\0';
+        if (strcmp(ent, exception) == 0) {
+            ret = true;
+        }
+        SafeFreeNULL(ent);
+    }
+out:;
+    return ret;
+}
+
+
+bool set_amfi_exceptions(kptr_t amfi_entitlements, const char *exc_key, const char **exceptions, bool is_file_extension) {
+    bool ret = false;
+    char **current_exceptions = NULL;
+    _assertu(KERN_POINTER_VALID(amfi_entitlements));
+    _assertu(exceptions != NULL);
+    kptr_t const present_exception_osarray = OSDictionary_GetItem(amfi_entitlements, exc_key);
+    if (present_exception_osarray == KPTR_NULL) {
+        kptr_t osarray = get_exception_osarray(exceptions, is_file_extension);
+        _assertu(KERN_POINTER_VALID(osarray));
+        ret = OSDictionary_SetItem(amfi_entitlements, exc_key, osarray);
+        OSObject_Release(osarray);
+        goto out;
+    }
+    current_exceptions = copy_amfi_entitlements(present_exception_osarray);
+    _assertu(current_exceptions != NULL);
+    for (const char **exception = exceptions; *exception; exception++) {
+        if (check_for_exception(current_exceptions, *exception)) {
+            ret = true;
+            continue;
+        }
+        const char *array[] = {*exception, NULL};
+        kptr_t const osarray = get_exception_osarray(array, is_file_extension);
+        if (!KERN_POINTER_VALID(osarray)) continue;
+        ret = OSArray_Merge(present_exception_osarray, osarray);
+        OSObject_Release(osarray);
+    }
+out:;
+    SafeFreeNULL(current_exceptions);
+    return ret;
+}
+
+bool set_exceptions(kptr_t sandbox, kptr_t amfi_entitlements) {
+    bool ret = false;
+    if (KERN_POINTER_VALID(sandbox)) {
+        _assertu(set_sandbox_exceptions(sandbox));
+        if (KERN_POINTER_VALID(amfi_entitlements)) {
+            _assertu(set_amfi_exceptions(amfi_entitlements, FILE_READ_EXC_KEY, file_read_exceptions, true));
+            _assertu(set_amfi_exceptions(amfi_entitlements, FILE_READ_WRITE_EXC_KEY, file_read_write_exceptions, true));
+            _assertu(set_amfi_exceptions(amfi_entitlements, MACH_LOOKUP_EXC_KEY, mach_lookup_exceptions, false));
+            _assertu(set_amfi_exceptions(amfi_entitlements, MACH_REGISTER_EXC_KEY, mach_register_exceptions, false));
+        }
+    }
+    ret = true;
+out:;
+    return ret;
+}
+
+kptr_t get_amfi_entitlements(kptr_t cr_label) {
+    kptr_t amfi_entitlements = KPTR_NULL;
+    _assertu(KERN_POINTER_VALID(cr_label));
+    amfi_entitlements = ReadKernel64(cr_label + 0x8);
+out:;
+    return amfi_entitlements;
+}
+
+
 void takeoverAmfid(int amfidPid) {
+    safepatch_swap_spindump_cred(our_procStruct_addr_exported);
     if(!has_entitlements)
         return;
-    
+    //get_amfi_entitlements();
+
     kern_return_t retVal = task_for_pid(mach_task_self(), amfidPid, &amfid_task_port);
     if(retVal != 0) {
         printf("Unable to get amfid task: %s\n", mach_error_string(retVal));
         return;
     }
     printf("Got amfid task port: 0x%x\n", amfid_task_port);
+    platformize_amfi(getpid());
+    platformize_amfi(amfidPid);
+    uint64_t AMFIproc = get_proc_struct_for_pid(amfidPid);
+    uint64_t amfi_task = ReadKernel64(AMFIproc + koffset(KSTRUCT_OFFSET_PROC_TASK));
     
-    uint64_t loadAddress = loadAddr(amfid_task_port);
-    printf("Amfid load address: 0x%llx\n", loadAddress);
+    uint32_t amfi_t_flags = ReadKernel32(amfi_task + koffset(KSTRUCT_OFFSET_TASK_TFLAGS));
+    WriteKernel32(amfi_task + koffset(KSTRUCT_OFFSET_TASK_TFLAGS), amfi_t_flags | TF_PLATFORM);
     
+    //patch_retrieve_tfp0();
+
     //  set the exception handler
     retVal = mach_port_allocate(mach_task_self(), MACH_PORT_RIGHT_RECEIVE, &exceptionPort);
     if(retVal != KERN_SUCCESS) {
@@ -372,23 +664,25 @@ void takeoverAmfid(int amfidPid) {
     
     retVal = mach_port_insert_right(mach_task_self(), exceptionPort, exceptionPort, MACH_MSG_TYPE_MAKE_SEND);
     if(retVal != KERN_SUCCESS) {
-        printf("Failed mach_port_insert_right: %s", mach_error_string(retVal));
+        util_error("Failed mach_port_insert_right: %s", mach_error_string(retVal));
         return;
     }
     
-    retVal = task_set_exception_ports(amfid_task_port, EXC_MASK_BAD_ACCESS, exceptionPort, EXCEPTION_DEFAULT, ARM_THREAD_STATE64);
+    retVal = task_set_exception_ports(amfid_task_port, EXC_MASK_BAD_ACCESS, exceptionPort, EXCEPTION_DEFAULT, ARM_THREAD_STATE64);//ARM_EXCEPTION_STATE64
     if(retVal != KERN_SUCCESS) {
-        printf("Failed task_set_exception_ports: %s", mach_error_string(retVal));
+        util_error("Failed task_set_exception_ports: %s", mach_error_string(retVal));
         return;
     }
     pthread_create(&exceptionThread, NULL, AMFIDExceptionHandler, NULL);
-    
-    //  get MISVSACI offset
-    //  https://github.com/GeoSn0w/Blizzard-Jailbreak/blob/2b1193e29f1c8b73ff1d1f09ca7760bfe208553e/Exploits/FreeTheSandbox/ios13_kernel_universal.c#L2909
+
     uint8_t *amfid_fdata = map_file_to_mem("/usr/libexec/amfid");
     uint64_t patchOffset = find_amfid_OFFSET_MISValidate_symbol(amfid_fdata);
-    printf("_MISValidateSignatureAndCopyInfo offset: 0x%llx\n", patchOffset);
+    util_info("_MISValidateSignatureAndCopyInfo offset: 0x%llx", patchOffset);
     munmap(amfid_fdata, amfid_fsize);
+    
+    //getCodeDirectory_amfi(const char *name)
+    uint64_t loadAddress = loadAddr(amfid_task_port);
+    util_info("Amfid load address: 0x%llx", loadAddress);
     
     //  get origAMFID_MISVSACI
     mach_vm_size_t sz;
@@ -403,12 +697,17 @@ void takeoverAmfid(int amfidPid) {
     //  make it crash, amfi
     retVal = vm_protect(amfid_task_port, mach_vm_trunc_page(loadAddress + patchOffset), vm_page_size, false, VM_PROT_READ | VM_PROT_WRITE);
     if(retVal != KERN_SUCCESS) {
-        printf("Failed vm_protect: %s", mach_error_string(retVal));
+        printf("Failed vm_protect: %s\n", mach_error_string(retVal));
     }
     
     patchAddr = loadAddress + patchOffset;
-    amfidWrite64(patchAddr, 0x12345);
+    amfidWrite64(patchAddr, 0x4141414141414141);
+    safepatch_unswap_spindump_cred(our_procStruct_addr_exported);
+    patch_remove_tfp0(our_task_addr_exportedBYTW);
+    
 }
+
+
 
 uint64_t loadAddr(mach_port_t port) {
     mach_msg_type_number_t region_count = VM_REGION_BASIC_INFO_COUNT_64;
@@ -421,7 +720,7 @@ uint64_t loadAddr(mach_port_t port) {
     
     kern_return_t err = mach_vm_region(port, &first_addr, &first_size, VM_REGION_BASIC_INFO_64, (vm_region_info_t)&region, &region_count, &object_name);
     if (err != KERN_SUCCESS) {
-        printf("failed to get the region: %s", mach_error_string(err));
+        printf("failed to get the region: %s\n", mach_error_string(err));
         return 0;
     }
     
@@ -527,8 +826,8 @@ void* AMFIDExceptionHandler(void* arg) {
 //        __text:0000000100003374                 MOV             X0, X24
 //        __text:0000000100003378                 MOV             X1, X22 <- this
 //        __text:000000010000337C                 BL              _CFStringCreateWithFileSystemRepresentation
+            //char* filename = (char*)amfidRead(new_state.__x[25], 1024);
             char* filename = (char*)amfidRead(new_state.__x[22], 1024);
-            
             if(!filename) {
                 printf("[amfid][-] No file name?");
                 continue;
@@ -537,7 +836,7 @@ void* AMFIDExceptionHandler(void* arg) {
             uint8_t *orig_cdhash = (uint8_t*)amfidRead(new_state.__x[23], CS_CDHASH_LEN);
             
             printf("[amfid][+] Got request for: %s\n", filename);
-            printf("[amfid][*] Original cdhash: \n\t");
+            printf("[amfid][*] Original cdhash: %s \n\t", orig_cdhash);
             for (int i = 0; i < CS_CDHASH_LEN; i++) {
                 printf("%02x ", orig_cdhash[i]);
             }
@@ -619,7 +918,8 @@ void* AMFIDExceptionHandler(void* arg) {
                 printf("[amfid][+] Replied to the amfid exception...\n");
             }
             
-        if(strcmp(filename, "/odyssey/amfidebilitate") == 0) {
+            if(strcmp(filename, "/freya/amfid_bypassd") == 0) {
+            //if(strcmp(filename, "/freya/amfidebilitate64") == 0) {
             printf("Found amfidebilitate, no longer need to run this function.");
             amfidWrite64(patchAddr, origAMFID_MISVSACI);
             free(filename);
@@ -649,7 +949,7 @@ bool grabEntitlementsForRootFS(uint64_t selfProc) {
     
     usleep(100);
     kill(pid, SIGSTOP); // suspend
-    platformize_amfi(pid);
+    //platformize_amfi(pid);
     fsck_apfs_pid = pid;
     
     uint64_t fsck_apfs_proc = get_proc_struct_for_pid(pid);

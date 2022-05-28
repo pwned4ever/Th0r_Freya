@@ -179,10 +179,10 @@ double uptime(){
     [audioPlayer1 play];
 }
 
-NSString *freyaversion = @"0.4⚡️";
-char *freyaversionnew = "0.4⚡️";
+NSString *freyaversion = @"0.5⚡️";
+char *freyaversionnew = "0.5⚡️";
 
-char *freyaupdateDate = "9:30PM 04/07/22";
+char *freyaupdateDate = "12:00AM 05/28/22";
 char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/blob/main/Releases/Freya.ipa";// "mega.nz/file/BhNxBSgJ#gNcngNQBtXS0Ipa5ivX09-jtIr7BckUhrA7YMkSFaNM"//
 
 - (void)u0alertreboot {
@@ -702,6 +702,11 @@ int packagerType = 0;
 
 void wannaSliceOfMe() {
     //Run The Exploit
+
+    /*dispatch_async(dispatch_get_main_queue(), ^{
+        [ViewController.sharedController.textView setHidden:YES];
+    });
+        */
     
     uint32_t flags;
     csops(getpid(), CS_OPS_STATUS, &flags, 0);
@@ -772,13 +777,10 @@ void wannaSliceOfMe() {
         //2 = Voucher_Swap
         //3 = SockPuppet
         //4 = timewaste
-        //usleep(30000);
         dothesploit();
-        //usleep(1000);
         runExploit(getExploitType()); //Change this depending on what device you have...
         dothepatch();
         ourprogressMeter();
-        //usleep(1000);
         getOffsets();
         offs_init();
 
@@ -787,38 +789,26 @@ void wannaSliceOfMe() {
         //[*] REMOUNT //
         //[*] REQUIRED FILES TO FINISH ARE EXTRACTED
         //[*] REMAP
-        usleep(1000);
+        
         init_kexecute();
-        //usleep(10000);
-//        usleep(1000);
-
-
         yeasnapshot();
-
         remountFS(restore_fs);
         ourprogressMeter();
-        usleep(1000);
         createWorkingDir();
-        //usleep(1000);
         saveOffs();
         ourprogressMeter();
-        usleep(1000);
         setHSP4();
-        usleep(1000);
-        //usleep(1000);
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         if ([defaults integerForKey:@"SetNonce"] == 0) {
         //if ([defaults objectForKey:@"SetNonce"] == 0) {
-            //usleep(10000);
             unlocknvram();
-            //usleep(10000);
             setNonce(genToSet(), TRUE);
             locknvram();
         }
         
 
         initInstall(getPackagerType());
-        
+        //post_exploit();
         ourprogressMeter();
         term_kexecute();
         ourprogressMeter();

@@ -25,9 +25,6 @@ mach_port_t PrepareUserClient(void) {
         printf(" [-] unable to get user client connection\n");
         exit(EXIT_FAILURE);
     }
-    
-    
-    //usleep(1000);
     printf("[+] kexecute: got user client: 0x%x\n", UserClient);
     return UserClient;
 }

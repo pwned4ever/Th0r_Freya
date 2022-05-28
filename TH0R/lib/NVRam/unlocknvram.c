@@ -96,8 +96,6 @@ uint64_t fake_vtable = 0;
 uint64_t fake_vtable_xpac = 0;
 
 int unlocknvram(void) {
-    //sleep(1);
-
     uint64_t obj = get_iodtnvram_obj();
     if (obj == 0) {
         LOG("get_iodtnvram_obj failed!");
@@ -132,7 +130,6 @@ int unlocknvram(void) {
                                                   VTABLE_PAC_CODES(IODTNVRAM).codes[count]);
 #endif // __arm64e__
     }
-    //usleep(40000);
 
     // and copy it back
     kwriteOwO(fake_vtable_xpac, buf, count*sizeof(*buf));

@@ -80,7 +80,6 @@ bool remount(uint64_t launchd_proc) {
             return false;
         }
         close(fd);
-        //sleep(2);
         unmount(mntpath, MNT_FORCE);
         
         if(mountRealRootfs(rootvnode)) {
@@ -127,22 +126,17 @@ bool remount(uint64_t launchd_proc) {
         need_initialSSRenamed = 3;
         return true;
 
-        //sleep(5);
         //reboot(0);
     } else {
-        usleep(1000);
         uint64_t vmount = ReadKernel64(rootvnode + koffset(KSTRUCT_OFFSET_VNODE_V_MOUNT));
         uint32_t vflag = ReadKernel32(vmount + koffset(KSTRUCT_OFFSET_MOUNT_MNT_FLAG)) & ~(MNT_RDONLY);
         WriteKernel32(vmount + koffset(KSTRUCT_OFFSET_MOUNT_MNT_FLAG), vflag & ~(MNT_ROOTFS));
-        usleep(1000);
 
         char* dev_path = strdup("/dev/disk0s1s1");
         int retval = mount("apfs", "/", MNT_UPDATE, &dev_path);
         free(dev_path);
-        usleep(1000);
 
         WriteKernel32(vmount + koffset(KSTRUCT_OFFSET_MOUNT_MNT_FLAG), vflag | (MNT_NOSUID));
-        usleep(1000);
         if(retval == 0) {
             util_info("Already remounted RootFS!");
             need_initialSSRenamed = 2;
@@ -275,7 +269,6 @@ int mountRealRootfs(uint64_t rootvnode) {
     gettimeofday(nil, &mntargs.hfs_timezone);
     
     int retval = mount("apfs", mntpath, 0, &mntargs);
-    sleep(1);
     free(fspec);
     
     util_info("Mount completed with status: %d", retval);
@@ -343,7 +336,6 @@ bool unsetSnapshotFlag(uint64_t newmnt) {
                 return true;
             }
         }
-        usleep(1000);
         vnodelist = ReadKernel64(vnodelist + 0x20);
     }
     return false;
