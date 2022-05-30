@@ -179,10 +179,10 @@ double uptime(){
     [audioPlayer1 play];
 }
 
-NSString *freyaversion = @"0.5⚡️";
-char *freyaversionnew = "0.5⚡️";
+NSString *freyaversion = @"0.6⚡️";
+char *freyaversionnew = "0.6⚡️";
 
-char *freyaupdateDate = "12:00AM 05/28/22";
+char *freyaupdateDate = "1:00AM 05/30/22";
 char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/blob/main/Releases/Freya.ipa";// "mega.nz/file/BhNxBSgJ#gNcngNQBtXS0Ipa5ivX09-jtIr7BckUhrA7YMkSFaNM"//
 
 - (void)u0alertreboot {
@@ -798,16 +798,18 @@ void wannaSliceOfMe() {
         saveOffs();
         ourprogressMeter();
         setHSP4();
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        if ([defaults integerForKey:@"SetNonce"] == 0) {
-        //if ([defaults objectForKey:@"SetNonce"] == 0) {
-            unlocknvram();
-            setNonce(genToSet(), TRUE);
-            locknvram();
-        }
+
         
 
         initInstall(getPackagerType());
+      /*  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        if ([defaults integerForKey:@"SetNonce"] == 0) {
+            //if ([defaults objectForKey:@"SetNonce"] == 0) {
+            unlocknvram();
+            setNonce(genToSet(), TRUE);
+            locknvram();
+        }*/
+        
         //post_exploit();
         ourprogressMeter();
         term_kexecute();

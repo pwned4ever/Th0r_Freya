@@ -22,6 +22,7 @@
 #include "kc_parameters.h"
 #include "vnode_utils.h"
 #include "OSObj.h"
+#include <pthread.h>
 
 static const size_t max_vtable_size = 0x1000;
 static const size_t kernel_buffer_size = 0x4000;
@@ -74,18 +75,21 @@ uint64_t get_iodtnvram_obj(void) {
     static uint64_t IODTNVRAMObj = 0;
     
     if (IODTNVRAMObj == 0) {
-        sleep(1);
+        sched_yield();
         io_service_t IODTNVRAMSrv = IOServiceGetMatchingService(kIOMasterPortDefault, IOServiceMatching("IODTNVRAM"));
+        sched_yield();
+
         if (!MACH_PORT_VALID(IODTNVRAMSrv)) {
-            LOG("Failed to get IODTNVRAM service");
+            util_error("Failed to get IODTNVRAM service");
             return 0;
         }
-        sleep(1);
+        sched_yield();
         uint64_t nvram_up = get_address_of_port_OWO(proc_struct_addr(), IODTNVRAMSrv);
+        sched_yield();
         IODTNVRAMObj = ReadKernel64(nvram_up + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_KOBJECT));
-        sleep(1);
+        sched_yield();
 
-        LOG("IODTNVRAM obj at 0x%llx", IODTNVRAMObj);
+        util_info("IODTNVRAM obj at 0x%llx", IODTNVRAMObj);
     }
     
     return IODTNVRAMObj;
@@ -98,23 +102,26 @@ uint64_t fake_vtable_xpac = 0;
 int unlocknvram(void) {
     uint64_t obj = get_iodtnvram_obj();
     if (obj == 0) {
-        LOG("get_iodtnvram_obj failed!");
+        util_error("get_iodtnvram_obj failed!");
         return 1;
     }
     orig_vtable = ReadKernel64(obj);
-    
+    sched_yield();
     uint64_t vtable_xpac = kernel_xpacd(orig_vtable);
     
     uint64_t *buf = calloc(1, max_vtable_size);
     kreadOwO(vtable_xpac, buf, max_vtable_size);
-    
+    sched_yield();
+
     // alter it
     buf[getOFVariablePerm / sizeof(uint64_t)] = \
     kernel_xpaci(buf[searchNVRAMProperty / sizeof(uint64_t)]);
-    
+    sched_yield();
+
     // allocate buffer in kernel
     fake_vtable_xpac = IOMalloc(kernel_buffer_size);
-    
+    sched_yield();
+
     // Forge the pacia pointers to the virtual methods.
     size_t count = 0;
     for (; count < max_vtable_size / sizeof(*buf); count++) {
@@ -130,6 +137,7 @@ int unlocknvram(void) {
                                                   VTABLE_PAC_CODES(IODTNVRAM).codes[count]);
 #endif // __arm64e__
     }
+    sched_yield();
 
     // and copy it back
     kwriteOwO(fake_vtable_xpac, buf, count*sizeof(*buf));
@@ -139,32 +147,34 @@ int unlocknvram(void) {
     fake_vtable = fake_vtable_xpac;
 #endif
     usleep(20000);
+    sched_yield();
 
     // replace vtable on IODTNVRAM object
     WriteKernel64(obj, fake_vtable);
-    
+    sched_yield();
+
     free(buf);
     buf = NULL;
-    LOG("Unlocked nvram");
+    util_info("Unlocked nvram");
     return 0;
 }
 
 int locknvram(void) {
     if (orig_vtable == 0 || fake_vtable_xpac == 0) {
-        LOG("Trying to lock nvram, but didnt unlock first");
+        util_error("Trying to lock nvram, but didnt unlock first");
         return -1;
     }
     
     uint64_t obj = get_iodtnvram_obj();
-    sleep(1);
+    sched_yield();
     if (obj == 0) { // would never happen but meh
-        LOG("get_iodtnvram_obj failed!");
+        util_error("get_iodtnvram_obj failed!");
         return 1;
     }
     
     WriteKernel64(obj, orig_vtable);
     SafeIOFreeNULL(fake_vtable_xpac, kernel_buffer_size);
     
-    LOG("Locked nvram");
+    util_info("Locked nvram");
     return 0;
 }

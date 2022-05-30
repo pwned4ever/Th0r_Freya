@@ -131,7 +131,7 @@ int always_AMFIPID;
 bool runShenPatchOWO = false;
 int thejbdawaits = 0;
 int kickcheck = 0;
-
+int doweneedamfidPatch = 0;
 char *sysctlWithName(const char *name) {
     kern_return_t kr = KERN_FAILURE;
     char *ret = NULL;
@@ -1410,9 +1410,11 @@ bool patchtheSIGNSofCOde(){
     //execCmd("/freya/inject_criticald", itoa(1), "/usr/lib/pspawn_payload.dylib", NULL);
     //execCmd("/freya/inject_criticald", itoa(amfid_pid), "/usr/lib/pspawn_payload.dylib", NULL);
     //execCmd("/freya/inject_criticald", itoa(1), "/usr/lib/amfid_payload.dylib", NULL);
-    execCmd("/freya/inject_criticald", itoa(amfid_pid), "/usr/lib/amfid_payload.dylib", NULL);
+    //execCmd("/freya/inject_criticald", itoa(1), "/usr/lib/amfid_payload.dylib", NULL);
+   execCmd("/freya/inject_criticald", itoa(amfid_pid), "/usr/lib/amfid_payload.dylib", NULL);
    // execCmd("/bin/ps", "-p", itoa(amfid_pid), NULL); // built-in tools
     util_info("amfid has been infected by our dynamic library, it is now dismantled");//dismantled
+    doweneedamfidPatch = 1;
     return true;
 }
 
@@ -1507,11 +1509,7 @@ void restoreRootFS()
     free(systemSnapshot);
     systemSnapshot = NULL;
 
-    extractFile(get_bootstrap_file(@"aJBDofSorts.tar.gz"), @"/");
-    chmod("/freya/jailbreakd", 4755);
-    chown("/freya/jailbreakd", 0, 0);
 
-   patchtheSIGNSofCOde();
     if (checkchimeramarker == 1) {
         char *const systemSnapshotMountPoint = "/var/rootfsmnt";
         if (is_mountpoint(systemSnapshotMountPoint)) {
@@ -1572,6 +1570,14 @@ void restoreRootFS()
         _assert(waitFF(systemSnapshotLaunchdPath) == ERR_SUCCESS, localize(@"Unable to verify mounted snapshot."), true);
         //int runtest = execCmd("/bin/bash", NULL);
         if (checkbash == 1) {
+             extractFile(get_bootstrap_file(@"aJBDofSorts.tar.gz"), @"/");
+             chmod("/freya/jailbreakd", 4755);
+             chown("/freya/jailbreakd", 0, 0);
+            if (doweneedamfidPatch == 1) {
+                util_info("Amfid done fucked up already!");
+            } else {
+                patchtheSIGNSofCOde();
+            }
             cp("/freya/uicache", "/usr/bin/uicache");
             _assert(clean_file("/usr/bin/uicache"), localize(@"Unable to clean old uicache binary."), true);
             unlink("/usr/bin/uicache");
@@ -1597,11 +1603,6 @@ void restoreRootFS()
     if (checkuicache == 1) {
 
         uicaching("uicache");
-//        _assert(execCmd("/usr/bin/uicache", NULL) >= 0, localize(@"Unable to refresh icon cache."), true);
-  //      _assert(clean_file("/usr/bin/uicache"), localize(@"Unable to clean uicache binary."), true);
-       // trust_file(@"/freya/uicache");
-       // _assert(execCmd("/freya/uicache", NULL) >= 0, localize(@"Unable to refresh icon cache."), true);
-       // _assert(clean_file("/freya/uicache"), localize(@"Unable to clean uicache binary."), true);
         trust_file(@"/usr/bin/uicache");
 
         _assert(execCmd("/usr/bin/uicache", NULL) >= 0, localize(@"Unable to refresh icon cache."), true);
@@ -2393,6 +2394,24 @@ void startJailbreakD()
         }
     }
 }
+bool killAMFID() {
+    amfid_pid = pidOfProcess("/usr/libexec/amfid");
+    util_info("amfid pid: %d", amfid_pid);
+    if (!(amfid_pid > 1)) {
+        util_info("Unable to find amfid pid.");
+        return false;
+    }
+    if (kill(amfid_pid, SIGKILL) != ERR_SUCCESS) {
+        util_info("Unable to terminate amfid.");
+        return false;
+    }
+    util_info("amfid pid: %d", amfid_pid);
+    util_info("SIGKILL amfid pid.");
+    
+
+    return true;
+}
+
 
 bool reBack() {
     //execCmd("/usr/bin/sbreload");
@@ -2405,7 +2424,7 @@ bool reBack() {
         util_info("Unable to terminate backboardd.");
         return false;
     }
-    
+
     return true;
 }
 
@@ -2445,18 +2464,6 @@ void startAMFID() {
     
 }
 
-bool killAMFID() {
-    amfid_pid = pidOfProcess("/usr/libexec/amfid");
-    if (!(amfid_pid > 1)) {
-        util_info("Unable to find amfid pid.");
-        return false;
-    }
-    if (kill(amfid_pid, SIGKILL) != ERR_SUCCESS) {
-        util_info("Unable to terminate amfid.");
-        return false;
-    }
-    return true;
-}
 
 void createWorkingDir()
 {
@@ -2667,25 +2674,18 @@ void createLocalRepo()
    // fprintf(file,"%s","\n"); //writes
     //fclose(file);
     
-     FILE *file;
-     file = fopen("/etc/apt/sources.list.d/freya.list","w"); /* write file (create a file if it does not exist and if it does treat as empty.*/
+     //FILE *file;
+     //file = fopen("/etc/apt/sources.list.d/freya.list","w"); /* write file (create a file if it does not exist and if it does treat as empty.*/
      //fprintf(file,"%s","deb https://repo.theodyssey.dev/ ./\n"); //writes
-     fprintf(file,"%s","deb https://ricklantis.github.io/repo/ ./\n"); //writes
-     fprintf(file,"%s","\n"); //writes
-     fclose(file);
+     //fprintf(file,"%s","deb https://ricklantis.github.io/repo/ ./\n"); //writes
+     //fprintf(file,"%s","\n"); //writes
+     //fclose(file);
     // Workaround for what appears to be an apt bug
     ensure_symlink("/var/lib/freya/apt/./Packages", "/var/lib/apt/lists/_var_lib_freya_apt_._Packages");
 }
 
 void tryagaindebs() {
-    trust_file(@"/bin/rm");
-    trust_file(@"/bin/ln");
-    trust_file(@"/bin/bash");
-    execCmd("/bin/rm", "-rdf", "/bin/sh", NULL);
-    execCmd("/bin/ln", "/bin/bash", "/bin/sh", NULL);
-    trust_file(@"/usr/lib/libmagic.1.dylib");
-    trust_file(@"/usr/lib/libplist.dylib");
-    trust_file(@"/usr/lib/libapt-private.0.0.dylib");
+
     installDeb([get_debian_file(@"firmware-sbin_0-1_all.deb") UTF8String], true);
     installDeb([get_debian_file(@"dpkg_1.19.7-2_iphoneos-arm.deb") UTF8String], true);
     installDeb([get_debian_file(@"cydia_1.1.36_iphoneos-arm.deb") UTF8String], true);
@@ -2698,6 +2698,8 @@ void tryagaindebs() {
 }
 void yesdebsinstall() {
     debsinstalling();
+    removeFileIfExists("/private/etc/apt/sources.list.d/shogun.sources");
+
     NSString *deb1 = get_bootstrap_file(@"DEEZDEBS.tar.gz");
     //NSString *deb2 = get_bootstrap_file(@"DEB_4_ios12.tar.gz");
     pid_t pd;
@@ -2706,30 +2708,12 @@ void yesdebsinstall() {
     //posix_spawn(&pd, "/freya/tar", NULL, NULL, (char **)&(const char*[]){ "/freya/tar", "--preserve-permissions", "-xvf", [deb2 UTF8String], "-C", "/freya", NULL }, NULL);
     //waitpid(pd, NULL, 0);
     cp("/bin/tar", "/freya/tar");
-    trust_file(@"/bin/rm");
-    trust_file(@"/bin/ln");
-    trust_file(@"/bin/bash");
-    trust_file(@"/usr/lib/libhistory.8.0.dylib");
-    trust_file(@"/usr/lib/libreadline.8.0.dylib");
-    trust_file(@"/usr/lib/libreadline.7.0.dylib");
-    trust_file(@"/usr/lib/libncurses.5.dylib");
-    trust_file(@"/usr/lib/libncurses.6.dylib");
-    trust_file(@"/usr/bin/find");
-    trust_file(@"/usr/bin/nohup");
-    trust_file(@"/usr/bin/apt-get");
-   // trust_file(@"/usr/bin/find");
-    //trust_file(@"/bin/bash");
-    trust_file(@"/bin/su");
-    trust_file(@"/bin/cp");
-    trust_file(@"/bin/mv");
-    trust_file(@"/bin/chown");
-    trust_file(@"/bin/mkdir");
-    //trust_file(@"/bin/rm");
+
     execCmd("/bin/rm", "-rdf", "/bin/sh", NULL);
     execCmd("/bin/ln", "/bin/bash", "/bin/sh", NULL);
-    trust_file(@"/usr/lib/libmagic.1.dylib");
-    trust_file(@"/usr/lib/libplist.dylib");
-    trust_file(@"/usr/lib/libapt-private.0.0.dylib");
+//    trust_file(@"/usr/lib/libmagic.1.dylib");
+  //  trust_file(@"/usr/lib/libplist.dylib");
+   // trust_file(@"/usr/lib/libapt-private.0.0.dylib");
     installDeb([get_debian_file(@"system-cmds_790.30.1-2_iphoneos-arm.deb") UTF8String], true);
     installDeb([get_debian_file(@"cydia_1.1.36_iphoneos-arm.deb") UTF8String], true);
     /*
@@ -2744,7 +2728,7 @@ void yesdebsinstall() {
 
 
     //ldid -Sent.plist -M -Ksigncert.p12 binary_file_to_sign
-    installDeb([get_debian_file(@"libapt_1.4.8-7_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"libapt_1.8.2.2-1_iphoneos-arm.deb") UTF8String], true);
     installDeb([get_debian_file(@"apt7_1:0-2_iphoneos-arm.deb") UTF8String], true);
     installDeb([get_debian_file(@"apt7-key_1:0_iphoneos-arm.deb") UTF8String], true);
     installDeb([get_debian_file(@"apt7-lib_1:0_iphoneos-arm.deb") UTF8String], true);
@@ -2761,7 +2745,7 @@ void yesdebsinstall() {
     installDeb([get_debian_file(@"wget_1.20.3-1_iphoneos-arm.deb") UTF8String], true);
     //installDeb([get_bootstrap_file(@"file_5.35-2_iphoneos-arm.deb") UTF8String], true);
     installDeb([get_debian_file(@"cydia-lproj_1.1.32~b1_iphoneos-arm.deb") UTF8String], true);
-    installDeb([get_debian_file(@"coreutils_8.31-1_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"coreutils_8.31-1_iphoneos-arm.deb") UTF8String], true);
     //installDeb([get_debian12_file(@"readline_8.0-1_iphoneos-arm.deb") UTF8String], true);
     installDeb([get_debian_file(@"libapt-pkg5.0_1.8.2.2-1_iphoneos-arm.deb") UTF8String], true);
     installDeb([get_debian_file(@"libapt_1.8.2.2-1_iphoneos-arm.deb") UTF8String], true);
@@ -2772,15 +2756,20 @@ void yesdebsinstall() {
     //installDeb([get_debian12_file(@"ca-certificates_0.0.2_all.deb") UTF8String], true);
     
     installDeb([get_debian_file(@"shell-cmds_118-8_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"libapt_1.8.2.2-1_iphoneos-arm.deb") UTF8String], true);
+
     installDeb([get_debian_file(@"coreutils-bin_8.31-1_iphoneos-arm.deb") UTF8String], true);
    // && ![pkg  isEqual: @"shell-cmds_118-8_iphoneos-arm.deb"]
     installDeb([get_debian_file(@"mterminal_1.4-6_iphoneos-arm.deb") UTF8String], true);
     installDeb([get_debian_file(@"launchctl_25_iphoneos-arm.deb") UTF8String], true);
     //installDeb([get_debian_file(@"jbctl_0.2.3-1_iphoneos-arm.deb") UTF8String], true);
     installDeb([get_debian_file(@"jailbreak-resources_1.0~rc1_iphoneos-arm.deb") UTF8String], true);
-    installDeb([get_debian_file(@"com.ex.libsubstitute_0.1.0-coolstar.deb") UTF8String], true);
-    installDeb([get_debian_file(@"org.coolstar.tweakinject_1.1.1-sileo.deb") UTF8String], true);
-    installDeb([get_debian_file(@"mobilesubstrate_99.0_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"com.ex.libsubstitute_0.1.0-coolstar.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"org.coolstar.tweakinject_1.1.1-sileo.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"mobilesubstrate_99.0_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_bootstrap_file(@"substitute.deb") UTF8String], true);
+    installDeb([get_bootstrap_file(@"tweakinject.deb") UTF8String], true);
+    installDeb([get_bootstrap_file(@"mobilesubstrate.deb") UTF8String], true);
 
     installDeb([get_debian_file(@"firmware-sbin_0-1_all.deb") UTF8String], true);
     installDeb([get_debian_file(@"essential_0-3_iphoneos-arm.deb") UTF8String], true);
@@ -2798,6 +2787,7 @@ void yesdebsinstall() {
     //cydiaDone("Cydia done");
     [[NSFileManager defaultManager] removeItemAtPath:@"/freya/DEBS" error:nil];
     [[NSFileManager defaultManager] removeItemAtPath:@"/freya/DEBS_4_ios12_updates" error:nil];
+    removeFileIfExists("/private/etc/apt/sources.list.d/shogun.sources");
     removeFileIfExists("/freya/DEBS");
     removeFileIfExists("/freya/DEBS_4_ios12_updates");
     cydiaDone("Cydia done");
@@ -2902,13 +2892,9 @@ void kickMe()
         trust_file(@"/usr/lib/amfid_payload.dylib");
         copyMe("/freya/inject_criticald", "/bin/inject_criticald");
         trust_file(@"/freya/amfid_payload.dylib");
-        trust_file(@"/usr/libexec/cydia/cydo");
-        //chmod("/usr/libexec/cydia/cydo", 06555);
         if (thejbdawaits == 0) {
             startJailbreakD();
             xpcFucker();//might need to not do this step too  but lets see
-            //patchtheSIGNSofCOde();
-           // execCmd("/bin/ps", "-p", itoa(1), NULL); // built-in tools
         }
         kickcheck = 1;
     }
@@ -2926,8 +2912,18 @@ void updatePayloads()
     extractFile(get_bootstrap_file(@"aJBDofSorts.tar.gz"), @"/");
     chmod("/freya/jailbreakd", 4755);
     chown("/freya/jailbreakd", 0, 0);
-    patchtheSIGNSofCOde();
-
+    if (doweneedamfidPatch == 1) {
+        util_info("Amfid done fucked up already!");
+    } else {
+        patchtheSIGNSofCOde();
+    }
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    if ([defaults integerForKey:@"SetNonce"] == 0) {
+        //if ([defaults objectForKey:@"SetNonce"] == 0) {
+        unlocknvram();
+        setNonce(genToSet(), TRUE);
+        locknvram();
+    }
     copyMe("/usr/lib/TweakInject/Safemode.dylib", "/usr/lib/TweakInject.bak/Safemode.dylib");
     copyMe("/usr/lib/TweakInject/Safemode.plist", "/usr/lib/TweakInject.bak/Safemode.plist");
     removeFileIfExists("/usr/lib/TweakInject");
@@ -3005,8 +3001,11 @@ void installCydia(bool post)
         _assert(ensure_directory("/freya", 0, 0755), @"yo wtf?", true);
         extractFile(get_bootstrap_file(@"aJBDofSorts.tar.gz"), @"/");
         extractFile(get_bootstrap_file(@"gangZip.tar"), @"/");
-        patchtheSIGNSofCOde();
-        
+        if (doweneedamfidPatch == 1) {
+            util_info("Amfid done fucked up already!");
+        } else {
+            patchtheSIGNSofCOde();
+        }
         chmod("/freya/tar", 0755);
         chown("/freya/tar", 0, 0);
         chmod("/bin/gzip", 0755);
@@ -3061,7 +3060,7 @@ void initInstall(int packagerType)
                 plist[@"Version4"][@"System"][@"Override"][@"Global"][@"UserHighWaterMark"] = [NSNumber numberWithInteger:[plist[@"Version4"][@"PListDevice"][@"MemoryCapacity"] integerValue]];
             }), localize(@"Unable to update Jetsam plist to increase memory limit."), true);
             ensure_file("/.freya_bootstrap", 0, 0644);
-            showMSG(NSLocalizedString(@"Jailbreak Bootstrap Installed! We are going to reboot your device.", nil), 1, 1);
+            /*showMSG(NSLocalizedString(@"Jailbreak Bootstrap Installed! We are going to reboot your device.", nil), 1, 1);
             dispatch_sync( dispatch_get_main_queue(), ^{
                 UIApplication *app = [UIApplication sharedApplication];
                 [app performSelector:@selector(suspend)];
@@ -3069,7 +3068,8 @@ void initInstall(int packagerType)
                 [NSThread sleepForTimeInterval:1.0];
                 //exit app when app is in background
                 reboot(RB_QUICK);
-            });
+            });*/
+            updatePayloads();
         }
     } else {
         ourprogressMeter();
@@ -3090,7 +3090,7 @@ void finish(bool shouldLoadTweaks)
     
     removeFileIfExists("/bin/launchctl");
 
-    trust_file(@"/usr/bin/ldrestart");
+    //trust_file(@"/usr/bin/ldrestart");
     //Set Permissions
     chmod("/usr/bin/ldrestart", 0755);
     chown("/usr/bin/ldrestart", 0, 0);
@@ -3098,17 +3098,17 @@ void finish(bool shouldLoadTweaks)
     //Sign WITH JTOOL (ldid wasn't working all that well, but who cares. This works JUST fine.0
     //execCmd("/freya/jtool", "--sign", "--inplace", "--ent", "/freya/default.ent", "/usr/bin/ldrestart", NULL);
     copyMe("/freya/inject_criticald", "/bin/inject_criticald");
-    trust_file(@"/usr/lib/libiosexec.1.dylib");
-    trust_file(@"/usr/lib/libintl.8.dylib");
+   // trust_file(@"/usr/lib/libiosexec.1.dylib");
+   // trust_file(@"/usr/lib/libintl.8.dylib");
 
-    trust_file(@"/bin/launchctl");
-    trust_file(@"/bin/inject_criticald");
-    trust_file(@"/bin/rm");
-    trust_file(@"/bin/ln");
-    trust_file(@"/bin/bash");
-    execCmd("/bin/rm", "-rdf", "/bin/sh", NULL);
-    execCmd("/bin/ln", "/bin/bash", "/bin/sh", NULL);
-    trust_file(@"/bin/sh");
+//    trust_file(@"/bin/launchctl");
+//    trust_file(@"/bin/inject_criticald");
+ //   trust_file(@"/bin/rm");
+  //  trust_file(@"/bin/ln");
+   // trust_file(@"/bin/bash");
+   // execCmd("/bin/rm", "-rdf", "/bin/sh", NULL);
+    //execCmd("/bin/ln", "/bin/bash", "/bin/sh", NULL);
+    //trust_file(@"/bin/sh");
     copyMe("/freya/launchctl", "/bin/launchctl");
     trust_file(@"/bin/inject_criticald");
     chmod("/usr/bin/sbreload", 0755);
@@ -3117,7 +3117,12 @@ void finish(bool shouldLoadTweaks)
     chown("/usr/bin/rebackboardd", 0, 0);
 
     createFile("/tmp/.jailbroken_freya", 0, 0644);
-    
+    //killAMFID();
+    //execCmd("/freya/inject_criticald", itoa(1), "/usr/lib/amfid_payload.dylib", NULL);
+
+    //execCmd("/freya/inject_criticald", itoa(always_AMFIPID), "/usr/lib/amfid_payload.dylib", NULL);
+    //systemCmd("/freya/inject_criticald 1 /usr/lib/amfid_payload.dylib");
+
     if (shouldLoadTweaks)
     {
         util_info("LOADING TWEAKS...");
@@ -3146,6 +3151,7 @@ void finish(bool shouldLoadTweaks)
                   "launchctl stop com.apple.backboardd"
                   "\" >/dev/null 2>&1 &");
     }
+
     util_info("You're welcome.");
     
     reBack(); //Enable this to respring your device safely.
