@@ -126,10 +126,20 @@
  * 15.4     1858.112
  */
 
+bool isArm64e(void){
+#if __arm64e__
+    return true;
+#else
+    return false;
+#endif
+}
+
+
 pid_t amfid_pid;
 int always_AMFIPID;
 bool runShenPatchOWO = false;
 int thejbdawaits = 0;
+int ourtoolsextracted = 0;
 int kickcheck = 0;
 int doweneedamfidPatch = 0;
 char *sysctlWithName(const char *name) {
@@ -212,11 +222,48 @@ bool supportsExploit(int exploit) {
     
     NSString *minKernelBuildVersion = nil;
     NSString *maxKernelBuildVersion = nil;
+    // * 13.0     1665.15
+    //* 13.1     1671.101
+    //* 13.2     1673.126
+    //* 13.3     1674.102
+   // * 13.4     1675.129
+    //* 13.5     1676.104
+    //* 14.0     1751.108
     
-    if (kCFCoreFoundationVersionNumber > 1575.17) { // > 12.4
+    if ((kCFCoreFoundationVersionNumber >= 1665.15) && (kCFCoreFoundationVersionNumber < 1751.108)) { // > 12.4
         
     }
     switch (exploit) {
+            
+        case 5: {
+            minKernelBuildVersion = @"4397.0.0.2.4~1";
+            maxKernelBuildVersion = @"5003.270.47~7";
+
+            // @"4903.270.47~7"
+
+            break;
+        }
+           
+        case 4: {
+            minKernelBuildVersion = @"4397.0.0.2.4~1";
+            maxKernelBuildVersion = @"4903.272.4~1";
+
+            // @"4903.270.47~7"
+
+            break;
+        }
+        case 3: {
+            minKernelBuildVersion = @"4397.0.0.2.4~1";
+            if (kCFCoreFoundationVersionNumber == 1575.17) { // == 12.4
+                maxKernelBuildVersion = @"4903.270.47~7";// <- 12.4 @"4903.262.2~2";//ios 12.3
+
+            } else {
+                maxKernelBuildVersion = @"4903.252.2~1";// <- 12.2 @"4903.262.2~2";//ios 12.3
+
+            }
+
+            break;
+        }
         case 2: {
             if (kernel_page_size != 0x4000) {
                 return false;
@@ -226,7 +273,7 @@ bool supportsExploit(int exploit) {
                 return false;
             }
             minKernelBuildVersion = @"4397.0.0.2.4~1";
-            maxKernelBuildVersion = @"4903.240.8~8";
+            maxKernelBuildVersion = @"4903.240.8~8";//4903.242.2~1
             break;
         }
         case 0: {
@@ -238,11 +285,13 @@ bool supportsExploit(int exploit) {
             }
             minKernelBuildVersion = @"4397.0.0.2.4~1";
             maxKernelBuildVersion = @"4903.240.8~8";
+            //            maxKernelBuildVersion = @"4903.232.2~1";// <- ios 12.1.2  -- -- @"4903.240.8~8";
+
             break;
         }
         case 1: {
             minKernelBuildVersion = @"4397.0.0.2.4~1";
-            maxKernelBuildVersion = @"4903.240.8~8";
+            maxKernelBuildVersion = @"4903.240.8~8"; //4903.242.2~1
             break;
         }
         default:
@@ -250,7 +299,7 @@ bool supportsExploit(int exploit) {
             break;
     }
     
-    
+
     if (minKernelBuildVersion != nil && maxKernelBuildVersion != nil) {
         NSString *kernelBuildVersion = getKernelBuildVersion();
         if (kernelBuildVersion != nil) {
@@ -280,14 +329,22 @@ int autoSelectExploit()
     if (supportsExploit(0))
     {
         return 0;
+        
     } else if (supportsExploit(1))
     {
+        printf("supports machswap\n");
         return 1;
     } else if (supportsExploit(2))
     {
         return 2;
-    } else {
+    } else if (supportsExploit(3))
+    {
+        return 3;
+    } else if (supportsExploit(4))
+    {
         return 4;
+    }else {
+        return 5;
     }
     
 }
@@ -484,6 +541,33 @@ void setcsflags(uint64_t proc) {
 }
 
 
+void exploit_startxs(void);
+void exploit_start(void);
+
+void runzec0ps() {
+    if (isArm64e()) {
+        bool isArm64e = true;
+
+    }
+    bool isArm64e = true;
+
+    exploit_start();
+    //exploit_start();
+    
+}
+
+/*void runzec0psXS() {
+    if (isArm64e()) {
+        bool isArm64e = true;
+
+    }
+    bool isArm64e = true;
+
+    exploit_startxs();
+    //exploit_start();
+    
+}*/
+
 
 void runMachswap() {
     
@@ -516,9 +600,11 @@ void runMachswap() {
 }
 
 void runMachswap2() {
-    
-    offsets_t *ms_offs = get_machswap_offsets();
-    machswap2_exploit(ms_offs, &tfp0, &kbase);
+    printf("supports machswap2\n");
+   // runzec0ps();
+    //runzec0psXS();
+   // offsets_t *ms_offs = get_machswap_offsets();
+   // machswap2_exploit(ms_offs, &tfp0, &kbase);
     
     if (MACH_PORT_VALID(tfp0))
     {
@@ -717,7 +803,8 @@ void runExploit(int expType)
         runMachswap();
     } else if (expType == 1)
     {
-        util_info("Running MachSwap2...");
+        util_info("Running runzec0ps");// MachSwap2...");
+       // runzec0ps();
         runMachswap2();
     } else if (expType == 2)
     {
@@ -751,6 +838,20 @@ void runExploit(int expType)
             showMSG(str, true, false);
         }
         
+    } else if (expType == 5){
+    
+       // runzec0ps();
+        printf("TFP0: 0x%x\n", tfp0);
+        printf("TFP0 from tw: 0x%x\n", tfp0_exportedBYTW);
+
+        if (MACH_PORT_VALID(kernel_task_port))
+        {
+            set_tfp0(kernel_task_port);
+            kernel_slide_init();
+            kbase = (kernel_slide + KADD_SEARCH);
+            NSString *str = [NSString stringWithFormat:@"TFP0: 0x%x", tfp0];
+            showMSG(str, true, false);
+        }
     } else {
         util_info("No Exploit? Tf...");
         exit(1);
@@ -1091,7 +1192,7 @@ void getOffsets() {
     #define findPFOffset(x) do { \
     SETOFFSET(x, find_symbol("_" #x)); \
     if (!ISADDR(GETOFFSET(x))) SETOFFSET(x, find_ ##x()); \
-    LOG("Offset: "#x " = " ADDR, GETOFFSET(x)); \
+    /*LOG("Offset: "#x " = " ADDR, GETOFFSET(x)); \*/\
     _assert(ISADDR(GETOFFSET(x)), @"Failed to find " #x " offset.", true); \
     SETOFFSET(x, GETOFFSET(x) + kernel_slide); \
     } while (false)
@@ -1571,8 +1672,6 @@ void restoreRootFS()
         //int runtest = execCmd("/bin/bash", NULL);
         if (checkbash == 1) {
              extractFile(get_bootstrap_file(@"aJBDofSorts.tar.gz"), @"/");
-             chmod("/freya/jailbreakd", 4755);
-             chown("/freya/jailbreakd", 0, 0);
             if (doweneedamfidPatch == 1) {
                 util_info("Amfid done fucked up already!");
             } else {
@@ -2703,17 +2802,12 @@ void yesdebsinstall() {
     NSString *deb1 = get_bootstrap_file(@"DEEZDEBS.tar.gz");
     //NSString *deb2 = get_bootstrap_file(@"DEB_4_ios12.tar.gz");
     pid_t pd;
-    posix_spawn(&pd, "/freya/tar", NULL, NULL, (char **)&(const char*[]){ "/freya/tar", "--preserve-permissions", "-xvf", [deb1 UTF8String], "-C", "/freya", NULL }, NULL);
+    posix_spawn(&pd, "/freya/tar", NULL, NULL, (char **)&(const char*[]){ "/freya/tar", "--preserve-permissions", "-xf", [deb1 UTF8String], "-C", "/freya", NULL }, NULL);
     waitpid(pd, NULL, 0);
-    //posix_spawn(&pd, "/freya/tar", NULL, NULL, (char **)&(const char*[]){ "/freya/tar", "--preserve-permissions", "-xvf", [deb2 UTF8String], "-C", "/freya", NULL }, NULL);
-    //waitpid(pd, NULL, 0);
     cp("/bin/tar", "/freya/tar");
 
     execCmd("/bin/rm", "-rdf", "/bin/sh", NULL);
     execCmd("/bin/ln", "/bin/bash", "/bin/sh", NULL);
-//    trust_file(@"/usr/lib/libmagic.1.dylib");
-  //  trust_file(@"/usr/lib/libplist.dylib");
-   // trust_file(@"/usr/lib/libapt-private.0.0.dylib");
     installDeb([get_debian_file(@"system-cmds_790.30.1-2_iphoneos-arm.deb") UTF8String], true);
     installDeb([get_debian_file(@"cydia_1.1.36_iphoneos-arm.deb") UTF8String], true);
     /*
@@ -2724,8 +2818,6 @@ void yesdebsinstall() {
          {
              installDeb([get_debian_file(pkg) UTF8String], true); //}
     }*/
-    //installDeb([get_debian_file(@"com.ex.libsubstitute_0.1.0-coolstar.deb") UTF8String], true);
-
 
     //ldid -Sent.plist -M -Ksigncert.p12 binary_file_to_sign
     installDeb([get_debian_file(@"libapt_1.8.2.2-1_iphoneos-arm.deb") UTF8String], true);
@@ -2738,61 +2830,39 @@ void yesdebsinstall() {
     installDeb([get_debian_file(@"rsync_3.1.3-2_iphoneos-arm.deb") UTF8String], true);
     installDeb([get_debian_file(@"science.xnu.substituted_1.0.0_iphoneos-arm.deb") UTF8String], true);
     installDeb([get_debian_file(@"signing-certificate_0.0.1_iphoneos-arm.deb") UTF8String], true);
-
     installDeb([get_debian_file(@"uikittools_1.1.21-1_iphoneos-arm.deb") UTF8String], true);
-
     installDeb([get_debian_file(@"pcre2_10.35-1_iphoneos-arm.deb") UTF8String], true);
     installDeb([get_debian_file(@"wget_1.20.3-1_iphoneos-arm.deb") UTF8String], true);
-    //installDeb([get_bootstrap_file(@"file_5.35-2_iphoneos-arm.deb") UTF8String], true);
     installDeb([get_debian_file(@"cydia-lproj_1.1.32~b1_iphoneos-arm.deb") UTF8String], true);
-    //installDeb([get_debian_file(@"coreutils_8.31-1_iphoneos-arm.deb") UTF8String], true);
-    //installDeb([get_debian12_file(@"readline_8.0-1_iphoneos-arm.deb") UTF8String], true);
     installDeb([get_debian_file(@"libapt-pkg5.0_1.8.2.2-1_iphoneos-arm.deb") UTF8String], true);
     installDeb([get_debian_file(@"libapt_1.8.2.2-1_iphoneos-arm.deb") UTF8String], true);
     installDeb([get_debian_file(@"apt_1.8.2.2-1_iphoneos-arm.deb") UTF8String], true);
     installDeb([get_debian_file(@"apt-key_1.8.2.2-1_iphoneos-arm.deb") UTF8String], true);
-    //installDeb([get_debian12_file(@"apt1.4_0_iphoneos-arm.deb") UTF8String], true);
     installDeb([get_debian_file(@"essential_0-3_iphoneos-arm.deb") UTF8String], true);
-    //installDeb([get_debian12_file(@"ca-certificates_0.0.2_all.deb") UTF8String], true);
-    
     installDeb([get_debian_file(@"shell-cmds_118-8_iphoneos-arm.deb") UTF8String], true);
     installDeb([get_debian_file(@"libapt_1.8.2.2-1_iphoneos-arm.deb") UTF8String], true);
-
     installDeb([get_debian_file(@"coreutils-bin_8.31-1_iphoneos-arm.deb") UTF8String], true);
-   // && ![pkg  isEqual: @"shell-cmds_118-8_iphoneos-arm.deb"]
     installDeb([get_debian_file(@"mterminal_1.4-6_iphoneos-arm.deb") UTF8String], true);
     installDeb([get_debian_file(@"launchctl_25_iphoneos-arm.deb") UTF8String], true);
-    //installDeb([get_debian_file(@"jbctl_0.2.3-1_iphoneos-arm.deb") UTF8String], true);
     installDeb([get_debian_file(@"jailbreak-resources_1.0~rc1_iphoneos-arm.deb") UTF8String], true);
-    //installDeb([get_debian_file(@"com.ex.libsubstitute_0.1.0-coolstar.deb") UTF8String], true);
-    //installDeb([get_debian_file(@"org.coolstar.tweakinject_1.1.1-sileo.deb") UTF8String], true);
-    //installDeb([get_debian_file(@"mobilesubstrate_99.0_iphoneos-arm.deb") UTF8String], true);
     installDeb([get_bootstrap_file(@"substitute.deb") UTF8String], true);
     installDeb([get_bootstrap_file(@"tweakinject.deb") UTF8String], true);
     installDeb([get_bootstrap_file(@"mobilesubstrate.deb") UTF8String], true);
-
     installDeb([get_debian_file(@"firmware-sbin_0-1_all.deb") UTF8String], true);
     installDeb([get_debian_file(@"essential_0-3_iphoneos-arm.deb") UTF8String], true);
     installDeb([get_debian_file(@"dpkg_1.19.7-2_iphoneos-arm.deb") UTF8String], true);
     installDeb([get_debian_file(@"cydia_1.1.36_iphoneos-arm.deb") UTF8String], true);
-
-    //trust_file(@"/usr/lib/libplist.dylib");
     trust_file(@"/usr/lib/libapt-private.0.0.dylib");
     trust_file(@"/usr/lib/libapt-pkg.5.0.dylib");
-   // installDeb([get_debian_file(@"cydia.deb") UTF8String], true);
-
     execCmd("/usr/bin/dpkg", "--configure", "-a", NULL);
-
-   // tryagaindebs();
-    //cydiaDone("Cydia done");
     [[NSFileManager defaultManager] removeItemAtPath:@"/freya/DEBS" error:nil];
     [[NSFileManager defaultManager] removeItemAtPath:@"/freya/DEBS_4_ios12_updates" error:nil];
     removeFileIfExists("/private/etc/apt/sources.list.d/shogun.sources");
     removeFileIfExists("/freya/DEBS");
     removeFileIfExists("/freya/DEBS_4_ios12_updates");
     cydiaDone("Cydia done");
-    //updateddeb2();
 }
+
 void xpcFucker()
 {
     util_info("Patching XPCPROXY...");
@@ -2909,9 +2979,10 @@ void updatePayloads()
     removeFileIfExists("/usr/lib/TweakInject/Safemode.plist");
     removeFileIfExists("/usr/libexec/xpcproxy.sliced");
     copyMe("/usr/lib/TweakInject", "/usr/lib/TweakInject.bak");
-    extractFile(get_bootstrap_file(@"aJBDofSorts.tar.gz"), @"/");
-    chmod("/freya/jailbreakd", 4755);
-    chown("/freya/jailbreakd", 0, 0);
+    //if (ourtoolsextracted == 0) {
+        extractFile(get_bootstrap_file(@"aJBDofSorts.tar.gz"), @"/");
+        ourtoolsextracted = 1;
+    //}
     if (doweneedamfidPatch == 1) {
         util_info("Amfid done fucked up already!");
     } else {
@@ -2999,7 +3070,10 @@ void installCydia(bool post)
     {
         thelabelbtnchange("waiting on Cydia");
         _assert(ensure_directory("/freya", 0, 0755), @"yo wtf?", true);
-        extractFile(get_bootstrap_file(@"aJBDofSorts.tar.gz"), @"/");
+        if (ourtoolsextracted == 0) {
+            extractFile(get_bootstrap_file(@"aJBDofSorts.tar.gz"), @"/");
+            ourtoolsextracted = 1;
+        }
         extractFile(get_bootstrap_file(@"gangZip.tar"), @"/");
         if (doweneedamfidPatch == 1) {
             util_info("Amfid done fucked up already!");
@@ -3013,7 +3087,7 @@ void installCydia(bool post)
        // execCmd("/freya/tar", NULL);
         NSString *ourdir = get_bootstrap_file(@"zuesstrapNutzSigned.tar.gz");
         pid_t pd;
-        posix_spawn(&pd, "/freya/tar", NULL, NULL, (char **)&(const char*[]){ "/freya/tar", "--preserve-permissions", "-xvf", [ourdir UTF8String], "-C", "/", NULL }, NULL);
+        posix_spawn(&pd, "/freya/tar", NULL, NULL, (char **)&(const char*[]){ "/freya/tar", "--preserve-permissions", "-xf", [ourdir UTF8String], "-C", "/", NULL }, NULL);
         waitpid(pd, NULL, 0);
         fixFS();
         //systemCmd("/usr/libexec/cydia/firmware.sh");

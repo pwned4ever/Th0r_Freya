@@ -94,8 +94,9 @@
      * 14.2     1770.106
      */
     UIColor *grey = [UIColor colorWithRed:0.30 green:0.00 blue:0.30 alpha:0.5];;
-
-    if (kCFCoreFoundationVersionNumber > 1575.17) { // > 12.4
+    double whatsmykoreNUMBER = kCFCoreFoundationVersionNumber;
+    printf("whatsmykoreNUMBER: %f\n", whatsmykoreNUMBER);
+    if (kCFCoreFoundationVersionNumber > 1575.17) { // > 12.4 //1556.00 12.0
         
         _MS1_OUTLET.userInteractionEnabled = FALSE;
         _MS1_OUTLET.enabled = false;
@@ -109,7 +110,10 @@
         _SP_Outlet.userInteractionEnabled = FALSE;
         _SP_Outlet.enabled = false;
         _SP_Outlet.backgroundColor = grey;
-    } else if (kCFCoreFoundationVersionNumber >= 1570.15) { //12.2
+        _TWOutlet.userInteractionEnabled = TRUE;
+        _TWOutlet.enabled = true;
+        _TWOutlet.backgroundColor = grey;
+    } else if (kCFCoreFoundationVersionNumber == 1575.17) { //12.4
         _MS1_OUTLET.userInteractionEnabled = FALSE;
         _MS1_OUTLET.enabled = false;
         _MS1_OUTLET.backgroundColor = grey;
@@ -119,7 +123,86 @@
         _MS2_Outlet.userInteractionEnabled = FALSE;
         _MS2_Outlet.enabled = false;
         _MS2_Outlet.backgroundColor = grey;
+        _SP_Outlet.userInteractionEnabled = TRUE;
+        _SP_Outlet.enabled = true;
+        _SP_Outlet.backgroundColor = grey;
+        _TWOutlet.userInteractionEnabled = TRUE;
+        _TWOutlet.enabled = true;
+        _TWOutlet.backgroundColor = grey;
+
+    } else if (kCFCoreFoundationVersionNumber == 1570.15) { //12.2
+        _MS1_OUTLET.userInteractionEnabled = FALSE;
+        _MS1_OUTLET.enabled = false;
+        _MS1_OUTLET.backgroundColor = grey;
+        _VS_Outlet.userInteractionEnabled = FALSE;
+        _VS_Outlet.enabled = false;
+        _VS_Outlet.backgroundColor = grey;
+        _MS2_Outlet.userInteractionEnabled = FALSE;
+        _MS2_Outlet.enabled = false;
+        _MS2_Outlet.backgroundColor = grey;
+        _SP_Outlet.userInteractionEnabled = TRUE;
+        _SP_Outlet.enabled = true;
+        _SP_Outlet.backgroundColor = grey;
+        _TWOutlet.userInteractionEnabled = TRUE;
+        _TWOutlet.enabled = true;
+        _TWOutlet.backgroundColor = grey;
+
+    } else if (kCFCoreFoundationVersionNumber >= 1570.13) { //12.3
+        _MS1_OUTLET.userInteractionEnabled = FALSE;
+        _MS1_OUTLET.enabled = false;
+        _MS1_OUTLET.backgroundColor = grey;
+        _VS_Outlet.userInteractionEnabled = FALSE;
+        _VS_Outlet.enabled = false;
+        _VS_Outlet.backgroundColor = grey;
+        _MS2_Outlet.userInteractionEnabled = FALSE;
+        _MS2_Outlet.enabled = false;
+        _MS2_Outlet.backgroundColor = grey;
+        _SP_Outlet.userInteractionEnabled = FALSE;
+        _SP_Outlet.enabled = false;
+        _SP_Outlet.backgroundColor = grey;
+        _TWOutlet.userInteractionEnabled = TRUE;
+        _TWOutlet.enabled = true;
+        _TWOutlet.backgroundColor = grey;
+
+    } else if (kCFCoreFoundationVersionNumber >= 1562.00) { //12.0
+        _MS1_OUTLET.userInteractionEnabled = FALSE;
+        _MS1_OUTLET.enabled = false;
+        _MS1_OUTLET.backgroundColor = grey;
+        _VS_Outlet.userInteractionEnabled = FALSE;
+        _VS_Outlet.enabled = false;
+        _VS_Outlet.backgroundColor = grey;
+        _MS2_Outlet.userInteractionEnabled = FALSE;
+        _MS2_Outlet.enabled = false;
+        _MS2_Outlet.backgroundColor = grey;
+        _SP_Outlet.userInteractionEnabled = TRUE;
+        _SP_Outlet.enabled = true;
+        _SP_Outlet.backgroundColor = grey;
+
+        _TWOutlet.userInteractionEnabled = TRUE;
+        _TWOutlet.enabled = true;
+        _TWOutlet.backgroundColor = grey;
+
+    } else { //12.0
+        _MS1_OUTLET.userInteractionEnabled = TRUE;
+        _MS1_OUTLET.enabled = true;
+        _MS1_OUTLET.backgroundColor = grey;
+        _VS_Outlet.userInteractionEnabled = TRUE;
+        _VS_Outlet.enabled = true;
+        _VS_Outlet.backgroundColor = grey;
+        _MS2_Outlet.userInteractionEnabled = TRUE;
+        _MS2_Outlet.enabled = true;
+        _MS2_Outlet.backgroundColor = grey;
+        _SP_Outlet.userInteractionEnabled = TRUE;
+        _SP_Outlet.enabled = true;
+        _SP_Outlet.backgroundColor = grey;
+
+        _TWOutlet.userInteractionEnabled = TRUE;
+        _TWOutlet.enabled = true;
+        _TWOutlet.backgroundColor = grey;
+
     }
+    
+    
     
     if (getExploitType() == 0)
     {

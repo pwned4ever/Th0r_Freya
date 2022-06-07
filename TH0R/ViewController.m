@@ -179,10 +179,10 @@ double uptime(){
     [audioPlayer1 play];
 }
 
-NSString *freyaversion = @"0.6⚡️";
-char *freyaversionnew = "0.6⚡️";
+NSString *freyaversion = @"0.7⚡️";
+char *freyaversionnew = "0.7⚡️";
 
-char *freyaupdateDate = "1:00AM 05/30/22";
+char *freyaupdateDate = "3:30PM 06/07/22";
 char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/blob/main/Releases/Freya.ipa";// "mega.nz/file/BhNxBSgJ#gNcngNQBtXS0Ipa5ivX09-jtIr7BckUhrA7YMkSFaNM"//
 
 - (void)u0alertreboot {
@@ -496,7 +496,7 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/blob/main/Releases/Fr
     } else if ((checkjailbreakdrRun == 0) && (checkchimeramarker == 1)){
         saveCustomSetting(@"RestoreFS", 0);
         JUSTremovecheck = true;
-        dispatch_async(dispatch_get_main_queue(), ^{
+        /*dispatch_async(dispatch_get_main_queue(), ^{
             [self.restoreFSSwitch setEnabled:NO];
             [self.buttontext setEnabled:YES];
             [self.buttontext setTitle:localize(@"Remove Chimera?") forState:UIControlStateNormal];
@@ -505,8 +505,9 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/blob/main/Releases/Fr
             [ViewController.sharedController.settingsButton setEnabled:YES];
             [ViewController.sharedController.settings_buttun_bg setHidden:NO];
             [ViewController.sharedController.restoreFSSwitch setUserInteractionEnabled:NO];
-        });
-        [self chimeraalert];
+        });*/
+        
+        //[self chimeraalert];
         goto end;
         
     } else if(((checkjailbreakdRun == 0) && (checkpspawnhook == 0) && (checkth0rmarker == 0) && (checkuncovermarker == 0)) && (checkchimeramarker == 0)){

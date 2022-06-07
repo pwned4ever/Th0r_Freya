@@ -23,7 +23,7 @@
 #include <mach-o/getsect.h>
 #include <mach-o/fat.h>
 #include <stdbool.h>
-//#include "xpc.h"
+//#import <xpc/xpc.h>
 //Applications/Xcode11.3.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/xpc
 #include <CommonCrypto/CommonCrypto.h>
 #include <Foundation/Foundation.h>
@@ -779,7 +779,7 @@ uint64_t find_amfid_OFFSET_MISValidate_symbol(uint8_t* amfid_macho) {
 }
 
 void* AMFIDExceptionHandler(void* arg) {
-    if (kCFCoreFoundationVersionNumber >= 1575.17) {
+    if (kCFCoreFoundationVersionNumber >= 1575.13) {//  <- 12.3 1575.13 ----1575.17) {
 
         uint32_t size = 0x1000;
         mach_msg_header_t* msg = malloc(size);
@@ -828,7 +828,8 @@ void* AMFIDExceptionHandler(void* arg) {
     //        __text:0000000100003378                 MOV             X1, X22 <- this
     //        __text:000000010000337C                 BL              _CFStringCreateWithFileSystemRepresentation
                     
-                char* filename = (char*)amfidRead(new_state.__x[22], 1024);
+                char* filename = (char*)amfidRead(new_state.__x[24], 1024);
+                //char* filename = (char*)amfidRead(new_state.__x[22], 1024);
 
                 if(!filename) {
                     printf("[amfid][-] No file name?");
@@ -970,20 +971,8 @@ void* AMFIDExceptionHandler(void* arg) {
                     _STRUCT_ARM_THREAD_STATE64 new_state;
                     memcpy(&new_state, &old_state, sizeof(_STRUCT_ARM_THREAD_STATE64));
                     
-                    //  https://github.com/Odyssey-Team/Odyssey/blob/master/Odyssey/post-exploit/utils/amfidtakeover.swift#L326
-                    // get the filename pointed to by X22
-        //        __text:0000000100003358                 ADR             X1, aEnteringIosPat ; "Entering iOS path for %s"
-        //        __text:000000010000335C                 NOP
-        //        __text:0000000100003360                 MOV             W0, #6  ; int
-        //        __text:0000000100003364                 BL              _syslog
-        //        __text:0000000100003368                 NOP
-        //        __text:000000010000336C                 LDR             X8, =_kCFAllocatorDefault
-        //        __text:0000000100003370                 LDR             X24, [X8]
-        //        __text:0000000100003374                 MOV             X0, X24
-        //        __text:0000000100003378                 MOV             X1, X22 <- this
-        //        __text:000000010000337C                 BL              _CFStringCreateWithFileSystemRepresentation
-                        
-                    char* filename = (char*)amfidRead(new_state.__x[25], 1024);//ios
+                    char* filename = (char*)amfidRead(new_state.__x[23], 1024);//ios
+//                    char* filename = (char*)amfidRead(new_state.__x[25], 1024);//ios
                     if(!filename) {
                         printf("[amfid][-] No file name?");
                         continue;

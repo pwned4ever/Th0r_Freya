@@ -129,13 +129,14 @@ int unlocknvram(void) {
         if (vmethod == 0) {
             break;
         }
-#if __arm64e__
+/*#if __arm64e__
         assert(count < VTABLE_PAC_CODES(IODTNVRAM).count);
         vmethod = kernel_xpaci(vmethod);
         uint64_t vmethod_address = fake_vtable_xpac + count * sizeof(*buf);
         buf[count] = kernel_forge_pacia_with_type(vmethod, vmethod_address,
                                                   VTABLE_PAC_CODES(IODTNVRAM).codes[count]);
-#endif // __arm64e__
+#endif // __arm64e__*/
+        
     }
     sched_yield();
 

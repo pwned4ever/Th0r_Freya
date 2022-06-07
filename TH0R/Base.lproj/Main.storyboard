@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="ZWx-d3-ACN">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="ZWx-d3-ACN">
     <device id="retina4_0" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <customFonts key="customFonts">
@@ -35,7 +36,7 @@
                                 <subviews>
                                     <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" text="text" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="jye-mo-TB9">
                                         <rect key="frame" x="8" y="67" width="304" height="290"/>
-                                        <color key="textColor" cocoaTouchSystemColor="lightTextColor"/>
+                                        <color key="textColor" systemColor="lightTextColor"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                     </textView>
@@ -48,13 +49,13 @@
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="version:" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LWq-dh-jOL">
                                         <rect key="frame" x="8" y="38" width="304" height="21"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <color key="textColor" systemColor="systemBlueColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <color key="textColor" systemColor="systemBlueColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="uptime:" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Mon-ks-vZq">
                                         <rect key="frame" x="8" y="59" width="304" height="21"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <color key="textColor" systemColor="systemPinkColor" red="1" green="0.1764705882" blue="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <color key="textColor" systemColor="systemPinkColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
@@ -83,14 +84,14 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mkS-6V-QDe" userLabel="Bottom container">
                                 <rect key="frame" x="0.0" y="531" width="320" height="37"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FgS-vp-896">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FgS-vp-896">
                                         <rect key="frame" x="5" y="5" width="42" height="30"/>
                                         <state key="normal" title="🎤🎶"/>
                                         <connections>
                                             <action selector="startmusic:" destination="ZWx-d3-ACN" eventType="touchUpInside" id="2p8-VP-goV"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ID7-tC-I8B">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ID7-tC-I8B">
                                         <rect key="frame" x="280" y="5" width="30" height="30"/>
                                         <state key="normal" title="🤫"/>
                                         <connections>
@@ -100,7 +101,7 @@
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="appver:" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XpO-ho-497" userLabel="appverlbl">
                                         <rect key="frame" x="0.0" y="-29" width="320" height="20"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <color key="textColor" systemColor="systemOrangeColor" red="1" green="0.58431372550000005" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <color key="textColor" systemColor="systemOrangeColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
@@ -147,7 +148,7 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iHh-Uy-WOb" userLabel="Settings Button">
                                 <rect key="frame" x="69" y="531" width="182" height="31"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IVA-AW-LTR">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IVA-AW-LTR">
                                         <rect key="frame" x="0.0" y="0.0" width="182" height="33"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="33" id="730-r6-9Se"/>
@@ -169,8 +170,8 @@
                                         </constraints>
                                     </imageView>
                                     <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ZN4-X6-cIq">
-                                        <rect key="frame" x="-55" y="0.0" width="293" height="2"/>
-                                        <color key="backgroundColor" systemColor="systemBlueColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <rect key="frame" x="-55" y="0.0" width="293" height="4"/>
+                                        <color key="backgroundColor" systemColor="systemBlueColor"/>
                                         <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <color key="progressTintColor" red="0.11372549019607843" green="0.019607843137254902" blue="0.086274509803921567" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     </progressView>
@@ -197,6 +198,7 @@
                                 </userDefinedRuntimeAttributes>
                             </view>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="Peo-sW-sqE"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <color key="tintColor" red="0.094117647058823528" green="0.3529411764705882" blue="0.61568627450980395" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
@@ -218,7 +220,6 @@
                             <constraint firstItem="mkS-6V-QDe" firstAttribute="top" secondItem="iHh-Uy-WOb" secondAttribute="top" id="smQ-Uo-txK"/>
                             <constraint firstItem="mkS-6V-QDe" firstAttribute="trailing" secondItem="THN-7c-azM" secondAttribute="trailing" id="uHy-Cw-AC5"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="Peo-sW-sqE"/>
                     </view>
                     <connections>
                         <outlet property="appverlabel" destination="XpO-ho-497" id="UMX-BB-tYy"/>
@@ -261,7 +262,7 @@
                                                         <subviews>
                                                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dBn-W7-HWD">
                                                                 <rect key="frame" x="44" y="83" width="51" height="31"/>
-                                                                <color key="onTintColor" systemColor="systemGreenColor" red="0.20392156859999999" green="0.78039215689999997" blue="0.34901960780000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                                <color key="onTintColor" systemColor="systemGreenColor"/>
                                                                 <connections>
                                                                     <action selector="loadTweaksPushed:" destination="cbb-OQ-T38" eventType="valueChanged" id="wJr-4v-oML"/>
                                                                 </connections>
@@ -310,7 +311,7 @@ Jailbroken</string>
                                                         <subviews>
                                                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="O0g-wh-Gie">
                                                                 <rect key="frame" x="44" y="85" width="51" height="31"/>
-                                                                <color key="onTintColor" systemColor="systemRedColor" red="1" green="0.23137254900000001" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                                <color key="onTintColor" systemColor="systemRedColor"/>
                                                                 <connections>
                                                                     <action selector="Restore_FS_Switch_Action:" destination="cbb-OQ-T38" eventType="valueChanged" id="qdi-oe-hf9"/>
                                                                 </connections>
@@ -372,12 +373,12 @@ Jailbreak</string>
                                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="2XJ-H5-4tg">
                                                                 <rect key="frame" x="24" y="30" width="244" height="115"/>
                                                                 <subviews>
-                                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cnZ-mN-oLo">
+                                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cnZ-mN-oLo">
                                                                         <rect key="frame" x="0.0" y="0.0" width="244" height="16.5"/>
                                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                         <fontDescription key="fontDescription" name="SFProRounded-Semibold" family="SF Pro Rounded" pointSize="17"/>
                                                                         <state key="normal" title="Voucher Swap">
-                                                                            <color key="titleColor" cocoaTouchSystemColor="viewFlipsideBackgroundColor"/>
+                                                                            <color key="titleColor" systemColor="viewFlipsideBackgroundColor"/>
                                                                         </state>
                                                                         <userDefinedRuntimeAttributes>
                                                                             <userDefinedRuntimeAttribute type="boolean" keyPath="clipsToBounds" value="YES"/>
@@ -389,7 +390,7 @@ Jailbreak</string>
                                                                             <action selector="VS_ACTION:" destination="cbb-OQ-T38" eventType="touchUpInside" id="FBI-IJ-1yg"/>
                                                                         </connections>
                                                                     </button>
-                                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="o2D-uC-hca">
+                                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="o2D-uC-hca">
                                                                         <rect key="frame" x="0.0" y="24.5" width="244" height="16.5"/>
                                                                         <color key="backgroundColor" red="0.42745098039215684" green="0.52549019607843139" blue="0.81568627450980391" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                         <fontDescription key="fontDescription" name="SFProRounded-Semibold" family="SF Pro Rounded" pointSize="17"/>
@@ -406,7 +407,7 @@ Jailbreak</string>
                                                                             <action selector="MS1_ACTION:" destination="cbb-OQ-T38" eventType="touchUpInside" id="esw-j0-ozs"/>
                                                                         </connections>
                                                                     </button>
-                                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WPt-xM-ZeO">
+                                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WPt-xM-ZeO">
                                                                         <rect key="frame" x="0.0" y="49" width="244" height="17"/>
                                                                         <color key="backgroundColor" red="0.42745098039215684" green="0.52549019607843139" blue="0.81568627450980391" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                         <fontDescription key="fontDescription" name="SFProRounded-Semibold" family="SF Pro Rounded" pointSize="17"/>
@@ -423,7 +424,7 @@ Jailbreak</string>
                                                                             <action selector="MS2_ACTION:" destination="cbb-OQ-T38" eventType="touchUpInside" id="RlH-TV-nxe"/>
                                                                         </connections>
                                                                     </button>
-                                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="i38-mJ-9UE">
+                                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="i38-mJ-9UE">
                                                                         <rect key="frame" x="0.0" y="74" width="244" height="16.5"/>
                                                                         <color key="backgroundColor" red="0.42745098040000001" green="0.52549019610000003" blue="0.81568627449999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                         <fontDescription key="fontDescription" name="SFProRounded-Semibold" family="SF Pro Rounded" pointSize="16"/>
@@ -441,7 +442,7 @@ Jailbreak</string>
                                                                             <action selector="SP_Action:" destination="cbb-OQ-T38" eventType="touchUpInside" id="ecm-4d-BnE"/>
                                                                         </connections>
                                                                     </button>
-                                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ttd-ho-Oh0" userLabel="TWOutlet">
+                                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ttd-ho-Oh0" userLabel="TWOutlet">
                                                                         <rect key="frame" x="0.0" y="98.5" width="244" height="16.5"/>
                                                                         <color key="backgroundColor" red="0.42745098040000001" green="0.52549019610000003" blue="0.81568627449999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                         <fontDescription key="fontDescription" name="SFProRounded-Semibold" family="SF Pro Rounded" pointSize="16"/>
@@ -470,7 +471,6 @@ Jailbreak</string>
                                                             <constraint firstItem="2XJ-H5-4tg" firstAttribute="top" secondItem="oki-pA-yhn" secondAttribute="top" constant="30" id="ahP-bc-C3f"/>
                                                             <constraint firstItem="2XJ-H5-4tg" firstAttribute="top" secondItem="VKd-Qr-8aR" secondAttribute="bottom" constant="5" id="iPK-D1-N71"/>
                                                             <constraint firstAttribute="trailing" secondItem="2XJ-H5-4tg" secondAttribute="trailing" constant="24" id="nxD-vm-rxf"/>
-                                                            <constraint firstAttribute="width" secondItem="oki-pA-yhn" secondAttribute="height" multiplier="137:153" id="skN-K1-BXp"/>
                                                             <constraint firstItem="2XJ-H5-4tg" firstAttribute="leading" secondItem="oki-pA-yhn" secondAttribute="leading" constant="24" id="tfT-NS-Zew"/>
                                                         </constraints>
                                                         <userDefinedRuntimeAttributes>
@@ -487,7 +487,6 @@ Jailbreak</string>
                                             </stackView>
                                         </subviews>
                                         <constraints>
-                                            <constraint firstAttribute="width" secondItem="r3g-G4-d9t" secondAttribute="height" multiplier="292:285" id="3Vw-Xg-bkX"/>
                                             <constraint firstItem="ybb-Xc-HH8" firstAttribute="top" secondItem="r3g-G4-d9t" secondAttribute="top" id="Dbg-rI-X3B"/>
                                             <constraint firstItem="RWk-Xr-3Ts" firstAttribute="leading" secondItem="r3g-G4-d9t" secondAttribute="leading" id="ERs-mP-hLQ"/>
                                             <constraint firstAttribute="bottom" secondItem="RWk-Xr-3Ts" secondAttribute="bottom" id="F4i-CB-czt"/>
@@ -503,12 +502,12 @@ Jailbreak</string>
                                             <stackView hidden="YES" opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="18" translatesAutoresizingMaskIntoConstraints="NO" id="rrs-mH-rfR">
                                                 <rect key="frame" x="11" y="6" width="270" height="28"/>
                                                 <subviews>
-                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gzt-C3-qzb">
+                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gzt-C3-qzb">
                                                         <rect key="frame" x="0.0" y="0.0" width="126" height="28"/>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <fontDescription key="fontDescription" name="SFProRounded-Semibold" family="SF Pro Rounded" pointSize="17"/>
                                                         <state key="normal" title="Rooted">
-                                                            <color key="titleColor" cocoaTouchSystemColor="viewFlipsideBackgroundColor"/>
+                                                            <color key="titleColor" systemColor="viewFlipsideBackgroundColor"/>
                                                         </state>
                                                         <userDefinedRuntimeAttributes>
                                                             <userDefinedRuntimeAttribute type="boolean" keyPath="clipsToBounds" value="YES"/>
@@ -520,7 +519,7 @@ Jailbreak</string>
                                                             <action selector="rooted_Switch:" destination="cbb-OQ-T38" eventType="touchUpInside" id="f4l-ux-Opj"/>
                                                         </connections>
                                                     </button>
-                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kaF-x1-Evm">
+                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kaF-x1-Evm">
                                                         <rect key="frame" x="144" y="0.0" width="126" height="28"/>
                                                         <color key="backgroundColor" red="0.47843137254901957" green="0.4392156862745098" blue="0.83137254901960778" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                         <fontDescription key="fontDescription" name="SFProRounded-Semibold" family="SF Pro Rounded" pointSize="17"/>
@@ -542,7 +541,7 @@ Jailbreak</string>
                                                     <constraint firstAttribute="height" constant="28" id="riV-L9-G5P"/>
                                                 </constraints>
                                             </stackView>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Freya Version 0.6" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sTm-7g-Qnr">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Freya Version 0.7" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sTm-7g-Qnr">
                                                 <rect key="frame" x="11" y="6" width="270" height="28"/>
                                                 <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <constraints>
@@ -572,16 +571,16 @@ Jailbreak</string>
                                             </userDefinedRuntimeAttribute>
                                         </userDefinedRuntimeAttributes>
                                     </view>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jRh-Zo-1pH">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jRh-Zo-1pH">
                                         <rect key="frame" x="135" y="476" width="50" height="30"/>
                                         <state key="normal" title="Credits">
-                                            <color key="titleColor" systemColor="systemTealColor" red="0.35294117650000001" green="0.7843137255" blue="0.98039215690000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <color key="titleColor" systemColor="systemTealColor"/>
                                         </state>
                                         <connections>
                                             <action selector="creditspressed:" destination="cbb-OQ-T38" eventType="touchUpInside" id="3nV-sj-E4v"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="E5X-B1-3a0">
+                                    <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="E5X-B1-3a0">
                                         <rect key="frame" x="69" y="399" width="184" height="36"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="36" id="qJS-dp-jCJ"/>
@@ -594,7 +593,7 @@ Jailbreak</string>
                                         </connections>
                                     </button>
                                 </subviews>
-                                <color key="backgroundColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="backgroundColor" systemColor="darkTextColor"/>
                                 <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <gestureRecognizers/>
                                 <constraints>
@@ -621,7 +620,7 @@ Jailbreak</string>
                                     <outletCollection property="gestureRecognizers" destination="Hh5-YI-wB3" appends="YES" id="z3m-4n-GUv"/>
                                 </connections>
                             </view>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pUp-uq-J7j">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pUp-uq-J7j">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="27"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="320" id="TcH-wL-xfj"/>
@@ -632,6 +631,7 @@ Jailbreak</string>
                                 </connections>
                             </button>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="JGj-py-015"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstAttribute="bottom" secondItem="1Zh-Ol-RFb" secondAttribute="bottom" constant="-12" id="2H1-PF-8tX"/>
@@ -642,7 +642,6 @@ Jailbreak</string>
                             <constraint firstItem="pUp-uq-J7j" firstAttribute="leading" secondItem="JGj-py-015" secondAttribute="leading" id="tqJ-05-zMC"/>
                             <constraint firstItem="pUp-uq-J7j" firstAttribute="trailing" secondItem="JGj-py-015" secondAttribute="trailing" id="z3C-a5-JEz"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="JGj-py-015"/>
                     </view>
                     <connections>
                         <outlet property="MS1_OUTLET" destination="o2D-uC-hca" id="zrl-ne-Xnv"/>
@@ -670,10 +669,37 @@ Jailbreak</string>
             <point key="canvasLocation" x="2330.625" y="137.32394366197184"/>
         </scene>
     </scenes>
+    <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
     <resources>
         <image name="Button" width="288" height="57"/>
         <image name="arrow" width="26" height="11"/>
         <image name="freyaicestaff.jpg" width="933" height="1002"/>
+        <systemColor name="darkTextColor">
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="lightTextColor">
+            <color white="1" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemBlueColor">
+            <color red="0.0" green="0.47843137254901963" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemGreenColor">
+            <color red="0.20392156862745098" green="0.7803921568627451" blue="0.34901960784313724" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemOrangeColor">
+            <color red="1" green="0.58431372549019611" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemPinkColor">
+            <color red="1" green="0.17647058823529413" blue="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemRedColor">
+            <color red="1" green="0.23137254901960785" blue="0.18823529411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemTealColor">
+            <color red="0.35294117647058826" green="0.78431372549019607" blue="0.98039215686274506" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="viewFlipsideBackgroundColor">
+            <color red="0.1215686274509804" green="0.12941176470588239" blue="0.14117647058823529" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
     </resources>
-    <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
 </document>

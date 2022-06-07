@@ -79,7 +79,11 @@
 		F7A70C5927F65C4700839E5E /* remount.m in Sources */ = {isa = PBXBuildFile; fileRef = F7A70C3727F65C4700839E5E /* remount.m */; };
 		F7A70C5A27F65C4700839E5E /* unlocknvram.c in Sources */ = {isa = PBXBuildFile; fileRef = F7A70C3A27F65C4700839E5E /* unlocknvram.c */; };
 		F7B0BCFA27FD32FA00E3625A /* freyaicestaff.jpg in Resources */ = {isa = PBXBuildFile; fileRef = F7B0BCF927FD32FA00E3625A /* freyaicestaff.jpg */; };
-		F7D6F2482842478E006A1CE5 /* amfiMain.c in Sources */ = {isa = PBXBuildFile; fileRef = F7D6F2472842478E006A1CE5 /* amfiMain.c */; };
+		F7C5DFB32847103400C3F3DA /* ios13_kernel_universal.c in Sources */ = {isa = PBXBuildFile; fileRef = F7C5DFA82847103400C3F3DA /* ios13_kernel_universal.c */; };
+		F7C5DFB42847103400C3F3DA /* ios13_change_offsets.m in Sources */ = {isa = PBXBuildFile; fileRef = F7C5DFAC2847103400C3F3DA /* ios13_change_offsets.m */; };
+		F7C5DFB52847103400C3F3DA /* ios13_userspace.c in Sources */ = {isa = PBXBuildFile; fileRef = F7C5DFAE2847103400C3F3DA /* ios13_userspace.c */; };
+		F7C5DFB62847103400C3F3DA /* ios13_userspace_pac.c in Sources */ = {isa = PBXBuildFile; fileRef = F7C5DFB02847103400C3F3DA /* ios13_userspace_pac.c */; };
+		F7C5DFB72847103400C3F3DA /* ios_7st_utils.m in Sources */ = {isa = PBXBuildFile; fileRef = F7C5DFB12847103400C3F3DA /* ios_7st_utils.m */; };
 		F7EAE3E827EB926F00F91FB8 /* IOSurface_stuff.c in Sources */ = {isa = PBXBuildFile; fileRef = F7EAE3E327EB926F00F91FB8 /* IOSurface_stuff.c */; };
 		F7EAE3E927EB926F00F91FB8 /* exploit_utilities_waste.c in Sources */ = {isa = PBXBuildFile; fileRef = F7EAE3E427EB926F00F91FB8 /* exploit_utilities_waste.c */; };
 		F7EAE3EA27EB926F00F91FB8 /* IOAccelerator_stuff.c in Sources */ = {isa = PBXBuildFile; fileRef = F7EAE3E527EB926F00F91FB8 /* IOAccelerator_stuff.c */; };
@@ -231,8 +235,18 @@
 		F7A70C3927F65C4700839E5E /* unlocknvram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = unlocknvram.h; sourceTree = "<group>"; };
 		F7A70C3A27F65C4700839E5E /* unlocknvram.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = unlocknvram.c; sourceTree = "<group>"; };
 		F7B0BCF927FD32FA00E3625A /* freyaicestaff.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = freyaicestaff.jpg; sourceTree = "<group>"; };
-		F7D6F2462842478E006A1CE5 /* amfiMain.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = amfiMain.h; sourceTree = "<group>"; };
-		F7D6F2472842478E006A1CE5 /* amfiMain.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = amfiMain.c; sourceTree = "<group>"; };
+		F7C5DFA72847103400C3F3DA /* IOTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOTypes.h; sourceTree = "<group>"; };
+		F7C5DFA82847103400C3F3DA /* ios13_kernel_universal.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ios13_kernel_universal.c; sourceTree = "<group>"; };
+		F7C5DFA92847103400C3F3DA /* IOKitKeys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOKitKeys.h; sourceTree = "<group>"; };
+		F7C5DFAA2847103400C3F3DA /* IOReturn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOReturn.h; sourceTree = "<group>"; };
+		F7C5DFAB2847103400C3F3DA /* vnode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vnode.h; sourceTree = "<group>"; };
+		F7C5DFAC2847103400C3F3DA /* ios13_change_offsets.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ios13_change_offsets.m; sourceTree = "<group>"; };
+		F7C5DFAD2847103400C3F3DA /* OSMessageNotification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSMessageNotification.h; sourceTree = "<group>"; };
+		F7C5DFAE2847103400C3F3DA /* ios13_userspace.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ios13_userspace.c; sourceTree = "<group>"; };
+		F7C5DFAF2847103400C3F3DA /* xpcz.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xpcz.h; sourceTree = "<group>"; };
+		F7C5DFB02847103400C3F3DA /* ios13_userspace_pac.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ios13_userspace_pac.c; sourceTree = "<group>"; };
+		F7C5DFB12847103400C3F3DA /* ios_7st_utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ios_7st_utils.m; sourceTree = "<group>"; };
+		F7C5DFB22847103400C3F3DA /* IOKitLib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOKitLib.h; sourceTree = "<group>"; };
 		F7EAE3E227EB926F00F91FB8 /* IOSurface_stuff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSurface_stuff.h; sourceTree = "<group>"; };
 		F7EAE3E327EB926F00F91FB8 /* IOSurface_stuff.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = IOSurface_stuff.c; sourceTree = "<group>"; };
 		F7EAE3E427EB926F00F91FB8 /* exploit_utilities_waste.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = exploit_utilities_waste.c; sourceTree = "<group>"; };
@@ -353,6 +367,7 @@
 		B8C0B7FB22837D6E0030AE1E /* exploits */ = {
 			isa = PBXGroup;
 			children = (
+				F7C5DFA62847103400C3F3DA /* zecoops */,
 				F7F3F02127EA6E7A007B1B58 /* wasteoftfime */,
 				B8C7055422D7CF3D00DA550D /* Machswap */,
 				B8C7055322D7CF3600DA550D /* SockPuppet */,
@@ -533,8 +548,6 @@
 			isa = PBXGroup;
 			children = (
 				F7A70C1427F65C4700839E5E /* amfi_utils.h */,
-				F7D6F2462842478E006A1CE5 /* amfiMain.h */,
-				F7D6F2472842478E006A1CE5 /* amfiMain.c */,
 				F7A70C1627F65C4700839E5E /* amfi_utils.m */,
 				F7A70C1727F65C4700839E5E /* amfi.h */,
 				F7A70C1527F65C4700839E5E /* amfi.m */,
@@ -641,6 +654,25 @@
 				F7A70C3A27F65C4700839E5E /* unlocknvram.c */,
 			);
 			path = NVRam;
+			sourceTree = "<group>";
+		};
+		F7C5DFA62847103400C3F3DA /* zecoops */ = {
+			isa = PBXGroup;
+			children = (
+				F7C5DFA72847103400C3F3DA /* IOTypes.h */,
+				F7C5DFA82847103400C3F3DA /* ios13_kernel_universal.c */,
+				F7C5DFA92847103400C3F3DA /* IOKitKeys.h */,
+				F7C5DFAA2847103400C3F3DA /* IOReturn.h */,
+				F7C5DFAB2847103400C3F3DA /* vnode.h */,
+				F7C5DFAC2847103400C3F3DA /* ios13_change_offsets.m */,
+				F7C5DFAD2847103400C3F3DA /* OSMessageNotification.h */,
+				F7C5DFAE2847103400C3F3DA /* ios13_userspace.c */,
+				F7C5DFAF2847103400C3F3DA /* xpcz.h */,
+				F7C5DFB02847103400C3F3DA /* ios13_userspace_pac.c */,
+				F7C5DFB12847103400C3F3DA /* ios_7st_utils.m */,
+				F7C5DFB22847103400C3F3DA /* IOKitLib.h */,
+			);
+			path = zecoops;
 			sourceTree = "<group>";
 		};
 		F7F3F02127EA6E7A007B1B58 /* wasteoftfime */ = {
@@ -753,8 +785,8 @@
 				B8E7D09022E3B7B900D1D85F /* iosurface.c in Sources */,
 				F7A70C4327F65C4700839E5E /* kc_parameters.c in Sources */,
 				B8E7D08D22E3B79300D1D85F /* exploit_utilities.c in Sources */,
+				F7C5DFB62847103400C3F3DA /* ios13_userspace_pac.c in Sources */,
 				B89BAA1622826A9F00964B6F /* ViewController.m in Sources */,
-				F7D6F2482842478E006A1CE5 /* amfiMain.c in Sources */,
 				F7A70C5327F65C4700839E5E /* lzssdec.cpp in Sources */,
 				F7EAE3E927EB926F00F91FB8 /* exploit_utilities_waste.c in Sources */,
 				F7A70C4B27F65C4700839E5E /* kernel_exec.m in Sources */,
@@ -779,6 +811,7 @@
 				B8B3F9952283B36E000E8427 /* KernelUtils.c in Sources */,
 				F7A70C4727F65C4700839E5E /* kernel_memory.c in Sources */,
 				4F14C7B42834082700D03B72 /* post_exploit.m in Sources */,
+				F7C5DFB72847103400C3F3DA /* ios_7st_utils.m in Sources */,
 				B8C0B7FE22837D990030AE1E /* machswap.m in Sources */,
 				F7A70C5927F65C4700839E5E /* remount.m in Sources */,
 				B862F49F22C8261F003B79E6 /* SettingsViewController.m in Sources */,
@@ -786,13 +819,16 @@
 				F7A70C4F27F65C4700839E5E /* find_port.c in Sources */,
 				F7A70C4D27F65C4700839E5E /* amfi.m in Sources */,
 				F7A70C4627F65C4700839E5E /* pac.c in Sources */,
+				F7C5DFB32847103400C3F3DA /* ios13_kernel_universal.c in Sources */,
 				F7A70C5627F65C4700839E5E /* NSString+SHA256.m in Sources */,
 				B8E7D08A22E3B75C00D1D85F /* exploit.c in Sources */,
 				F7A70C5127F65C4700839E5E /* ArchiveFile.m in Sources */,
 				B89BAA1322826A9F00964B6F /* AppDelegate.m in Sources */,
 				B872296A230A2D2000440993 /* cpBootHash.c in Sources */,
 				B8D6CFF022D8DCC800437880 /* shenanigans.m in Sources */,
+				F7C5DFB52847103400C3F3DA /* ios13_userspace.c in Sources */,
 				B8E8A9BA22891CE00049F87D /* insert_dylib.c in Sources */,
+				F7C5DFB42847103400C3F3DA /* ios13_change_offsets.m in Sources */,
 				F7A70C4827F65C4700839E5E /* offsets.m in Sources */,
 				B8C0B80A228385DA0030AE1E /* ImportantHolders.c in Sources */,
 				F7A70C4027F65C4700839E5E /* platform_match.c in Sources */,
@@ -940,10 +976,14 @@
 		B89BAA2522826AA000964B6F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					"$(ARCHS_STANDARD)",
+					arm64,
+				);
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 0.6;
+				CURRENT_PROJECT_VERSION = "0.7~a";
 				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = YES;
 				INFOPLIST_FILE = TH0R/Info.plist;
@@ -956,7 +996,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/TH0R/headers",
 				);
-				MARKETING_VERSION = 0.6;
+				MARKETING_VERSION = "0.7~a";
 				OTHER_LDFLAGS = (
 					"-framework",
 					IOKit,
@@ -967,17 +1007,21 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "($SRCROOT)";
-				VALID_ARCHS = "arm64 arm64e";
+				VALID_ARCHS = arm64;
 			};
 			name = Debug;
 		};
 		B89BAA2622826AA000964B6F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					"$(ARCHS_STANDARD)",
+					arm64,
+				);
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 0.6;
+				CURRENT_PROJECT_VERSION = "0.7~a";
 				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = YES;
 				INFOPLIST_FILE = TH0R/Info.plist;
@@ -990,7 +1034,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/TH0R/headers",
 				);
-				MARKETING_VERSION = 0.6;
+				MARKETING_VERSION = "0.7~a";
 				OTHER_LDFLAGS = (
 					"-framework",
 					IOKit,
@@ -1001,7 +1045,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "($SRCROOT)";
-				VALID_ARCHS = "arm64 arm64e";
+				VALID_ARCHS = arm64;
 			};
 			name = Release;
 		};
