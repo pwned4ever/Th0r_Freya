@@ -182,7 +182,7 @@ double uptime(){
 NSString *freyaversion = @"0.7⚡️";
 char *freyaversionnew = "0.7⚡️";
 
-char *freyaupdateDate = "3:30PM 06/07/22";
+char *freyaupdateDate = "8:30PM 06/07/22";
 char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/blob/main/Releases/Freya.ipa";// "mega.nz/file/BhNxBSgJ#gNcngNQBtXS0Ipa5ivX09-jtIr7BckUhrA7YMkSFaNM"//
 
 - (void)u0alertreboot {

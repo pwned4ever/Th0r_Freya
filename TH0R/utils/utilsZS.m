@@ -2514,6 +2514,8 @@ bool killAMFID() {
 
 bool reBack() {
     //execCmd("/usr/bin/sbreload");
+    execCmd("/usr/bin/sbreload", NULL);
+
     pid_t backboardd_pid = pidOfProcess("/usr/libexec/backboardd");
     if (!(backboardd_pid > 1)) {
         util_info("Unable to find backboardd pid.");
@@ -2523,7 +2525,7 @@ bool reBack() {
         util_info("Unable to terminate backboardd.");
         return false;
     }
-
+    //execCmd("/usr/bin/sbreload", NULL);
     return true;
 }
 
