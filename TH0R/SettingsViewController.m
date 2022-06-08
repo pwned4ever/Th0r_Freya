@@ -164,7 +164,7 @@
         _TWOutlet.enabled = true;
         _TWOutlet.backgroundColor = grey;
 
-    } else if (kCFCoreFoundationVersionNumber >= 1562.00) { //12.0
+    } else if (kCFCoreFoundationVersionNumber >= 1561.00) { //12.1.4 // 12.1.3 = 1561.
         _MS1_OUTLET.userInteractionEnabled = FALSE;
         _MS1_OUTLET.enabled = false;
         _MS1_OUTLET.backgroundColor = grey;
