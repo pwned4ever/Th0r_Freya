@@ -285,7 +285,7 @@ bool supportsExploit(int exploit) {
             }
             minKernelBuildVersion = @"4397.0.0.2.4~1";
             maxKernelBuildVersion = @"4903.240.8~8";
-            //            maxKernelBuildVersion = @"4903.232.2~1";// <- ios 12.1.2  -- -- @"4903.240.8~8";
+            //            maxKernelBuildVersion = @"4903.232.2~1";// <- ios 12.1.1/2?  -- -- @"4903.240.8~8";
 
             break;
         }

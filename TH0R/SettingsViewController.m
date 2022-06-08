@@ -8,6 +8,7 @@
 #include "cs_blob.h"
 #include "file_utils.h"
 #include "offsets.h"
+#include <sys/sysctl.h>
 
 #define localize(key) NSLocalizedString(key, @"")
 #define postProgress(prg) [[NSNotificationCenter defaultCenter] postNotificationName: @"JB" object:nil userInfo:@{@"JBProgress": prg}]
@@ -15,6 +16,47 @@
 @interface SettingsViewController ()
 
 @end
+
+char *sysctlWithNameS(const char *name) {
+    kern_return_t kr = KERN_FAILURE;
+    char *ret = NULL;
+    size_t *size = NULL;
+    size = (size_t *)malloc(sizeof(size_t));
+    if (size == NULL) goto out;
+    bzero(size, sizeof(size_t));
+    if (sysctlbyname(name, NULL, size, NULL, 0) != ERR_SUCCESS) goto out;
+    ret = (char *)malloc(*size);
+    if (ret == NULL) goto out;
+    bzero(ret, *size);
+    if (sysctlbyname(name, ret, size, NULL, 0) != ERR_SUCCESS) goto out;
+    kr = KERN_SUCCESS;
+    out:
+    if (kr == KERN_FAILURE)
+    {
+        free(ret);
+        ret = NULL;
+    }
+    free(size);
+    size = NULL;
+    return ret;
+}
+
+
+NSString *getKernelBuildVersionS() {
+    NSString *kernelBuild = nil;
+    NSString *cleanString = nil;
+    char *kernelVersion = NULL;
+    kernelVersion = sysctlWithNameS("kern.version");
+    if (kernelVersion == NULL) return nil;
+    cleanString = [NSString stringWithUTF8String:kernelVersion];
+    free(kernelVersion);
+    kernelVersion = NULL;
+    cleanString = [[cleanString componentsSeparatedByString:@"; "] objectAtIndex:1];
+    cleanString = [[cleanString componentsSeparatedByString:@"-"] objectAtIndex:1];
+    cleanString = [[cleanString componentsSeparatedByString:@"/"] objectAtIndex:0];
+    kernelBuild = [cleanString copy];
+    return kernelBuild;
+}
 
 @implementation SettingsViewController
 
@@ -93,6 +135,10 @@
      * 14.1     1751.108
      * 14.2     1770.106
      */
+     NSString *minKernelBuildVersion = nil;
+     NSString *maxKernelBuildVersion = nil;
+
+    
     UIColor *grey = [UIColor colorWithRed:0.30 green:0.00 blue:0.30 alpha:0.5];;
     double whatsmykoreNUMBER = kCFCoreFoundationVersionNumber;
     printf("whatsmykoreNUMBER: %f\n", whatsmykoreNUMBER);
@@ -165,6 +211,37 @@
         _TWOutlet.backgroundColor = grey;
 
     } else if (kCFCoreFoundationVersionNumber >= 1561.00) { //12.1.4 // 12.1.3 = 1561.
+        
+        minKernelBuildVersion = @"4397.0.0.2.4~1";
+        maxKernelBuildVersion = @"4903.240.8~8";
+                //            maxKernelBuildVersion = @"4903.232.2~1";// <- ios 12.1.1/2?  -- -- @"4903.240.8~8";
+        
+
+        if (minKernelBuildVersion != nil && maxKernelBuildVersion != nil) {
+            NSString *kernelBuildVersion = getKernelBuildVersionS();
+            if (kernelBuildVersion != nil) {
+                if ([kernelBuildVersion compare:minKernelBuildVersion options:NSNumericSearch] != NSOrderedAscending && [kernelBuildVersion compare:maxKernelBuildVersion options:NSNumericSearch] != NSOrderedDescending) {
+                  //  return true;
+                    _MS1_OUTLET.userInteractionEnabled = TRUE;
+                    _MS1_OUTLET.enabled = true;
+                    _MS1_OUTLET.backgroundColor = grey;
+                    _VS_Outlet.userInteractionEnabled = TRUE;
+                    _VS_Outlet.enabled = true;
+                    _VS_Outlet.backgroundColor = grey;
+                    _MS2_Outlet.userInteractionEnabled = TRUE;
+                    _MS2_Outlet.enabled = true;
+                    _MS2_Outlet.backgroundColor = grey;
+                    _SP_Outlet.userInteractionEnabled = TRUE;
+                    _SP_Outlet.enabled = true;
+                    _SP_Outlet.backgroundColor = grey;
+
+                    _TWOutlet.userInteractionEnabled = TRUE;
+                    _TWOutlet.enabled = true;
+                    _TWOutlet.backgroundColor = grey;
+                }
+            }
+        } else {
+        
         _MS1_OUTLET.userInteractionEnabled = FALSE;
         _MS1_OUTLET.enabled = false;
         _MS1_OUTLET.backgroundColor = grey;
@@ -181,7 +258,7 @@
         _TWOutlet.userInteractionEnabled = TRUE;
         _TWOutlet.enabled = true;
         _TWOutlet.backgroundColor = grey;
-
+        }
     } else { //12.0
         _MS1_OUTLET.userInteractionEnabled = TRUE;
         _MS1_OUTLET.enabled = true;
