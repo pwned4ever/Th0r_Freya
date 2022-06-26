@@ -1,0 +1,84 @@
+update-alternatives 2020-02-04 06:58:24: run with --quiet --install /usr/bin/pager pager /bin/cat 1
+update-alternatives 2020-02-04 06:58:24: link group pager updated to point to /bin/cat
+update-alternatives 2020-02-04 06:58:25: run with --quiet --install /bin/sh sh /bin/bash 100
+update-alternatives 2020-02-04 06:58:25: link group sh updated to point to /bin/bash
+update-alternatives 2020-02-04 06:58:25: run with --install /usr/bin/ldid ldid /usr/libexec/ldid 50
+update-alternatives 2020-02-04 06:58:25: link group ldid updated to point to /usr/libexec/ldid
+update-alternatives 2020-02-04 06:58:26: run with --quiet --install /usr/bin/ldid ldid /usr/libexec/ldid_wrapper 100
+update-alternatives 2020-02-04 06:58:26: link group ldid updated to point to /usr/libexec/ldid_wrapper
+update-alternatives 2020-02-04 08:14:44: run with --quiet --install /usr/bin/pager pager /bin/cat 1
+update-alternatives 2020-02-04 08:14:44: link group pager updated to point to /bin/cat
+update-alternatives 2020-02-04 08:14:44: run with --quiet --install /bin/sh sh /bin/bash 100
+update-alternatives 2020-02-04 08:14:44: link group sh updated to point to /bin/bash
+update-alternatives 2020-02-04 08:14:45: run with --install /usr/bin/ldid ldid /usr/libexec/ldid 50
+update-alternatives 2020-02-04 08:14:45: link group ldid updated to point to /usr/libexec/ldid
+update-alternatives 2020-02-04 08:14:45: run with --quiet --install /usr/bin/ldid ldid /usr/libexec/ldid_wrapper 100
+update-alternatives 2020-02-04 08:14:45: link group ldid updated to point to /usr/libexec/ldid_wrapper
+update-alternatives 2020-02-04 18:34:00: run with --install /usr/bin/ldid ldid /usr/libexec/ldid 50
+update-alternatives 2020-02-04 18:34:00: link group ldid updated to point to /usr/libexec/ldid
+update-alternatives 2020-02-04 18:35:03: run with --quiet --install /usr/bin/ldid ldid /usr/libexec/ldid_wrapper 100
+update-alternatives 2020-02-04 18:35:03: link group ldid updated to point to /usr/libexec/ldid_wrapper
+update-alternatives 2020-02-04 18:35:03: run with --install /usr/bin/ldid ldid /usr/libexec/ldid 50
+update-alternatives 2020-02-04 18:36:20: run with --quiet --install /usr/bin/pager pager /bin/cat 1
+update-alternatives 2020-02-04 18:36:20: link group pager updated to point to /bin/cat
+update-alternatives 2020-02-04 19:27:30: run with --quiet --install /usr/bin/pager pager /bin/cat 1
+update-alternatives 2020-02-04 19:27:30: link group pager updated to point to /bin/cat
+update-alternatives 2020-02-04 19:27:31: run with --quiet --install /bin/sh sh /bin/bash 100
+update-alternatives 2020-02-04 19:27:31: link group sh updated to point to /bin/bash
+update-alternatives 2020-02-04 19:27:31: run with --install /usr/bin/ldid ldid /usr/libexec/ldid 50
+update-alternatives 2020-02-04 19:27:31: link group ldid updated to point to /usr/libexec/ldid
+update-alternatives 2020-02-04 19:27:32: run with --quiet --install /usr/bin/ldid ldid /usr/libexec/ldid_wrapper 100
+update-alternatives 2020-02-04 19:27:32: link group ldid updated to point to /usr/libexec/ldid_wrapper
+update-alternatives 2020-02-04 21:46:37: run with --quiet --install /bin/sh sh /bin/bash 100
+update-alternatives 2020-02-04 21:46:37: link group sh updated to point to /bin/bash
+update-alternatives 2020-02-04 21:46:37: run with --quiet --install /usr/bin/pager pager /bin/cat 1
+update-alternatives 2020-02-04 21:46:37: link group pager updated to point to /bin/cat
+update-alternatives 2020-02-04 21:46:37: run with --install /usr/bin/ldid ldid /usr/libexec/ldid 50
+update-alternatives 2020-02-04 21:46:37: link group ldid updated to point to /usr/libexec/ldid
+update-alternatives 2020-02-04 21:46:37: run with --quiet --install /usr/bin/ldid ldid /usr/libexec/ldid_wrapper 100
+update-alternatives 2020-02-04 21:46:37: link group ldid updated to point to /usr/libexec/ldid_wrapper
+update-alternatives 2020-02-04 21:46:45: run with --quiet --install /usr/bin/pager pager /bin/cat 1
+update-alternatives 2020-02-04 21:46:45: run with --quiet --install /bin/sh sh /bin/bash 100
+update-alternatives 2020-02-04 21:46:45: run with --install /usr/bin/ldid ldid /usr/libexec/ldid 50
+update-alternatives 2020-02-04 21:52:54: run with --quiet --install /bin/sh sh /bin/bash 100
+update-alternatives 2020-02-04 21:52:55: run with --install /usr/bin/ldid ldid /usr/libexec/ldid 50
+update-alternatives 2020-02-04 21:53:00: run with --quiet --install /usr/bin/ldid ldid /usr/libexec/ldid_wrapper 100
+update-alternatives 2020-02-06 11:18:46: run with --quiet --install /bin/sh sh /bin/bash 100
+update-alternatives 2020-02-06 11:18:46: link group sh updated to point to /bin/bash
+update-alternatives 2020-02-06 11:18:46: run with --quiet --install /usr/bin/pager pager /bin/cat 1
+update-alternatives 2020-02-06 11:18:46: link group pager updated to point to /bin/cat
+update-alternatives 2020-02-06 11:18:46: run with --install /usr/bin/ldid ldid /usr/libexec/ldid 50
+update-alternatives 2020-02-06 11:18:46: link group ldid updated to point to /usr/libexec/ldid
+update-alternatives 2020-02-06 11:18:46: run with --quiet --install /usr/bin/ldid ldid /usr/libexec/ldid_wrapper 100
+update-alternatives 2020-02-06 11:18:46: link group ldid updated to point to /usr/libexec/ldid_wrapper
+update-alternatives 2020-02-06 21:48:41: run with --quiet --install /bin/sh sh /bin/bash 100
+update-alternatives 2020-02-06 21:48:41: link group sh updated to point to /bin/bash
+update-alternatives 2020-02-06 21:48:41: run with --quiet --install /usr/bin/pager pager /bin/cat 1
+update-alternatives 2020-02-06 21:48:41: link group pager updated to point to /bin/cat
+update-alternatives 2020-02-06 21:48:41: run with --install /usr/bin/ldid ldid /usr/libexec/ldid 50
+update-alternatives 2020-02-06 21:48:41: link group ldid updated to point to /usr/libexec/ldid
+update-alternatives 2020-02-06 21:48:41: run with --quiet --install /usr/bin/ldid ldid /usr/libexec/ldid_wrapper 100
+update-alternatives 2020-02-06 21:48:41: link group ldid updated to point to /usr/libexec/ldid_wrapper
+update-alternatives 2020-02-06 21:48:50: run with --quiet --install /usr/bin/pager pager /bin/cat 1
+update-alternatives 2020-02-06 21:48:50: run with --quiet --install /bin/sh sh /bin/bash 100
+update-alternatives 2020-02-06 21:48:50: run with --install /usr/bin/ldid ldid /usr/libexec/ldid 50
+update-alternatives 2020-02-09 18:07:11: run with --install /usr/bin/ldid ldid /usr/libexec/ldid 50
+update-alternatives 2020-02-09 18:07:11: link group ldid updated to point to /usr/libexec/ldid
+update-alternatives 2020-02-09 18:08:08: run with --quiet --install /usr/bin/ldid ldid /usr/libexec/ldid_wrapper 100
+update-alternatives 2020-02-09 18:08:08: link group ldid updated to point to /usr/libexec/ldid_wrapper
+update-alternatives 2020-02-09 18:08:08: run with --install /usr/bin/ldid ldid /usr/libexec/ldid 50
+update-alternatives 2020-02-09 18:23:47: run with --quiet --install /usr/bin/pager pager /bin/cat 1
+update-alternatives 2020-02-09 18:23:47: link group pager updated to point to /bin/cat
+update-alternatives 2020-02-09 18:26:52: run with --quiet --install /bin/sh sh /bin/bash 100
+update-alternatives 2020-02-09 18:26:52: link group sh updated to point to /bin/bash
+update-alternatives 2020-02-09 18:26:55: run with --install /usr/bin/ldid ldid /usr/libexec/ldid 50
+update-alternatives 2020-02-15 00:00:20: run with --quiet --install /usr/bin/pager pager /bin/cat 1
+update-alternatives 2020-02-15 00:00:20: link group pager updated to point to /bin/cat
+update-alternatives 2020-02-15 00:00:21: run with --quiet --install /bin/sh sh /bin/bash 100
+update-alternatives 2020-02-15 00:00:21: link group sh updated to point to /bin/bash
+update-alternatives 2020-02-15 00:00:21: run with --install /usr/bin/ldid ldid /usr/libexec/ldid 50
+update-alternatives 2020-02-15 00:00:21: link group ldid updated to point to /usr/libexec/ldid
+update-alternatives 2020-02-15 00:00:22: run with --quiet --install /usr/bin/ldid ldid /usr/libexec/ldid_wrapper 100
+update-alternatives 2020-02-15 00:00:22: link group ldid updated to point to /usr/libexec/ldid_wrapper
+update-alternatives 2020-05-08 22:07:02: run with --install /usr/bin/ldid ldid /usr/libexec/ldid 50
+update-alternatives 2020-05-08 22:07:03: run with --quiet --install /usr/bin/ldid ldid /usr/libexec/ldid_wrapper 100

@@ -1,0 +1,13 @@
+/.
+/usr
+/usr/bin
+/usr/bin/ksba-config
+/usr/include
+/usr/include/ksba.h
+/usr/lib
+/usr/lib/libksba.8.dylib
+/usr/lib/libksba.la
+/usr/share
+/usr/share/aclocal
+/usr/share/aclocal/ksba.m4
+/usr/lib/libksba.dylib

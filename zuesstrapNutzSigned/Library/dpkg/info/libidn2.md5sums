@@ -1,0 +1,5 @@
+a969d01460721fa147670d485364f43b  usr/bin/idn2
+838f0016fa3129582afcd506ce158172  usr/include/idn2.h
+7bfe14ce2224ed9279fc7450aaa3c893  usr/lib/libidn2.0.dylib
+018ff802d8937856585154138c167f8d  usr/lib/libidn2.la
+d5fa81504b76bd7cc1fc7f7a7903d0b5  usr/lib/pkgconfig/libidn2.pc

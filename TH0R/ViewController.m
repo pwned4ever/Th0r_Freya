@@ -179,10 +179,10 @@ double uptime(){
     [audioPlayer1 play];
 }
 
-NSString *freyaversion = @"0.7⚡️";
-char *freyaversionnew = "0.7⚡️";
+NSString *freyaversion = @"0.8⚡️";
+char *freyaversionnew = "0.8⚡️";
 
-char *freyaupdateDate = "8:30PM 06/07/22";
+char *freyaupdateDate = "6:30PM 06/26/22";
 char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/blob/main/Releases/Freya.ipa";// "mega.nz/file/BhNxBSgJ#gNcngNQBtXS0Ipa5ivX09-jtIr7BckUhrA7YMkSFaNM"//
 
 - (void)u0alertreboot {
@@ -308,7 +308,6 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/blob/main/Releases/Fr
     uint32_t flags;
     csops(getpid(), CS_OPS_STATUS, &flags, 0);
     int checkuncovermarker = (file_exists("/.installed_unc0ver"));
-    int checkth0rmarker = (file_exists("/.freya_bootstrap"));
     int checkth0rmarkerFinal = (file_exists("/.freya_installed"));
     int checkchimeramarker = (file_exists("/.procursus_strapped"));
     int checkJBRemoverMarker = (file_exists("/var/mobile/Media/.bootstrapped_Th0r_remover"));
@@ -319,7 +318,6 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/blob/main/Releases/Fr
     printf("Uncover marker exists?: %d\n", checkuncovermarker);
     printf("pspawnhook marker exists?: %d\n", checkpspawnhook);
     printf("JBRemover marker exists?: %d\n", checkJBRemoverMarker);
-    printf("Th0r marker exists?: %d\n", checkth0rmarker);
     printf("Th0r Final marker exists?: %d\n", checkth0rmarkerFinal);
     printf("Chimera marker exists?: %d\n", checkchimeramarker);
     printf("Jailbreakd Run marker exists?: %d\n", checkjailbreakdRun);
@@ -395,7 +393,7 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/blob/main/Releases/Fr
 
     [defaults setInteger:1 forKey:@"SetNonce"];
 
-        if ((checkjailbreakdRun == 1) && (checkpspawnhook == 1) && (checkth0rmarker == 1) && (checkuncovermarker == 0) && (checkchimeramarker == 0)){
+        if ((checkjailbreakdRun == 1) && (checkpspawnhook == 1) && (checkth0rmarkerFinal == 1) && (checkuncovermarker == 0) && (checkchimeramarker == 0)){
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.buttontext setHidden:NO];
                 [self.buttontext setTitle:localize(@"𝓢Ⓗ⒜𝕽ᴱ Freya?") forState:UIControlStateNormal];
@@ -411,7 +409,7 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/blob/main/Releases/Fr
             });
             [self shareTh0r];
             
-        } else if ((checkjailbreakdRun == 1) && (checkth0rmarker == 1) && (checkuncovermarker == 0) && (checkchimeramarker == 0)) {
+        } else if ((checkjailbreakdRun == 1) && (checkth0rmarkerFinal == 1) && (checkuncovermarker == 0) && (checkchimeramarker == 0)) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.buttontext setEnabled:YES];
                 [self.settingsButton setHidden:YES];
@@ -428,7 +426,7 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/blob/main/Releases/Fr
             [self shareTh0r];
             //goto end;
             //return;
-        }else if ((checkth0rmarker == 1) && (checkth0rmarkerFinal == 1) && (checkuncovermarker == 0) && (checkchimeramarker == 0) && (checkjailbreakdRun == 0) && (checkpspawnhook == 0)){
+        }else if ((checkth0rmarkerFinal == 1) && (checkuncovermarker == 0) && (checkchimeramarker == 0) && (checkjailbreakdRun == 0) && (checkpspawnhook == 0)){
             if (shouldRestoreFS())
             {
                 JUSTremovecheck = true;
@@ -496,7 +494,7 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/blob/main/Releases/Fr
     } else if ((checkjailbreakdrRun == 0) && (checkchimeramarker == 1)){
         saveCustomSetting(@"RestoreFS", 0);
         JUSTremovecheck = true;
-        /*dispatch_async(dispatch_get_main_queue(), ^{
+        dispatch_async(dispatch_get_main_queue(), ^{
             [self.restoreFSSwitch setEnabled:NO];
             [self.buttontext setEnabled:YES];
             [self.buttontext setTitle:localize(@"Remove Chimera?") forState:UIControlStateNormal];
@@ -505,12 +503,12 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/blob/main/Releases/Fr
             [ViewController.sharedController.settingsButton setEnabled:YES];
             [ViewController.sharedController.settings_buttun_bg setHidden:NO];
             [ViewController.sharedController.restoreFSSwitch setUserInteractionEnabled:NO];
-        });*/
+        });
         
-        //[self chimeraalert];
+        [self chimeraalert];
         goto end;
         
-    } else if(((checkjailbreakdRun == 0) && (checkpspawnhook == 0) && (checkth0rmarker == 0) && (checkuncovermarker == 0)) && (checkchimeramarker == 0)){
+    } else if(((checkjailbreakdRun == 0) && (checkpspawnhook == 0) && (checkth0rmarkerFinal == 0) && (checkuncovermarker == 0)) && (checkchimeramarker == 0)){
         newTFcheckMyRemover4me = FALSE;
         saveCustomSetting(@"RestoreFS", 1);
         JUSTremovecheck = false;
@@ -524,7 +522,7 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/blob/main/Releases/Fr
         });
         goto end;
 
-    } else if(((checkjailbreakdRun == 0) && (checkpspawnhook == 0) && (checkth0rmarker == 1) && (checkth0rmarkerFinal == 0) && (checkuncovermarker == 0)) && (checkchimeramarker == 0)){
+    } else if(((checkjailbreakdRun == 0) && (checkpspawnhook == 0) && (checkth0rmarkerFinal == 1) && (checkuncovermarker == 0)) && (checkchimeramarker == 0)){
         newTFcheckMyRemover4me = FALSE;
         [self.buttontext setEnabled:YES];
         if (shouldRestoreFS()) {
@@ -712,7 +710,6 @@ void wannaSliceOfMe() {
     uint32_t flags;
     csops(getpid(), CS_OPS_STATUS, &flags, 0);
     int checkuncovermarker = (file_exists("/.installed_unc0ver"));
-    int checkth0rmarker = (file_exists("/.freya_bootstrap"));
     int checkth0rmarkerFinal = (file_exists("/.freya_installed"));
     int checkchimeramarker = (file_exists("/.procursus_strapped"));
     int checkJBRemoverMarker = (file_exists("/var/mobile/Media/.bootstrapped_Th0r_remover"));
@@ -722,7 +719,7 @@ void wannaSliceOfMe() {
     [[NSUserDefaults standardUserDefaults] setValue:@(NO) forKey:@"_UIConstraintBasedLayoutLogUnsatisfiable"];
     //currentViewController = self;
     //sharedController = self;
-    if ((checkjailbreakdRun == 1) && (checkpspawnhook == 1) && (checkth0rmarker == 1) && (checkuncovermarker == 0) && (checkchimeramarker == 0)){
+    if ((checkjailbreakdRun == 1) && (checkpspawnhook == 1) && (checkth0rmarkerFinal == 1) && (checkuncovermarker == 0) && (checkchimeramarker == 0)){
         dispatch_async(dispatch_get_main_queue(), ^{
             [ViewController.sharedController.buttontext setHidden:NO];//setTitle:localize(@"Remove Freya?") forState:UIControlStateNormal];
            // [ViewController.buttontext setHidden:NO];
@@ -739,7 +736,7 @@ void wannaSliceOfMe() {
         });
         [ViewController.sharedController shareTh0r];
         goto end;
-    } else if ((checkjailbreakdRun == 1) && (checkth0rmarker == 1) && (checkuncovermarker == 0) && (checkchimeramarker == 0)) {
+    } else if ((checkjailbreakdRun == 1) && (checkth0rmarkerFinal == 1) && (checkuncovermarker == 0) && (checkchimeramarker == 0)) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [ViewController.sharedController.buttontext setEnabled:YES];
             [ViewController.sharedController.settingsButton setHidden:YES];
