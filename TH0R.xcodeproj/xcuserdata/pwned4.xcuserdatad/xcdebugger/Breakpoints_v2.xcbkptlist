@@ -376,7 +376,7 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "FD487CF2-EFC2-4C31-A8FC-A7381B7BAA6D"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "TH0R/utils/utilsZS.m"
@@ -484,14 +484,14 @@
             landmarkType = "7">
             <Locations>
                <Location
-                  uuid = "9DDBA919-B2F8-4604-A16C-BE991D858F5F - ed9488eb7dd25a3b"
+                  uuid = "9DDBA919-B2F8-4604-A16C-BE991D858F5F - 565157b9139e9ce"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
                   symbolName = "-[ViewController viewDidLoad]"
                   moduleName = "freya"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/pwned4/Documents/GitHub/pwned4ever/Th0r_Freya/TH0R/ViewController.m"
+                  urlString = "file:///Volumes/PNY%20USB%203.0%20FD%20Media/Th0r_Freya/TH0R/ViewController.m"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "484"
@@ -499,14 +499,14 @@
                   offsetFromSymbolStart = "4096">
                </Location>
                <Location
-                  uuid = "9DDBA919-B2F8-4604-A16C-BE991D858F5F - c5546316e4409369"
+                  uuid = "9DDBA919-B2F8-4604-A16C-BE991D858F5F - 2da5fe8608ab209c"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
                   symbolName = "__29-[ViewController viewDidLoad]_block_invoke_10"
                   moduleName = "freya"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/pwned4/Documents/GitHub/pwned4ever/Th0r_Freya/TH0R/ViewController.m"
+                  urlString = "file:///Volumes/PNY%20USB%203.0%20FD%20Media/Th0r_Freya/TH0R/ViewController.m"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "484"
@@ -548,14 +548,14 @@
             landmarkType = "7">
             <Locations>
                <Location
-                  uuid = "C51A45D6-6B61-4AB3-87A5-8DC6DD55BFB9 - 74fe4764483447c5"
+                  uuid = "C51A45D6-6B61-4AB3-87A5-8DC6DD55BFB9 - 9c0fdaf4a4dff430"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
                   symbolName = "-[ViewController chimeraalert]"
                   moduleName = "freya"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/pwned4/Documents/GitHub/pwned4ever/Th0r_Freya/TH0R/ViewController.m"
+                  urlString = "file:///Volumes/PNY%20USB%203.0%20FD%20Media/Th0r_Freya/TH0R/ViewController.m"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "226"
@@ -563,14 +563,14 @@
                   offsetFromSymbolStart = "20">
                </Location>
                <Location
-                  uuid = "C51A45D6-6B61-4AB3-87A5-8DC6DD55BFB9 - 26f08de23df1f94c"
+                  uuid = "C51A45D6-6B61-4AB3-87A5-8DC6DD55BFB9 - ce011072d11a4ab9"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
                   symbolName = "__30-[ViewController chimeraalert]_block_invoke"
                   moduleName = "freya"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/pwned4/Documents/GitHub/pwned4ever/Th0r_Freya/TH0R/ViewController.m"
+                  urlString = "file:///Volumes/PNY%20USB%203.0%20FD%20Media/Th0r_Freya/TH0R/ViewController.m"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "226"
@@ -596,14 +596,14 @@
             landmarkType = "7">
             <Locations>
                <Location
-                  uuid = "2571AF2F-DF6F-476B-8744-B73C4B551CDB - ed9488eb7dd25a3b"
+                  uuid = "2571AF2F-DF6F-476B-8744-B73C4B551CDB - 565157b9139e9ce"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
                   symbolName = "-[ViewController viewDidLoad]"
                   moduleName = "freya"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/pwned4/Documents/GitHub/pwned4ever/Th0r_Freya/TH0R/ViewController.m"
+                  urlString = "file:///Volumes/PNY%20USB%203.0%20FD%20Media/Th0r_Freya/TH0R/ViewController.m"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "532"
@@ -611,14 +611,14 @@
                   offsetFromSymbolStart = "4752">
                </Location>
                <Location
-                  uuid = "2571AF2F-DF6F-476B-8744-B73C4B551CDB - c5546316e44c9397"
+                  uuid = "2571AF2F-DF6F-476B-8744-B73C4B551CDB - 2da5fe8608a72062"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
                   symbolName = "__29-[ViewController viewDidLoad]_block_invoke_12"
                   moduleName = "freya"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/pwned4/Documents/GitHub/pwned4ever/Th0r_Freya/TH0R/ViewController.m"
+                  urlString = "file:///Volumes/PNY%20USB%203.0%20FD%20Media/Th0r_Freya/TH0R/ViewController.m"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "532"
@@ -792,7 +792,7 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "B9FDCF72-9B5A-4B1A-8126-C14622779F44"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "TH0R/lib/amfi/amfi.m"
@@ -1032,7 +1032,7 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "BC655DE4-039D-454F-8BDD-254E60C2D751"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "TH0R/utils/utilsZS.m"
@@ -1048,7 +1048,7 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "4D64A879-21F6-4D0F-8B95-BE6B68EEF602"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "TH0R/utils/utilsZS.m"
@@ -1074,6 +1074,70 @@
             endingLineNumber = "239"
             landmarkName = "-viewDidLoad"
             landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "EE98CF24-360A-4496-B7FD-71191274FFE2"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TH0R/lib/amfi/amfi.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "988"
+            endingLineNumber = "988"
+            landmarkName = "AMFIDExceptionHandler(arg)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "D2D314D4-1C9C-4FB3-8CA2-2887695941D6"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TH0R/lib/amfi/amfi.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "831"
+            endingLineNumber = "831"
+            landmarkName = "AMFIDExceptionHandler(arg)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "2D4208CA-9C2E-471D-809D-1ADDD2188692"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TH0R/lib/amfi/amfi.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "854"
+            endingLineNumber = "854"
+            landmarkName = "AMFIDExceptionHandler(arg)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "175F27C0-74B0-4DC7-B9D3-4A28E0C61FCF"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TH0R/lib/amfi/amfi.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "874"
+            endingLineNumber = "874"
+            landmarkName = "AMFIDExceptionHandler(arg)"
+            landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
