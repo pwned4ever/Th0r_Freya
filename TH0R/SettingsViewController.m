@@ -74,11 +74,9 @@ NSString *getKernelBuildVersionS() {
     uint32_t flags;
     csops(getpid(), CS_OPS_STATUS, &flags, 0);
     int checkuncovermarker = (file_exists("/.installed_unc0ver"));
-    int checkth0rmarker = (file_exists("/.freya_bootstrap"));
     int checkth0rmarkerFinal = (file_exists("/.freya_installed"));
     int checkchimeramarker = (file_exists("/.procursus_strapped"));
     printf("Uncover marker exists?: %d\n",checkuncovermarker);
-    printf("Th0r marker exists?: %d\n",checkth0rmarker);
     printf("Th0r final marker exists?: %d\n",checkth0rmarkerFinal);
     printf("Chimera marker exists?: %d\n",checkchimeramarker);
     
@@ -299,7 +297,7 @@ NSString *getKernelBuildVersionS() {
     }
     
 
-    if ((checkuncovermarker == 0) && (checkchimeramarker == 1) && (checkth0rmarker == 0)){
+    if ((checkuncovermarker == 0) && (checkchimeramarker == 1) && (checkth0rmarkerFinal == 0)){
         [ViewController.sharedController.buttontext setTitle:localize(@"Remove Chimera?") forState:UIControlStateNormal];
         newTFcheckMyRemover4me = TRUE;
         JUSTremovecheck = true;
@@ -314,7 +312,7 @@ NSString *getKernelBuildVersionS() {
         [ViewController.sharedController.restoreFSSwitch setEnabled:NO];
         [ViewController.sharedController.restoreFSSwitch setUserInteractionEnabled:NO];
         //    goto end;
-    } else if ((checkuncovermarker == 1) && (checkchimeramarker == 0) && (checkth0rmarker == 0)){
+    } else if ((checkuncovermarker == 1) && (checkchimeramarker == 0) && (checkth0rmarkerFinal == 0)){
         [ViewController.sharedController.buttontext setTitle:localize(@"Remove u0?") forState:UIControlStateNormal];
         newTFcheckMyRemover4me = TRUE;
         JUSTremovecheck = true;
@@ -328,7 +326,7 @@ NSString *getKernelBuildVersionS() {
         [ViewController.sharedController.restoreFSSwitch setEnabled:NO];
         [ViewController.sharedController.restoreFSSwitch setUserInteractionEnabled:NO];
         //    goto end;
-    } else if ((checkth0rmarker == 1) && (checkuncovermarker == 0) && (checkchimeramarker == 0)) {
+    } else if ((checkth0rmarkerFinal == 1) && (checkuncovermarker == 0) && (checkchimeramarker == 0)) {
         if (shouldRestoreFS())
         {
             JUSTremovecheck = true;
@@ -607,21 +605,19 @@ static ViewController *currentViewController;
     uint32_t flags;
     csops(getpid(), CS_OPS_STATUS, &flags, 0);
     int checkuncovermarker = (file_exists("/.installed_unc0ver"));
-    int checkth0rmarker = (file_exists("/.freya_bootstrap"));
     int checkth0rmarkerFinal = (file_exists("/.freya_installed"));
     int checkchimeramarker = (file_exists("/.procursus_strapped"));
     printf("Uncover marker exists?: %d\n",checkuncovermarker);
-    printf("Th0r marker exists?: %d\n",checkth0rmarker);
     printf("Th0r final marker exists?: %d\n",checkth0rmarkerFinal);
     printf("Chimera marker exists?: %d\n",checkchimeramarker);
     [ViewController.sharedController.buttontext setEnabled:true];
 
     if ([sender isOn])
     {
-        if ((checkth0rmarker == 1) && (checkuncovermarker == 0) && (checkchimeramarker == 0)){
+        if ((checkth0rmarkerFinal == 1) && (checkuncovermarker == 0) && (checkchimeramarker == 0)){
             [ViewController.sharedController.buttontext setTitle:localize(@"Remove Freya?") forState:UIControlStateNormal];
             newTFcheckMyRemover4me = TRUE;
-        } else if ((checkuncovermarker == 1) && (checkth0rmarker == 0) && (checkchimeramarker == 0)) {
+        } else if ((checkuncovermarker == 1) && (checkth0rmarkerFinal == 0) && (checkchimeramarker == 0)) {
             [ViewController.sharedController.buttontext setTitle:localize(@"Remove u0?") forState:UIControlStateNormal];
             newTFcheckMyRemover4me = TRUE;
             saveCustomSetting(@"RestoreFS", 0);
@@ -632,7 +628,7 @@ static ViewController *currentViewController;
             [ViewController.sharedController.restoreFSSwitch setEnabled:NO];
             [ViewController.sharedController.restoreFSSwitch setUserInteractionEnabled:NO];
 
-        } else if ((checkuncovermarker == 0) && (checkchimeramarker == 1) && (checkth0rmarker == 0)){
+        } else if ((checkuncovermarker == 0) && (checkchimeramarker == 1) && (checkth0rmarkerFinal == 0)){
             [ViewController.sharedController.buttontext setTitle:localize(@"Remove Chimera?") forState:UIControlStateNormal];
             newTFcheckMyRemover4me = TRUE;
             saveCustomSetting(@"RestoreFS", 0);
@@ -650,12 +646,12 @@ static ViewController *currentViewController;
         JUSTremovecheck = true;
         saveCustomSetting(@"RestoreFS", 0);
     } else {
-        if ((checkth0rmarker == 1) && (checkuncovermarker == 0) && (checkchimeramarker == 0)){
+        if ((checkth0rmarkerFinal == 1) && (checkuncovermarker == 0) && (checkchimeramarker == 0)){
             [ViewController.sharedController.buttontext setTitle:localize(@"Enable Freya?") forState:UIControlStateNormal];
             [_setnoncebtn setHidden:NO];
             [_setnoncebtn setEnabled:YES];
 
-        } else if ((checkuncovermarker == 1) && (checkth0rmarker == 0) && (checkchimeramarker == 0)) {
+        } else if ((checkuncovermarker == 1) && (checkth0rmarkerFinal == 0) && (checkchimeramarker == 0)) {
             [ViewController.sharedController.buttontext setTitle:localize(@"Remove u0 1st") forState:UIControlStateNormal];
             newTFcheckMyRemover4me = TRUE;
             saveCustomSetting(@"RestoreFS", 0);
@@ -668,7 +664,7 @@ static ViewController *currentViewController;
             [ViewController.sharedController.restoreFSSwitch setUserInteractionEnabled:NO];
 
             [ViewController.sharedController.buttontext setEnabled:false];
-        } else if ((checkuncovermarker == 0) && (checkchimeramarker == 1) && (checkth0rmarker == 0)){
+        } else if ((checkuncovermarker == 0) && (checkchimeramarker == 1) && (checkth0rmarkerFinal == 0)){
             [ViewController.sharedController.buttontext setTitle:localize(@"Remove Chimera 1st") forState:UIControlStateNormal];
             newTFcheckMyRemover4me = TRUE;
             saveCustomSetting(@"RestoreFS", 0);

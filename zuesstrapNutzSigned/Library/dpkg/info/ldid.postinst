@@ -1,0 +1,2 @@
+#!/bin/sh
+update-alternatives --install /usr/bin/ldid ldid /usr/libexec/ldid 50

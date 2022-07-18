@@ -1,0 +1,500 @@
+sudo chown root:wheel Adobe\ Animate\ CC\ 2017/*/*/*
+sudo chown root:wheel Adobe\ Animate\ CC\ 2017/*/*
+sudo chown root:wheel Adobe\ Animate\ CC\ 2017/*
+sudo chmod +x Adobe\ Animate\ CC\ 2017/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*
+sudo chmod +x Adobe\ Animate\ CC\ 2017/*/*/*/*/*/*/*/*/*/*/*/*/*/*
+sudo chmod +x Adobe\ Animate\ CC\ 2017/*/*/*/*/*/*/*/*/*/*/*/*/*
+sudo chmod +x Adobe\ Animate\ CC\ 2017/*/*/*/*/*/*/*/*/*/*/*/*
+sudo chmod +x Adobe\ Animate\ CC\ 2017/*/*/*/*/*/*/*/*/*/*/*
+sudo chmod +x Adobe\ Animate\ CC\ 2017/*/*/*/*/*/*/*/*/*/*
+sudo chmod +x Adobe\ Animate\ CC\ 2017/*/*/*/*/*/*/*/*/*
+sudo chmod +x Adobe\ Animate\ CC\ 2017/*/*/*/*/*/*/*/*
+sudo chmod +x Adobe\ Animate\ CC\ 2017/*/*/*/*/*/*/*
+sudo chmod +x Adobe\ Animate\ CC\ 2017/*/*/*/*/*/*
+sudo chmod +x Adobe\ Animate\ CC\ 2017/*/*/*/*/*
+sudo chmod +x Adobe\ Animate\ CC\ 2017/*/*/*/*
+sudo chmod +x Adobe\ Animate\ CC\ 2017/*/*/*
+sudo chmod +x Adobe\ Animate\ CC\ 2017/*/*
+sudo chmod +x Adobe\ Animate\ CC\ 2017/*
+sudo chmod +x Adobe\ Animate\ CC\ 2017
+cd /Users/pwnedosx/Downloads/Adobe\ Animate\ CC\ 2017/Adobe\ Animate\ CC\ 2017.app/Contents 
+cd ..
+sudo chmod +x Contents/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*
+sudo chmod +x Contents/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*
+sudo chmod +x Contents/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*
+sudo chmod +x Contents/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*
+sudo chmod +x Contents/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*
+sudo chmod +x Contents/*/*/*/*/*/*/*/*/*/*/*/*/*/*
+sudo chmod +x Contents/*/*/*/*/*/*/*/*/*/*/*/*/*
+sudo chmod +x Contents/*/*/*/*/*/*/*/*/*/*/*/*
+sudo chmod +x Contents/*/*/*/*/*/*/*/*/*/*/*
+sudo chmod +x Contents/*/*/*/*/*/*/*/*/*/*
+sudo chmod +x Contents/*/*/*/*/*/*/*/*/*
+sudo chmod +x Contents/*/*/*/*/*/*/*/*/
+sudo chmod +x Contents/*/*/*/*/*/*/*/*
+sudo chmod +x Contents/*/*/*/*/*/*/*
+sudo chmod +x Contents/*/*/*/*/*/*/
+sudo chmod +x Contents/*/*/*/*/*/*
+sudo chmod +x Contents/*/*/*/*/*/
+sudo chmod +x Contents/*/*/*/*/*
+sudo chmod +x Contents/*/*/*/*
+sudo chmod +x Contents/*/*/*
+sudo chmod +x Contents/*/*/*/
+sudo chmod +x Contents/*/*/
+sudo chmod +x Contents/*/*
+sudo chmod +x Contents/*/
+sudo chmod +x Contents/*
+sudo chmod +x Contents/
+sudo chown root:wheel Contents/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*
+sudo chown root:wheel Contents/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*
+sudo chown root:wheel Contents/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*
+sudo chown root:wheel Contents/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*
+sudo chown root:wheel Contents/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*
+sudo chown root:wheel Contents/*/*/*/*/*/*/*/*/*/*/*/*/*/*
+sudo chown root:wheel Contents/*/*/*/*/*/*/*/*/*/*/*/*/*
+sudo chown root:wheel Contents/*/*/*/*/*/*/*/*/*/*/*/*/*/
+sudo chown root:wheel Contents/*/*/*/*/*/*/*/*/*/*/*/*/
+sudo chown root:wheel Contents/*/*/*/*/*/*/*/*/*/*/*/*
+sudo chown root:wheel Contents/*/*/*/*/*/*/*/*/*/*/*/
+sudo chown root:wheel Contents/*/*/*/*/*/*/*/*/*/*/*
+sudo chown root:wheel Contents/*/*/*/*/*/*/*/*/*/*/
+sudo chown root:wheel Contents/*/*/*/*/*/*/*/*/*/*
+sudo chown root:wheel Contents/*/*/*/*/*/*/*/*/*/
+sudo chown root:wheel Contents/*/*/*/*/*/*/*/*/*
+sudo chown root:wheel Contents/*/*/*/*/*/*/*/*/
+sudo chown root:wheel Contents/*/*/*/*/*/*/*/*
+sudo chown root:wheel Contents/*/*/*/*/*/*/*/
+sudo chown root:wheel Contents/*/*/*/*/*/*/*
+sudo chown root:wheel Contents/*/*/*/*/*/*/
+sudo chown root:wheel Contents/*/*/*/*/*/*
+sudo chown root:wheel Contents/*/*/*/*/*/
+sudo chown root:wheel Contents/*/*/*/*/*
+sudo chown root:wheel Contents/*/*/*/*/
+sudo chown root:wheel Contents/*/*/*/*
+sudo chown root:wheel Contents/*/*/*/
+sudo chown root:wheel Contents/*/*/*
+sudo chown root:wheel Contents/*/*/
+sudo chown root:wheel Contents/*/*
+sudo chown root:wheel Contents/*/
+sudo chown root:wheel Contents/*
+sudo chown root:wheel Contents/
+sudo chmod 0755 Contents/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*
+sudo chmod 0755 Contents/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*
+sudo chmod 0755 Contents/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*
+sudo chmod 0755 Contents/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*
+sudo chmod 0755 Contents/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*
+sudo chmod 0755 Contents/*/*/*/*/*/*/*/*/*/*/*/*/*/*
+sudo chmod 0755 Contents/*/*/*/*/*/*/*/*/*/*/*/*/*
+sudo chmod 0755 Contents/*/*/*/*/*/*/*/*/*/*/*/*/*/
+sudo chmod 0755 Contents/*/*/*/*/*/*/*/*/*/*/*/*
+sudo chmod 0755 Contents/*/*/*/*/*/*/*/*/*/*/*/*/
+sudo chmod 0755 Contents/*/*/*/*/*/*/*/*/*/*/*/*
+sudo chmod 0755 Contents/*/*/*/*/*/*/*/*/*/*/*
+sudo chmod 0755 Contents/*/*/*/*/*/*/*/*/*/*/*/
+sudo chmod 0755 Contents/*/*/*/*/*/*/*/*/*/*/
+sudo chmod 0755 Contents/*/*/*/*/*/*/*/*/*/*
+sudo chmod 0755 Contents/*/*/*/*/*/*/*/*/*
+sudo chmod 0755 Contents/*/*/*/*/*/*/*/*/*
+sudo chmod 0755 Contents/*/*/*/*/*/*/*/*/
+sudo chmod 0755 Contents/*/*/*/*/*/*/*/*
+sudo chmod 0755 Contents/*/*/*/*/*/*/*/
+sudo chmod 0755 Contents/*/*/*/*/*/*/*
+sudo chmod 0755 Contents/*/*/*/*/*/*/*/
+sudo chmod 0755 Contents/*/*/*/*/*/*/
+sudo chmod 0755 Contents/*/*/*/*/*/*
+sudo chmod 0755 Contents/*/*/*/*/*
+sudo chmod 0755 Contents/*/*/*/*
+sudo chmod 0755 Contents/*/*/*
+sudo chmod 0755 Contents/*/*/*/
+sudo chmod 0755 Contents/*/*/
+sudo chmod 0755 Contents/*/*
+sudo chmod 0755 Contents/*/
+sudo chmod 0755 Contents/*
+sudo chmod 0755 Contents/
+sudo chmod 0755 Contents
+brew install
+install homebrew
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+brew help
+brew install wget
+dpkg
+brew install dpkg
+brew install apt
+brew install gtar
+brew install gnutar
+brew install gnu-tar
+gtar
+gnutar
+brew install gnutar
+brew install gnu-tar
+cd Downloads/kodi/
+cd tools/depends/
+./bootstrap
+./configure --host=arm-apple-darwin --with-platform=tvos
+./configure --host=arm-apple-darwin --with-platform=tvos --with-sdk=12.0
+make -j$(getconf _NPROCESSORS_ONLN)
+make -j$(getconf _NPROCESSORS_ONLN)
+make -j$(getconf _NPROCESSORS_ONLN)
+make -j$(getconf _NPROCESSORS_ONLN)
+make -j$(getconf _NPROCESSORS_ONLN)
+make -j$(getconf _NPROCESSORS_ONLN)
+make -j$(getconf _NPROCESSORS_ONLN)
+make -j$(getconf _NPROCESSORS_ONLN)
+cd /Users/pwnedosx/Downloads/kodi/tools/depends/
+make -j$(getconf _NPROCESSORS_ONLN)
+make -j$(getconf _NPROCESSORS_ONLN)
+make -j$(getconf _NPROCESSORS_ONLN)
+cd ..
+cd ..
+make -C tools/depends/target/cmakebuildsys
+xcode-select --install
+Software Update
+cd /Users/pwnedosx/Downloads/xbmc
+cd tools/depends/
+./bootstrap 
+./configure --host=arm-apple-darwin --with-platform=tvos --with-sdk=12.0
+./configure --host=arm-apple-darwin --with-platform=tvos --with-sdk=12.0
+./configure --host=arm-apple-darwin --with-platform=tvos --with-sdk=12.0
+make -j$(getconf _NPROCESSORS_ONLN)
+cd ..
+cd .
+cd ..
+make -C tools/depends/target/cmakebuildsys
+cd tools/depends/
+make -j$(getconf _NPROCESSORS_ONLN)
+make -C tools/depends/target/cmakebuildsys
+make -j$(getconf _NPROCESSORS_ONLN)
+cd ../..
+make -j$(getconf _NPROCESSORS_ONLN)
+make -C tools/depends/target/cmakebuildsys
+make -C tools/depends/target/cmakebuildsys
+cd tools/depends/
+make -j$(getconf _NPROCESSORS_ONLN)
+make -j$(getconf _NPROCESSORS_ONLN)
+brew install cmake
+brew install cmake
+brew install gettext
+cmake
+cd Downloads/xbmc/tools/depends/
+./configure --host=arm-apple-darwin --with-platform=tvos --with-sdk=12.1
+make -j$(getconf _NPROCESSORS_ONLN)
+make -j$(getconf _NPROCESSORS_ONLN)
+cd ../..
+make -C tools/depends/target/cmakebuildsys
+/Users/pwnedosx/Downloads/InstallFink/Install\ Fink.tool ; exit;
+brew install rbenv ruby-build
+brew install sqlite3
+brew install sqlite3
+sudo installer -pkg /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg -target /
+cd Downloads/kodi/
+cd tools/depends/
+./bootstrap 
+./configure --host=arm-apple-darwin --with-platform=tvos --with-sdk=12.1
+make -j$(getconf _NPROCESSORS_ONLN)
+brew install sqlite3
+brew reinstall sqlite3
+echo 'export PATH="/usr/local/opt/sqlite/bin:$PATH"' >> ~/.bash_profile
+export LDFLAGS="-L/usr/local/opt/sqlite/lib"
+export CPPFLAGS="-I/usr/local/opt/sqlite/include"
+export PKG_CONFIG_PATH="/usr/local/opt/sqlite/lib/pkgconfig"
+make -j$(getconf _NPROCESSORS_ONLN)
+brew install expat
+brew install pcre
+ echo 'export PATH="/usr/local/opt/expat/bin:$PATH"' >> ~/.bash_profile
+export LDFLAGS="-L/usr/local/opt/expat/lib"
+export CPPFLAGS="-I/usr/local/opt/expat/include"
+export PKG_CONFIG_PATH="/usr/local/opt/expat/lib/pkgconfig"
+make -j$(getconf _NPROCESSORS_ONLN)
+make
+cd ../../../kodi-build/
+/Users/Shared/xbmc-depends/x86_64-darwin18.5.0-native/bin/cmake -G Xcode -DCMAKE_TOOLCHAIN_FILE=/Users/Shared/xbmc-depends/appletvos12.1_arm64-target-debug/share/Toolchain.cmake ../kodi
+/Users/Shared/xbmc-depends/x86_64-darwin18.6.0-native/bin/cmake -G Xcode -DCMAKE_TOOLCHAIN_FILE=/Users/Shared/xbmc-depends/appletvos12.1_arm64-target-debug/share/Toolchain.cmake ../kodi
+xcode-select --install
+sudo xcode-select --install
+sudo xcode-select --Software Update
+sudo xcode-select -r
+/Users/Shared/xbmc-depends/x86_64-darwin18.6.0-native/bin/cmake -G Xcode -DCMAKE_TOOLCHAIN_FILE=/Users/Shared/xbmc-depends/appletvos12.1_arm64-target-debug/share/Toolchain.cmake ../kodi
+cd ../kodi
+make -C tools/depends/target/cmakebuildsys
+make -C tools/depends/target/cmakebuildsys ENABLE_BITCODE=NO
+cd tools/depends/
+make -j$(getconf _NPROCESSORS_ONLN)
+./configure --host=arm-apple-darwin --with-platform=tvos --with-sdk=12.2
+make -j$(getconf _NPROCESSORS_ONLN)
+brew install gettext-runtime
+brew install gettext
+brew reinstall gettext
+echo 'export PATH="/usr/local/opt/gettext/bin:$PATH"' >> ~/.bash_profile
+export LDFLAGS="-L/usr/local/opt/gettext/lib"
+export CPPFLAGS="-I/usr/local/opt/gettext/include"
+./configure --host=arm-apple-darwin --with-platform=tvos --with-sdk=12.2
+brew install arm-apple-darwin-gcc
+make -j$(getconf _NPROCESSORS_ONLN)
+sudo apt install libc6-dev
+apt
+brew install apt
+brew install python
+apt
+apt
+apt
+defaults write com.apple.finder AppleShowAllFiles YES.
+defaults write com.apple.finder AppleShowAllFiles YES
+/System/Library/Frameworks/JavaVM.framework/Versions/A/Commands/apt 
+./System/Library/Frameworks/JavaVM.framework/Versions/A/Commands/apt 
+./System/Library/Frameworks/JavaVM.framework/Versions/A/Commands 
+apt
+apt-get
+brew install apt-get
+/Users/pwnedosx/Downloads/InstallFink/Install\ Fink.tool ; exit;
+brew reinstall perl02
+brew reinstall perl
+brew downgrade perl
+brew install perl
+brew list perl
+brew list -v
+brew list -v perl
+brew install -v perl
+brew install -v perl5.2
+brew install perl fetch --uncshallow
+brew install perl fetch --unshallow
+brew install fetch --unshallow
+brew install fetch perl
+tail -f ~/perl5/perlbrew/build.perl-5.16.0.log
+cd ..
+cd ..
+make -C tools/depends/target/cmakebuildsys
+clang++
+gcc
+gcc
+gcc -v
+uname -a
+brew install ldid xz
+echo "export THEOS=~/theos" >> ~/.profile
+git clone --recursive https://github.com/theos/theos.git $THEOS
+curl -LO https://github.com/theos/sdks/archive/master.zip
+TMP=$(mktemp -d)
+unzip master.zip -d $TMP
+mv $TMP/sdks-master/*.sdk $THEOS/sdks
+mv TMP/sdks-master/*.sdk $THEOS/sdks
+mv $TMP/sdks-master/*.sdk $THEOS/sdks
+curl https://ghostbin.com/ghost.sh -o $THEOS/bin/ghost
+sudo curl https://ghostbin.com/ghost.sh -o $THEOS/bin/ghost
+chmod +x $THEOS/bin/ghost
+sudo chmod +x $THEOS/bin/ghost
+joker
+ brew install libimobiledevice
+ideviceinfo 
+ideviceinfo 
+ideviceinfo 
+ideviceinfo 
+ideviceinfo 
+ideviceinfo 
+ideviceinfo 
+ideviceinfo 
+ideviceinfo 
+ideviceinfo 
+ideviceinfo 00008020001A5C1C2150003A
+ideviceinfo -u
+ideviceenterrecovery 00008020001A5C1C2150003A
+ideviceenterrecovery 00008020001A5C1C2150003A
+ideviceenterrecovery 00008020001-A5C1C2150003A
+ideviceenterrecovery 00008020-001A5C1C2150003A
+ideviceenterrecovery 00008020-001A5C1C2150003A
+ideviceenterrecovery 00008020-001A5C1C2150003A
+ideviceenterrecovery -d 00008020-001A5C1C2150003A
+ideviceenterrecovery -d --debug 00008020-001A5C1C2150003A
+ideviceenterrecovery 00008020 001A5C1C2150003A
+ideviceenterrecovery 00008020001A5C1C2150003A
+ideviceenterrecovery -d --debug
+ideviceenterrecovery 00008020001A5C1C2150003A
+ideviceenterrecovery 00008020001A5C1C2150003A -d
+ideviceenterrecovery -h
+ideviceenterrecovery --help
+ideviceenterrecovery -n
+irecovery
+brew install irecovery
+sudo ideviceinfo
+sudo ideviceinfo
+sudo ideviceinfo
+sudo ideviceinfo
+cd Downloads/libirecovery-master/
+./autogen.sh
+./autogen.sh m4_pattern_allow
+make
+ brew install libimobiledevice
+irecovery
+cd /Users/pwnedosx/MYMACBOOKFILES/SINGLEFILES/libimobiledevice-1.2.0 
+./autogen.sh
+make
+brew install usbmuxd
+brew install make
+PATH="/usr/local/opt/make/libexec/gnubin:$PATH"\
+brew install autoheader
+brew install automake
+brew install autoconf
+brew install libtool
+brew install pkg-config
+brew install gcc
+brew install cython
+echo 'export PATH="/usr/local/opt/cython/bin:$PATH"' >> ~/.bash_profile
+./autogen.sh
+./autogen.sh
+cd /Users/pwnedosx/Downloads/libirecovery-master-2 
+./autogen.sh
+make
+make install
+irecovery 
+ideviceenterrecovery 00008020001A5C1C2150003A
+ideviceinfo 
+ideviceenterrecovery 00008020001A5C1C2150003A
+ideviceenterrecovery -u 00008020001A5C1C2150003A
+irecovery 
+irecovery -q
+irecovery -q
+irecovery -q
+futurerestore
+cd /Users/pwnedosx/Documents/GitHub/ANY\ HACKN/anything\ jailbreak\ related/all\ future\ promethesus/futurerestore-latest/
+chmod +x futurerestore
+./futurerestore 
+./futurerestore -w
+irecovery -q
+irecovery -q
+irecovery 
+irecovery -r
+irecovery -r
+ideviceenterrecovery -u
+ideviceenterrecovery
+ideviceenterrecovery --help
+irecovery -n
+irecovery -r
+ideviceenterrecovery -u
+irecovery -q
+irecovery -n
+irecovery -r
+irecovery -r
+./futurerestore -w
+./futurerestore -w
+./futurerestore -w
+irecovery -q
+./futurerestore -w 99
+./futurerestore -r
+./futurerestore -t 
+libimobiledevice
+mobiledevice
+libmobiledevice
+irecovery -q
+irecovery -q
+irecovery -q | grep NONC
+irecovery -q
+irecovery -reboot
+./futurerestore -w 99
+./futurerestore
+irecovery -r
+idevicerecovery
+libiidevicerecovery
+ideviceenterrecovery
+ideviceenterrecovery -r
+ideviceenterrecovery -u 00008020001A5C1C2150003A
+ideviceenterrecovery 00008020001A5C1C2150003A
+ideviceenterrecovery -r 00008020001A5C1C2150003A
+ideviceenterrecovery -r 00008020-001A5C1C2150003A
+ideviceenterrecovery -u 00008020-001A5C1C2150003A
+ideviceenterrecovery -d 00008020-001A5C1C2150003A
+ideviceenterrecovery 00008020-001A5C1C2150003A
+irecovery -w
+irecovery -1
+irecovery -q
+irecovery -w
+irecovery -e
+irecovery -t
+irecovery -y
+irecovery -
+irecovery 
+irecovery -s
+irecovery -q | grep NONC
+irecovery -q | grep NONC
+irecovery -q | grep NONC
+irecovery -q | grep NONC
+irecovery -q | grep NONC
+irecovery -n
+ssh root@192.168.0.12
+ssh root@192.168.0.14
+ssh root@192.168.0.14
+ssh root@192.168.0.14
+ssh root@192.168.0.14
+ssh root@192.168.0.14
+ssh root@192.168.0.14
+ssh root@192.168.0.14
+ssh root@192.168.0.14
+ssh root@192.168.0.14
+ssh-keygen -R 192.168.0.12
+ssh root@192.168.0.14
+ssh-keygen -R 192.168.0.14
+ssh root@192.168.0.14
+ssh root@192.168.0.14
+ssh-keygen -R 192.168.0.14
+ssh root@192.168.0.14
+ssh root@192.168.0.14
+ssh root@192.168.0.14
+ssh root@192.168.0.14
+ssh-keygen -R 192.168.0.14
+ssh root@192.168.0.14
+cd Downloads/
+ls
+mkdir mypwnstrap
+ls
+tar -xvf pwnedstrap.tar.gz -C mypwnstrap/
+cd mypwnstrap/
+ls
+cd usr/bin/
+ldid
+ldid -e dpkg >> myu0ents.ent
+cat myu0ents.ent 
+ldid -e /usr/bin/dpkg >> /myu0entsdpkg.ent
+jtool -e arch -arch arm64e dpkg
+jtool2 -e arch -arch arm64e dpkg
+jtool2 -e arch arm64e dpkg
+cd /tmp
+ls
+cd ..
+cd ..
+cd $HOME
+cd Downloads/
+ls
+Codesign -fs marcelENTS dpkg.arm64e 
+ssh root@192.168.0.14
+ssh-keygen -R 192.168.0.14
+ssh root@192.168.0.14
+jtool2
+jtool2 --help
+jtool2 --ent /Users/pwnedosx/Downloads/JulyiOSApps19-20/Payload/Chimera.app/bootstraraarap/usr/bin/apt
+jtool2 ARCH arm64e /Users/pwnedosx/Downloads/JulyiOSApps19-20/Payload/Chimera.app/bootstraraarap/usr/bin/apt
+jtool2 ARCH arm64e /Users/pwnedosx/Downloads/JulyiOSApps19-20/Payload/Chimera.app/bootstraraarap/usr/bin/apt apt64e
+jtool2 ARCH arm64e /Users/pwnedosx/Downloads/JulyiOSApps19-20/Payload/Chimera.app/bootstraraarap/usr/bin/apt >> apt64e
+ls /Users/pwnedosx/Downloads/JulyiOSApps19-20/Payload/Chimera.app/bootstraraarap/usr/bin/
+jtool2 ARCH arm64e /Users/pwnedosx/Downloads/JulyiOSApps19-20/Payload/Chimera.app/bootstraraarap/usr/bin/apt >> Downloads/apt64e
+chmod +x Downloads/apt64e
+Downloads/./apt64e 
+cd /Users/pwnedosx/Downloads/fink 
+./install.sh 
+./inject.pl 
+./inject.pl ../fink
+./inject.pl ../
+./inject.pl /sw/fink/
+./Makefile
+sudo ./Makefile
+sudo ./Make
+sudo Make
+sudo Make -e bootstrap
+Make -e bootstrap
+Make -e bootstrap
+./bootstrap
+sudo
+whoami
+./bootstrap
+brew install Perl
+./bootstrap
+\curl -L https://install.perlbrew.pl | bash
+perlbrew
+perlbrew
+ssh root@192.168.0.14

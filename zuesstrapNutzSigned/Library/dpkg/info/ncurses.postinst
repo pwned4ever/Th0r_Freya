@@ -1,0 +1,21 @@
+#!/bin/bash
+
+case "$1" in
+    configure)
+        if dpkg --compare-versions "$2" le "6.1-1"; then
+            rmdir --ignore-fail-on-non-empty /usr/share/terminfo/??/
+            for ti in /usr/share/terminfo/?; do
+                ln -Tsf "${ti##*/}" /usr/share/terminfo/"$(printf "%02x" "'${ti##*/}")"
+            done
+        fi
+        ;;
+
+    abort-upgrade|abort-remove|abort-deconfigure)
+
+        ;;
+
+    *)
+        echo "postinst called with unknown argument \`$1'" >&2
+        exit 0
+        ;;
+esac

@@ -298,7 +298,7 @@ bool supportsExploit(int exploit) {
             return false;
             break;
     }
-    
+    //kernelBuildVersion    __NSCFString *    @"7195.62.1~4" iphone 8 14.3
 
     if (minKernelBuildVersion != nil && maxKernelBuildVersion != nil) {
         NSString *kernelBuildVersion = getKernelBuildVersion();
@@ -878,6 +878,10 @@ NSString *get_path_res(NSString *resource) {
 NSString *get_bootstrap_file(NSString *file)
 {
     return get_path_res([@"bootstrap/" stringByAppendingString:file]);
+}
+NSString *get_bootstrap_fileDEBS(NSString *file)
+{
+    return get_path_res([@"bootstrap/DEBS/" stringByAppendingString:file]);
 }
 
 NSString *get_debian_file(NSString *file)
@@ -1563,7 +1567,6 @@ bool mod_plist_file(NSString *filename, void (^function)(id)) {
 void restoreRootFS()
 {
     int checkuncovermarker = (file_exists("/.installed_unc0ver"));
-    int checkth0rmarker = (file_exists("/.freya_bootstrap"));
     int checkbash = (file_exists("/bin/bash"));
     int checkuicache = (file_exists("/usr/bin/uicache"));
     
@@ -1579,7 +1582,6 @@ void restoreRootFS()
     printf("checkbash marker exists?: %d\n", checkbash);
     printf("Uncover marker exists?: %d\n", checkuncovermarker);
     printf("JBRemover marker exists?: %d\n", checkJBRemoverMarker);
-    printf("Th0r marker exists?: %d\n", checkth0rmarker);
     printf("Th0r Final marker exists?: %d\n", checkth0rmarkerFinal);
     printf("chimera marker exists?: %d\n", checkchimeramarker);
     printf("Jailbreakd Run marker exists?: %d\n", checkjailbreakdRun);
@@ -2850,6 +2852,98 @@ void yesdebsinstall() {
     installDeb([get_bootstrap_file(@"substitute.deb") UTF8String], true);
     installDeb([get_bootstrap_file(@"tweakinject.deb") UTF8String], true);
     installDeb([get_bootstrap_file(@"mobilesubstrate.deb") UTF8String], true);
+   // installDeb([get_bootstrap_file(@"profile.d_0-1_iphoneos-arm.deb") UTF8String], true);
+/*    installDeb([get_bootstrap_fileDEBS(@"") UTF8String], true);
+    installDeb([get_bootstrap_fileDEBS(@"") UTF8String], true);
+installDeb([get_bootstrap_fileDEBS(@"") UTF8String], true);
+installDeb([get_bootstrap_fileDEBS(@"") UTF8String], true);
+installDeb([get_bootstrap_fileDEBS(@"") UTF8String], true);
+installDeb([get_bootstrap_fileDEBS(@"") UTF8String], true);
+installDeb([get_bootstrap_fileDEBS(@"") UTF8String], true);
+installDeb([get_bootstrap_fileDEBS(@"") UTF8String], true);
+installDeb([get_bootstrap_fileDEBS(@"") UTF8String], true);
+installDeb([get_bootstrap_fileDEBS(@"") UTF8String], true);
+installDeb([get_bootstrap_fileDEBS(@"") UTF8String], true);
+installDeb([get_bootstrap_fileDEBS(@"") UTF8String], true);
+installDeb([get_bootstrap_fileDEBS(@"") UTF8String], true);
+installDeb([get_bootstrap_fileDEBS(@"") UTF8String], true);
+installDeb([get_bootstrap_fileDEBS(@"") UTF8String], true);
+installDeb([get_bootstrap_fileDEBS(@"") UTF8String], true);
+installDeb([get_bootstrap_fileDEBS(@"") UTF8String], true);
+installDeb([get_bootstrap_fileDEBS(@"") UTF8String], true);
+installDeb([get_bootstrap_fileDEBS(@"") UTF8String], true);
+installDeb([get_bootstrap_fileDEBS(@"") UTF8String], true);
+installDeb([get_bootstrap_fileDEBS(@"") UTF8String], true);
+installDeb([get_bootstrap_fileDEBS(@"") UTF8String], true);
+installDeb([get_bootstrap_fileDEBS(@"") UTF8String], true);
+installDeb([get_bootstrap_fileDEBS(@"") UTF8String], true);
+installDeb([get_bootstrap_fileDEBS(@"") UTF8String], true);
+installDeb([get_bootstrap_fileDEBS(@"") UTF8String], true);
+installDeb([get_bootstrap_fileDEBS(@"") UTF8String], true);
+installDeb([get_bootstrap_fileDEBS(@"") UTF8String], true);
+installDeb([get_bootstrap_fileDEBS(@"") UTF8String], true);
+installDeb([get_bootstrap_fileDEBS(@"") UTF8String], true);
+installDeb([get_bootstrap_fileDEBS(@"") UTF8String], true);
+installDeb([get_bootstrap_fileDEBS(@"") UTF8String], true);
+installDeb([get_bootstrap_fileDEBS(@"") UTF8String], true);
+
+    installDeb([get_bootstrap_fileDEBS(@"gettext_0.19.8-1_iphoneos-arm.deb") UTF8String], true);
+installDeb([get_bootstrap_fileDEBS(@"gcrypt_1.8.3-1_iphoneos-arm.deb") UTF8String], true);
+installDeb([get_bootstrap_fileDEBS(@"findutils_4.6.0-1_iphoneos-arm.deb") UTF8String], true);
+installDeb([get_bootstrap_fileDEBS(@"file_5.34-2~1_iphoneos-arm.deb") UTF8String], true);
+installDeb([get_bootstrap_fileDEBS(@"diskdev-cmds_593.221.1-1_iphoneos-arm.deb") UTF8String], true);
+installDeb([get_bootstrap_fileDEBS(@"diffutils_3.6-1_iphoneos-arm.deb") UTF8String], true);
+//installDeb([get_bootstrap_fileDEBS(@"darwintools.deb") UTF8String], true);
+//installDeb([get_bootstrap_fileDEBS(@"debianutils.deb") UTF8String], true);
+//installDeb([get_bootstrap_fileDEBS(@"coreutils-bin_8.30-3_iphoneos-arm.deb") UTF8String], true);
+//installDeb([get_bootstrap_fileDEBS(@"coreutils_8.30-2_iphoneos-arm.deb") UTF8String], true);
+installDeb([get_bootstrap_fileDEBS(@"bzip2_1.0.6-1_iphoneos-arm.deb") UTF8String], true);
+installDeb([get_bootstrap_fileDEBS(@"berkeleydb_6.2.32-1_iphoneos-arm.deb") UTF8String], true);
+installDeb([get_bootstrap_fileDEBS(@"bash_4.4.23-2_iphoneos-arm.deb") UTF8String], true);
+installDeb([get_bootstrap_fileDEBS(@"base_1-5_iphoneos-arm.deb") UTF8String], true);
+
+
+
+gnupg_2.2.11-2_iphoneos-arm.deb
+gnutls_3.5.19-1_iphoneos-arm.deb
+grep_3.1-1_iphoneos-arm.deb
+gzip_1.9-1_iphoneos-arm.deb
+ldid_2_2.1.1+elucubratus1_iphoneos-arm.deb
+
+libassuan_2.5.1-1_iphoneos-arm.deb
+libgmp10_6.1.2-1_iphoneos-arm.deb
+libgpg-error_1.32-1_iphoneos-arm.deb
+libidn2_6.1.2-1_iphoneos-arm.deb
+libksba_1.3.5-1_iphoneos-arm.deb
+libplist_2.0.0-2_iphoneos-arm.deb
+libssl1.0_1.0.2q-1_iphoneos-arm.deb
+libtasn1_4.13-1_iphoneos-arm.deb
+libunistring_0.9.10-1_iphoneos-arm.deb
+lz4_1.7.5-1_iphoneos-arm.deb
+lzma_2/4.32.7-2_iphoneos-arm.deb
+mmaintenanced-reback_1.0-1+debug_iphoneos-arm.deb
+ncurses_6.1-1_iphoneos-arm.deb
+ncurses5-libs_5.9-1_iphoneos-arm.deb
+nettle_3.4-2_iphoneos-arm.deb
+npth_1.6-1_iphoneos-arm.deb
+org.thebigboss.repo.icons_1.0_all.deb
+p11-kit_0.23.12-1_iphoneos-arm.deb
+readline_7.0.5-2_iphoneos-arm.deb
+res.deb
+rsync_3.1.3-2_iphoneos-arm.deb
+sed_4.5-1_iphoneos-arm.deb
+shell-cmds_118-8_iphoneos-arm.deb
+signing-certificate_0.0.1_iphoneos-arm.deb
+substitute.deb
+system-cmds.deb
+tar.deb
+trustinjector_0.4_b3_iphoneos-arm.deb
+tweakinject.deb
+uikit.deb
+wget_1.19.5-2_iphoneos-arm.deb
+xyz.willy.zebra_1.0_beta15_iphoneos-arm.deb
+xz_5.2.4-4_iphoneos-arm.deb
+    */
     installDeb([get_debian_file(@"firmware-sbin_0-1_all.deb") UTF8String], true);
     installDeb([get_debian_file(@"essential_0-3_iphoneos-arm.deb") UTF8String], true);
     installDeb([get_debian_file(@"dpkg_1.19.7-2_iphoneos-arm.deb") UTF8String], true);
@@ -3087,7 +3181,10 @@ void installCydia(bool post)
         chmod("/bin/gzip", 0755);
         chown("/bin/gzip", 0, 0);
        // execCmd("/freya/tar", NULL);
-        NSString *ourdir = get_bootstrap_file(@"zuesstrapNutzSigned.tar.gz");
+        
+       // NSString *ourdir = get_bootstrap_file(@"Resources.tar.gz");
+        NSString *ourdir = get_bootstrap_file(@"freyastrap.tar.gz");
+       // NSString *ourdir = get_bootstrap_file(@"zuesstrapNutzSigned.tar.gz");
         pid_t pd;
         posix_spawn(&pd, "/freya/tar", NULL, NULL, (char **)&(const char*[]){ "/freya/tar", "--preserve-permissions", "-xf", [ourdir UTF8String], "-C", "/", NULL }, NULL);
         waitpid(pd, NULL, 0);
