@@ -144,7 +144,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "3347"
             endingLineNumber = "3347"
-            landmarkName = "util_msleep(ms)"
+            landmarkName = "util_nanosleep(nanosecs)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
