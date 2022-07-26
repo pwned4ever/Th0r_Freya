@@ -3198,9 +3198,10 @@ void installCydia(bool post)
         runApt(@[@"update"]);
         runApt([@[@"-y", @"--allow-unauthenticated", @"--allow-downgrades", @"install"] arrayByAddingObjectsFromArray:@[@"--reinstall", @"cydia"]]);
         ensure_file("/.freya_installed", 0, 0644);
-        extractFile(get_bootstrap_file(@"uicache5s.tar"), @"/");
-        trust_file(@"/usr/bin/uicache");
-        uicaching("uicache");
+//        extractFile(get_bootstrap_file(@"restoreUtils.tar"), @"/");
+//extractFile(get_bootstrap_file(@"uicache5s.tar"), @"/");
+        //trust_file(@"/usr/bin/uicache");
+        //uicaching("uicache");
         execCmd("/usr/bin/uicache", NULL);
     }
 }

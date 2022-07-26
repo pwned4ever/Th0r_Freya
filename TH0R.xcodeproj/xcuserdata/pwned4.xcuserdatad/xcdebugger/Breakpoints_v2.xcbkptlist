@@ -128,7 +128,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "2907"
             endingLineNumber = "2907"
-            landmarkName = "xpcFucker()"
+            landmarkName = "yesdebsinstall()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -144,7 +144,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "3347"
             endingLineNumber = "3347"
-            landmarkName = "util_hexprint(data, len, desc)"
+            landmarkName = "util_msleep(ms)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -224,8 +224,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "3008"
             endingLineNumber = "3008"
-            landmarkName = "unknown"
-            landmarkType = "0">
+            landmarkName = "xpcFucker()"
+            landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -240,7 +240,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "3015"
             endingLineNumber = "3015"
-            landmarkName = "addToArray(package, array)"
+            landmarkName = "xpcFucker()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -256,7 +256,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "3005"
             endingLineNumber = "3005"
-            landmarkName = "updatePayloads()"
+            landmarkName = "xpcFucker()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -272,7 +272,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "3001"
             endingLineNumber = "3001"
-            landmarkName = "updatePayloads()"
+            landmarkName = "xpcFucker()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -304,7 +304,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "2984"
             endingLineNumber = "2984"
-            landmarkName = "updatePayloads()"
+            landmarkName = "xpcFucker()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -320,7 +320,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "2982"
             endingLineNumber = "2982"
-            landmarkName = "updatePayloads()"
+            landmarkName = "xpcFucker()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -336,7 +336,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "3004"
             endingLineNumber = "3004"
-            landmarkName = "updatePayloads()"
+            landmarkName = "xpcFucker()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -352,7 +352,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "3003"
             endingLineNumber = "3003"
-            landmarkName = "updatePayloads()"
+            landmarkName = "xpcFucker()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -368,7 +368,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "3164"
             endingLineNumber = "3164"
-            landmarkName = "finish(shouldLoadTweaks)"
+            landmarkName = "installCydia(post)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -880,7 +880,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "3010"
             endingLineNumber = "3010"
-            landmarkName = "addToArray(package, array)"
+            landmarkName = "xpcFucker()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
