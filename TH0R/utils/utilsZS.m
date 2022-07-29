@@ -3062,6 +3062,8 @@ void kickMe()
             startJailbreakD();
             xpcFucker();//might need to not do this step too  but lets see
         }
+        execCmd("/usr/bin/uicache", "-p", "/Applications/Cydia.app", NULL);
+
         kickcheck = 1;
     }
     
@@ -3198,12 +3200,14 @@ void installCydia(bool post)
         runApt(@[@"update"]);
         runApt([@[@"-y", @"--allow-unauthenticated", @"--allow-downgrades", @"install"] arrayByAddingObjectsFromArray:@[@"--reinstall", @"cydia"]]);
         ensure_file("/.freya_installed", 0, 0644);
-        removeFileIfExists("/usr/bin/uicache");
-        extractFile(get_bootstrap_file(@"restoreUtils.tar"), @"/");
+        //removeFileIfExists("/usr/bin/uicache");
+        //extractFile(get_bootstrap_file(@"restoreUtils.tar"), @"/");
 //extractFile(get_bootstrap_file(@"uicache5s.tar"), @"/");
         //trust_file(@"/usr/bin/uicache");
         //uicaching("uicache");
-        execCmd("/usr/bin/uicache", NULL);
+        execCmd("/usr/bin/uicache", "-p", "/Applications/MTerminal.app", NULL);
+        execCmd("/usr/bin/uicache", "-p", "/Applications/Cydia.app", NULL);
+        _assert(execCmd("/usr/bin/uicache", NULL) >= 0, localize(@"Unable to refresh icon cache."), true);
     }
 }
 
