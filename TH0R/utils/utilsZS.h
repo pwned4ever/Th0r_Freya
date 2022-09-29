@@ -98,4 +98,5 @@ int autoSelectExploit(void);
 void setNonce(const char *nonce, bool shouldSet);
 NSString* getBootNonce(void);
 bool shouldSetNonce(void);
+
 #endif /* utils_h */

@@ -1,0 +1,16 @@
+/.
+/usr
+/usr/bin
+/usr/bin/dumpsexp
+/usr/bin/hmac256
+/usr/bin/libgcrypt-config
+/usr/bin/mpicalc
+/usr/include
+/usr/include/gcrypt.h
+/usr/lib
+/usr/lib/libgcrypt.20.dylib
+/usr/lib/libgcrypt.la
+/usr/share
+/usr/share/aclocal
+/usr/share/aclocal/libgcrypt.m4
+/usr/lib/libgcrypt.dylib

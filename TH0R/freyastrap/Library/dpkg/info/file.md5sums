@@ -1,0 +1,5 @@
+329007e3fe5dbdbc359edb487967768d  usr/bin/file
+c57e81c59c27eb9e856885ab13d4c27f  usr/include/magic.h
+e1f84282f49c0a97672dfb89f8b9540b  usr/lib/libmagic.1.dylib
+03f069ccd06b5dcbf859e80e8b06e0a3  usr/lib/libmagic.a
+755d19d6427f0b21cafa8ff665e7a416  usr/share/misc/magic.mgc

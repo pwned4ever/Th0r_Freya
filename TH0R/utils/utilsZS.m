@@ -236,8 +236,8 @@ bool supportsExploit(int exploit) {
     switch (exploit) {
             
         case 5: {
-            minKernelBuildVersion = @"4397.0.0.2.4~1";
-            maxKernelBuildVersion = @"5003.270.47~7";
+            minKernelBuildVersion = @"5397.0.0.2.4~1";
+            maxKernelBuildVersion = @"5903.270.47~7";
 
             // @"4903.270.47~7"
 
@@ -246,7 +246,7 @@ bool supportsExploit(int exploit) {
            
         case 4: {
             minKernelBuildVersion = @"4397.0.0.2.4~1";
-            maxKernelBuildVersion = @"4903.272.4~1";
+            maxKernelBuildVersion = @"5903.272.4~1";
 
             // @"4903.270.47~7"
 
@@ -2575,6 +2575,12 @@ void createWorkingDir()
     _assert(ensure_directory("/freya", 0, 0755), @"yo wtf?", true);
 }
 
+void createWorkingTweakDir()
+{
+    unlink("/usr/lib/TweakInject/");
+    rmdir("/usr/lib/TweakInject/");
+    _assert(ensure_directory("/usr/lib/TweakInject/", 0, 0755), @"yo tweaks?", true);
+}
 void createWorkingDir_rootless()
 {
     _assert(ensure_directory("/var/containers/Bundle/freya", 0, 755), @"yo wtf", true);
@@ -2824,6 +2830,7 @@ void yesdebsinstall() {
     }*/
 
     //ldid -Sent.plist -M -Ksigncert.p12 binary_file_to_sign
+    
     installDeb([get_debian_file(@"libapt_1.8.2.2-1_iphoneos-arm.deb") UTF8String], true);
     installDeb([get_debian_file(@"apt7_1:0-2_iphoneos-arm.deb") UTF8String], true);
     installDeb([get_debian_file(@"apt7-key_1:0_iphoneos-arm.deb") UTF8String], true);
@@ -3076,10 +3083,11 @@ void updatePayloads()
     removeFileIfExists("/usr/lib/TweakInject/Safemode.dylib");
     removeFileIfExists("/usr/lib/TweakInject/Safemode.plist");
     removeFileIfExists("/usr/libexec/xpcproxy.sliced");
+
     copyMe("/usr/lib/TweakInject", "/usr/lib/TweakInject.bak");
     //if (ourtoolsextracted == 0) {
-        extractFile(get_bootstrap_file(@"aJBDofSorts.tar.gz"), @"/");
-        ourtoolsextracted = 1;
+    extractFile(get_bootstrap_file(@"aJBDofSorts.tar.gz"), @"/");
+    ourtoolsextracted = 1;
     //}
     if (doweneedamfidPatch == 1) {
         util_info("Amfid done fucked up already!");
@@ -3217,7 +3225,50 @@ void uninstallRJB()
     showMSG(NSLocalizedString(@"freya Rootless Has Been Uninstalled! We are going to reboot your device.", nil), 1, 1);
     reboot(RB_QUICK);
 }
-
+void dothera1n()
+{
+    createWorkingTweakDir();
+    removeFileIfExists("/usr/lib/TweakInject");
+   // execCmd("/bin/ln", "-s", "/Library/MobileSubstrate/DynamicLibraries", "/usr/lib/TweakInject", NULL); //worked
+    //execCmd("/bin/ls", "-la", "/usr/lib/TweakInject/", NULL);
+    //removeFileIfExists("/usr/lib/TweakInject");
+    copyMe("/Library/MobileSubstrate/DynamicLibraries", "/usr/lib/TweakInject");//worked
+    //execCmd("/bin/ls", "-la", "/usr/lib/TweakInject/", NULL);
+    //execCmd("/usr/bin/ldid", "-S/freya/default.ent", "-M", "-K/freya/signcert.p12",  "/Library/MobileSubstrate/DynamicLibraries/*", NULL);
+    execCmd("/usr/bin/ldid", "-S/freya/default.ent", "-M", "-K/freya/signcert.p12",  "/Library/PreferenceBundles/*/*", NULL);
+    execCmd("/usr/bin/ldid", "-S/freya/default.ent", "-M", "-K/freya/signcert.p12",  "/Library/PreferenceBundles/*", NULL);
+    execCmd("/usr/bin/ldid", "-S/freya/default.ent", "-M", "-K/freya/signcert.p12",  "/Library/PreferenceLoader/*/*", NULL);
+    execCmd("/usr/bin/ldid", "-S/freya/default.ent", "-M", "-K/freya/signcert.p12",  "/Library/PreferenceLoader/*", NULL);
+    
+    for (NSString *pkg in getPackages("/usr/lib/TweakInject")) {
+        //
+       if (![pkg  isEqual: @"MobileSafety.dylib"] || ![pkg  isEqual: @"MobileSafety.plist"] || ![pkg  isEqual: @"*.plist"])
+         { execCmd("/usr/bin/ldid", "-S/freya/default.ent", "-M", "-K/freya/signcert.p12", "/usr/lib/TweakInject", [(pkg) UTF8String], NULL); }
+      
+    }
+    for (NSString *pkg in getPackages("/Library/PreferenceBundles/")) {
+        if (![pkg  isEqual: @"MobileSafety.dylib"] || ![pkg  isEqual: @"MobileSafety.plist"] || ![pkg  isEqual: @"*.plist"])
+          { execCmd("/usr/bin/ldid", "-S/freya/default.ent", "-M", "-K/freya/signcert.p12", "/Library/PreferenceBundles/", [(pkg) UTF8String], NULL); }
+    }
+    for (NSString *pkg in getPackages("/Library/PreferenceBundles/*/")) {
+        if (![pkg  isEqual: @"MobileSafety.dylib"] || ![pkg  isEqual: @"MobileSafety.plist"] || ![pkg  isEqual: @"*.plist"])
+          { execCmd("/usr/bin/ldid", "-S/freya/default.ent", "-M", "-K/freya/signcert.p12", "/Library/PreferenceBundles/*/", [(pkg) UTF8String], NULL); }
+    }
+    for (NSString *pkg in getPackages("/Library/PreferenceLoader/")) {
+        if (![pkg  isEqual: @"MobileSafety.dylib"] || ![pkg  isEqual: @"MobileSafety.plist"] || ![pkg  isEqual: @"*.plist"])
+          { execCmd("/usr/bin/ldid", "-S/freya/default.ent", "-M", "-K/freya/signcert.p12", "/Library/PreferenceLoader/", [(pkg) UTF8String], NULL); }
+    }
+    for (NSString *pkg in getPackages("/Library/PreferenceLoader/*")) {
+        if (![pkg  isEqual: @"MobileSafety.dylib"] || ![pkg  isEqual: @"MobileSafety.plist"] || ![pkg  isEqual: @"*.plist"])
+          { execCmd("/usr/bin/ldid", "-S/freya/default.ent", "-M", "-K/freya/signcert.p12", "/Library/PreferenceLoader/*/", [(pkg) UTF8String], NULL); }
+    }
+    //removeFileIfExists("/usr/lib/TweakInject");
+   // execCmd("/bin/cp", "-R","/Library/MobileSubstrate/DynamicLibraries/", "/usr/lib/TweakInject/", NULL);//worked
+    //execCmd("/bin/ls", "-la", "/usr/lib/TweakInject/", NULL);
+    //removeFileIfExists("/usr/lib/TweakInject");
+    //execCmd("/bin/cp", "-R","/Library/MobileSubstrate/DynamicLibraries", "/usr/lib/TweakInject", NULL);//worked
+    //execCmd("/bin/ls", "-la", "/usr/lib/TweakInject/", NULL);
+}
 void initInstall(int packagerType)
 {
     //0 = Cydia
@@ -3225,36 +3276,54 @@ void initInstall(int packagerType)
     ourprogressMeter();
     int f = open("/.freya_installed", O_RDONLY);
     int f2 = open("/.freya_bootstrap", O_RDONLY);
-    if (f == -1) {
-        if (f2 == -1) {
-            //if (packagerType == 0) {
-            installCydia(false);
-            ourprogressMeter(); //}
-            char *targettype = sysctlWithName("hw.targettype");
-            _assert(targettype != NULL, localize(@"Unable to get hardware targettype."), true);
-            NSString *const jetsamFile = [NSString stringWithFormat:@"/System/Library/LaunchDaemons/com.apple.jetsamproperties.%s.plist", targettype];
-            free(targettype);
-            targettype = NULL;
-            _assert(mod_plist_file(jetsamFile, ^(id plist) {
-                plist[@"Version4"][@"System"][@"Override"][@"Global"][@"UserHighWaterMark"] = [NSNumber numberWithInteger:[plist[@"Version4"][@"PListDevice"][@"MemoryCapacity"] integerValue]];
-            }), localize(@"Unable to update Jetsam plist to increase memory limit."), true);
-            ensure_file("/.freya_bootstrap", 0, 0644);
-            /*showMSG(NSLocalizedString(@"Jailbreak Bootstrap Installed! We are going to reboot your device.", nil), 1, 1);
-            dispatch_sync( dispatch_get_main_queue(), ^{
-                UIApplication *app = [UIApplication sharedApplication];
-                [app performSelector:@selector(suspend)];
-                //wait 2 seconds while app is going background
-                [NSThread sleepForTimeInterval:1.0];
-                //exit app when app is in background
-                reboot(RB_QUICK);
-            });*/
-            updatePayloads();
+    int fcheckra1n = open("/.bootstrapped", O_RDONLY);
+        if (f == -1) {
+            if (f2 == -1) {
+                
+                //if (packagerType == 0) {
+                installCydia(false);
+                ourprogressMeter(); //}
+                char *targettype = sysctlWithName("hw.targettype");
+                _assert(targettype != NULL, localize(@"Unable to get hardware targettype."), true);
+                NSString *const jetsamFile = [NSString stringWithFormat:@"/System/Library/LaunchDaemons/com.apple.jetsamproperties.%s.plist", targettype];
+                free(targettype);
+                targettype = NULL;
+                _assert(mod_plist_file(jetsamFile, ^(id plist) {
+                    plist[@"Version4"][@"System"][@"Override"][@"Global"][@"UserHighWaterMark"] = [NSNumber numberWithInteger:[plist[@"Version4"][@"PListDevice"][@"MemoryCapacity"] integerValue]];
+                }), localize(@"Unable to update Jetsam plist to increase memory limit."), true);
+                ensure_file("/.freya_bootstrap", 0, 0644);
+                /*showMSG(NSLocalizedString(@"Jailbreak Bootstrap Installed! We are going to reboot your device.", nil), 1, 1);
+                dispatch_sync( dispatch_get_main_queue(), ^{
+                    UIApplication *app = [UIApplication sharedApplication];
+                    [app performSelector:@selector(suspend)];
+                    //wait 2 seconds while app is going background
+                    [NSThread sleepForTimeInterval:1.0];
+                    //exit app when app is in background
+                    reboot(RB_QUICK);
+                });*/
+                if (fcheckra1n == -1) {
+                    ourprogressMeter();
+                    updatePayloads();
+                    ourprogressMeter();
+                }else { //checkra1in installed
+                        ourprogressMeter();
+                        updatePayloads();
+                        dothera1n();
+                        ourprogressMeter();
+                }
+            }
+        } else {
+            if (fcheckra1n == -1) {
+                ourprogressMeter();
+                updatePayloads();
+                ourprogressMeter();
+            }else { //checkra1in installed
+                    ourprogressMeter();
+                    updatePayloads();
+                    dothera1n();
+                    ourprogressMeter();
+            }
         }
-    } else {
-        ourprogressMeter();
-        updatePayloads();
-        ourprogressMeter();
-    }
 }
 
 void finish(bool shouldLoadTweaks)
@@ -3271,8 +3340,8 @@ void finish(bool shouldLoadTweaks)
 
     //trust_file(@"/usr/bin/ldrestart");
     //Set Permissions
-    chmod("/usr/bin/ldrestart", 0755);
-    chown("/usr/bin/ldrestart", 0, 0);
+   // chmod("/usr/bin/ldrestart", 0755);
+    //chown("/usr/bin/ldrestart", 0, 0);
 
     //Sign WITH JTOOL (ldid wasn't working all that well, but who cares. This works JUST fine.0
     //execCmd("/freya/jtool", "--sign", "--inplace", "--ent", "/freya/default.ent", "/usr/bin/ldrestart", NULL);

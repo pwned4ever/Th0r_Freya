@@ -1,0 +1,14 @@
+#!/bin/bash
+case "$1" in
+    remove|deconfigure)
+        update-alternatives --quiet --remove pager /bin/cat
+        ;;
+    upgrade)
+        ;;
+    failed-upgrade)
+        ;;
+    *)
+        echo "prerm called with unknown argument \`$1'" >&2
+        exit 0
+        ;;
+esac

@@ -1,0 +1,9 @@
+/.
+/usr
+/usr/bin
+/usr/bin/getopt
+/usr/bin/killall
+/usr/bin/renice
+/usr/bin/script
+/usr/bin/time
+/usr/bin/which

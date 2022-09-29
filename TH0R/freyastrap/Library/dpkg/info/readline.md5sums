@@ -1,0 +1,11 @@
+02120f1e3b60238eff5541ba539dc8bc  usr/include/readline/chardefs.h
+63ae5cffaddaa5263fbc9114080fc65e  usr/include/readline/history.h
+0975e9a02450c59ca63c885f53439ed7  usr/include/readline/keymaps.h
+3a8f83eb361fa8b35ee1c482d13d60f2  usr/include/readline/readline.h
+d6bbfb3e33fbc3488a10452670d5755e  usr/include/readline/rlconf.h
+bd8ee3335e7c5fa83bbc703152419a13  usr/include/readline/rlstdc.h
+e194e93b2d732981066cafa2f0a47b4f  usr/include/readline/rltypedefs.h
+4b810af2c83168d3cd86815a6bbeaaff  usr/include/readline/tilde.h
+ac002a987ca902e9a6433b4133245816  usr/lib/libhistory.8.0.dylib
+5794f18d681b170125b9967fd7ca4037  usr/lib/libreadline.8.0.dylib
+c2845669dfeecb6bc4496e7e932d79e8  usr/lib/pkgconfig/readline.pc

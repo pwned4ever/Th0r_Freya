@@ -30,7 +30,20 @@
 #include "../../exploits/wasteoftfime/IOKitLibTW.h"
 //#import <Foundation/Foundation.h>
 
+#import <UIKit/UIDevice.h>
+#import "offsets.h"
+#import "log.h"
+
+#define SYSTEM_VERSION_EQUAL_TO(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedSame)
+#define SYSTEM_VERSION_GREATER_THAN(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedDescending)
+#define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
+#define SYSTEM_VERSION_LESS_THAN(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
+#define SYSTEM_VERSION_LESS_THAN_OR_EQUAL_TO(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedDescending)
+#define SYSTEM_VERSION_BETWEEN_OR_EQUAL_TO(a, b) (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(a) && SYSTEM_VERSION_LESS_THAN_OR_EQUAL_TO(b))
+
+
 static char* mntpathSW;
+static char* otamntpath;
 static char* mntpath;
 
 bool remount(uint64_t launchd_proc) {
@@ -39,6 +52,7 @@ bool remount(uint64_t launchd_proc) {
     
     mntpathSW = "/private/var/mnt";
     mntpath = strdup("/private/var/mnt");
+    otamntpath = "/var/MobileSoftwareUpdate/mnt1";
     uint64_t rootvnode = findRootVnode(launchd_proc);
     util_info("rootvnode: 0x%llx", rootvnode);
     
@@ -52,6 +66,9 @@ bool remount(uint64_t launchd_proc) {
         
         if(isOTAMounted()) {
             util_info("OTA update already mounted");
+            if (SYSTEM_VERSION_EQUAL_TO(@"12.5.6")) {
+                [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithUTF8String:otamntpath] error:nil];
+            }
             need_initialSSRenamed = 0;//
             return false;
         }

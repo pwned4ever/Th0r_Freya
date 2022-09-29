@@ -78,8 +78,8 @@
             filePath = "TH0R/lib/remount/remount.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "62"
-            endingLineNumber = "62"
+            startingLineNumber = "79"
+            endingLineNumber = "79"
             landmarkName = "remount(launchd_proc)"
             landmarkType = "9">
          </BreakpointContent>
@@ -126,8 +126,8 @@
             filePath = "TH0R/utils/utilsZS.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2907"
-            endingLineNumber = "2907"
+            startingLineNumber = "2908"
+            endingLineNumber = "2908"
             landmarkName = "yesdebsinstall()"
             landmarkType = "9">
          </BreakpointContent>
@@ -142,10 +142,10 @@
             filePath = "TH0R/utils/utilsZS.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "3347"
-            endingLineNumber = "3347"
-            landmarkName = "util_nanosleep(nanosecs)"
-            landmarkType = "9">
+            startingLineNumber = "3410"
+            endingLineNumber = "3410"
+            landmarkName = "unknown"
+            landmarkType = "0">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -222,8 +222,8 @@
             filePath = "TH0R/utils/utilsZS.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "3008"
-            endingLineNumber = "3008"
+            startingLineNumber = "3009"
+            endingLineNumber = "3009"
             landmarkName = "xpcFucker()"
             landmarkType = "9">
          </BreakpointContent>
@@ -238,8 +238,8 @@
             filePath = "TH0R/utils/utilsZS.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "3015"
-            endingLineNumber = "3015"
+            startingLineNumber = "3016"
+            endingLineNumber = "3016"
             landmarkName = "xpcFucker()"
             landmarkType = "9">
          </BreakpointContent>
@@ -254,8 +254,8 @@
             filePath = "TH0R/utils/utilsZS.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "3005"
-            endingLineNumber = "3005"
+            startingLineNumber = "3006"
+            endingLineNumber = "3006"
             landmarkName = "xpcFucker()"
             landmarkType = "9">
          </BreakpointContent>
@@ -270,8 +270,8 @@
             filePath = "TH0R/utils/utilsZS.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "3001"
-            endingLineNumber = "3001"
+            startingLineNumber = "3002"
+            endingLineNumber = "3002"
             landmarkName = "xpcFucker()"
             landmarkType = "9">
          </BreakpointContent>
@@ -302,8 +302,8 @@
             filePath = "TH0R/utils/utilsZS.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2984"
-            endingLineNumber = "2984"
+            startingLineNumber = "2985"
+            endingLineNumber = "2985"
             landmarkName = "xpcFucker()"
             landmarkType = "9">
          </BreakpointContent>
@@ -318,8 +318,8 @@
             filePath = "TH0R/utils/utilsZS.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2982"
-            endingLineNumber = "2982"
+            startingLineNumber = "2983"
+            endingLineNumber = "2983"
             landmarkName = "xpcFucker()"
             landmarkType = "9">
          </BreakpointContent>
@@ -328,6 +328,22 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "5D9C519A-4CFD-44D7-A226-D056094F054C"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TH0R/utils/utilsZS.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "3005"
+            endingLineNumber = "3005"
+            landmarkName = "xpcFucker()"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "7E31B29F-03D4-4B51-8C5D-96116213CDA1"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
@@ -343,22 +359,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "7E31B29F-03D4-4B51-8C5D-96116213CDA1"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "TH0R/utils/utilsZS.m"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "3003"
-            endingLineNumber = "3003"
-            landmarkName = "xpcFucker()"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "F40DC06E-E029-4F85-AE72-3D054C372DDB"
             shouldBeEnabled = "No"
             ignoreCount = "0"
@@ -366,9 +366,9 @@
             filePath = "TH0R/utils/utilsZS.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "3164"
-            endingLineNumber = "3164"
-            landmarkName = "installCydia(post)"
+            startingLineNumber = "3166"
+            endingLineNumber = "3166"
+            landmarkName = "fixFS()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -446,8 +446,8 @@
             filePath = "TH0R/ViewController.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "431"
-            endingLineNumber = "431"
+            startingLineNumber = "434"
+            endingLineNumber = "434"
             landmarkName = "-viewDidLoad"
             landmarkType = "7">
          </BreakpointContent>
@@ -462,8 +462,8 @@
             filePath = "TH0R/ViewController.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "530"
-            endingLineNumber = "530"
+            startingLineNumber = "548"
+            endingLineNumber = "548"
             landmarkName = "-viewDidLoad"
             landmarkType = "7">
          </BreakpointContent>
@@ -478,39 +478,39 @@
             filePath = "TH0R/ViewController.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "484"
-            endingLineNumber = "484"
+            startingLineNumber = "487"
+            endingLineNumber = "487"
             landmarkName = "-viewDidLoad"
             landmarkType = "7">
             <Locations>
                <Location
-                  uuid = "9DDBA919-B2F8-4604-A16C-BE991D858F5F - 565157b9139e9ce"
+                  uuid = "9DDBA919-B2F8-4604-A16C-BE991D858F5F - 2cecac189cf03862"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
                   symbolName = "-[ViewController viewDidLoad]"
                   moduleName = "freya"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Volumes/PNY%20USB%203.0%20FD%20Media/Th0r_Freya/TH0R/ViewController.m"
+                  urlString = "file:///Users/pwned4/Downloads/Th0r_Freya-main/TH0R/ViewController.m"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "484"
-                  endingLineNumber = "484"
-                  offsetFromSymbolStart = "4096">
+                  startingLineNumber = "487"
+                  endingLineNumber = "487"
+                  offsetFromSymbolStart = "4168">
                </Location>
                <Location
-                  uuid = "9DDBA919-B2F8-4604-A16C-BE991D858F5F - 2da5fe8608ab209c"
+                  uuid = "9DDBA919-B2F8-4604-A16C-BE991D858F5F - 42c47e50562f130"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
                   symbolName = "__29-[ViewController viewDidLoad]_block_invoke_10"
                   moduleName = "freya"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Volumes/PNY%20USB%203.0%20FD%20Media/Th0r_Freya/TH0R/ViewController.m"
+                  urlString = "file:///Users/pwned4/Downloads/Th0r_Freya-main/TH0R/ViewController.m"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "484"
-                  endingLineNumber = "484"
+                  startingLineNumber = "487"
+                  endingLineNumber = "487"
                   offsetFromSymbolStart = "24">
                </Location>
             </Locations>
@@ -526,8 +526,8 @@
             filePath = "TH0R/ViewController.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "494"
-            endingLineNumber = "494"
+            startingLineNumber = "497"
+            endingLineNumber = "497"
             landmarkName = "-viewDidLoad"
             landmarkType = "7">
          </BreakpointContent>
@@ -548,14 +548,14 @@
             landmarkType = "7">
             <Locations>
                <Location
-                  uuid = "C51A45D6-6B61-4AB3-87A5-8DC6DD55BFB9 - 9c0fdaf4a4dff430"
+                  uuid = "C51A45D6-6B61-4AB3-87A5-8DC6DD55BFB9 - b5866397a916259c"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
                   symbolName = "-[ViewController chimeraalert]"
                   moduleName = "freya"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Volumes/PNY%20USB%203.0%20FD%20Media/Th0r_Freya/TH0R/ViewController.m"
+                  urlString = "file:///Users/pwned4/Downloads/Th0r_Freya-main/TH0R/ViewController.m"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "226"
@@ -563,14 +563,14 @@
                   offsetFromSymbolStart = "20">
                </Location>
                <Location
-                  uuid = "C51A45D6-6B61-4AB3-87A5-8DC6DD55BFB9 - ce011072d11a4ab9"
+                  uuid = "C51A45D6-6B61-4AB3-87A5-8DC6DD55BFB9 - e788a911dcd39b15"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
                   symbolName = "__30-[ViewController chimeraalert]_block_invoke"
                   moduleName = "freya"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Volumes/PNY%20USB%203.0%20FD%20Media/Th0r_Freya/TH0R/ViewController.m"
+                  urlString = "file:///Users/pwned4/Downloads/Th0r_Freya-main/TH0R/ViewController.m"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "226"
@@ -590,39 +590,39 @@
             filePath = "TH0R/ViewController.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "532"
-            endingLineNumber = "532"
+            startingLineNumber = "550"
+            endingLineNumber = "550"
             landmarkName = "-viewDidLoad"
             landmarkType = "7">
             <Locations>
                <Location
-                  uuid = "2571AF2F-DF6F-476B-8744-B73C4B551CDB - 565157b9139e9ce"
+                  uuid = "2571AF2F-DF6F-476B-8744-B73C4B551CDB - 2cecac189cf03862"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
                   symbolName = "-[ViewController viewDidLoad]"
                   moduleName = "freya"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Volumes/PNY%20USB%203.0%20FD%20Media/Th0r_Freya/TH0R/ViewController.m"
+                  urlString = "file:///Users/pwned4/Downloads/Th0r_Freya-main/TH0R/ViewController.m"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "532"
-                  endingLineNumber = "532"
-                  offsetFromSymbolStart = "4752">
+                  startingLineNumber = "550"
+                  endingLineNumber = "550"
+                  offsetFromSymbolStart = "5036">
                </Location>
                <Location
-                  uuid = "2571AF2F-DF6F-476B-8744-B73C4B551CDB - 2da5fe8608a72062"
+                  uuid = "2571AF2F-DF6F-476B-8744-B73C4B551CDB - 42c47e5056cf1cd"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "__29-[ViewController viewDidLoad]_block_invoke_12"
+                  symbolName = "__29-[ViewController viewDidLoad]_block_invoke_13"
                   moduleName = "freya"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Volumes/PNY%20USB%203.0%20FD%20Media/Th0r_Freya/TH0R/ViewController.m"
+                  urlString = "file:///Users/pwned4/Downloads/Th0r_Freya-main/TH0R/ViewController.m"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "532"
-                  endingLineNumber = "532"
+                  startingLineNumber = "550"
+                  endingLineNumber = "550"
                   offsetFromSymbolStart = "24">
                </Location>
             </Locations>
@@ -878,8 +878,8 @@
             filePath = "TH0R/utils/utilsZS.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "3010"
-            endingLineNumber = "3010"
+            startingLineNumber = "3011"
+            endingLineNumber = "3011"
             landmarkName = "xpcFucker()"
             landmarkType = "9">
          </BreakpointContent>
@@ -1137,6 +1137,182 @@
             startingLineNumber = "874"
             endingLineNumber = "874"
             landmarkName = "AMFIDExceptionHandler(arg)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "BAD9352C-812E-4E9E-AC51-69E4A0A79E02"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TH0R/utils/utilsZS.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "3304"
+            endingLineNumber = "3304"
+            landmarkName = "initInstall(packagerType)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "291ADDE7-5BE3-4004-9A2D-B3165C15E530"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TH0R/utils/utilsZS.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "2082"
+            endingLineNumber = "2082"
+            landmarkName = "copyMe(from, to)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "F396E70F-9F67-4862-8A3A-36CE67EF6D21"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TH0R/utils/utilsZS.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "2086"
+            endingLineNumber = "2086"
+            landmarkName = "copyMe(from, to)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "EC3C6389-C93C-4F8D-93CB-F86554CD9DAB"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TH0R/utils/utilsZS.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "2078"
+            endingLineNumber = "2078"
+            landmarkName = "copyMe(from, to)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "A551F09C-B1BA-426D-9478-5DD09D3DD29D"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TH0R/utils/utilsZS.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "2080"
+            endingLineNumber = "2080"
+            landmarkName = "copyMe(from, to)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "F56FF786-2B99-48B7-A8F0-CF65A8A7B866"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TH0R/utils/utilsZS.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "3309"
+            endingLineNumber = "3309"
+            landmarkName = "initInstall(packagerType)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "B15A0CF7-BA79-47A4-AEAD-B668C4BC42D7"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TH0R/utils/utilsZS.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "3312"
+            endingLineNumber = "3312"
+            landmarkName = "initInstall(packagerType)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "37C3A4E6-861E-40AC-98EA-9A7C536B634A"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TH0R/utils/utilsZS.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "3284"
+            endingLineNumber = "3284"
+            landmarkName = "initInstall(packagerType)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "A166C46E-595F-4230-BAE0-E54E97CE76E6"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TH0R/utils/utilsZS.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "3230"
+            endingLineNumber = "3230"
+            landmarkName = "dothera1n()"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "74822B27-3F98-4196-8CB2-15F32963B2E3"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TH0R/utils/utilsZS.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "3270"
+            endingLineNumber = "3270"
+            landmarkName = "dothera1n()"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "4901417D-81FF-4C79-B954-D571B823E995"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TH0R/utils/utilsZS.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "3237"
+            endingLineNumber = "3237"
+            landmarkName = "dothera1n()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>

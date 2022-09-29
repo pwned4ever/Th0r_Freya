@@ -179,11 +179,11 @@ double uptime(){
     [audioPlayer1 play];
 }
 
-NSString *freyaversion = @"1.0~c⚡️";
-char *freyaversionnew = "1.0~c⚡️";
+NSString *freyaversion = @"1.1⚡️";
+char *freyaversionnew = "1.1⚡️";
 
-char *freyaupdateDate = "5:00AM 07/29/22";
-char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/blob/main/Releases/Freya.ipa";// "mega.nz/file/BhNxBSgJ#gNcngNQBtXS0Ipa5ivX09-jtIr7BckUhrA7YMkSFaNM"//
+char *freyaupdateDate = "11:00PM 09/28/22";
+char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/releases/";//github.com/pwned4ever/Th0r_Freya/blob/main/Releases/Freya.ipa";// "mega.nz/file/BhNxBSgJ#gNcngNQBtXS0Ipa5ivX09-jtIr7BckUhrA7YMkSFaNM"//
 
 - (void)u0alertreboot {
    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0ul), ^{
@@ -246,6 +246,7 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/blob/main/Releases/Fr
     //util_info("release: %s", u.release);
     //char *devicemodel = u.machine;
     //[NSString stringWithUTF8String:u.machine
+    
     int theups = uptime();
     int therealups = ((theups / 60) / 60) / 24;
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -309,6 +310,7 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/blob/main/Releases/Fr
     csops(getpid(), CS_OPS_STATUS, &flags, 0);
     int checkuncovermarker = (file_exists("/.installed_unc0ver"));
     int checkth0rmarker = (file_exists("/.freya_bootstrap"));
+    int checkcheckRa1nmarker = (file_exists("/.bootstrapped"));
     int checkth0rmarkerFinal = (file_exists("/.freya_installed"));
     int checkchimeramarker = (file_exists("/.procursus_strapped"));
     int checkJBRemoverMarker = (file_exists("/var/mobile/Media/.bootstrapped_Th0r_remover"));
@@ -317,6 +319,7 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/blob/main/Releases/Fr
     int checkpspawnhook = (file_exists("/var/run/pspawn_hook.ts"));
     printf("JUSTremovecheck exists?: %d\n",JUSTremovecheck);
     printf("Uncover marker exists?: %d\n", checkuncovermarker);
+    printf("checkRa1n marker exists?: %d\n", checkcheckRa1nmarker);
     printf("pspawnhook marker exists?: %d\n", checkpspawnhook);
     printf("JBRemover marker exists?: %d\n", checkJBRemoverMarker);
     printf("Th0r marker exists?: %d\n", checkth0rmarker);
@@ -511,18 +514,33 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/blob/main/Releases/Fr
         goto end;
         
     } else if(((checkjailbreakdRun == 0) && (checkpspawnhook == 0) && (checkth0rmarker == 0) && (checkuncovermarker == 0)) && (checkchimeramarker == 0)){
-        newTFcheckMyRemover4me = FALSE;
-        saveCustomSetting(@"RestoreFS", 1);
-        JUSTremovecheck = false;
-        dispatch_async(dispatch_get_main_queue(), ^{
-                [self.buttontext setEnabled:YES];
-                [self.buttontext setTitle:localize(@"Jailbreak") forState:UIControlStateNormal];
-                [self.restoreFSSwitch setOn:false];
-                [self.loadTweakSwitch setEnabled:YES];
-                [self.loadTweakSwitch setOn:TRUE];
-            //[_buttontext setTitleColor:localize(GL_BLUE) forState:UIControlStateNormal];
-        });
-        goto end;
+        if (checkcheckRa1nmarker == 0) {
+            newTFcheckMyRemover4me = FALSE;
+            saveCustomSetting(@"RestoreFS", 1);
+            JUSTremovecheck = false;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.buttontext setEnabled:YES];
+                    [self.buttontext setTitle:localize(@"Jailbreak") forState:UIControlStateNormal];
+                    [self.restoreFSSwitch setOn:false];
+                    [self.loadTweakSwitch setEnabled:YES];
+                    [self.loadTweakSwitch setOn:TRUE];
+                //[_buttontext setTitleColor:localize(GL_BLUE) forState:UIControlStateNormal];
+            });
+            goto end;
+        } else {
+            newTFcheckMyRemover4me = FALSE;
+            saveCustomSetting(@"RestoreFS", 1);
+            JUSTremovecheck = false;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.buttontext setEnabled:YES];
+                    [self.buttontext setTitle:localize(@"checkra1n??") forState:UIControlStateNormal];
+                    [self.restoreFSSwitch setOn:false];
+                    [self.loadTweakSwitch setEnabled:YES];
+                    [self.loadTweakSwitch setOn:TRUE];
+                //[_buttontext setTitleColor:localize(GL_BLUE) forState:UIControlStateNormal];
+            });
+            goto end;
+        }
 
     } else if(((checkjailbreakdRun == 0) && (checkpspawnhook == 0) && (checkth0rmarker == 1) && (checkth0rmarkerFinal == 0) && (checkuncovermarker == 0)) && (checkchimeramarker == 0)){
         newTFcheckMyRemover4me = FALSE;

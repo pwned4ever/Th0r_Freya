@@ -1,0 +1,5 @@
+302637a381aec18aa5b855c340cf802f  usr/bin/ksba-config
+0874b14f3d7176669b94577bd018fb50  usr/include/ksba.h
+2a66972161ff20dbb93af2c30b1d9ce4  usr/lib/libksba.8.dylib
+f39e1e86b2ff43f39f9a48f9d96ca0cb  usr/lib/libksba.la
+0c25330289937de8101c45b915f4059b  usr/share/aclocal/ksba.m4
