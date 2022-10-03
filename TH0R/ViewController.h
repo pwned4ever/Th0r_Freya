@@ -31,7 +31,9 @@
 @property (weak, nonatomic) IBOutlet UIImageView *jailbreakButtonBackground;
 @property (weak, nonatomic) IBOutlet UIView *credits_view;
 @property (strong, nonatomic) IBOutlet UISwitch *restoreFSSwitch;
+@property (strong, nonatomic) IBOutlet UISwitch *fixfsswitch;
 @property (strong, nonatomic) IBOutlet UISwitch *loadTweakSwitch;
+
 @property (weak, nonatomic) IBOutlet UITextView *textView;
 @property (weak, nonatomic) IBOutlet UIProgressView *progressMeterUIVIEW;
 
@@ -58,7 +60,6 @@ void yeasnapshot(void);
 void spotless(void);
 void removethejb(void);
 void youknowtryagain(void);
-
 void thelabelbtnchange(char *msg);
 void cydiaDone(char *msg);
 void uicaching(char *msg);

@@ -153,7 +153,7 @@ bool remount(uint64_t launchd_proc) {
         int retval = mount("apfs", "/", MNT_UPDATE, &dev_path);
         free(dev_path);
 
-        WriteKernel32(vmount + koffset(KSTRUCT_OFFSET_MOUNT_MNT_FLAG), vflag | (MNT_NOSUID));
+       // WriteKernel32(vmount + koffset(KSTRUCT_OFFSET_MOUNT_MNT_FLAG), vflag | (MNT_NOSUID));
         if(retval == 0) {
             util_info("Already remounted RootFS!");
             need_initialSSRenamed = 2;

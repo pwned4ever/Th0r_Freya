@@ -70,9 +70,11 @@ NSString *getKernelBuildVersionS() {
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+
     #define CS_OPS_STATUS       0   /* return status */
     uint32_t flags;
     csops(getpid(), CS_OPS_STATUS, &flags, 0);
+    int checkcheckRa1nmarker2 = (file_exists("/.bootstrapped"));
     int checkuncovermarker = (file_exists("/.installed_unc0ver"));
     int checkth0rmarkerFinal = (file_exists("/.freya_installed"));
     int checkchimeramarker = (file_exists("/.procursus_strapped"));
@@ -93,7 +95,13 @@ NSString *getKernelBuildVersionS() {
     } else {
         [_loadTweaksSwitch setOn:false];
     }
-    
+    if (checkfsfixswitch == 1) {
+        [_fixfsswitch setOn:true];
+    } else {
+        [_fixfsswitch setOn:false];
+
+    }
+
     //0 = Cydia
     //1 = Zebra
    /* if (getPackagerType() == 0)
@@ -339,24 +347,45 @@ NSString *getKernelBuildVersionS() {
         } else {
             
             JUSTremovecheck = false;
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [ViewController.sharedController.buttontext setTitle:localize(@"Enable Freya?") forState:UIControlStateNormal];
-                [self.restoreFSSwitch setOn:false];
-                [self.setnoncebtn setEnabled:TRUE];
-                [self.setnoncebtn setHidden:FALSE];
-                [ViewController.sharedController.loadTweakSwitch setEnabled:YES];
-                [ViewController.sharedController.loadTweakSwitch setOn:TRUE];
-            });
+            if (checkfsfixswitch == 1) {
+                 dispatch_async(dispatch_get_main_queue(), ^{
+                         [ViewController.sharedController.buttontext setTitle:localize(@"Fix FS?") forState:UIControlStateNormal];
+                         [self.restoreFSSwitch setOn:false];
+                         [self.setnoncebtn setEnabled:TRUE];
+                         [self.setnoncebtn setHidden:FALSE];
+                         [ViewController.sharedController.loadTweakSwitch setEnabled:YES];
+                         [ViewController.sharedController.loadTweakSwitch setOn:TRUE];
+                     });
+            } else {
+                if (checkcheckRa1nmarker2 == 0) {
+
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [ViewController.sharedController.buttontext setTitle:localize(@"Enable Freya?") forState:UIControlStateNormal];
+                        [self.restoreFSSwitch setOn:false];
+                        [self.setnoncebtn setEnabled:TRUE];
+                        [self.setnoncebtn setHidden:FALSE];
+                        [ViewController.sharedController.loadTweakSwitch setEnabled:YES];
+                        [ViewController.sharedController.loadTweakSwitch setOn:TRUE];
+                    });
+                } else {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [ViewController.sharedController.buttontext setTitle:localize(@"checkra1n & Freya?") forState:UIControlStateNormal];
+                        [self.restoreFSSwitch setOn:false];
+                        [self.setnoncebtn setEnabled:TRUE];
+                        [self.setnoncebtn setHidden:FALSE];
+                        [ViewController.sharedController.loadTweakSwitch setEnabled:YES];
+                        [ViewController.sharedController.loadTweakSwitch setOn:TRUE];
+                    });
+                }
+            }
         }
     }else {
             if (shouldRestoreFS())
             {
-                //[ViewController.sharedController.buttontext setTitle:localize(@"Remove Freya?") forState:UIControlStateNormal];
                 JUSTremovecheck = true;
                 [_restoreFSSwitch setOn:true];
                 
             } else {
-                //[ViewController.sharedController.buttontext setTitle:localize(@"Enable Freya?") forState:UIControlStateNormal];
                 JUSTremovecheck = false;
                 [_restoreFSSwitch setOn:false];
             }
@@ -368,7 +397,13 @@ NSString *getKernelBuildVersionS() {
     } else {
         [_rooted_Switch sendActionsForControlEvents:UIControlEventTouchUpInside];
     }
-    
+   /* if (shouldfixFS()) {
+        checkfsfixswitch = 1;
+        [_fixfsswitch setOn:true];
+    } else {
+        checkfsfixswitch = 0;
+        [_fixfsswitch setOn:false];
+    }*/
 }
 
 
@@ -600,6 +635,126 @@ NSString *getKernelBuildVersionS() {
 //ViewController *sharedController = nil;
 static ViewController *currentViewController;
 
+- (IBAction)fix_fs_switch_action:(id)sender {
+    if ([sender isOn]) {
+        saveCustomSetting(@"fixFS", 1);
+        checkfsfixswitch = 1;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [ViewController.sharedController.buttontext setTitle:localize(@"Fix FS?") forState:UIControlStateNormal];
+        });
+    } else {
+        saveCustomSetting(@"fixFS", 0);
+        checkfsfixswitch = 0;
+        #define CS_OPS_STATUS       0   /* return status */
+        uint32_t flags;
+        csops(getpid(), CS_OPS_STATUS, &flags, 0);
+        int checkuncovermarker = (file_exists("/.installed_unc0ver"));
+        int checkth0rmarkerFinal = (file_exists("/.freya_installed"));
+        int checkchimeramarker = (file_exists("/.procursus_strapped"));
+        int checkcheckRa1nmarker2 = (file_exists("/.bootstrapped"));
+
+        printf("Uncover marker exists?: %d\n",checkuncovermarker);
+        printf("Th0r final marker exists?: %d\n",checkth0rmarkerFinal);
+        printf("Chimera marker exists?: %d\n",checkchimeramarker);
+        [ViewController.sharedController.buttontext setEnabled:true];
+
+        if ([sender isOn])
+        {
+            if ((checkth0rmarkerFinal == 1) && (checkuncovermarker == 0) && (checkchimeramarker == 0)){
+                [ViewController.sharedController.buttontext setTitle:localize(@"Remove Freya?") forState:UIControlStateNormal];
+                newTFcheckMyRemover4me = TRUE;
+            } else if ((checkuncovermarker == 1) && (checkth0rmarkerFinal == 0) && (checkchimeramarker == 0)) {
+                [ViewController.sharedController.buttontext setTitle:localize(@"Remove u0?") forState:UIControlStateNormal];
+                newTFcheckMyRemover4me = TRUE;
+                saveCustomSetting(@"RestoreFS", 0);
+                [_restoreFSSwitch setEnabled:NO];
+                [_restoreFSSwitch setHidden:YES];
+                [_restoreFSSwitch setUserInteractionEnabled:NO];
+                JUSTremovecheck = true;
+                [ViewController.sharedController.restoreFSSwitch setEnabled:NO];
+                [ViewController.sharedController.restoreFSSwitch setUserInteractionEnabled:NO];
+
+            } else if ((checkuncovermarker == 0) && (checkchimeramarker == 1) && (checkth0rmarkerFinal == 0)){
+                [ViewController.sharedController.buttontext setTitle:localize(@"Remove Chimera?") forState:UIControlStateNormal];
+                newTFcheckMyRemover4me = TRUE;
+                saveCustomSetting(@"RestoreFS", 0);
+                [_restoreFSSwitch setEnabled:NO];
+                [_restoreFSSwitch setHidden:YES];
+                [_restoreFSSwitch setUserInteractionEnabled:NO];
+                JUSTremovecheck = true;
+                [ViewController.sharedController.restoreFSSwitch setEnabled:NO];
+                [ViewController.sharedController.restoreFSSwitch setUserInteractionEnabled:NO];
+                //    goto end;
+            } else {
+                [ViewController.sharedController.buttontext setTitle:localize(@"Remove JB?") forState:UIControlStateNormal];
+                newTFcheckMyRemover4me = TRUE;
+            }
+            JUSTremovecheck = true;
+            saveCustomSetting(@"RestoreFS", 0);
+        } else {
+            if ((checkth0rmarkerFinal == 1) && (checkuncovermarker == 0) && (checkchimeramarker == 0)){
+                if (checkfsfixswitch == 1) {
+                     dispatch_async(dispatch_get_main_queue(), ^{
+                             [ViewController.sharedController.buttontext setTitle:localize(@"Fix FS?") forState:UIControlStateNormal];
+                             [self.restoreFSSwitch setOn:false];
+                             [self.setnoncebtn setEnabled:TRUE];
+                             [self.setnoncebtn setHidden:FALSE];
+                             [ViewController.sharedController.loadTweakSwitch setEnabled:YES];
+                             [ViewController.sharedController.loadTweakSwitch setOn:TRUE];
+                         });
+                } else {
+                    if (checkcheckRa1nmarker2 == 0) {
+
+                        [ViewController.sharedController.buttontext setTitle:localize(@"Enable Freya?") forState:UIControlStateNormal];
+                        [_setnoncebtn setHidden:NO];
+                        [_setnoncebtn setEnabled:YES];
+                    } else {
+                        [ViewController.sharedController.buttontext setTitle:localize(@"checkra1n & Freya?") forState:UIControlStateNormal];
+                        [_setnoncebtn setHidden:NO];
+                        [_setnoncebtn setEnabled:YES];
+
+                    }
+                }
+            } else if ((checkuncovermarker == 1) && (checkth0rmarkerFinal == 0) && (checkchimeramarker == 0)) {
+                [ViewController.sharedController.buttontext setTitle:localize(@"Remove u0 1st") forState:UIControlStateNormal];
+                newTFcheckMyRemover4me = TRUE;
+                saveCustomSetting(@"RestoreFS", 0);
+                [_restoreFSSwitch setHidden:YES];
+
+                [_restoreFSSwitch setEnabled:NO];
+                [_restoreFSSwitch setUserInteractionEnabled:NO];
+                JUSTremovecheck = true;
+                [ViewController.sharedController.restoreFSSwitch setEnabled:NO];
+                [ViewController.sharedController.restoreFSSwitch setUserInteractionEnabled:NO];
+
+                [ViewController.sharedController.buttontext setEnabled:false];
+            } else if ((checkuncovermarker == 0) && (checkchimeramarker == 1) && (checkth0rmarkerFinal == 0)){
+                [ViewController.sharedController.buttontext setTitle:localize(@"Remove Chimera 1st") forState:UIControlStateNormal];
+                newTFcheckMyRemover4me = TRUE;
+                saveCustomSetting(@"RestoreFS", 0);
+                [_restoreFSSwitch setHidden:YES];
+
+                [_restoreFSSwitch setEnabled:NO];
+                [_restoreFSSwitch setUserInteractionEnabled:NO];
+                JUSTremovecheck = true;
+                [ViewController.sharedController.restoreFSSwitch setEnabled:NO];
+                [ViewController.sharedController.restoreFSSwitch setUserInteractionEnabled:NO];
+                [ViewController.sharedController.buttontext setEnabled:false];
+
+            } else {
+                [_setnoncebtn setHidden:NO];
+                [_setnoncebtn setEnabled:NO];
+
+                [ViewController.sharedController.buttontext setTitle:localize(@"Jailbreak") forState:UIControlStateNormal];
+            }
+            newTFcheckMyRemover4me = false;
+            JUSTremovecheck = false;
+            saveCustomSetting(@"RestoreFS", 1);
+        }
+    }
+    
+}
+
 - (IBAction)Restore_FS_Switch_Action:(UISwitch *)sender {
     #define CS_OPS_STATUS       0   /* return status */
     uint32_t flags;
@@ -607,6 +762,8 @@ static ViewController *currentViewController;
     int checkuncovermarker = (file_exists("/.installed_unc0ver"));
     int checkth0rmarkerFinal = (file_exists("/.freya_installed"));
     int checkchimeramarker = (file_exists("/.procursus_strapped"));
+    int checkcheckRa1nmarker2 = (file_exists("/.bootstrapped"));
+
     printf("Uncover marker exists?: %d\n",checkuncovermarker);
     printf("Th0r final marker exists?: %d\n",checkth0rmarkerFinal);
     printf("Chimera marker exists?: %d\n",checkchimeramarker);
@@ -647,10 +804,28 @@ static ViewController *currentViewController;
         saveCustomSetting(@"RestoreFS", 0);
     } else {
         if ((checkth0rmarkerFinal == 1) && (checkuncovermarker == 0) && (checkchimeramarker == 0)){
-            [ViewController.sharedController.buttontext setTitle:localize(@"Enable Freya?") forState:UIControlStateNormal];
-            [_setnoncebtn setHidden:NO];
-            [_setnoncebtn setEnabled:YES];
+            if (checkfsfixswitch == 1) {
+                 dispatch_async(dispatch_get_main_queue(), ^{
+                         [ViewController.sharedController.buttontext setTitle:localize(@"Fix FS?") forState:UIControlStateNormal];
+                         [self.restoreFSSwitch setOn:false];
+                         [self.setnoncebtn setEnabled:TRUE];
+                         [self.setnoncebtn setHidden:FALSE];
+                         [ViewController.sharedController.loadTweakSwitch setEnabled:YES];
+                         [ViewController.sharedController.loadTweakSwitch setOn:TRUE];
+                     });
+            } else {
+                if (checkcheckRa1nmarker2 == 0) {
 
+                    [ViewController.sharedController.buttontext setTitle:localize(@"Enable Freya?") forState:UIControlStateNormal];
+                    [_setnoncebtn setHidden:NO];
+                    [_setnoncebtn setEnabled:YES];
+                } else {
+                    [ViewController.sharedController.buttontext setTitle:localize(@"checkra1n & Freya?") forState:UIControlStateNormal];
+                    [_setnoncebtn setHidden:NO];
+                    [_setnoncebtn setEnabled:YES];
+
+                }
+            }
         } else if ((checkuncovermarker == 1) && (checkth0rmarkerFinal == 0) && (checkchimeramarker == 0)) {
             [ViewController.sharedController.buttontext setTitle:localize(@"Remove u0 1st") forState:UIControlStateNormal];
             newTFcheckMyRemover4me = TRUE;

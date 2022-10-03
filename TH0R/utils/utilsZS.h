@@ -84,6 +84,9 @@ int getPackagerType(void);
 void initSettingsIfNotExist(void);
 void saveCustomSetting(NSString *setting, int settingResult);
 BOOL shouldRestoreFS(void);
+BOOL shouldfixFS(void);
+extern bool checkfsfixswitch;
+
 BOOL isRootless(void);
 
 

@@ -43,6 +43,8 @@ struct timeval tv1, tv2;
 mach_port_t statusphier = MACH_PORT_NULL;
 
 bool newTFcheckMyRemover4me;
+
+
 bool newTFcheckofCyforce;
 bool JUSTremovecheck;
 
@@ -179,10 +181,10 @@ double uptime(){
     [audioPlayer1 play];
 }
 
-NSString *freyaversion = @"1.1⚡️";
-char *freyaversionnew = "1.1⚡️";
+NSString *freyaversion = @"1.2.0⚡️";
+char *freyaversionnew = "1.2.0⚡️";
 
-char *freyaupdateDate = "11:00PM 09/28/22";
+char *freyaupdateDate = "3:00PM 10/03/22";
 char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/releases/";//github.com/pwned4ever/Th0r_Freya/blob/main/Releases/Freya.ipa";// "mega.nz/file/BhNxBSgJ#gNcngNQBtXS0Ipa5ivX09-jtIr7BckUhrA7YMkSFaNM"//
 
 - (void)u0alertreboot {
@@ -445,15 +447,59 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/releases/";//github.c
             } else {
                 
                 JUSTremovecheck = false;
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self.buttontext setTitle:localize(@"Enable Freya?") forState:UIControlStateNormal];
+             if (checkcheckRa1nmarker == 0) {
+                 if (checkfsfixswitch == 1) {
+                     dispatch_async(dispatch_get_main_queue(), ^{
+                         [self.buttontext setTitle:localize(@"fix fs?") forState:UIControlStateNormal];
+                         [self.fixfsswitch setOn:false];
+                         [self.restoreFSSwitch setOn:false];
+                         [self.loadTweakSwitch setEnabled:YES];
+                         [self.loadTweakSwitch setOn:TRUE];
+                     });
+                 } else {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self.buttontext setTitle:localize(@"Enable Freya?") forState:UIControlStateNormal];
+                        [self.restoreFSSwitch setOn:false];
+                        [self.loadTweakSwitch setEnabled:YES];
+                        [self.loadTweakSwitch setOn:TRUE];
+                    });
+                 }
+             } else {
+                if (checkfsfixswitch == 1) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self.buttontext setTitle:localize(@"fix fs?") forState:UIControlStateNormal];
+                        [self.fixfsswitch setOn:false];
+                        [self.restoreFSSwitch setOn:false];
+                        [self.loadTweakSwitch setEnabled:YES];
+                        [self.loadTweakSwitch setOn:TRUE];
+                    });
+                } else {
+                    [self.buttontext setTitle:localize(@"checkra1n & Freya?") forState:UIControlStateNormal];
                     [self.restoreFSSwitch setOn:false];
                     [self.loadTweakSwitch setEnabled:YES];
                     [self.loadTweakSwitch setOn:TRUE];
-                });
+                }
+
             }
+        }
             goto end;
-        } else if ((checkuncovermarker == 1) && (flags & CS_PLATFORM_BINARY)){
+        } else if ((checkcheckRa1nmarker == 1) && (flags & CS_PLATFORM_BINARY)) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.buttontext setEnabled:NO];
+                [ViewController.sharedController.settingsButton setEnabled:NO];
+                [ViewController.sharedController.settingsButton setHidden:TRUE];
+                [ViewController.sharedController.settingsButton setHidden:YES];
+                [ViewController.sharedController.settingsButton setEnabled:NO];
+                [ViewController.sharedController.settings_buttun_bg setHidden:YES];
+                [self.buttontext setTitle:localize(@"checkra1n w/freya?") forState:UIControlStateNormal];
+                [self.restoreFSSwitch setOn:false];
+                [self.loadTweakSwitch setEnabled:YES];
+                [self.loadTweakSwitch setOn:TRUE];
+                //[_buttontext setTitleColor:localize(GL_BLUE) forState:UIControlStateNormal];
+            });
+        }
+        
+            else if ((checkuncovermarker == 1) && (flags & CS_PLATFORM_BINARY)){
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.buttontext setTitle:localize(@"Remove u0 1st") forState:UIControlStateNormal];
                 [self.buttontext setEnabled:NO];
@@ -531,14 +577,30 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/releases/";//github.c
             newTFcheckMyRemover4me = FALSE;
             saveCustomSetting(@"RestoreFS", 1);
             JUSTremovecheck = false;
-            dispatch_async(dispatch_get_main_queue(), ^{
-                    [self.buttontext setEnabled:YES];
+            
+            if (checkcheckRa1nmarker == 1) {
+                [self.buttontext setEnabled:YES];
+                [self.buttontext setTitle:localize(@"checkra1n/freya") forState:UIControlStateNormal];
+                [self.restoreFSSwitch setOn:false];
+                [self.loadTweakSwitch setEnabled:YES];
+                [self.loadTweakSwitch setOn:TRUE];
+
+                
+            }else if (flags & CS_PLATFORM_BINARY) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.buttontext setEnabled:NO];
+                    [ViewController.sharedController.settingsButton setEnabled:NO];
+                    [ViewController.sharedController.settingsButton setHidden:TRUE];
+                    [ViewController.sharedController.settingsButton setHidden:YES];
+                    [ViewController.sharedController.settingsButton setEnabled:NO];
+                    [ViewController.sharedController.settings_buttun_bg setHidden:YES];
                     [self.buttontext setTitle:localize(@"checkra1n??") forState:UIControlStateNormal];
                     [self.restoreFSSwitch setOn:false];
                     [self.loadTweakSwitch setEnabled:YES];
                     [self.loadTweakSwitch setOn:TRUE];
-                //[_buttontext setTitleColor:localize(GL_BLUE) forState:UIControlStateNormal];
-            });
+                    //[_buttontext setTitleColor:localize(GL_BLUE) forState:UIControlStateNormal];
+                });
+            }
             goto end;
         }
 
@@ -555,12 +617,40 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/releases/";//github.c
             });
         } else {
             JUSTremovecheck = false;
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.buttontext setTitle:localize(@"Enable Freya?") forState:UIControlStateNormal];
-                [self.restoreFSSwitch setOn:false];
-                [self.loadTweakSwitch setEnabled:YES];
-                [self.loadTweakSwitch setOn:TRUE];
-            });
+            if (checkcheckRa1nmarker == 0) {
+                if (checkfsfixswitch == 1) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self.buttontext setTitle:localize(@"fix fs?") forState:UIControlStateNormal];
+                        [self.fixfsswitch setOn:false];
+                        [self.restoreFSSwitch setOn:false];
+                        [self.loadTweakSwitch setEnabled:YES];
+                        [self.loadTweakSwitch setOn:TRUE];
+                    });
+                } else {
+
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self.buttontext setTitle:localize(@"Enable Freya?") forState:UIControlStateNormal];
+                        [self.restoreFSSwitch setOn:false];
+                        [self.loadTweakSwitch setEnabled:YES];
+                        [self.loadTweakSwitch setOn:TRUE];
+                    });
+                }
+            } else {
+                if (checkfsfixswitch == 1) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self.buttontext setTitle:localize(@"fix fs?") forState:UIControlStateNormal];
+                        [self.fixfsswitch setOn:false];
+                        [self.restoreFSSwitch setOn:false];
+                        [self.loadTweakSwitch setEnabled:YES];
+                        [self.loadTweakSwitch setOn:TRUE];
+                    });
+                } else {
+                    [self.buttontext setTitle:localize(@"checkra1n & Freya?") forState:UIControlStateNormal];
+                    [self.restoreFSSwitch setOn:false];
+                    [self.loadTweakSwitch setEnabled:YES];
+                    [self.loadTweakSwitch setOn:TRUE];
+                }
+            }
         }
         //[_buttontext setTitleColor:localize(GL_BLUE) forState:UIControlStateNormal];
         newTFcheckofCyforce = FALSE;
@@ -568,29 +658,6 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/releases/";//github.c
     }
         
     end:
-
-    //gettimeofday(&tv1, NULL);
-
-    //setgid(0);
-    //uint32_t gid = getgid();
-    //NSLog(@"getgid() returns %u\n", gid);
-    //setuid(0);
-    //uint32_t uid = getuid();
-    //NSLog(@"getuid() returns %u\n", uid);
-       /* dispatch_async(dispatch_get_main_queue(), ^{
-            [_buttontext setTitle:localize(@"Patch $hit?") forState:UIControlStateNormal];
-        });*/
-
-    //gettimeofday(&tv2, NULL);
-    //uint64_t cost = (tv2.tv_sec - tv1.tv_sec) * 1000 * 1000 + tv2.tv_usec - tv1.tv_usec;
-   // printf("load time: %.4f mins & seconds", ((cost / 1000000.0) / 60));
-    //ourprogressMeter();
-
-
-
-   // LOG("Starting the jailbreak...");
-    //runExploit(getExploitType()); //Change this depending on what device you have...
-
 err:
     
     printf("oof\n");
@@ -708,6 +775,7 @@ void logSlice(const char *sliceOfText) {
 //Wen eta bootloop?
 
 bool restore_fs = false;
+bool fix_fs = false;
 bool loadTweaks = true;
 bool setNonceBool = false;
 int exploitType = 0;
@@ -812,13 +880,14 @@ void wannaSliceOfMe() {
         init_kexecute();
         yeasnapshot();
         remountFS(restore_fs);
+        
         ourprogressMeter();
         createWorkingDir();
         saveOffs();
         ourprogressMeter();
+
         setHSP4();
 
-        
 
         initInstall(getPackagerType());
       /*  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -1012,6 +1081,15 @@ end:
         restore_fs = false;
     }
     
+    if (shouldfixFS())
+    {
+        fix_fs = true;
+
+    } else {
+        fix_fs = false;
+
+    }
+
     if (shouldLoadTweaks())
     {
         loadTweaks = true;
@@ -1036,6 +1114,8 @@ end:
 
 
 
+- (IBAction)fixfsswitch:(id)sender {
+}
 @end
 void log_toView(const char *text)
 {
