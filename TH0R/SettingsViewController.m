@@ -95,13 +95,28 @@ NSString *getKernelBuildVersionS() {
     } else {
         [_loadTweaksSwitch setOn:false];
     }
-    if (checkfsfixswitch == 1) {
-        [_fixfsswitch setOn:true];
+    if (checkth0rmarkerFinal == 1) {
+        
+        if (checkfsfixswitch == 1) {
+            [self.fixfsswitch setOn:TRUE];
+            [self.fixfsswitch setHidden:NO];
+            [self.fixfsswitch setEnabled:YES];
+            [self.fixfsswitch setUserInteractionEnabled:YES];
+
+        } else {
+            [self.fixfsswitch setOn:FALSE];
+            [self.fixfsswitch setHidden:NO];
+            [self.fixfsswitch setEnabled:YES];
+            [self.fixfsswitch setUserInteractionEnabled:YES];
+
+        }
     } else {
-        [_fixfsswitch setOn:false];
+        [self.fixfsswitch setOn:FALSE];
+        [self.fixfsswitch setHidden:YES];
+        [self.fixfsswitch setEnabled:NO];
+        [self.fixfsswitch setUserInteractionEnabled:NO];
 
     }
-
     //0 = Cydia
     //1 = Zebra
    /* if (getPackagerType() == 0)
@@ -340,7 +355,14 @@ NSString *getKernelBuildVersionS() {
             JUSTremovecheck = true;
             dispatch_async(dispatch_get_main_queue(), ^{
                 [ViewController.sharedController.buttontext setTitle:localize(@"Remove Freya?") forState:UIControlStateNormal];
-                [self.restoreFSSwitch setOn:true];
+                [self.fixfsswitch setOn:FALSE];
+                [self.fixfsswitch setHidden:YES];
+                [self.fixfsswitch setEnabled:NO];
+                [self.fixfsswitch setUserInteractionEnabled:NO];
+                [self.restoreFSSwitch setHidden:NO];
+                [self.restoreFSSwitch setEnabled:YES];
+                [self.restoreFSSwitch setOn:TRUE];
+                [self.restoreFSSwitch setUserInteractionEnabled:YES];
                 [self.setnoncebtn setEnabled:FALSE];
                 [self.setnoncebtn setHidden:TRUE];
             });
@@ -350,18 +372,29 @@ NSString *getKernelBuildVersionS() {
             if (checkfsfixswitch == 1) {
                  dispatch_async(dispatch_get_main_queue(), ^{
                          [ViewController.sharedController.buttontext setTitle:localize(@"Fix FS?") forState:UIControlStateNormal];
-                         [self.restoreFSSwitch setOn:false];
-                         [self.setnoncebtn setEnabled:TRUE];
-                         [self.setnoncebtn setHidden:FALSE];
-                         [ViewController.sharedController.loadTweakSwitch setEnabled:YES];
-                         [ViewController.sharedController.loadTweakSwitch setOn:TRUE];
+                        [self.fixfsswitch setOn:TRUE];
+                        [self.restoreFSSwitch setOn:FALSE];
+                        [self.restoreFSSwitch setHidden:YES];
+                        [self.restoreFSSwitch setEnabled:NO];
+                        [self.restoreFSSwitch setUserInteractionEnabled:NO];
+                        [self.setnoncebtn setEnabled:TRUE];
+                        [self.setnoncebtn setHidden:FALSE];
+                        [ViewController.sharedController.loadTweakSwitch setEnabled:YES];
+                        [ViewController.sharedController.loadTweakSwitch setOn:TRUE];
                      });
             } else {
                 if (checkcheckRa1nmarker2 == 0) {
 
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [ViewController.sharedController.buttontext setTitle:localize(@"Enable Freya?") forState:UIControlStateNormal];
-                        [self.restoreFSSwitch setOn:false];
+                        [self.fixfsswitch setOn:FALSE];
+                        
+                        [self.restoreFSSwitch setEnabled:YES];
+                        [self.restoreFSSwitch setOn:FALSE];
+                        [self.restoreFSSwitch setHidden:NO];
+                        [self.restoreFSSwitch setEnabled:YES];
+                        [self.restoreFSSwitch setUserInteractionEnabled:YES];
+
                         [self.setnoncebtn setEnabled:TRUE];
                         [self.setnoncebtn setHidden:FALSE];
                         [ViewController.sharedController.loadTweakSwitch setEnabled:YES];
@@ -370,7 +403,14 @@ NSString *getKernelBuildVersionS() {
                 } else {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [ViewController.sharedController.buttontext setTitle:localize(@"checkra1n & Freya?") forState:UIControlStateNormal];
-                        [self.restoreFSSwitch setOn:false];
+                        [self.fixfsswitch setOn:FALSE];
+                        [self.fixfsswitch setUserInteractionEnabled:YES];
+
+                        [self.restoreFSSwitch setEnabled:YES];
+                        [self.restoreFSSwitch setOn:FALSE];
+                        [self.restoreFSSwitch setHidden:NO];
+                        [self.restoreFSSwitch setEnabled:YES];
+                        [self.restoreFSSwitch setUserInteractionEnabled:YES];
                         [self.setnoncebtn setEnabled:TRUE];
                         [self.setnoncebtn setHidden:FALSE];
                         [ViewController.sharedController.loadTweakSwitch setEnabled:YES];
@@ -639,9 +679,24 @@ static ViewController *currentViewController;
     if ([sender isOn]) {
         saveCustomSetting(@"fixFS", 1);
         checkfsfixswitch = 1;
+
         dispatch_async(dispatch_get_main_queue(), ^{
             [ViewController.sharedController.buttontext setTitle:localize(@"Fix FS?") forState:UIControlStateNormal];
+            [self.fixfsswitch setOn:TRUE];
+            [self.restoreFSSwitch setOn:FALSE];
+            [self.restoreFSSwitch setHidden:YES];
+            [self.restoreFSSwitch setEnabled:NO];
+            [self.restoreFSSwitch setUserInteractionEnabled:NO];
+            [self.setnoncebtn setEnabled:TRUE];
+            [self.setnoncebtn setHidden:FALSE];
+
         });
+        UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Important notice:"
+                                                     message:@"This option requires internet to succeed. Please make sure you're connected to the internet before proceeding. !You've been warned!"
+                                                    delegate:self
+                                           cancelButtonTitle: nil
+                                           otherButtonTitles:@"OK", nil];
+        [alert show];
     } else {
         saveCustomSetting(@"fixFS", 0);
         checkfsfixswitch = 0;
@@ -663,6 +718,15 @@ static ViewController *currentViewController;
             if ((checkth0rmarkerFinal == 1) && (checkuncovermarker == 0) && (checkchimeramarker == 0)){
                 [ViewController.sharedController.buttontext setTitle:localize(@"Remove Freya?") forState:UIControlStateNormal];
                 newTFcheckMyRemover4me = TRUE;
+                [self.fixfsswitch setOn:FALSE];
+                [self.fixfsswitch setHidden:YES];
+                [self.fixfsswitch setEnabled:NO];
+                [self.fixfsswitch setUserInteractionEnabled:NO];
+                [self.restoreFSSwitch setHidden:NO];
+                [self.restoreFSSwitch setEnabled:YES];
+                [self.restoreFSSwitch setOn:TRUE];
+                [self.restoreFSSwitch setUserInteractionEnabled:YES];
+
             } else if ((checkuncovermarker == 1) && (checkth0rmarkerFinal == 0) && (checkchimeramarker == 0)) {
                 [ViewController.sharedController.buttontext setTitle:localize(@"Remove u0?") forState:UIControlStateNormal];
                 newTFcheckMyRemover4me = TRUE;
@@ -688,7 +752,14 @@ static ViewController *currentViewController;
             } else {
                 [ViewController.sharedController.buttontext setTitle:localize(@"Remove JB?") forState:UIControlStateNormal];
                 newTFcheckMyRemover4me = TRUE;
-            }
+                [self.fixfsswitch setOn:FALSE];
+                [self.fixfsswitch setHidden:YES];
+                [self.fixfsswitch setEnabled:NO];
+                [self.fixfsswitch setUserInteractionEnabled:NO];
+                [self.restoreFSSwitch setHidden:NO];
+                [self.restoreFSSwitch setEnabled:YES];
+                [self.restoreFSSwitch setOn:TRUE];
+                [self.restoreFSSwitch setUserInteractionEnabled:YES];            }
             JUSTremovecheck = true;
             saveCustomSetting(@"RestoreFS", 0);
         } else {
@@ -696,18 +767,31 @@ static ViewController *currentViewController;
                 if (checkfsfixswitch == 1) {
                      dispatch_async(dispatch_get_main_queue(), ^{
                              [ViewController.sharedController.buttontext setTitle:localize(@"Fix FS?") forState:UIControlStateNormal];
-                             [self.restoreFSSwitch setOn:false];
+                            [self.fixfsswitch setOn:TRUE];
+                            [self.restoreFSSwitch setOn:FALSE];
+                            [self.restoreFSSwitch setHidden:YES];
+                            [self.restoreFSSwitch setEnabled:NO];
+                            [self.restoreFSSwitch setUserInteractionEnabled:NO];
                              [self.setnoncebtn setEnabled:TRUE];
                              [self.setnoncebtn setHidden:FALSE];
                              [ViewController.sharedController.loadTweakSwitch setEnabled:YES];
                              [ViewController.sharedController.loadTweakSwitch setOn:TRUE];
                          });
+                    UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Important notice:"
+                                                                 message:@"This option requires internet to succeed. Please make sure you're connected to the internet before proceeding. !You've been warned!"
+                                                                delegate:self
+                                                       cancelButtonTitle: nil
+                                                       otherButtonTitles:@"OK", nil];
+                    [alert show];
                 } else {
                     if (checkcheckRa1nmarker2 == 0) {
 
                         [ViewController.sharedController.buttontext setTitle:localize(@"Enable Freya?") forState:UIControlStateNormal];
                         [_setnoncebtn setHidden:NO];
                         [_setnoncebtn setEnabled:YES];
+                        [self.fixfsswitch setOn:FALSE];
+                        [self.restoreFSSwitch setEnabled:YES];
+                        [self.restoreFSSwitch setOn:FALSE];
                     } else {
                         [ViewController.sharedController.buttontext setTitle:localize(@"checkra1n & Freya?") forState:UIControlStateNormal];
                         [_setnoncebtn setHidden:NO];
@@ -746,6 +830,15 @@ static ViewController *currentViewController;
                 [_setnoncebtn setEnabled:NO];
 
                 [ViewController.sharedController.buttontext setTitle:localize(@"Jailbreak") forState:UIControlStateNormal];
+                [self.fixfsswitch setOn:FALSE];
+                [self.fixfsswitch setHidden:YES];
+                [self.fixfsswitch setEnabled:NO];
+                [self.fixfsswitch setUserInteractionEnabled:NO];
+
+                [self.restoreFSSwitch setOn:FALSE];
+                [self.restoreFSSwitch setHidden:NO];
+                [self.restoreFSSwitch setEnabled:YES];
+                [self.restoreFSSwitch setUserInteractionEnabled:YES];
             }
             newTFcheckMyRemover4me = false;
             JUSTremovecheck = false;
@@ -774,6 +867,14 @@ static ViewController *currentViewController;
         if ((checkth0rmarkerFinal == 1) && (checkuncovermarker == 0) && (checkchimeramarker == 0)){
             [ViewController.sharedController.buttontext setTitle:localize(@"Remove Freya?") forState:UIControlStateNormal];
             newTFcheckMyRemover4me = TRUE;
+            [self.fixfsswitch setOn:FALSE];
+            [self.fixfsswitch setHidden:YES];
+            [self.fixfsswitch setEnabled:NO];
+            [self.fixfsswitch setUserInteractionEnabled:NO];
+            [self.restoreFSSwitch setHidden:NO];
+            [self.restoreFSSwitch setEnabled:YES];
+            [self.restoreFSSwitch setOn:TRUE];
+            [self.restoreFSSwitch setUserInteractionEnabled:YES];
         } else if ((checkuncovermarker == 1) && (checkth0rmarkerFinal == 0) && (checkchimeramarker == 0)) {
             [ViewController.sharedController.buttontext setTitle:localize(@"Remove u0?") forState:UIControlStateNormal];
             newTFcheckMyRemover4me = TRUE;
@@ -799,6 +900,14 @@ static ViewController *currentViewController;
         } else {
             [ViewController.sharedController.buttontext setTitle:localize(@"Remove JB?") forState:UIControlStateNormal];
             newTFcheckMyRemover4me = TRUE;
+            [self.fixfsswitch setOn:FALSE];
+            [self.fixfsswitch setHidden:YES];
+            [self.fixfsswitch setEnabled:NO];
+            [self.fixfsswitch setUserInteractionEnabled:NO];
+            [self.restoreFSSwitch setHidden:NO];
+            [self.restoreFSSwitch setEnabled:YES];
+            [self.restoreFSSwitch setOn:TRUE];
+            [self.restoreFSSwitch setUserInteractionEnabled:YES];
         }
         JUSTremovecheck = true;
         saveCustomSetting(@"RestoreFS", 0);
@@ -807,12 +916,23 @@ static ViewController *currentViewController;
             if (checkfsfixswitch == 1) {
                  dispatch_async(dispatch_get_main_queue(), ^{
                          [ViewController.sharedController.buttontext setTitle:localize(@"Fix FS?") forState:UIControlStateNormal];
-                         [self.restoreFSSwitch setOn:false];
-                         [self.setnoncebtn setEnabled:TRUE];
+                         [self.fixfsswitch setOn:TRUE];
+                         [self.restoreFSSwitch setOn:FALSE];
+                         [self.restoreFSSwitch setHidden:YES];
+                         [self.restoreFSSwitch setEnabled:NO];
+                         [self.restoreFSSwitch setUserInteractionEnabled:NO];
+
+                        [self.setnoncebtn setEnabled:TRUE];
                          [self.setnoncebtn setHidden:FALSE];
                          [ViewController.sharedController.loadTweakSwitch setEnabled:YES];
                          [ViewController.sharedController.loadTweakSwitch setOn:TRUE];
                      });
+                UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Important notice:"
+                                                             message:@"This option requires internet to succeed. Please make sure you're connected to the internet before proceeding. !You've been warned!"
+                                                            delegate:self
+                                                   cancelButtonTitle: nil
+                                                   otherButtonTitles:@"OK", nil];
+                [alert show];
             } else {
                 if (checkcheckRa1nmarker2 == 0) {
 
@@ -857,6 +977,16 @@ static ViewController *currentViewController;
             [_setnoncebtn setEnabled:NO];
 
             [ViewController.sharedController.buttontext setTitle:localize(@"Jailbreak") forState:UIControlStateNormal];
+            [self.fixfsswitch setOn:FALSE];
+            [self.fixfsswitch setHidden:YES];
+            [self.fixfsswitch setEnabled:NO];
+            [self.fixfsswitch setUserInteractionEnabled:NO];
+
+            [self.restoreFSSwitch setOn:FALSE];
+            [self.restoreFSSwitch setHidden:NO];
+            [self.restoreFSSwitch setEnabled:YES];
+            [self.restoreFSSwitch setUserInteractionEnabled:YES];
+
         }
         newTFcheckMyRemover4me = false;
         JUSTremovecheck = false;

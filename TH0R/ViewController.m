@@ -184,7 +184,7 @@ double uptime(){
 NSString *freyaversion = @"1.2.0⚡️";
 char *freyaversionnew = "1.2.0⚡️";
 
-char *freyaupdateDate = "3:00PM 10/03/22";
+char *freyaupdateDate = "3:00AM 10/04/22";
 char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/releases/";//github.com/pwned4ever/Th0r_Freya/blob/main/Releases/Freya.ipa";// "mega.nz/file/BhNxBSgJ#gNcngNQBtXS0Ipa5ivX09-jtIr7BckUhrA7YMkSFaNM"//
 
 - (void)u0alertreboot {
@@ -439,6 +439,10 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/releases/";//github.c
                 JUSTremovecheck = true;
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self.buttontext setTitle:localize(@"Remove Freya?") forState:UIControlStateNormal];
+                    [self.fixfsswitch setOn:FALSE];
+                    [self.fixfsswitch setEnabled:NO];
+                    [self.restoreFSSwitch setEnabled:YES];
+                    
                     [self.restoreFSSwitch setOn:true];
                     [self.loadTweakSwitch setEnabled:YES];
                     [self.loadTweakSwitch setOn:TRUE];
@@ -451,14 +455,18 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/releases/";//github.c
                  if (checkfsfixswitch == 1) {
                      dispatch_async(dispatch_get_main_queue(), ^{
                          [self.buttontext setTitle:localize(@"fix fs?") forState:UIControlStateNormal];
-                         [self.fixfsswitch setOn:false];
+                         [self.fixfsswitch setOn:TRUE];
+                         [self.restoreFSSwitch setEnabled:NO];
                          [self.restoreFSSwitch setOn:false];
                          [self.loadTweakSwitch setEnabled:YES];
                          [self.loadTweakSwitch setOn:TRUE];
                      });
+                     
                  } else {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [self.buttontext setTitle:localize(@"Enable Freya?") forState:UIControlStateNormal];
+                        [self.fixfsswitch setOn:FALSE];
+                        [self.restoreFSSwitch setEnabled:YES];
                         [self.restoreFSSwitch setOn:false];
                         [self.loadTweakSwitch setEnabled:YES];
                         [self.loadTweakSwitch setOn:TRUE];
@@ -468,13 +476,16 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/releases/";//github.c
                 if (checkfsfixswitch == 1) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [self.buttontext setTitle:localize(@"fix fs?") forState:UIControlStateNormal];
-                        [self.fixfsswitch setOn:false];
+                        [self.fixfsswitch setOn:TRUE];
+                        [self.restoreFSSwitch setEnabled:NO];
                         [self.restoreFSSwitch setOn:false];
                         [self.loadTweakSwitch setEnabled:YES];
                         [self.loadTweakSwitch setOn:TRUE];
+                        
                     });
                 } else {
                     [self.buttontext setTitle:localize(@"checkra1n & Freya?") forState:UIControlStateNormal];
+                    [self.fixfsswitch setOn:FALSE];
                     [self.restoreFSSwitch setOn:false];
                     [self.loadTweakSwitch setEnabled:YES];
                     [self.loadTweakSwitch setOn:TRUE];
@@ -611,6 +622,8 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/releases/";//github.c
             JUSTremovecheck = true;
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.buttontext setTitle:localize(@"Remove Freya?") forState:UIControlStateNormal];
+                [self.fixfsswitch setOn:FALSE];
+                [self.fixfsswitch setEnabled:NO];
                 [self.restoreFSSwitch setOn:true];
                 [self.loadTweakSwitch setEnabled:YES];
                 [self.loadTweakSwitch setOn:TRUE];
@@ -621,7 +634,8 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/releases/";//github.c
                 if (checkfsfixswitch == 1) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [self.buttontext setTitle:localize(@"fix fs?") forState:UIControlStateNormal];
-                        [self.fixfsswitch setOn:false];
+                        [self.fixfsswitch setOn:TRUE];
+                        [self.restoreFSSwitch setEnabled:NO];
                         [self.restoreFSSwitch setOn:false];
                         [self.loadTweakSwitch setEnabled:YES];
                         [self.loadTweakSwitch setOn:TRUE];
@@ -630,6 +644,8 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/releases/";//github.c
 
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [self.buttontext setTitle:localize(@"Enable Freya?") forState:UIControlStateNormal];
+                        [self.fixfsswitch setOn:FALSE];
+                        [self.restoreFSSwitch setEnabled:YES];
                         [self.restoreFSSwitch setOn:false];
                         [self.loadTweakSwitch setEnabled:YES];
                         [self.loadTweakSwitch setOn:TRUE];
@@ -639,13 +655,15 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/releases/";//github.c
                 if (checkfsfixswitch == 1) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [self.buttontext setTitle:localize(@"fix fs?") forState:UIControlStateNormal];
-                        [self.fixfsswitch setOn:false];
+                        [self.fixfsswitch setOn:TRUE];
+                        [self.restoreFSSwitch setEnabled:NO];
                         [self.restoreFSSwitch setOn:false];
                         [self.loadTweakSwitch setEnabled:YES];
-                        [self.loadTweakSwitch setOn:TRUE];
-                    });
+                        [self.loadTweakSwitch setOn:TRUE];                    });
                 } else {
                     [self.buttontext setTitle:localize(@"checkra1n & Freya?") forState:UIControlStateNormal];
+                    [self.fixfsswitch setOn:FALSE];
+                    [self.restoreFSSwitch setEnabled:YES];
                     [self.restoreFSSwitch setOn:false];
                     [self.loadTweakSwitch setEnabled:YES];
                     [self.loadTweakSwitch setOn:TRUE];

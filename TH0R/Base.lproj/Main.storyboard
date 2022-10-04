@@ -53,7 +53,7 @@
                                                     <segue destination="cbb-OQ-T38" kind="presentation" id="vRK-sA-uZh"/>
                                                 </connections>
                                             </button>
-                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="settings-1" highlightedImage="active-gear-icon-hover" translatesAutoresizingMaskIntoConstraints="NO" id="kCI-9x-K4x">
+                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="settings-1" highlightedImage="settings-1" translatesAutoresizingMaskIntoConstraints="NO" id="kCI-9x-K4x">
                                                 <rect key="frame" x="2" y="11" width="63" height="50"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -692,7 +692,6 @@ Cydia </string>
     </scenes>
     <resources>
         <image name="Button" width="288" height="57"/>
-        <image name="active-gear-icon-hover" width="28" height="16"/>
         <image name="freyaicestaff.jpg" width="933" height="1002"/>
         <image name="settings-1" width="512" height="512"/>
     </resources>
