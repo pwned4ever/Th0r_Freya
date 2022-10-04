@@ -2909,6 +2909,9 @@ void yesdebsinstall() {
         int ret = systemCmd("/freya/cydiafix.sh");
 
         printf("did we script cydia successfully? =%d\n", ret);
+        installDeb([get_bootstrap_file(@"substitute.deb") UTF8String], true);
+        installDeb([get_bootstrap_file(@"tweakinject.deb") UTF8String], true);
+        installDeb([get_bootstrap_file(@"mobilesubstrate.deb") UTF8String], true);
 
         //removeFileIfExists("/etc/apt/sources.list.d/freya.list");
         //execCmd("/usr/bin/dpkg", "--configure", "-a", NULL);
