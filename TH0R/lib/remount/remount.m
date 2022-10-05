@@ -51,7 +51,7 @@ bool remount(uint64_t launchd_proc) {
    // let mntpath = strdup("/var/rootfsmnt")
     
     mntpathSW = "/private/var/mnt";
-    mntpath = strdup("/private/var/mnt");
+    mntpath = strdup("/private/var/jbmnt");
     otamntpath = "/var/MobileSoftwareUpdate/mnt1";
     uint64_t rootvnode = findRootVnode(launchd_proc);
     util_info("rootvnode: 0x%llx", rootvnode);
@@ -88,7 +88,7 @@ bool remount(uint64_t launchd_proc) {
             return false;
         }
         
-        int fd = open("/private/var/mnt", O_RDONLY, 0);
+        int fd = open("/private/var/jbmnt", O_RDONLY, 0);
         if(fd <= 0
            || fs_snapshot_revert(fd, bootSnapshot, 0) != 0) {
             util_error("fs_snapshot_revert failed");
@@ -118,7 +118,7 @@ bool remount(uint64_t launchd_proc) {
             return false;
         }
         
-        int fd2 = open("/private/var/mnt", O_RDONLY, 0);
+        int fd2 = open("/private/var/jbmnt", O_RDONLY, 0);
         if(fd <= 0
            || fs_snapshot_rename(fd2, bootSnapshot, "orig-fs", 0) != 0) {
             util_error("fs_snapshot_rename failed");
@@ -153,7 +153,7 @@ bool remount(uint64_t launchd_proc) {
         int retval = mount("apfs", "/", MNT_UPDATE, &dev_path);
         free(dev_path);
 
-       // WriteKernel32(vmount + koffset(KSTRUCT_OFFSET_MOUNT_MNT_FLAG), vflag | (MNT_NOSUID));
+        WriteKernel32(vmount + koffset(KSTRUCT_OFFSET_MOUNT_MNT_FLAG), vflag | (MNT_NOSUID));
         if(retval == 0) {
             util_info("Already remounted RootFS!");
             need_initialSSRenamed = 2;

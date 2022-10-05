@@ -181,10 +181,10 @@ double uptime(){
     [audioPlayer1 play];
 }
 
-NSString *freyaversion = @"1.2.0⚡️";
-char *freyaversionnew = "1.2.0⚡️";
+NSString *freyaversion = @"1.2.1⚡️";
+char *freyaversionnew = "1.2.1⚡️";
 
-char *freyaupdateDate = "3:00PM 10/04/22";
+char *freyaupdateDate = "10:00PM 10/04/22";
 char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/releases/";//github.com/pwned4ever/Th0r_Freya/blob/main/Releases/Freya.ipa";// "mega.nz/file/BhNxBSgJ#gNcngNQBtXS0Ipa5ivX09-jtIr7BckUhrA7YMkSFaNM"//
 
 - (void)u0alertreboot {
