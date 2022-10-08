@@ -89,6 +89,21 @@ NSString *getKernelBuildVersionS() {
     gradient.colors = @[(id)[[UIColor colorWithRed:0.02 green:0.02 blue:0.02 alpha:1.0] CGColor], (id)[[UIColor colorWithRed:0.29 green:0.05 blue:0.22 alpha:1.0] CGColor]];
     [self.backGroundView.layer insertSublayer:gradient atIndex:0];
     [self.settingsGradientView.layer insertSublayer:gradient atIndex:0];
+
+    if (checkforceuicacheswitch == 1) {
+        [self.forceuicacheswitch setOn:TRUE];
+        [self.forceuicacheswitch setHidden:NO];
+        [self.forceuicacheswitch setEnabled:YES];
+        [self.forceuicacheswitch setUserInteractionEnabled:YES];
+
+    } else {
+        
+        [self.forceuicacheswitch setOn:FALSE];
+        [self.forceuicacheswitch setHidden:NO];
+        [self.forceuicacheswitch setEnabled:YES];
+        [self.forceuicacheswitch setUserInteractionEnabled:YES];
+
+    }
     if (shouldLoadTweaks())
     {
         [_loadTweaksSwitch setOn:true];
@@ -108,6 +123,15 @@ NSString *getKernelBuildVersionS() {
             [self.fixfsswitch setHidden:NO];
             [self.fixfsswitch setEnabled:YES];
             [self.fixfsswitch setUserInteractionEnabled:YES];
+            [self.restoreFSSwitch setOn:FALSE];
+            [self.restoreFSSwitch setHidden:NO];
+            [self.restoreFSSwitch setEnabled:YES];
+            [self.restoreFSSwitch setUserInteractionEnabled:YES];
+            [self.restoreFSSwitch setHidden:NO];
+            [ViewController.sharedController.restoreFSSwitch setEnabled:YES];
+            [ViewController.sharedController.restoreFSSwitch setOn:YES];
+            [ViewController.sharedController.restoreFSSwitch setHidden:NO];
+            [ViewController.sharedController.restoreFSSwitch setUserInteractionEnabled:YES];
 
         }
     } else {
@@ -165,15 +189,20 @@ NSString *getKernelBuildVersionS() {
     printf("whatsmykoreNUMBER: %f\n", whatsmykoreNUMBER);
     if (kCFCoreFoundationVersionNumber > 1575.17) { // > 12.4 //1556.00 12.0
         
+        self.MS1_OUTLET.hidden = YES;
         _MS1_OUTLET.userInteractionEnabled = FALSE;
         _MS1_OUTLET.enabled = false;
         _MS1_OUTLET.backgroundColor = grey;
+        self.VS_Outlet.hidden = YES;
+
         _VS_Outlet.userInteractionEnabled = FALSE;
         _VS_Outlet.enabled = false;
         _VS_Outlet.backgroundColor = grey;
+        self.MS2_Outlet.hidden = YES;
         _MS2_Outlet.userInteractionEnabled = FALSE;
         _MS2_Outlet.enabled = false;
         _MS2_Outlet.backgroundColor = grey;
+        self.SP_Outlet.hidden = YES;
         _SP_Outlet.userInteractionEnabled = FALSE;
         _SP_Outlet.enabled = false;
         _SP_Outlet.backgroundColor = grey;
@@ -181,15 +210,19 @@ NSString *getKernelBuildVersionS() {
         _TWOutlet.enabled = true;
         _TWOutlet.backgroundColor = grey;
     } else if (kCFCoreFoundationVersionNumber == 1575.17) { //12.4
+        self.MS1_OUTLET.hidden = YES;
         _MS1_OUTLET.userInteractionEnabled = FALSE;
         _MS1_OUTLET.enabled = false;
         _MS1_OUTLET.backgroundColor = grey;
+        self.VS_Outlet.hidden = YES;
         _VS_Outlet.userInteractionEnabled = FALSE;
         _VS_Outlet.enabled = false;
         _VS_Outlet.backgroundColor = grey;
+        self.MS2_Outlet.hidden = YES;
         _MS2_Outlet.userInteractionEnabled = FALSE;
         _MS2_Outlet.enabled = false;
         _MS2_Outlet.backgroundColor = grey;
+        self.SP_Outlet.hidden = NO;
         _SP_Outlet.userInteractionEnabled = TRUE;
         _SP_Outlet.enabled = true;
         _SP_Outlet.backgroundColor = grey;
@@ -198,15 +231,19 @@ NSString *getKernelBuildVersionS() {
         _TWOutlet.backgroundColor = grey;
 
     } else if (kCFCoreFoundationVersionNumber == 1570.15) { //12.2
+        self.MS1_OUTLET.hidden = YES;
         _MS1_OUTLET.userInteractionEnabled = FALSE;
         _MS1_OUTLET.enabled = false;
         _MS1_OUTLET.backgroundColor = grey;
+        self.VS_Outlet.hidden = YES;
         _VS_Outlet.userInteractionEnabled = FALSE;
         _VS_Outlet.enabled = false;
         _VS_Outlet.backgroundColor = grey;
+        self.MS2_Outlet.hidden = YES;
         _MS2_Outlet.userInteractionEnabled = FALSE;
         _MS2_Outlet.enabled = false;
         _MS2_Outlet.backgroundColor = grey;
+        self.SP_Outlet.hidden = NO;
         _SP_Outlet.userInteractionEnabled = TRUE;
         _SP_Outlet.enabled = true;
         _SP_Outlet.backgroundColor = grey;
@@ -215,15 +252,19 @@ NSString *getKernelBuildVersionS() {
         _TWOutlet.backgroundColor = grey;
 
     } else if (kCFCoreFoundationVersionNumber >= 1570.13) { //12.3
+        self.MS1_OUTLET.hidden = YES;
         _MS1_OUTLET.userInteractionEnabled = FALSE;
         _MS1_OUTLET.enabled = false;
         _MS1_OUTLET.backgroundColor = grey;
+        self.VS_Outlet.hidden = YES;
         _VS_Outlet.userInteractionEnabled = FALSE;
         _VS_Outlet.enabled = false;
         _VS_Outlet.backgroundColor = grey;
+        self.MS2_Outlet.hidden = YES;
         _MS2_Outlet.userInteractionEnabled = FALSE;
         _MS2_Outlet.enabled = false;
         _MS2_Outlet.backgroundColor = grey;
+        self.SP_Outlet.hidden = YES;
         _SP_Outlet.userInteractionEnabled = FALSE;
         _SP_Outlet.enabled = false;
         _SP_Outlet.backgroundColor = grey;
@@ -255,7 +296,6 @@ NSString *getKernelBuildVersionS() {
                     _SP_Outlet.userInteractionEnabled = TRUE;
                     _SP_Outlet.enabled = true;
                     _SP_Outlet.backgroundColor = grey;
-
                     _TWOutlet.userInteractionEnabled = TRUE;
                     _TWOutlet.enabled = true;
                     _TWOutlet.backgroundColor = grey;
@@ -263,15 +303,19 @@ NSString *getKernelBuildVersionS() {
             }
         } else {
         
+        self.MS1_OUTLET.hidden = YES;
         _MS1_OUTLET.userInteractionEnabled = FALSE;
         _MS1_OUTLET.enabled = false;
         _MS1_OUTLET.backgroundColor = grey;
+        self.VS_Outlet.hidden = YES;
         _VS_Outlet.userInteractionEnabled = FALSE;
         _VS_Outlet.enabled = false;
         _VS_Outlet.backgroundColor = grey;
+        self.MS2_Outlet.hidden = YES;
         _MS2_Outlet.userInteractionEnabled = FALSE;
         _MS2_Outlet.enabled = false;
         _MS2_Outlet.backgroundColor = grey;
+        self.SP_Outlet.hidden = NO;
         _SP_Outlet.userInteractionEnabled = TRUE;
         _SP_Outlet.enabled = true;
         _SP_Outlet.backgroundColor = grey;
@@ -394,6 +438,11 @@ NSString *getKernelBuildVersionS() {
                         [self.restoreFSSwitch setHidden:NO];
                         [self.restoreFSSwitch setEnabled:YES];
                         [self.restoreFSSwitch setUserInteractionEnabled:YES];
+                        [self.restoreFSSwitch setHidden:NO];
+                        [ViewController.sharedController.restoreFSSwitch setEnabled:YES];
+                        [ViewController.sharedController.restoreFSSwitch setOn:YES];
+                        [ViewController.sharedController.restoreFSSwitch setHidden:NO];
+                        [ViewController.sharedController.restoreFSSwitch setUserInteractionEnabled:YES];
 
                         [self.setnoncebtn setEnabled:TRUE];
                         [self.setnoncebtn setHidden:FALSE];
@@ -674,6 +723,23 @@ NSString *getKernelBuildVersionS() {
 
 //ViewController *sharedController = nil;
 static ViewController *currentViewController;
+- (IBAction)forceuiswitchaction:(id)sender {
+    if ([sender isOn]) {
+        saveCustomSetting(@"forceuicache", 1);
+        checkforceuicacheswitch = 1;
+        //shoulduicache();
+        dispatch_async(dispatch_get_main_queue(), ^{
+            //[ViewController.sharedController.buttontext setTitle:localize(@"Fix FS?") forState:UIControlStateNormal];
+        });
+        [self.forceuicacheswitch setOn:TRUE];
+
+    } else {
+        [self.forceuicacheswitch setOn:FALSE];
+
+        saveCustomSetting(@"forceuicache", 0);
+        checkforceuicacheswitch = 0;
+    }
+}
 
 - (IBAction)fix_fs_switch_action:(id)sender {
     if ([sender isOn]) {
@@ -792,6 +858,8 @@ static ViewController *currentViewController;
                         [self.fixfsswitch setOn:FALSE];
                         [self.restoreFSSwitch setEnabled:YES];
                         [self.restoreFSSwitch setOn:FALSE];
+                        [self.restoreFSSwitch setHidden:NO];
+
                     } else {
                         [ViewController.sharedController.buttontext setTitle:localize(@"checkra1n & Freya?") forState:UIControlStateNormal];
                         [_setnoncebtn setHidden:NO];
@@ -939,6 +1007,8 @@ static ViewController *currentViewController;
                     [ViewController.sharedController.buttontext setTitle:localize(@"Enable Freya?") forState:UIControlStateNormal];
                     [_setnoncebtn setHidden:NO];
                     [_setnoncebtn setEnabled:YES];
+                    [self.restoreFSSwitch setHidden:NO];
+
                 } else {
                     [ViewController.sharedController.buttontext setTitle:localize(@"checkra1n & Freya?") forState:UIControlStateNormal];
                     [_setnoncebtn setHidden:NO];

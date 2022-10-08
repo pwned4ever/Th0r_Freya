@@ -41,7 +41,14 @@
 #define SYSTEM_VERSION_LESS_THAN_OR_EQUAL_TO(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedDescending)
 #define SYSTEM_VERSION_BETWEEN_OR_EQUAL_TO(a, b) (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(a) && SYSTEM_VERSION_LESS_THAN_OR_EQUAL_TO(b))
 
-
+/*
+ 0x70, // KSTRUCT_OFFSET_MOUNT_MNT_FLAG
+ 0x8f8, // KSTRUCT_OFFSET_MOUNT_MNT_DATA
+ 0x18, // KSTRUCT_OFFSET_MOUNT_MNT_MLOCK
+ 
+ 
+ */
+ 
 static char* mntpathSW;
 static char* otamntpath;
 static char* mntpath;
@@ -50,17 +57,17 @@ bool remount(uint64_t launchd_proc) {
     //let mntpathSW = "/var/rootfsmnt" ios 13 odyssey
    // let mntpath = strdup("/var/rootfsmnt")
     
-    mntpathSW = "/private/var/mnt";
-    mntpath = strdup("/private/var/jbmnt");
+    mntpathSW = "/var/rootfsmnt";
+    mntpath = strdup("/var/rootfsmnt");
     otamntpath = "/var/MobileSoftwareUpdate/mnt1";
     uint64_t rootvnode = findRootVnode(launchd_proc);
     util_info("rootvnode: 0x%llx", rootvnode);
-    
+
     if(isRenameRequired()) {
         if(access(mntpathSW, F_OK) == 0) {
             [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithUTF8String:mntpathSW] error:nil];
         }
-        
+
         mkdir(mntpath, 0755);
         chown(mntpath, 0, 0);
         
@@ -88,7 +95,7 @@ bool remount(uint64_t launchd_proc) {
             return false;
         }
         
-        int fd = open("/private/var/jbmnt", O_RDONLY, 0);
+        int fd = open("/var/rootfsmnt", O_RDONLY, 0);
         if(fd <= 0
            || fs_snapshot_revert(fd, bootSnapshot, 0) != 0) {
             util_error("fs_snapshot_revert failed");
@@ -118,7 +125,7 @@ bool remount(uint64_t launchd_proc) {
             return false;
         }
         
-        int fd2 = open("/private/var/jbmnt", O_RDONLY, 0);
+        int fd2 = open("/var/rootfsmnt", O_RDONLY, 0);
         if(fd <= 0
            || fs_snapshot_rename(fd2, bootSnapshot, "orig-fs", 0) != 0) {
             util_error("fs_snapshot_rename failed");
@@ -131,9 +138,9 @@ bool remount(uint64_t launchd_proc) {
         
         unmount(mntpath, 0);
         
-        [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithUTF8String:mntpath] error:nil];
-        unlink(mntpath);
-        rmdir(mntpath);
+//        [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithUTF8String:mntpath] error:nil];
+  //      unlink(mntpath);
+    //    rmdir(mntpath);
         resetEntitlementsForRootFS(get_proc_struct_for_pid(getpid()));
         WriteKernel64(get_proc_struct_for_pid(getpid()) + koffset(KSTRUCT_OFFSET_PROC_UCRED), selfCreds);
         
@@ -146,15 +153,33 @@ bool remount(uint64_t launchd_proc) {
         //reboot(0);
     } else {
         uint64_t vmount = ReadKernel64(rootvnode + koffset(KSTRUCT_OFFSET_VNODE_V_MOUNT));
-        uint32_t vflag = ReadKernel32(vmount + koffset(KSTRUCT_OFFSET_MOUNT_MNT_FLAG)) & ~(MNT_RDONLY);
-        WriteKernel32(vmount + koffset(KSTRUCT_OFFSET_MOUNT_MNT_FLAG), vflag & ~(MNT_ROOTFS));
+        //uint32_t vflag = ReadKernel32(vmount + koffset(KSTRUCT_OFFSET_MOUNT_MNT_FLAG)) & ~(MNT_RDONLY);//343986184 rdonly
+       // uint32_t allvflags = vflag & vflag2; //343986176
+        uint32_t v_flag = ReadKernel32(vmount + koffset(KSTRUCT_OFFSET_MOUNT_MNT_FLAG));//3439986185
+        
+        //v_flag = v_flag & ~MNT_NOSUID;
+       // v_flag = v_flag & ~MNT_RDONLY;
+       // if ((v_flag & (MNT_RDONLY | MNT_NOSUID))) {
+        v_flag = v_flag & ~(MNT_RDONLY | MNT_NOSUID);
+        //}
+        //v_flag = v_flag & ~(MNT_NOSUID | MNT_RDONLY);
+
+        //wk32(v_mount + offsetof_mnt_flag, v_flag & ~MNT_ROOTFS);
+        
+        WriteKernel32(vmount + koffset(KSTRUCT_OFFSET_MOUNT_MNT_FLAG), v_flag & ~MNT_ROOTFS);
+        //WriteKernel32(vmount + koffset(KSTRUCT_OFFSET_MOUNT_MNT_FLAG), vflag & ~MNT_ROOTFS);
 
         char* dev_path = strdup("/dev/disk0s1s1");
-        int retval = mount("apfs", "/", MNT_UPDATE, &dev_path);
+        int retval = mount("apfs", "/", MNT_UPDATE, (void *)&dev_path);
+        //int retval = mount("apfs", "/", MNT_UPDATE, &dev_path);
+        //int retvalreload = mount("apfs", "/", MNT_RELOAD, (void *)&dev_path);
         free(dev_path);
 
-        WriteKernel32(vmount + koffset(KSTRUCT_OFFSET_MOUNT_MNT_FLAG), vflag | (MNT_NOSUID));
+//        WriteKernel32(vmount + koffset(KSTRUCT_OFFSET_MOUNT_MNT_FLAG), vflag2 & ~(MNT_NOSUID));
+       // WriteKernel32(vmount + koffset(KSTRUCT_OFFSET_MOUNT_MNT_FLAG), vflag2 & ~(MNT_ROOTFS));
+
         if(retval == 0) {
+        
             util_info("Already remounted RootFS!");
             need_initialSSRenamed = 2;
 

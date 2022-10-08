@@ -181,10 +181,10 @@ double uptime(){
     [audioPlayer1 play];
 }
 
-NSString *freyaversion = @"1.2.1⚡️";
-char *freyaversionnew = "1.2.1⚡️";
+NSString *freyaversion = @"1.2,4⚡️";
+char *freyaversionnew = "1.2.4⚡️";
 
-char *freyaupdateDate = "10:00PM 10/04/22";
+char *freyaupdateDate = "12:00PM 10/08/22";
 char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/releases/";//github.com/pwned4ever/Th0r_Freya/blob/main/Releases/Freya.ipa";// "mega.nz/file/BhNxBSgJ#gNcngNQBtXS0Ipa5ivX09-jtIr7BckUhrA7YMkSFaNM"//
 
 - (void)u0alertreboot {
@@ -349,7 +349,7 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/releases/";//github.c
     CAGradientLayer *gradient = [CAGradientLayer layer];
 
     gradient.frame = self.backGroundView.bounds;
-    gradient.colors = @[(id)[[UIColor colorWithRed:0.26 green:0.02 blue:0.04 alpha:1.0] CGColor], (id)[[UIColor colorWithRed:0.09 green:0.35 blue:0.62 alpha:1.0] CGColor]];
+    gradient.colors = @[(id)[[UIColor colorWithRed:0.56 green:0.52 blue:0.54 alpha:1.0] CGColor], (id)[[UIColor colorWithRed:0.09 green:0.35 blue:0.62 alpha:1.0] CGColor]];
     //gradient.colors = @[(id)[[UIColor colorWithRed:0.02 green:0.02 blue:0.02 alpha:1.0] CGColor], (id)[[UIColor colorWithRed:0.29 green:0.05 blue:0.22 alpha:1.0] CGColor]];
     dispatch_async(dispatch_get_main_queue(), ^{
 

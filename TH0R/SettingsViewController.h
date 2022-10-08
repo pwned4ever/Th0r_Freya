@@ -28,6 +28,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (strong, nonatomic) IBOutlet UISwitch *restoreFSSwitch;
 
 @property (strong, nonatomic) IBOutlet UISwitch *fixfsswitch;
+@property (weak, nonatomic) IBOutlet UISwitch *forceuicacheswitch;
 
 //THE EXPLOIT BUTTONS outlet
 @property (weak, nonatomic) IBOutlet UIButton *VS_Outlet;

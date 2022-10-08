@@ -390,6 +390,7 @@ void initSettingsIfNotExist()
         [defaults setInteger:1 forKey:@"RestoreFS"];
         [defaults setInteger:0 forKey:@"RootSetting"];
         [defaults setInteger:0 forKey:@"fixFS"];
+        [defaults setInteger:0 forKey:@"forceuicache"];
         [defaults setValue:@"0x1111111111111111" forKey:@"Nonce"];
         [defaults setInteger:1 forKey:@"SetNonce"];
         [defaults synchronize];
@@ -469,6 +470,16 @@ BOOL shouldLoadTweaks()
     }
 }
 
+BOOL shoulduicache()
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    if ([defaults integerForKey:@"forceuicache"] == 0)
+    {
+        return true;
+    } else {
+        return false;
+    }
+}
 int getExploitType()
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -899,8 +910,8 @@ NSString *get_bootstrap_fileDEBS(NSString *file)
 
 NSString *get_debian_file(NSString *file)
 {
+    //return [@"/freya/DEBS/" stringByAppendingString:file];
     return [@"/freya/DEBS/" stringByAppendingString:file];
-    //return get_path_res([@"bootstrap/DEBS/" stringByAppendingString:file]);
 }
 
 NSString *get_TweakInject_file(NSString *file)
@@ -1543,22 +1554,21 @@ bool patchtheSIGNSofCOde(){
         if(retVal < 0)
         printf("failed to spawn spindump\n");
         util_info("amfid_pid %u", amfid_pid);
-
     }
     always_AMFIPID = amfid_pid;
-    
     takeoverAmfid(amfid_pid);
     //extractFile(get_bootstrap_file(@"amfid_daemon_freya.tar"), @"/");
     trust_file(@"/freya/inject_criticald");
     //execCmd("/freya/inject_criticald", itoa(1), "/usr/lib/pspawn_payload.dylib", NULL);
-    //execCmd("/freya/inject_criticald", itoa(amfid_pid), "/usr/lib/pspawn_payload.dylib", NULL);
     //execCmd("/freya/inject_criticald", itoa(1), "/usr/lib/amfid_payload.dylib", NULL);
-    //execCmd("/freya/inject_criticald", itoa(1), "/usr/lib/amfid_payload.dylib", NULL);
-   execCmd("/freya/inject_criticald", itoa(amfid_pid), "/usr/lib/amfid_payload.dylib", NULL);
-   // execCmd("/bin/ps", "-p", itoa(amfid_pid), NULL); // built-in tools
-    util_info("amfid has been infected by our dynamic library, it is now dismantled");//dismantled
-    doweneedamfidPatch = 1;
-    return true;
+    if (file_exists("/freya/inject_criticald")) {
+        execCmd("/freya/inject_criticald", itoa(amfid_pid), "/usr/lib/amfid_payload.dylib", NULL);
+        util_info("amfid has been infected by our dynamic library, it is now dismantled");//dismantled
+        doweneedamfidPatch = 1;
+        return true;
+    }
+    return false;
+
 }
 
 int waitFF(const char *filename) {
@@ -1700,9 +1710,12 @@ void restoreRootFS()
         close(rootfd);
         
     } else {
-        char *const systemSnapshotMountPoint = "/private/var/mnt";
+        char *const systemSnapshotMountPoint = "/var/rootfsmnt";
+        char *const rootFsMountPoint = "/var/freyamnt";
+    char *const rootFsMountPointmnt = "/var/mnt";
+    //char *const rootFsMountPoint = "/private/var/tmp/jb/mnt1";
         if (is_mountpoint(systemSnapshotMountPoint)) {
-            _assert(unmount(systemSnapshotMountPoint, MNT_FORCE) == ERR_SUCCESS, localize(@"Unable to unmount old snapshot mount point."), true);
+            _assert(unmount(systemSnapshotMountPoint, MNT_FORCE) == ERR_SUCCESS, localize(@"Unable to unmount old RootFS mount point."), true);
         }
         _assert(clean_file(systemSnapshotMountPoint), localize(@"Unable to clean old snapshot mount point."), true);
         _assert(ensure_directory(systemSnapshotMountPoint, root_pw->pw_uid, 0755), localize(@"Unable to create snapshot mount point."), true);
@@ -1715,7 +1728,20 @@ void restoreRootFS()
             if (doweneedamfidPatch == 1) {
                 util_info("Amfid done fucked up already!");
             } else {
-                patchtheSIGNSofCOde();
+                if (patchtheSIGNSofCOde()){
+                    util_info("Amfid bombed for restore process!");
+                } else {
+                    util_info("Failure to bomb Amfid");
+                    showMSG(NSLocalizedString(@"Failure to bomb Amfid! We are going to reboot your device.", nil), 1, 1);
+                    dispatch_sync( dispatch_get_main_queue(), ^{
+                        UIApplication *app = [UIApplication sharedApplication];
+                        [app performSelector:@selector(suspend)];
+                        //wait 2 seconds while app is going background
+                        [NSThread sleepForTimeInterval:1.0];
+                        //exit app when app is in background
+                        reboot(RB_QUICK);
+                    });
+                }
             }
             cp("/freya/uicache", "/usr/bin/uicache");
             _assert(clean_file("/usr/bin/uicache"), localize(@"Unable to clean old uicache binary."), true);
@@ -1725,9 +1751,12 @@ void restoreRootFS()
             extractFile(get_bootstrap_file(@"uicache5s.tar"), @"/");
             extractFile(get_bootstrap_file(@"restoreUtils.tar"), @"/");
             extractFile(get_bootstrap_file(@"uicache5s.tar"), @"/");
+            _assert(execCmd("/usr/bin/rsync", "-vaxcH", "--progress", "--delete", [@(rootFsMountPoint) stringByAppendingPathComponent:@"Applications/."].UTF8String, "/Applications", NULL) == 0, localize(@"Unable to sync /Applications."), true);
+            _assert(execCmd("/usr/bin/rsync", "-vaxcH", "--progress", "--delete", [@(rootFsMountPointmnt) stringByAppendingPathComponent:@"Applications/."].UTF8String, "/Applications", NULL) == 0, localize(@"Unable to sync /Applications."), true);
             _assert(execCmd("/usr/bin/rsync", "-vaxcH", "--progress", "--delete", [@(systemSnapshotMountPoint) stringByAppendingPathComponent:@"Applications/."].UTF8String, "/Applications", NULL) == 0, localize(@"Unable to sync /Applications."), true);
         }
         _assert(unmount(systemSnapshotMountPoint, MNT_FORCE) == ERR_SUCCESS, localize(@"Unable to unmount original snapshot mount point."), true);
+
         close(rootfd);
         
     }
@@ -1756,6 +1785,11 @@ void restoreRootFS()
    
     util_info("Cleaning up...");
     NSArray *const cleanUpFileList = @[@"/var/cache",
+                                       @"/var/freya",
+                                       @"/var/freyamnt",
+                                       @"/var/rootfsmnt",
+                                       @"/var/mnt",
+                                       @"/var/freya/",
                                        @"/var/lib",
                                        @"/var/stash",
                                        @"/var/db/stash",
@@ -1873,6 +1907,8 @@ void restoreRootFS()
                                        @"/Library/Frameworks",
                                        @"/Library/LaunchDaemons",
                                        @"/Library/MobileSubstrate",
+                                       @"/Library/MobileSubstrate/",
+                                       @"/Library/MobileSubstrate/DynamicLibraries",
                                        @"/Library/PreferenceBundles",
                                        @"/Library/PreferenceLoader",
                                        @"/Library/SBInject",
@@ -2059,8 +2095,8 @@ void preMountFS(const char *thedisk, int root_fs, const char **snapshots, const 
 {
     util_info("Pre-Mounting RootFS...");
 
-    _assert(!is_mountpoint("/private/var/mnt"), invalidRootMessage, true);
-    char *const rootFsMountPoint = "/private/var/mnt";
+    _assert(!is_mountpoint("/var/mnt"), invalidRootMessage, true);
+    char *const rootFsMountPoint = "/var/rootfsmnt";
 //char *const rootFsMountPoint = "/private/var/tmp/jb/mnt1";
     if (is_mountpoint(rootFsMountPoint)) {
         _assert(unmount(rootFsMountPoint, MNT_FORCE) == ERR_SUCCESS, localize(@"Unable to unmount old RootFS mount point."), true);
@@ -2886,48 +2922,42 @@ void yesdebsinstall() {
 
     debsinstalling();
     removeFileIfExists("/private/etc/apt/sources.list.d/shogun.sources");
+    cp("/bin/sh", "/var/freya/freya/bin/sh");
+    cp("/bin/bash", "/var/freya/freya/bin/bash");
+    cp("/bin/tar", "/freya/tar");
+    trust_file(@"/bin/rm");
+    trust_file(@"/bin/sh");
+    trust_file(@"/bin/ln");
+    trust_file(@"/bin/bash");
+    trust_file(@"/freya/tar");
+    trust_file(@"/bin/tar");
     execCmd("/bin/rm", "-rdf", "/bin/sh", NULL);
     execCmd("/bin/ln", "/bin/bash", "/bin/sh", NULL);
     NSString *deb1 = get_bootstrap_file(@"DEEZDEBS.tar.gz");
     //NSString *deb2 = get_bootstrap_file(@"DEB_4_ios12.tar.gz");
     pid_t pd;
-    posix_spawn(&pd, "/freya/tar", NULL, NULL, (char **)&(const char*[]){ "/freya/tar", "--preserve-permissions", "-xf", [deb1 UTF8String], "-C", "/freya", NULL }, NULL);
+    posix_spawn(&pd, "/freya/tar", NULL, NULL, (char **)&(const char*[]){ "/freya/tar", "--preserve-permissions", "-xf", [deb1 UTF8String], "-C", "/freya/", NULL }, NULL);
     waitpid(pd, NULL, 0);
-    cp("/bin/tar", "/freya/tar");
-    
+    //cp(to,from);
     int checkcheckRa1nmarker1 = (file_exists("/.bootstrapped"));
-
     if (checkfsfixswitch == 1) {
-       /* execCmd("/usr/bin/apt-get", "-y", "--allow-unauthenticated", "--allow-remove-essential", "purge", "cydia", NULL);
-       // execCmd("/usr/bin/apt-get", "-y", "--allow-unauthenticated", "--allow-remove-essential", "remove", "cydia", NULL);
-        createTweakinjectRepo();
-        execCmd("/usr/bin/apt-get", "update", NULL);
-        execCmd("/usr/bin/apt-get", "-y", "--allow-unauthenticated", "install", "cydia", NULL);
-        //installDeb([get_debian_file(@"essential_0-3_iphoneos-arm.deb") UTF8String], true);
-        //execCmd("/usr/bin/apt-mark", "hold", "libapt", NULL);
-*/
         int ret = systemCmd("/freya/cydiafix.sh");
-
         printf("did we script cydia successfully? =%d\n", ret);
         installDeb([get_bootstrap_file(@"substitute.deb") UTF8String], true);
         installDeb([get_bootstrap_file(@"tweakinject.deb") UTF8String], true);
         installDeb([get_bootstrap_file(@"mobilesubstrate.deb") UTF8String], true);
-
-        //removeFileIfExists("/etc/apt/sources.list.d/freya.list");
-        //execCmd("/usr/bin/dpkg", "--configure", "-a", NULL);
-        //removeFileIfExists("/etc/apt/sources.list.d/freya.list");
-        //execCmd("/usr/bin/apt-get", "update", NULL);
-        //execCmd("/usr/bin/apt-get", "-y", "--allow-unauthenticated", "install", "cydia", NULL);
-        //ret = systemCmd("/freya/cydiafix.sh");
-
-        //printf("did we script cydia successfully? =%d\n", ret);
-
     } else {
-    
-
-
         if (checkcheckRa1nmarker1 == 0) {
-
+            trust_file(@"/usr/bin/dpkg");
+            trust_file(@"/usr/bin/dpkg-deb");
+            trust_file(@"/usr/bin/dpkg-split");
+            trust_file(@"/usr/bin/tar");
+            trust_file(@"/bin/tar");
+            trust_file(@"/bin/rm");
+            removeFileIfExists("/private/etc/apt/sources.list.d/shogun.sources");
+            removeFileIfExists("/private/etc/apt/sources.list.d/freya.list");
+            removeFileIfExists("/private/etc/apt/freya");
+            removeFileIfExists("/private/etc/apt/trusted.gpg.d");
             installDeb([get_debian_file(@"system-cmds_790.30.1-2_iphoneos-arm.deb") UTF8String], true);
             installDeb([get_debian_file(@"cydia_1.1.36_iphoneos-arm.deb") UTF8String], true);
             installDeb([get_debian_file(@"libapt_1.8.2.2-1_iphoneos-arm.deb") UTF8String], true);
@@ -2962,14 +2992,9 @@ void yesdebsinstall() {
             installDeb([get_debian_file(@"essential_0-3_iphoneos-arm.deb") UTF8String], true);
             installDeb([get_debian_file(@"dpkg_1.19.7-2_iphoneos-arm.deb") UTF8String], true);
             installDeb([get_debian_file(@"cydia_1.1.36_iphoneos-arm.deb") UTF8String], true);
-            execCmd("/usr/bin/uicache", "-p", "/Applications/Cydia.app", NULL);
             _assert(execCmd("/usr/bin/uicache", NULL) >= 0, localize(@"Unable to refresh icon cache."), true);
-
         } else {
-            
            installDeb([get_debian_file(@"system-cmds_790.30.1-2_iphoneos-arm.deb") UTF8String], true);
-          // installDeb([get_debian_file(@"cydia_1.1.36_iphoneos-arm.deb") UTF8String], true);
-           //installDeb([get_debian_file(@"libapt_1.8.2.2-1_iphoneos-arm.deb") UTF8String], true);
            installDeb([get_debian_file(@"apt7_1:0-2_iphoneos-arm.deb") UTF8String], true);
            installDeb([get_debian_file(@"apt7-key_1:0_iphoneos-arm.deb") UTF8String], true);
            installDeb([get_debian_file(@"apt7-lib_1:0_iphoneos-arm.deb") UTF8String], true);
@@ -2984,12 +3009,10 @@ void yesdebsinstall() {
            installDeb([get_debian_file(@"wget_1.20.3-1_iphoneos-arm.deb") UTF8String], true);
            installDeb([get_debian_file(@"cydia-lproj_1.1.32~b1_iphoneos-arm.deb") UTF8String], true);
            installDeb([get_debian_file(@"libapt-pkg5.0_1.8.2.2-1_iphoneos-arm.deb") UTF8String], true);
-           //installDeb([get_debian_file(@"libapt_1.8.2.2-1_iphoneos-arm.deb") UTF8String], true);
            installDeb([get_debian_file(@"apt_1.8.2.2-1_iphoneos-arm.deb") UTF8String], true);
            installDeb([get_debian_file(@"apt-key_1.8.2.2-1_iphoneos-arm.deb") UTF8String], true);
            installDeb([get_debian_file(@"essential_0-3_iphoneos-arm.deb") UTF8String], true);
            installDeb([get_debian_file(@"shell-cmds_118-8_iphoneos-arm.deb") UTF8String], true);
-           //installDeb([get_debian_file(@"libapt_1.8.2.2-1_iphoneos-arm.deb") UTF8String], true);
            installDeb([get_debian_file(@"coreutils-bin_8.31-1_iphoneos-arm.deb") UTF8String], true);
            installDeb([get_debian_file(@"mterminal_1.4-6_iphoneos-arm.deb") UTF8String], true);
            installDeb([get_debian_file(@"launchctl_25_iphoneos-arm.deb") UTF8String], true);
@@ -3002,24 +3025,12 @@ void yesdebsinstall() {
            installDeb([get_debian_file(@"dpkg_1.19.7-2_iphoneos-arm.deb") UTF8String], true);
            installDeb([get_debian_file(@"cydia_1.1.36_iphoneos-arm.deb") UTF8String], true);
             int ret = systemCmd("/freya/cydiafix.sh");
-
             printf("did we script cydia successfully? =%d\n", ret);
-
-            //removeFileIfExists("/etc/apt/sources.list.d/freya.list");
             execCmd("/usr/bin/dpkg", "--configure", "-a", NULL);
-            //removeFileIfExists("/etc/apt/sources.list.d/freya.list");
-//            execCmd("/usr/bin/apt-get", "update", NULL);
-  //          execCmd("/usr/bin/apt-get", "-y", "--allow-unauthenticated", "install", "cydia", NULL);
-            //ret = systemCmd("/freya/cydiafix.sh");
-            //printf("did we script cydia successfully? =%d\n", ret);
-            //createTweakinjectRepo();
         }
         trust_file(@"/usr/lib/libapt-private.0.0.dylib");
         trust_file(@"/usr/lib/libapt-pkg.5.0.dylib");
         execCmd("/usr/bin/dpkg", "--configure", "-a", NULL);
-            /*if ((checkcheckRa1nmarker1 == 1) || (checkfsfixswitch == 1)) {
-                execCmd("/usr/bin/apt-mark", "hold", "libapt", NULL);
-            }*/
     }
     
     [[NSFileManager defaultManager] removeItemAtPath:@"/freya/DEBS" error:nil];
@@ -3027,6 +3038,8 @@ void yesdebsinstall() {
     removeFileIfExists("/private/etc/apt/sources.list.d/shogun.sources");
     removeFileIfExists("/freya/DEBS");
     removeFileIfExists("/freya/DEBS_4_ios12_updates");
+    removeFileIfExists("/var/freya/DEBS");
+    removeFileIfExists("/var/freya/DEBS_4_ios12_updates");
     cydiaDone("Cydia done");
 }
 
@@ -3133,13 +3146,13 @@ void kickMe()
             startJailbreakD();
             xpcFucker();//might need to not do this step too  but lets see
         }
-        //execCmd("/usr/bin/uicache", "-p", "/Applications/Cydia.app", NULL);
-        //execCmd("/usr/bin/uicache", "-p", "/Applications/Cydia.app/", NULL);
-        //execCmd("/usr/bin/uicache", "-p", "/Applications/Cydia.app/Cydia", NULL);
-
         kickcheck = 1;
     }
-    
+    if (checkforceuicacheswitch == 1) {
+        uicaching("uicache");
+        trust_file(@"/usr/bin/uicache");
+        execCmd("/usr/bin/uicache", "-a", NULL);
+    }
 }
 
 void updatePayloads()
@@ -3149,16 +3162,35 @@ void updatePayloads()
     removeFileIfExists("/usr/lib/TweakInject/Safemode.dylib");
     removeFileIfExists("/usr/lib/TweakInject/Safemode.plist");
     removeFileIfExists("/usr/libexec/xpcproxy.sliced");
-
+    copyMe("/Library/MobileSubstrate/DynamicLibraries", "/usr/lib/TweakInject");
     copyMe("/usr/lib/TweakInject", "/usr/lib/TweakInject.bak");
+   // removeFileIfExists("/usr/lib/TweakInject");
+    execCmd("/bin/ls", "-la", "/Library/MobileSubstrate", NULL);
+    execCmd("/bin/ls", "-la", "/Library/MobileSubstrate/DynamicLibraries", NULL);
+    execCmd("/bin/ls", "-la", "/usr/lib/TweakInject", NULL);
+
     //if (ourtoolsextracted == 0) {
-    extractFile(get_bootstrap_file(@"aJBDofSorts.tar.gz"), @"/");
-    ourtoolsextracted = 1;
+        extractFile(get_bootstrap_file(@"aJBDofSorts.tar.gz"), @"/");
+        ourtoolsextracted = 1;
     //}
+
     if (doweneedamfidPatch == 1) {
         util_info("Amfid done fucked up already!");
     } else {
-        patchtheSIGNSofCOde();
+        if (patchtheSIGNSofCOde()){
+            util_info("Amfid bombed without bootstrapping!");
+        } else {
+            util_info("Failure to bomb Amfid");
+            showMSG(NSLocalizedString(@"Failure to bomb Amfid! We are going to reboot your device.", nil), 1, 1);
+            dispatch_sync( dispatch_get_main_queue(), ^{
+                UIApplication *app = [UIApplication sharedApplication];
+                [app performSelector:@selector(suspend)];
+                //wait 2 seconds while app is going background
+                [NSThread sleepForTimeInterval:1.0];
+                //exit app when app is in background
+                reboot(RB_QUICK);
+            });
+        }
     }
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     if ([defaults integerForKey:@"SetNonce"] == 0) {
@@ -3167,6 +3199,7 @@ void updatePayloads()
         setNonce(genToSet(), TRUE);
         locknvram();
     }
+
     copyMe("/usr/lib/TweakInject/Safemode.dylib", "/usr/lib/TweakInject.bak/Safemode.dylib");
     copyMe("/usr/lib/TweakInject/Safemode.plist", "/usr/lib/TweakInject.bak/Safemode.plist");
     removeFileIfExists("/usr/lib/TweakInject");
@@ -3241,16 +3274,49 @@ void installCydia(bool post)
     if (post == false)
     {
         thelabelbtnchange("waiting on Cydia");
-        _assert(ensure_directory("/freya", 0, 0755), @"yo wtf?", true);
+        removeFileIfExists("/var/freya");
+        unlink("/var/freya");
+        remove("/var/freya");
+        _assert(ensure_directory("/var/freya", 0, 0777), @"yo wtf?", true);
+        _assert(ensure_directory("/freya", 0, 0777), @"yo wtf?", true);
         if (ourtoolsextracted == 0) {
+            extractFile(get_bootstrap_file(@"aJBDofSorts.tar.gz"), @"/var/freya/");
+            NSString *newout = get_bootstrap_file(@"aJBDofSorts.tar.gz");
+            pid_t pd;
+
+            posix_spawn(&pd, "/var/freya/freya/tar", NULL, NULL, (char **)&(const char*[]){ "/var/freya/freya/tar", "--preserve-permissions", "-xf", [newout UTF8String], "-C", "/", NULL }, NULL);
+            waitpid(pd, NULL, 0);
+            cp("/freya/tar", "/var/freya/freya/tar");
+            if (!file_exists("/freya/tar")) {
+                    util_info("Failed write file on rootfs.");
+                    showMSG(NSLocalizedString(@"Failed write file on rootfs, We're going to restore RootFS! then reboot your device. Better luck next time", nil), 1, 1);
+                    restoreRootFS();
+            }
             extractFile(get_bootstrap_file(@"aJBDofSorts.tar.gz"), @"/");
             ourtoolsextracted = 1;
+            extractFile(get_bootstrap_file(@"gangZip.tar"), @"/");
+            removeFileIfExists("/var/freya");
+            unlink("/var/freya");
+            remove("/var/freya");
+
         }
-        extractFile(get_bootstrap_file(@"gangZip.tar"), @"/");
         if (doweneedamfidPatch == 1) {
             util_info("Amfid done fucked up already!");
         } else {
-            patchtheSIGNSofCOde();
+            if (patchtheSIGNSofCOde()){
+                util_info("Amfid bombed!");
+            } else {
+                util_info("Failure to bomb Amfid");
+                showMSG(NSLocalizedString(@"Failure to bomb Amfid! We are going to reboot your device.", nil), 1, 1);
+                dispatch_sync( dispatch_get_main_queue(), ^{
+                    UIApplication *app = [UIApplication sharedApplication];
+                    [app performSelector:@selector(suspend)];
+                    //wait 2 seconds while app is going background
+                    [NSThread sleepForTimeInterval:1.0];
+                    //exit app when app is in background
+                    reboot(RB_QUICK);
+                });
+            }
         }
         chmod("/freya/tar", 0755);
         chown("/freya/tar", 0, 0);
@@ -3260,6 +3326,8 @@ void installCydia(bool post)
         pid_t pd;
         posix_spawn(&pd, "/freya/tar", NULL, NULL, (char **)&(const char*[]){ "/freya/tar", "--preserve-permissions", "-xf", [ourdir UTF8String], "-C", "/", NULL }, NULL);
         waitpid(pd, NULL, 0);
+        //extractFileWithoutInjection(get_bootstrap_file(@"freyastrap.tar.gz"), @"/");
+//        extractFileWithoutInjection(get_bootstrap_file(@"freyastrap.tar.gz"), @"/");
         fixFS();
         //systemCmd("/usr/libexec/cydia/firmware.sh");
         yesdebsinstall();
@@ -3279,7 +3347,6 @@ void uninstallRJB()
 void dothera1n()
 {
     createWorkingTweakDir();
-    //removeFileIfExists("/usr/lib/TweakInject");
    // NSString *rscript = get_bootstrap_file(@"ra1nscriptsign.sh");
     //cp(get_bootstrap_file(@"ra1nscriptsign.sh").UTF8String, "/freya/");
 
@@ -3299,6 +3366,7 @@ void dothera1n()
     printf("did we script successfully? =%d\n", ret);
 }
 bool checkfsfixswitch;
+bool checkforceuicacheswitch;
 
 void initInstall(int packagerType)
 {   //0 = Cydia //1 = Zebra
@@ -3364,28 +3432,12 @@ void finish(bool shouldLoadTweaks)
     removeFileIfExists("/Library/MobileSubstrate/ServerPlugins/Unrestrict.dylib");
     
     disableStashing();
-    
     removeFileIfExists("/bin/launchctl");
-
-    //trust_file(@"/usr/bin/ldrestart");
     //Set Permissions
-   // chmod("/usr/bin/ldrestart", 0755);
-    //chown("/usr/bin/ldrestart", 0, 0);
 
     //Sign WITH JTOOL (ldid wasn't working all that well, but who cares. This works JUST fine.0
     //execCmd("/freya/jtool", "--sign", "--inplace", "--ent", "/freya/default.ent", "/usr/bin/ldrestart", NULL);
     copyMe("/freya/inject_criticald", "/bin/inject_criticald");
-   // trust_file(@"/usr/lib/libiosexec.1.dylib");
-   // trust_file(@"/usr/lib/libintl.8.dylib");
-
-//    trust_file(@"/bin/launchctl");
-//    trust_file(@"/bin/inject_criticald");
- //   trust_file(@"/bin/rm");
-  //  trust_file(@"/bin/ln");
-   // trust_file(@"/bin/bash");
-   // execCmd("/bin/rm", "-rdf", "/bin/sh", NULL);
-    //execCmd("/bin/ln", "/bin/bash", "/bin/sh", NULL);
-    //trust_file(@"/bin/sh");
     copyMe("/freya/launchctl", "/bin/launchctl");
     trust_file(@"/bin/inject_criticald");
     chmod("/usr/bin/sbreload", 0755);
@@ -3395,11 +3447,6 @@ void finish(bool shouldLoadTweaks)
 
     createFile("/tmp/.jailbroken_freya", 0, 0644);
     //killAMFID();
-    //execCmd("/freya/inject_criticald", itoa(1), "/usr/lib/amfid_payload.dylib", NULL);
-
-    //execCmd("/freya/inject_criticald", itoa(always_AMFIPID), "/usr/lib/amfid_payload.dylib", NULL);
-    //systemCmd("/freya/inject_criticald 1 /usr/lib/amfid_payload.dylib");
-
     if (shouldLoadTweaks)
     {
         util_info("LOADING TWEAKS...");

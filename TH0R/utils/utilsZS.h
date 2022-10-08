@@ -71,6 +71,7 @@ void createWorkingDir(void);
 void installSSH(void);
 void xpcFucker(void);
 void finish(bool shouldLoadTweaks);
+
 void runVoucherSwap(void);
 void runExploit(int expType);
 void initInstall(int packagerType);
@@ -79,6 +80,8 @@ struct tfp0;
 
 //SETTINGS
 BOOL shouldLoadTweaks(void);
+BOOL shoulduicache(void);
+
 int getExploitType(void);
 int getPackagerType(void);
 void initSettingsIfNotExist(void);
@@ -86,7 +89,7 @@ void saveCustomSetting(NSString *setting, int settingResult);
 BOOL shouldRestoreFS(void);
 BOOL shouldfixFS(void);
 extern bool checkfsfixswitch;
-
+extern bool checkforceuicacheswitch;
 BOOL isRootless(void);
 
 
