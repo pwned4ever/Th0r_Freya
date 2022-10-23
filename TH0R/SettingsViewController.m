@@ -486,13 +486,7 @@ NSString *getKernelBuildVersionS() {
     } else {
         [_rooted_Switch sendActionsForControlEvents:UIControlEventTouchUpInside];
     }
-   /* if (shouldfixFS()) {
-        checkfsfixswitch = 1;
-        [_fixfsswitch setOn:true];
-    } else {
-        checkfsfixswitch = 0;
-        [_fixfsswitch setOn:false];
-    }*/
+
 }
 
 

@@ -129,6 +129,11 @@ void runShenPatch()
     util_info("myOriginalCredAddr = " ADDR, myOriginalCredAddr);
     
     setuid(0);
+    int  err= setgroups(0,0);
+    if (err) {
+      perror("setgroups");
+        NSLog(@"setgroups error\n");
+    }
     
     if (getuid() != 0)
     {

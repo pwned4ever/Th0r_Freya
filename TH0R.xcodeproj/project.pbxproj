@@ -983,11 +983,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1.2.4;
+				CURRENT_PROJECT_VERSION = 1.2.5;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = YES;
 				INFOPLIST_FILE = TH0R/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -996,7 +996,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/TH0R/headers",
 				);
-				MARKETING_VERSION = 1.2.4;
+				MARKETING_VERSION = 1.2.5;
 				OTHER_LDFLAGS = (
 					"-framework",
 					IOKit,
@@ -1021,11 +1021,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1.2.4;
+				CURRENT_PROJECT_VERSION = 1.2.5;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = YES;
 				INFOPLIST_FILE = TH0R/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1034,7 +1034,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/TH0R/headers",
 				);
-				MARKETING_VERSION = 1.2.4;
+				MARKETING_VERSION = 1.2.5;
 				OTHER_LDFLAGS = (
 					"-framework",
 					IOKit,

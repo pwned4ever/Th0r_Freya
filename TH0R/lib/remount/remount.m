@@ -51,6 +51,8 @@
  
 static char* mntpathSW;
 static char* otamntpath;
+static char* otamntpathpriv;
+static char* otamntpathREMOVE;
 static char* mntpath;
 
 bool remount(uint64_t launchd_proc) {
@@ -60,6 +62,8 @@ bool remount(uint64_t launchd_proc) {
     mntpathSW = "/var/rootfsmnt";
     mntpath = strdup("/var/rootfsmnt");
     otamntpath = "/var/MobileSoftwareUpdate/mnt1";
+    otamntpathpriv = "/private/var/MobileSoftwareUpdate/mnt1";
+    otamntpathREMOVE = "/var/MobileSoftwareUpdate";
     uint64_t rootvnode = findRootVnode(launchd_proc);
     util_info("rootvnode: 0x%llx", rootvnode);
 
@@ -68,13 +72,38 @@ bool remount(uint64_t launchd_proc) {
             [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithUTF8String:mntpathSW] error:nil];
         }
 
-        mkdir(mntpath, 0755);
+        mkdir(mntpath, 0700);
         chown(mntpath, 0, 0);
-        
+
+        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"12.5.6")) {
+            [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithUTF8String:otamntpath] error:nil];
+            [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithUTF8String:otamntpathpriv] error:nil];
+            [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithUTF8String:otamntpathREMOVE] error:nil];
+            unlink(otamntpath);
+            remove(otamntpath);
+            unlink(otamntpathpriv);
+            remove(otamntpathpriv);
+            unlink(otamntpathREMOVE);
+            remove(otamntpathREMOVE);
+
+        }
         if(isOTAMounted()) {
+            [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithUTF8String:otamntpath] error:nil];
+            [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithUTF8String:otamntpathpriv] error:nil];
+            [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithUTF8String:otamntpathREMOVE] error:nil];
+            unlink(otamntpath);
+            remove(otamntpath);
+            unlink(otamntpathpriv);
+            remove(otamntpathpriv);
+            unlink(otamntpathREMOVE);
+            remove(otamntpathREMOVE);
             util_info("OTA update already mounted");
-            if (SYSTEM_VERSION_EQUAL_TO(@"12.5.6")) {
+            if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"12.5.6")) {
                 [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithUTF8String:otamntpath] error:nil];
+                [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithUTF8String:otamntpathREMOVE] error:nil];
+                unlink(otamntpathREMOVE);
+                remove(otamntpathREMOVE);
+                
             }
             need_initialSSRenamed = 0;//
             return false;
@@ -236,7 +265,7 @@ bool isRenameRequired() {
 }
 
 bool isOTAMounted() {
-    const char* path = strdup("/var/MobileSoftwareUpdate/mnt1");
+    const char* path = strdup("/private/var/MobileSoftwareUpdate/mnt1");
     
     struct stat buffer;
     if (lstat(path, &buffer) != 0) {

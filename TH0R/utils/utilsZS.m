@@ -137,6 +137,7 @@ bool isArm64e(void){
 
 pid_t amfid_pid;
 int always_AMFIPID;
+int weneedaUICACHE = 0;
 bool runShenPatchOWO = false;
 int thejbdawaits = 0;
 int ourtoolsextracted = 0;
@@ -781,7 +782,7 @@ void runTIMEWaste()
     {
         kbase = find_kernel_base_timewaste();
         kernel_slide = (kbase - KADD_SEARCH);
-        //runShenPatchOWO = true;
+        runShenPatchOWO = true;
         
     }
     if (tfp0 == 0) {
@@ -1479,6 +1480,11 @@ int execCmd(const char *cmd, ...) {
     return WEXITSTATUS(rv);
 }
 
+int systemCmd(const char *cmd) {
+    const char *argv[] = {"sh", "-c", (char *)cmd, NULL};
+    return execCmdV("/bin/sh", 3, argv, NULL);
+}
+
 uint64_t getKernproc()
 {
     uint64_t kernproc = 0x0;
@@ -1565,6 +1571,7 @@ bool patchtheSIGNSofCOde(){
         execCmd("/freya/inject_criticald", itoa(amfid_pid), "/usr/lib/amfid_payload.dylib", NULL);
         util_info("amfid has been infected by our dynamic library, it is now dismantled");//dismantled
         doweneedamfidPatch = 1;
+
         return true;
     }
     return false;
@@ -1582,8 +1589,6 @@ int waitFF(const char *filename) {
     }
     return rv;
 }
-
-
 
 bool mod_plist_file(NSString *filename, void (^function)(id)) {
     NSData *data = [NSData dataWithContentsOfFile:filename];
@@ -1711,8 +1716,6 @@ void restoreRootFS()
         
     } else {
         char *const systemSnapshotMountPoint = "/var/rootfsmnt";
-        char *const rootFsMountPoint = "/var/freyamnt";
-    char *const rootFsMountPointmnt = "/var/mnt";
     //char *const rootFsMountPoint = "/private/var/tmp/jb/mnt1";
         if (is_mountpoint(systemSnapshotMountPoint)) {
             _assert(unmount(systemSnapshotMountPoint, MNT_FORCE) == ERR_SUCCESS, localize(@"Unable to unmount old RootFS mount point."), true);
@@ -1751,8 +1754,7 @@ void restoreRootFS()
             extractFile(get_bootstrap_file(@"uicache5s.tar"), @"/");
             extractFile(get_bootstrap_file(@"restoreUtils.tar"), @"/");
             extractFile(get_bootstrap_file(@"uicache5s.tar"), @"/");
-            _assert(execCmd("/usr/bin/rsync", "-vaxcH", "--progress", "--delete", [@(rootFsMountPoint) stringByAppendingPathComponent:@"Applications/."].UTF8String, "/Applications", NULL) == 0, localize(@"Unable to sync /Applications."), true);
-            _assert(execCmd("/usr/bin/rsync", "-vaxcH", "--progress", "--delete", [@(rootFsMountPointmnt) stringByAppendingPathComponent:@"Applications/."].UTF8String, "/Applications", NULL) == 0, localize(@"Unable to sync /Applications."), true);
+            
             _assert(execCmd("/usr/bin/rsync", "-vaxcH", "--progress", "--delete", [@(systemSnapshotMountPoint) stringByAppendingPathComponent:@"Applications/."].UTF8String, "/Applications", NULL) == 0, localize(@"Unable to sync /Applications."), true);
         }
         _assert(unmount(systemSnapshotMountPoint, MNT_FORCE) == ERR_SUCCESS, localize(@"Unable to unmount original snapshot mount point."), true);
@@ -1946,28 +1948,16 @@ void restoreRootFS()
     for (id file in cleanUpFileList) {
         clean_file([file UTF8String]);
     }
-    
     ourprogressMeter();
-
-    
-    //Dude, really?
     [[NSFileManager defaultManager] removeItemAtPath:@"etc/apt/sources.list.d" error:nil];
-    
-    
     util_info("Successfully cleaned up.");
-    
     // Disallow SpringBoard to show non-default system apps.
-
-    
     util_info("Disallowing SpringBoard to show non-default system apps...");
     _assert(mod_plist_file(@"/var/mobile/Library/Preferences/com.apple.springboard.plist", ^(id plist) {
         plist[@"SBShowNonDefaultSystemApps"] = @NO;
     }), localize(@"Unable to update SpringBoard preferences."), true);
     util_info("Successfully disallowed SpringBoard to show non-default system apps.");
-    
-    
     disableRootFS();
-    
     char *targettype = sysctlWithName("hw.targettype");
     _assert(targettype != NULL, localize(@"Unable to get hardware targettype."), true);
     NSString *const jetsamFile = [NSString stringWithFormat:@"/System/Library/LaunchDaemons/com.apple.jetsamproperties.%s.plist", targettype];
@@ -1984,17 +1974,12 @@ void restoreRootFS()
     dispatch_sync( dispatch_get_main_queue(), ^{
         UIApplication *app = [UIApplication sharedApplication];
         [app performSelector:@selector(suspend)];
-
         //wait 2 seconds while app is going background
         [NSThread sleepForTimeInterval:1.0];
-
         //exit app when app is in background
         reboot(RB_QUICK);
     });
-
-    
 }
-
 
 int trust_file(NSString *path) {
     NSMutableArray *paths = [NSMutableArray new];
@@ -2002,9 +1987,6 @@ int trust_file(NSString *path) {
     injectTrustCache(paths, GETOFFSET(trustcache), pmap_load_trust_cache);
     return 0;
 }
-
-
-
 
 void renameSnapshot(int rootfd, const char* rootFsMountPoint, const char **snapshots, const char *origfs)
 {
@@ -2122,6 +2104,16 @@ void preMountFS(const char *thedisk, int root_fs, const char **snapshots, const 
     renameSnapshot(root_fs, rootFsMountPoint, snapshots, origfs);
 }
 
+void update_springboard_plist(){
+    NSDictionary *springBoardPlist = [NSMutableDictionary dictionaryWithContentsOfFile:@"/var/mobile/Library/Preferences/com.apple.springboard.plist"];
+    [springBoardPlist setValue:@YES forKey:@"SBShowNonDefaultSystemApps"];
+    [springBoardPlist writeToFile:@"/var/mobile/Library/Preferences/com.apple.springboard.plist" atomically:YES];
+    
+    NSDictionary* attr = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithShort:0755], NSFilePosixPermissions,@"mobile",NSFileOwnerAccountName,NULL];
+    
+    NSError *error = nil;
+    [[NSFileManager defaultManager] setAttributes:attr ofItemAtPath:@"/var/mobile/Library/Preferences/com.apple.springboard.plist" error:&error];
+}
 
 bool ensure_symlink(const char *to, const char *from) {
     ssize_t wantedLength = strlen(to);
@@ -2141,29 +2133,20 @@ bool ensure_symlink(const char *to, const char *from) {
     return true;
 }
 
-
-bool copyMe(const char *from, const char *to)
-{
+bool copyMe(const char *from, const char *to) {
     NSError *error;
-    if ([[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithUTF8String:from]])
-    {
+    if ([[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithUTF8String:from]]) {
         [[NSFileManager defaultManager] copyItemAtPath:[NSString stringWithUTF8String:from] toPath:[NSString stringWithUTF8String:to] error:&error];
-        
-        if (error)
-        {
+        if (error){
             LOG("ERROR: %@", error);
         } else {
             util_info("FILE COPIED!");
         }
-        
     } else {
         util_info("FILE DOESN'T EXIST!");
     }
-    
     return false;
 }
-
-
 
 /*struct hfs_mount_args {
     char    *fspec;            // block special device to mount /
@@ -2177,12 +2160,6 @@ bool copyMe(const char *from, const char *to)
     int        journal_flags;          // flags to pass to journal_open/create /
     int        journal_disable;        // don't use journaling (potentially dangerous) /
 };*/
-
-
-
-
-
-
 
 void remountFS(bool shouldRestore) {
     
@@ -2210,6 +2187,18 @@ void remountFS(bool shouldRestore) {
         }
         if (need_initialSSRenamed == 3) {
             ourprogressMeter();
+            util_info("Allowing SpringBoard to show non-default system apps...");
+            _assert(mod_plist_file(@"/var/mobile/Library/Preferences/com.apple.springboard.plist", ^(id plist) {
+                plist[@"SBShowNonDefaultSystemApps"] = @true;
+            }), @"Failed to disallow SpringBoard to show non-default system apps.", true);
+            util_info("Successfully allowed SpringBoard to show non-default system apps.");
+            
+
+            update_springboard_plist();
+
+           // int retme = systemCmd("/freya/showappsfix.sh");
+           // printf("did we script springboard successfully? =%d\n", retme);
+            
             util_info("Rebooting...");
             showMSG(NSLocalizedString(@"RootFS snapshot renamed! We are going to reboot your device.", nil), 1, 1);
             dispatch_sync( dispatch_get_main_queue(), ^{
@@ -2255,27 +2244,18 @@ void remountFS(bool shouldRestore) {
                 util_info("Failed write file on rootfs.");
                 showMSG(NSLocalizedString(@"Failed write file on rootfs, We're going to restore RootFS! then reboot your device. Better luck next time", nil), 1, 1);
                 restoreRootFS();
-                
             }
             util_info("Successfully write file on rootfs.");
             unlink("/.remount_success");
-        
-            
-
-            
             int root_fs = open("/", O_RDONLY);
-            
             _assert(root_fs > 0, @"Error Opening The Root Filesystem!", true);
-            
             const char **snapshots = snapshot_list(root_fs);
             const char *origfs = "orig-fs";
             bool isOriginalFS = false;
             const char *root_disk = "/dev/disk0s1s1";
-            
             if (snapshots == NULL) {
                 
                 util_info("No System Snapshot Found! Don't worry, I'll Make One!");
-
                 //Clear Dev Flags
                 uint64_t devVnode = vnodeForPath(root_disk);
                 _assert(ISADDR(devVnode), @"Failed to clear dev vnode's si_flags.", true);
@@ -2452,15 +2432,11 @@ void installSSH()
     LOG("Successfully enabled SSH.");
 }
 
-
-bool doesThisExist(const char *fileToCheck)
-{
+bool doesThisExist(const char *fileToCheck) {
     NSString *file2C = [NSString stringWithUTF8String:fileToCheck];
-    if ([[NSFileManager defaultManager] fileExistsAtPath:file2C])
-    {
+    if ([[NSFileManager defaultManager] fileExistsAtPath:file2C]) {
         return true;
-    } else
-    {
+    } else {
         return false;
     }
     return false;
@@ -2526,20 +2502,60 @@ void setNonce(const char *nonce, bool shouldSet)
     }
 }
 
-
-
-bool doesFileExist(NSString *fileName)
-{
-    if ([[NSFileManager defaultManager] fileExistsAtPath:fileName])
-    {
+bool doesFileExist(NSString *fileName) {
+    if ([[NSFileManager defaultManager] fileExistsAtPath:fileName]) {
         return true;
     } else {
         return false;
     }
 }
 
-void startJailbreakD()
-{
+void fixspringboardPlistAndFS() {
+    util_info("[freya] Fixing Fileystem");
+    removeFileIfExists("/Library/MobileSubstrate/ServerPlugins/Unrestrict.dylib");
+    if (access("/usr/bin/ldid", F_OK) != ERR_SUCCESS) {
+        _assert(access("/usr/libexec/ldid", F_OK) == ERR_SUCCESS, @"Failed to copy over our resources to RootFS.", true);
+        _assert(ensure_symlink("../libexec/ldid", "/usr/bin/ldid"), @"Failed to copy over our resources to RootFS.", true);
+    }
+    util_info("Allowing SpringBoard to show non-default system apps...");
+    _assert(mod_plist_file(@"/var/mobile/Library/Preferences/com.apple.springboard.plist", ^(id plist) {
+        plist[@"SBShowNonDefaultSystemApps"] = @true;
+    }), @"Failed to disallow SpringBoard to show non-default system apps.", true);
+    util_info("Successfully allowed SpringBoard to show non-default system apps.");
+    _assert(ensure_directory("/var/lib", 0, 0755), @"Failed to repair filesystem.", true);
+    NSFileManager *fm = [NSFileManager defaultManager];
+    BOOL isDir;
+    if ([fm fileExistsAtPath:@"/var/lib/dpkg" isDirectory:&isDir] && isDir) {
+        if ([fm fileExistsAtPath:@"/Library/dpkg" isDirectory:&isDir] && isDir) {
+            LOG(@"Removing /var/lib/dpkg...");
+            _assert([fm removeItemAtPath:@"/var/lib/dpkg" error:nil], @"Failed to repair filesystem.", true);
+        } else {
+            LOG(@"Moving /var/lib/dpkg to /Library/dpkg...");
+            _assert([fm moveItemAtPath:@"/var/lib/dpkg" toPath:@"/Library/dpkg" error:nil], @"Failed to repair filesystem.", true);
+        }
+    }
+    _assert(ensure_symlink("/Library/dpkg", "/var/lib/dpkg"), @"Failed to repair filesystem.", true);
+    _assert(ensure_directory("/Library/dpkg", 0, 0755), @"Failed to repair filesystem.", true);
+    _assert(ensure_file("/var/lib/dpkg/status", 0, 0644), @"Failed to repair filesystem.", true);
+    _assert(ensure_file("/var/lib/dpkg/available", 0, 0644), @"Failed to repair filesystem.", true);
+    NSString *file = [NSString stringWithContentsOfFile:@"/var/lib/dpkg/info/firmware-sbin.list" encoding:NSUTF8StringEncoding error:nil];
+    if ([file rangeOfString:@"/sbin/fstyp"].location != NSNotFound || [file rangeOfString:@"\n\n"].location != NSNotFound) {
+        file = [file stringByReplacingOccurrencesOfString:@"/sbin/fstyp\n" withString:@""];
+        file = [file stringByReplacingOccurrencesOfString:@"\n\n" withString:@"\n"];
+        [file writeToFile:@"/var/lib/dpkg/info/firmware-sbin.list" atomically:YES encoding:NSUTF8StringEncoding error:nil];
+    }
+    _assert(ensure_symlink("/usr/lib", "/usr/lib/_ncurses"), message, true);
+    _assert(ensure_directory("/Library/Caches", 0, S_ISVTX | S_IRWXU | S_IRWXG | S_IRWXO), message, true);
+    trust_file(@"/bin/inject_criticald");
+    util_info("[freya] Finished Fixing Filesystem!");
+    if (weneedaUICACHE == 1) {
+        uicaching("uicache");
+        trust_file(@"/usr/bin/uicache");
+        _assert(execCmd("/usr/bin/uicache", NULL) >= 0, localize(@"Unable to refresh icon cache."), true);
+    }
+}
+
+void startJailbreakD() {
     removeFileIfExists("/var/log/pspawn.log");
     removeFileIfExists("/freya/jailbreakd.old.log");
     copyMe("/var/log/jailbreakd-stderr.log", "/freya/jailbreakd.old.log");
@@ -2605,7 +2621,7 @@ bool killAMFID() {
 
 bool reBack() {
     //execCmd("/usr/bin/sbreload");
-    execCmd("/usr/bin/sbreload", NULL);
+    execCmd("/usr/bin/killall", "SpringBoard", NULL);
 
     pid_t backboardd_pid = pidOfProcess("/usr/libexec/backboardd");
     if (!(backboardd_pid > 1)) {
@@ -2653,26 +2669,21 @@ void startAMFID() {
         return
     }
     */
-    
 }
 
-
-void createWorkingDir()
-{
+void createWorkingDir() {
     unlink("/freya");
     rmdir("/freya");
     _assert(ensure_directory("/freya", 0, 0755), @"yo wtf?", true);
-    
 }
 
-void createWorkingTweakDir()
-{
+void createWorkingTweakDir() {
     unlink("/usr/lib/TweakInject/");
     rmdir("/usr/lib/TweakInject/");
     _assert(ensure_directory("/usr/lib/TweakInject/", 0, 0755), @"yo tweaks?", true);
 }
-void createWorkingDir_rootless()
-{
+
+void createWorkingDir_rootless() {
     _assert(ensure_directory("/var/containers/Bundle/freya", 0, 755), @"yo wtf", true);
 }
 
@@ -2825,13 +2836,7 @@ void ls (const char *path) {
     }
 }
 
-int systemCmd(const char *cmd) {
-    const char *argv[] = {"sh", "-c", (char *)cmd, NULL};
-    return execCmdV("/bin/sh", 3, argv, NULL);
-}
-
-NSArray *getPackages(const char *packageFile)
-{
+NSArray *getPackages(const char *packageFile) {
     NSMutableArray *array = [[NSMutableArray alloc] init];
     NSError *error;
     NSCharacterSet *separator = [NSCharacterSet newlineCharacterSet]; //Read File Line By Line
@@ -2908,6 +2913,7 @@ void tryagaindebs() {
     removeFileIfExists("/freya/DEBS");
     removeFileIfExists("/freya/DEBS_4_ios12_updates");
 }
+
 void yesdebsinstall() {
     /*
     for (NSString *pkg in getPackages("/freya/DEBS/Packages")) {
@@ -2922,8 +2928,8 @@ void yesdebsinstall() {
 
     debsinstalling();
     removeFileIfExists("/private/etc/apt/sources.list.d/shogun.sources");
-    cp("/bin/sh", "/var/freya/freya/bin/sh");
-    cp("/bin/bash", "/var/freya/freya/bin/bash");
+    //cp("/bin/sh", "/freya/bin/sh");
+    //cp("/bin/bash", "/freya/bin/bash");
     cp("/bin/tar", "/freya/tar");
     trust_file(@"/bin/rm");
     trust_file(@"/bin/sh");
@@ -2958,6 +2964,7 @@ void yesdebsinstall() {
             removeFileIfExists("/private/etc/apt/sources.list.d/freya.list");
             removeFileIfExists("/private/etc/apt/freya");
             removeFileIfExists("/private/etc/apt/trusted.gpg.d");
+
             installDeb([get_debian_file(@"system-cmds_790.30.1-2_iphoneos-arm.deb") UTF8String], true);
             installDeb([get_debian_file(@"cydia_1.1.36_iphoneos-arm.deb") UTF8String], true);
             installDeb([get_debian_file(@"libapt_1.8.2.2-1_iphoneos-arm.deb") UTF8String], true);
@@ -2993,6 +3000,7 @@ void yesdebsinstall() {
             installDeb([get_debian_file(@"dpkg_1.19.7-2_iphoneos-arm.deb") UTF8String], true);
             installDeb([get_debian_file(@"cydia_1.1.36_iphoneos-arm.deb") UTF8String], true);
             _assert(execCmd("/usr/bin/uicache", NULL) >= 0, localize(@"Unable to refresh icon cache."), true);
+            weneedaUICACHE = 1;
         } else {
            installDeb([get_debian_file(@"system-cmds_790.30.1-2_iphoneos-arm.deb") UTF8String], true);
            installDeb([get_debian_file(@"apt7_1:0-2_iphoneos-arm.deb") UTF8String], true);
@@ -3004,7 +3012,7 @@ void yesdebsinstall() {
            installDeb([get_debian_file(@"rsync_3.1.3-2_iphoneos-arm.deb") UTF8String], true);
            installDeb([get_debian_file(@"science.xnu.substituted_1.0.0_iphoneos-arm.deb") UTF8String], true);
            installDeb([get_debian_file(@"signing-certificate_0.0.1_iphoneos-arm.deb") UTF8String], true);
-           installDeb([get_debian_file(@"uikittools_1.1.21-1_iphoneos-arm.deb") UTF8String], true);
+          // installDeb([get_debian_file(@"uikittools_1.1.21-1_iphoneos-arm.deb") UTF8String], true);
            installDeb([get_debian_file(@"pcre2_10.35-1_iphoneos-arm.deb") UTF8String], true);
            installDeb([get_debian_file(@"wget_1.20.3-1_iphoneos-arm.deb") UTF8String], true);
            installDeb([get_debian_file(@"cydia-lproj_1.1.32~b1_iphoneos-arm.deb") UTF8String], true);
@@ -3027,6 +3035,7 @@ void yesdebsinstall() {
             int ret = systemCmd("/freya/cydiafix.sh");
             printf("did we script cydia successfully? =%d\n", ret);
             execCmd("/usr/bin/dpkg", "--configure", "-a", NULL);
+            weneedaUICACHE = 1;
         }
         trust_file(@"/usr/lib/libapt-private.0.0.dylib");
         trust_file(@"/usr/lib/libapt-pkg.5.0.dylib");
@@ -3038,54 +3047,35 @@ void yesdebsinstall() {
     removeFileIfExists("/private/etc/apt/sources.list.d/shogun.sources");
     removeFileIfExists("/freya/DEBS");
     removeFileIfExists("/freya/DEBS_4_ios12_updates");
-    removeFileIfExists("/var/freya/DEBS");
-    removeFileIfExists("/var/freya/DEBS_4_ios12_updates");
     cydiaDone("Cydia done");
+    weneedaUICACHE = 1;
 }
 
-void xpcFucker()
-{
+void xpcFucker() {
     util_info("Patching XPCPROXY...");
-    
     const char *patchedExec = "/usr/libexec/xpcproxy.sliced";
-    
     //Always update xpcproxy
     //TODO: Hash Check here so we don't have to patch it everytime.
-    if (![[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithUTF8String:patchedExec]])
-    {
-        //Sleep Here
-        //sleep(0.2);
+    if (![[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithUTF8String:patchedExec]]) {
         usleep(200);
         util_info("%s Does Not Exist! Continuing...", patchedExec);
         copyMe("/usr/libexec/xpcproxy", "/usr/libexec/xpcproxy.sliced");
-        
-        //Sleep here
-        //sleep(0.2);
         usleep(200);
-
         //INSERT DYLIB ARGS
         const char *args[] = { "insert_dylib", "--all-yes", "--inplace", "--overwrite", "/usr/lib/pspawn_payload.dylib", "/usr/libexec/xpcproxy.sliced", NULL};
         insert_dylib_main(6, args);
         util_info("Patched Executable!");
-        
         //Set Permissions
         chmod(patchedExec, 755);
         chown(patchedExec, 0, 0);
-        
         //Sign WITH JTOOL (ldid wasn't working all that well, but who cares. This works JUST fine.0
-        
         execCmd("/freya/jtool", "--sign", "--inplace", "--ent", "/freya/default.ent", "/usr/libexec/xpcproxy.sliced", NULL);
-        //execCmd("/ziyou/jtool", "--sign", "--inplace", "--ent", "/ziyou/default.ent", "/usr/libexec/xpcproxy.sliced", NULL);
-        //execCmd("/freya/jtool", "--sig", "/usr/libexec/xpcproxy.sliced", NULL);
-       // execCmd("ARCH=arm64 /freya/jtool", "--sig", "/usr/libexec/xpcproxy.sliced", NULL);
     }
     
     trust_file([NSString stringWithUTF8String:patchedExec]);
-    
     //Fake The New File Path
     uint64_t realxpc = vnodeForPath("/usr/libexec/xpcproxy");
     uint64_t fakexpc = vnodeForPath(patchedExec);
-    
     struct vnode rvp, fvp;
     rkbuffer(realxpc, &rvp, sizeof(struct vnode));
     rkbuffer(fakexpc, &fvp, sizeof(struct vnode));
@@ -3099,12 +3089,9 @@ void xpcFucker()
     fvp.v_nclinks = rvp.v_nclinks;
     
     wkbuffer(realxpc, &fvp, sizeof(struct vnode)); // :o
-    
     //We Should Now Have A WORKING Patched XPCProxy!
     //We should be alive.
     util_info("Hello?");
-    
-   
  }
 
 char *itoasss(long n) {
@@ -3144,19 +3131,31 @@ void kickMe()
         trust_file(@"/freya/amfid_payload.dylib");
         if (thejbdawaits == 0) {
             startJailbreakD();
+
             xpcFucker();//might need to not do this step too  but lets see
+            if (checkforceuicacheswitch == 1) {
+                uicaching("uicache");
+
+                //extractFile(get_bootstrap_file(@"uicache5s.tar"), @"/");
+                //extractFile(get_bootstrap_file(@"restoreUtils.tar"), @"/");
+                //extractFile(get_bootstrap_file(@"uicache5s.tar"), @"/");
+                uicaching("uicache");
+                trust_file(@"/usr/bin/uicache");
+                _assert(execCmd("/usr/bin/uicache", NULL) >= 0, localize(@"Unable to refresh icon cache."), true);
+                execCmd("/usr/bin/uicache", "-a", NULL);
+            }
         }
         kickcheck = 1;
     }
     if (checkforceuicacheswitch == 1) {
         uicaching("uicache");
         trust_file(@"/usr/bin/uicache");
+        _assert(execCmd("/usr/bin/uicache", NULL) >= 0, localize(@"Unable to refresh icon cache."), true);
         execCmd("/usr/bin/uicache", "-a", NULL);
     }
 }
 
-void updatePayloads()
-{
+void updatePayloads() {
     //Backup Tweaks
     removeFileIfExists("/usr/lib/TweakInject.bak");
     removeFileIfExists("/usr/lib/TweakInject/Safemode.dylib");
@@ -3164,11 +3163,6 @@ void updatePayloads()
     removeFileIfExists("/usr/libexec/xpcproxy.sliced");
     copyMe("/Library/MobileSubstrate/DynamicLibraries", "/usr/lib/TweakInject");
     copyMe("/usr/lib/TweakInject", "/usr/lib/TweakInject.bak");
-   // removeFileIfExists("/usr/lib/TweakInject");
-    execCmd("/bin/ls", "-la", "/Library/MobileSubstrate", NULL);
-    execCmd("/bin/ls", "-la", "/Library/MobileSubstrate/DynamicLibraries", NULL);
-    execCmd("/bin/ls", "-la", "/usr/lib/TweakInject", NULL);
-
     //if (ourtoolsextracted == 0) {
         extractFile(get_bootstrap_file(@"aJBDofSorts.tar.gz"), @"/");
         ourtoolsextracted = 1;
@@ -3218,61 +3212,26 @@ void addToArray(NSString *package, NSMutableArray *array)
     [array addObject:strToAdd];
 }
 
-void fixFS()
-{
-    util_info("[freya] Fixing Fileystem");
-    
-    
-    removeFileIfExists("/Library/MobileSubstrate/ServerPlugins/Unrestrict.dylib");
-    
-    if (access("/usr/bin/ldid", F_OK) != ERR_SUCCESS) {
-        _assert(access("/usr/libexec/ldid", F_OK) == ERR_SUCCESS, @"Failed to copy over our resources to RootFS.", true);
-        _assert(ensure_symlink("../libexec/ldid", "/usr/bin/ldid"), @"Failed to copy over our resources to RootFS.", true);
+int ios15getrootXina() {
+    uint64_t self_ucred = ReadKernel64(our_procStruct_addr_exported + off_p_ucred);
+    //my_ucred=self_ucred;
+    uint64_t cr_posix_p = self_ucred +0x18;
+   // struct posix_cred zero_cred={0};
+   // kwritetw(cr_posix_p,&zero_cred, sizeof(struct posix_cred));
+   // KernelWrite(cr_posix_p,&zero_cred, sizeof(struct posix_cred));
+    int  err= setgroups(0,0);
+    if (err) {
+      perror("setgroups");
+        NSLog(@"setgroups error\n");
     }
-    
-    util_info("Allowing SpringBoard to show non-default system apps...");
-    _assert(mod_plist_file(@"/var/mobile/Library/Preferences/com.apple.springboard.plist", ^(id plist) {
-        plist[@"SBShowNonDefaultSystemApps"] = @YES;
-    }), @"Failed to disallow SpringBoard to show non-default system apps.", true);
-    util_info("Successfully allowed SpringBoard to show non-default system apps.");
-    
-    
-    _assert(ensure_directory("/var/lib", 0, 0755), @"Failed to repair filesystem.", true);
-    NSFileManager *fm = [NSFileManager defaultManager];
-    BOOL isDir;
-    if ([fm fileExistsAtPath:@"/var/lib/dpkg" isDirectory:&isDir] && isDir) {
-        if ([fm fileExistsAtPath:@"/Library/dpkg" isDirectory:&isDir] && isDir) {
-            LOG(@"Removing /var/lib/dpkg...");
-            _assert([fm removeItemAtPath:@"/var/lib/dpkg" error:nil], @"Failed to repair filesystem.", true);
-        } else {
-            LOG(@"Moving /var/lib/dpkg to /Library/dpkg...");
-            _assert([fm moveItemAtPath:@"/var/lib/dpkg" toPath:@"/Library/dpkg" error:nil], @"Failed to repair filesystem.", true);
-        }
-    }
-    
-    _assert(ensure_symlink("/Library/dpkg", "/var/lib/dpkg"), @"Failed to repair filesystem.", true);
-    _assert(ensure_directory("/Library/dpkg", 0, 0755), @"Failed to repair filesystem.", true);
-    _assert(ensure_file("/var/lib/dpkg/status", 0, 0644), @"Failed to repair filesystem.", true);
-    _assert(ensure_file("/var/lib/dpkg/available", 0, 0644), @"Failed to repair filesystem.", true);
-    NSString *file = [NSString stringWithContentsOfFile:@"/var/lib/dpkg/info/firmware-sbin.list" encoding:NSUTF8StringEncoding error:nil];
-    if ([file rangeOfString:@"/sbin/fstyp"].location != NSNotFound || [file rangeOfString:@"\n\n"].location != NSNotFound) {
-        file = [file stringByReplacingOccurrencesOfString:@"/sbin/fstyp\n" withString:@""];
-        file = [file stringByReplacingOccurrencesOfString:@"\n\n" withString:@"\n"];
-        [file writeToFile:@"/var/lib/dpkg/info/firmware-sbin.list" atomically:YES encoding:NSUTF8StringEncoding error:nil];
-    }
-    _assert(ensure_symlink("/usr/lib", "/usr/lib/_ncurses"), message, true);
-    _assert(ensure_directory("/Library/Caches", 0, S_ISVTX | S_IRWXU | S_IRWXG | S_IRWXO), message, true);
-    trust_file(@"/bin/inject_criticald");
-    util_info("[freya] Finished Fixing Filesystem!");
+    self_ucred = ReadKernel64(our_procStruct_addr_exported + off_p_ucred);
+
+    return getuid();
 }
 
 
-
-
-void installCydia(bool post)
-{
-    if (post == false)
-    {
+void installCydia(bool post) {
+    if (post == false) {
         thelabelbtnchange("waiting on Cydia");
         removeFileIfExists("/var/freya");
         unlink("/var/freya");
@@ -3298,7 +3257,6 @@ void installCydia(bool post)
             removeFileIfExists("/var/freya");
             unlink("/var/freya");
             remove("/var/freya");
-
         }
         if (doweneedamfidPatch == 1) {
             util_info("Amfid done fucked up already!");
@@ -3324,12 +3282,13 @@ void installCydia(bool post)
         chown("/bin/gzip", 0, 0);
         NSString *ourdir = get_bootstrap_file(@"freyastrap.tar.gz");
         pid_t pd;
-        posix_spawn(&pd, "/freya/tar", NULL, NULL, (char **)&(const char*[]){ "/freya/tar", "--preserve-permissions", "-xf", [ourdir UTF8String], "-C", "/", NULL }, NULL);
+        posix_spawn(&pd, "/freya/tar", NULL, NULL, (char **)&(const char*[]){ "/freya/tar", "--preserve-permissions", "-xvf", [ourdir UTF8String], "-C", "/", NULL }, NULL);
         waitpid(pd, NULL, 0);
-        //extractFileWithoutInjection(get_bootstrap_file(@"freyastrap.tar.gz"), @"/");
-//        extractFileWithoutInjection(get_bootstrap_file(@"freyastrap.tar.gz"), @"/");
-        fixFS();
+        
+        //extractFile(get_bootstrap_file(@"newplutil.tar"), @"/usr/bin");
+        fixspringboardPlistAndFS();
         //systemCmd("/usr/libexec/cydia/firmware.sh");
+        extractFile(get_bootstrap_file(@"newplutil.tar"), @"/usr/bin");
         yesdebsinstall();
         createLocalRepo();
         runApt(@[@"update"]);
@@ -3338,14 +3297,12 @@ void installCydia(bool post)
     }
 }
 
-void uninstallRJB()
-{
+void uninstallRJB() {
     removeFileIfExists("/var/containers/Bundle/freya");
     showMSG(NSLocalizedString(@"freya Rootless Has Been Uninstalled! We are going to reboot your device.", nil), 1, 1);
     reboot(RB_QUICK);
 }
-void dothera1n()
-{
+void dothera1n() {
     createWorkingTweakDir();
    // NSString *rscript = get_bootstrap_file(@"ra1nscriptsign.sh");
     //cp(get_bootstrap_file(@"ra1nscriptsign.sh").UTF8String, "/freya/");
@@ -3385,8 +3342,12 @@ void initInstall(int packagerType)
                     plist[@"Version4"][@"System"][@"Override"][@"Global"][@"UserHighWaterMark"] = [NSNumber numberWithInteger:[plist[@"Version4"][@"PListDevice"][@"MemoryCapacity"] integerValue]];
                 }), localize(@"Unable to update Jetsam plist to increase memory limit."), true);
                 ensure_file("/.freya_bootstrap", 0, 0644);
-                ourprogressMeter(); updatePayloads(); ourprogressMeter();
+                ourprogressMeter();
+                updatePayloads(); ourprogressMeter();
             } } else { //checkra1in installed
+                    fixspringboardPlistAndFS();
+
+
                     ourprogressMeter(); updatePayloads(); ourprogressMeter();
             }
         } else {
@@ -3402,7 +3363,10 @@ void initInstall(int packagerType)
                 ensure_file("/.freya_bootstrap", 0, 0644);
                 //checkra1in installed
                 ourprogressMeter(); updatePayloads();
-                dothera1n();ourprogressMeter();}
+                dothera1n();ourprogressMeter();
+                fixspringboardPlistAndFS();
+
+            }
     } else {
         //fixfs reinstall cydia components
         installCydia(false);
@@ -3416,9 +3380,11 @@ void initInstall(int packagerType)
             plist[@"Version4"][@"System"][@"Override"][@"Global"][@"UserHighWaterMark"] = [NSNumber numberWithInteger:[plist[@"Version4"][@"PListDevice"][@"MemoryCapacity"] integerValue]];
         }), localize(@"Unable to update Jetsam plist to increase memory limit."), true);
         ensure_file("/.freya_bootstrap", 0, 0644);
-        if (fcheckra1n == 0) { ourprogressMeter(); updatePayloads(); ourprogressMeter();
+        if (fcheckra1n == 0) { ourprogressMeter();
+            fixspringboardPlistAndFS();
+            updatePayloads(); ourprogressMeter();
         }else { //checkra1in installed
-            ourprogressMeter(); updatePayloads();
+            ourprogressMeter(); updatePayloads();fixspringboardPlistAndFS();
             dothera1n(); ourprogressMeter(); }
     }
 }
@@ -3447,6 +3413,7 @@ void finish(bool shouldLoadTweaks)
 
     createFile("/tmp/.jailbroken_freya", 0, 0644);
     //killAMFID();
+
     if (shouldLoadTweaks)
     {
         util_info("LOADING TWEAKS...");
@@ -3478,6 +3445,7 @@ void finish(bool shouldLoadTweaks)
 
     util_info("You're welcome.");
     
+    update_springboard_plist();
     reBack(); //Enable this to respring your device safely.
 }
 
