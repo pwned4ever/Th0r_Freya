@@ -1,0 +1,7 @@
+55bcebdcb0840708d4d76f8953ee32ee  usr/bin/asn1Coding
+c68e26a4c614dafe56156ec281d60123  usr/bin/asn1Decoding
+0bc5ecc72e9c51e229daf6f3cebc69bd  usr/bin/asn1Parser
+fcf8861ec3788953c64ece0ed35e78fb  usr/include/libtasn1.h
+1d557c296cabfcf25fda7545ff5fea30  usr/lib/libtasn1.6.dylib
+6dab7061b7bff70db79aad51fb8c4cb3  usr/lib/libtasn1.la
+5064866f0ac7c56efe8f48a11bf08a89  usr/lib/pkgconfig/libtasn1.pc

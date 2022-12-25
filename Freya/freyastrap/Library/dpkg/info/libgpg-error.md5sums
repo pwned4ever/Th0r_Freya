@@ -1,0 +1,15 @@
+a7c3427eabf2a0011c575c21f00e2433  usr/bin/gpg-error
+bd705ae2d4198edc442ad7c4d3df52a0  usr/bin/gpg-error-config
+bd705ae2d4198edc442ad7c4d3df52a0  usr/bin/gpgrt-config
+9ecd0d2a84d13036d3192b4ad049aaa0  usr/bin/yat2m
+9bab5e12ab54ff166b132b7622836071  usr/include/gpg-error.h
+9bab5e12ab54ff166b132b7622836071  usr/include/gpgrt.h
+191f2e328e189a6a030cf671d5e46ce6  usr/lib/libgpg-error.0.dylib
+a2066081138735d7feecac0443261911  usr/lib/libgpg-error.la
+b20e15468b130b82662c884c70c15936  usr/share/aclocal/gpg-error.m4
+8029a466a19a4744f171f90fe3927073  usr/share/aclocal/gpgrt.m4
+04e7a36bff785081a535d11ed5625534  usr/share/common-lisp/source/gpg-error/gpg-error-codes.lisp
+fe8c6cc0fad603e6455bedf3c7992766  usr/share/common-lisp/source/gpg-error/gpg-error-package.lisp
+bec61cc012bff6f35212b5295d4b92c7  usr/share/common-lisp/source/gpg-error/gpg-error.asd
+885cd7c8ab23ebd13d71609e680f5cd1  usr/share/common-lisp/source/gpg-error/gpg-error.lisp
+fccc98026775d21b0febdd629b96b862  usr/share/libgpg-error/errorref.txt

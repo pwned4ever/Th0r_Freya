@@ -1,0 +1,16 @@
+3138c71b557be418040450bec4e9cc85  sbin/fstyp
+f040c6d65a689eb31e32be264ea4ceb4  sbin/fstyp_msdos
+7412975f88d09a904757e8a770931080  sbin/fstyp_ntfs
+202629c829565fe79c67bab1c0d8b3ef  sbin/fstyp_udf
+c23b4737805f7d413177d00855252eff  sbin/mount_devfs
+c252a72ea67999a38c006f41a54a2771  sbin/mount_fdesc
+65e323e2df047d8bea42fe6216cb32f4  sbin/quotacheck
+19775b9bd023cbed3cd8e21cae91cd0f  sbin/umount
+2d209c4578d03be9798af075379530bb  usr/bin/quota
+fea2aca00b0daa7e85fd176ca0f1dc8a  usr/libexec/vndevice
+e9886f9644e197c0774059f9043a1357  usr/sbin/dev_mkdb
+ac8ba101539b009533942af4daa8540b  usr/sbin/edquota
+77323f5ac43a7ccf789acdb3acafef41  usr/sbin/fdisk
+7f473b8370637e085232b02ce05b3936  usr/sbin/quotaon
+8179527d0b76c1026d25eecf6ec7eab2  usr/sbin/repquota
+9fa411f81eedd0682922de21356c6c11  usr/sbin/vsdbutil

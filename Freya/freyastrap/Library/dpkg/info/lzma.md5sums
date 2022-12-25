@@ -1,0 +1,8 @@
+2db267cdbe3f2180b4970f511f8256ac  usr/bin/lzdiff
+824f6c2de89569d8a2e54ffd546eb835  usr/bin/lzgrep
+06c0c1f2e20ceb7cc5214be2957465c0  usr/bin/lzma
+2f0869d8e9c822fc38cf20e8a3745baf  usr/bin/lzmadec
+ed4f79dc82dd0eace59b873bdca8c27e  usr/bin/lzmainfo
+cc010c4ca8277e48b49d1ba2abef114e  usr/bin/lzmore
+f39a27776093beaec260742df3ab1b4f  usr/include/lzmadec.h
+7ae34b3e4d915b50323a8683867706f8  usr/lib/liblzmadec.0.dylib

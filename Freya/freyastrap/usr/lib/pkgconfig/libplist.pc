@@ -1,0 +1,10 @@
+prefix=/usr
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: libplist
+Description: A library to handle Apple Property Lists whereas they are binary or XML
+Version: 2.0.0
+Libs: -L${libdir} -lplist
+Cflags: -I${includedir}

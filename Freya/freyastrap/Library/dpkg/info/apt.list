@@ -1,0 +1,12 @@
+/.
+/usr
+/usr/bin
+/usr/bin/apt
+/usr/bin/apt-cache
+/usr/bin/apt-cdrom
+/usr/bin/apt-config
+/usr/bin/apt-extracttemplates
+/usr/bin/apt-ftparchive
+/usr/bin/apt-get
+/usr/bin/apt-mark
+/usr/bin/apt-sortpkgs
