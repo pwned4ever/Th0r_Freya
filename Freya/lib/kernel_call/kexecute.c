@@ -29,7 +29,7 @@ mach_port_t PrepareUserClient(void) {
     return UserClient;
 }
 
-// TODO: Consider removing this - jailbreakd runs all kernel ops on the main thread
+// TODO: Consider removing this - jbd runs all kernel ops on the main thread
 pthread_mutex_t kexecuteLock;
 static mach_port_t UserClient = 0;
 static uint64_t IOSurfaceRootUserClient_Port = 0;

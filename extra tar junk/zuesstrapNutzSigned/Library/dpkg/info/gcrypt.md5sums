@@ -1,8 +1,0 @@
-8e2a1509dfbad0c542971c39da95db4e  usr/bin/dumpsexp
-55dfd07f09c906fc3048a74d263de4f5  usr/bin/hmac256
-576f22103767f5c8a36b606f08bc00f0  usr/bin/libgcrypt-config
-6541380bec58f702bd2e644c08c2b71b  usr/bin/mpicalc
-86c6989f4da229e2f8d59955f58f1c14  usr/include/gcrypt.h
-d0961ff09897d17df10eba5cd9a7e701  usr/lib/libgcrypt.20.dylib
-668674ff419db32672373da2451fb532  usr/lib/libgcrypt.la
-ea6348e5b1f8e7db68adb91622d40840  usr/share/aclocal/libgcrypt.m4

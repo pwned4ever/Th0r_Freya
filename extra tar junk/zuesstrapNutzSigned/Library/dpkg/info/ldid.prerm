@@ -1,4 +1,0 @@
-#!/bin/sh
-if [[ "$1" == "remove" ]]; then
-    update-alternatives --remove ldid /usr/libexec/ldid
-fi

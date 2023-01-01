@@ -51,6 +51,16 @@ bool JUSTremovecheck;
 extern void (*log_UI)(const char *text);
 void log_toView(const char *text);
 
+
+
+
+#define SYSTEM_VERSION_EQUAL_TO(v)                  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedSame)
+#define SYSTEM_VERSION_GREATER_THAN(v)              ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedDescending)
+#define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
+#define SYSTEM_VERSION_LESS_THAN(v)                 ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
+#define SYSTEM_VERSION_LESS_THAN_OR_EQUAL_TO(v)     ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedDescending)
+
+
 char *_cur_deviceModel = NULL;
 char *get_current_deviceModel(){
     if(_cur_deviceModel)
@@ -166,7 +176,7 @@ double uptime(){
     return difftime(csec, bsec);
 }
 
-- (IBAction)stopbtnMusic:(id)sender {
+/*- (IBAction)stopbtnMusic:(id)sender {
     NSString *music=[[NSBundle mainBundle]pathForResource:@"RealBadBoyz" ofType:@"mp3"];
     audioPlayer1=[[AVAudioPlayer alloc]initWithContentsOfURL:[NSURL fileURLWithPath:music]error:NULL];
     audioPlayer1.delegate=self;
@@ -180,11 +190,12 @@ double uptime(){
     audioPlayer1.numberOfLoops=-1;
     [audioPlayer1 play];
 }
+ */
 
-NSString *freyaversion = @"1.2.6⚡️";
-char *freyaversionnew = "1.2.6⚡️";
+NSString *freyaversion = @"1.2.7⚡️";
+char *freyaversionnew = "1.2.7⚡️";
 
-char *freyaupdateDate = "10:00PM 12/24/22";
+char *freyaupdateDate = "12:30PM 1/1/23";
 char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/releases/";//github.com/pwned4ever/Th0r_Freya/blob/main/Releases/Freya.ipa";// "mega.nz/file/BhNxBSgJ#gNcngNQBtXS0Ipa5ivX09-jtIr7BckUhrA7YMkSFaNM"//
 
 - (void)u0alertreboot {
@@ -311,24 +322,22 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/releases/";//github.c
     uint32_t flags;
     csops(getpid(), CS_OPS_STATUS, &flags, 0);
     int checkuncovermarker = (file_exists("/.installed_unc0ver"));
-    int checkth0rmarker = (file_exists("/.freya_bootstrap"));
     int checkcheckRa1nmarker = (file_exists("/.bootstrapped"));
     int checkth0rmarkerFinal = (file_exists("/.freya_installed"));
     int checkchimeramarker = (file_exists("/.procursus_strapped"));
     int checkJBRemoverMarker = (file_exists("/var/mobile/Media/.bootstrapped_Th0r_remover"));
-    int checkjailbreakdRun = (file_exists("/var/tmp/jailbreakd.pid"));
-    int checkjailbreakdrRun = (file_exists("/var/run/jailbreakd.pid"));
+    int checkjbdRun = (file_exists("/var/tmp/suckmyd.pid"));
+    int checkjbdrRun = (file_exists("/var/run/suckmyd.pid"));
     int checkpspawnhook = (file_exists("/var/run/pspawn_hook.ts"));
     printf("JUSTremovecheck exists?: %d\n",JUSTremovecheck);
     printf("Uncover marker exists?: %d\n", checkuncovermarker);
     printf("checkRa1n marker exists?: %d\n", checkcheckRa1nmarker);
     printf("pspawnhook marker exists?: %d\n", checkpspawnhook);
     printf("JBRemover marker exists?: %d\n", checkJBRemoverMarker);
-    printf("Th0r marker exists?: %d\n", checkth0rmarker);
     printf("Th0r Final marker exists?: %d\n", checkth0rmarkerFinal);
     printf("Chimera marker exists?: %d\n", checkchimeramarker);
-    printf("Jailbreakd Run marker exists?: %d\n", checkjailbreakdRun);
-    printf("Jailbreakd Run marker exists?: %d\n", checkjailbreakdrRun);
+    printf("jbd Run marker exists?: %d\n", checkjbdRun);
+    printf("jbd Run marker exists?: %d\n", checkjbdrRun);
     
     [[NSUserDefaults standardUserDefaults] setValue:@(NO) forKey:@"_UIConstraintBasedLayoutLogUnsatisfiable"];
     currentViewController = self;
@@ -365,7 +374,7 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/releases/";//github.c
             [[self buttontext] setEnabled:false];
         });
     }
-    if (setplaymusic == 0) {
+  /*  if (setplaymusic == 0) {
         NSString *music=[[NSBundle mainBundle]pathForResource:@"RealBadBoyz" ofType:@"mp3"];
         audioPlayer1=[[AVAudioPlayer alloc]initWithContentsOfURL:[NSURL fileURLWithPath:music]error:NULL];
         audioPlayer1.delegate=self;
@@ -374,7 +383,7 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/releases/";//github.c
         //[audioPlayer1 play];
         setplaymusic = 1;
     }
-    
+    */
 
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.uptimelabel setHidden:YES];
@@ -394,7 +403,7 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/releases/";//github.c
 
     [defaults setInteger:1 forKey:@"SetNonce"];
 
-    if ((checkjailbreakdRun == 1) && (checkpspawnhook == 1) && (checkth0rmarker == 1) && (checkuncovermarker == 0) && (checkchimeramarker == 0)){
+    if ((checkjbdRun == 1) && (checkpspawnhook == 1) && (checkth0rmarkerFinal == 1) && (checkuncovermarker == 0) && (checkchimeramarker == 0)){
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.buttontext setHidden:NO];
             [self.buttontext setTitle:localize(@"𝓢Ⓗ⒜𝕽ᴱ Freya?") forState:UIControlStateNormal];
@@ -408,9 +417,13 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/releases/";//github.c
             [self.settings_buttun_bg setUserInteractionEnabled:NO];
             [self.thorbackgroundjpeg setHidden:NO];
         });
+        //[UITabBarAppearance setAccessibilityElementsHidden:(TRUE)];
+        [UITabBarController setAccessibilityElementsHidden:(TRUE)];
+
+        
         [self shareTh0r];
             
-    } else if ((checkjailbreakdRun == 1) && (checkth0rmarker == 1) && (checkuncovermarker == 0) && (checkchimeramarker == 0)) {
+    } else if ((checkjbdRun == 1) && (checkth0rmarkerFinal == 1) && (checkuncovermarker == 0) && (checkchimeramarker == 0)) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.buttontext setEnabled:YES];
             [self.settingsButton setHidden:YES];
@@ -427,7 +440,7 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/releases/";//github.c
         [self shareTh0r];
         //goto end;
         //return;
-    } else if ((checkth0rmarker == 1) && (checkth0rmarkerFinal == 1) && (checkuncovermarker == 0) && (checkchimeramarker == 0) && (checkjailbreakdRun == 0) && (checkpspawnhook == 0)){
+    } else if ((checkth0rmarkerFinal == 1) && (checkuncovermarker == 0) && (checkchimeramarker == 0) && (checkjbdRun == 0) && (checkpspawnhook == 0)){
         if (shouldRestoreFS())
         {
             JUSTremovecheck = true;
@@ -531,7 +544,7 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/releases/";//github.c
         [self u0alert];
         goto end;
 
-    } else if ((checkjailbreakdrRun == 1) && (checkchimeramarker == 1)){
+    } else if ((checkjbdrRun == 1) && (checkchimeramarker == 1)){
         saveCustomSetting(@"RestoreFS", 0);
         JUSTremovecheck = true;
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -547,7 +560,7 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/releases/";//github.c
         });
         [self chimeraalert];
         goto end;
-    } else if ((checkjailbreakdrRun == 0) && (checkchimeramarker == 1)){
+    } else if ((checkjbdrRun == 0) && (checkchimeramarker == 1)){
         saveCustomSetting(@"RestoreFS", 0);
         JUSTremovecheck = true;
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -563,7 +576,7 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/releases/";//github.c
         });
         [self chimeraalert];
         goto end;
-    } else if(((checkjailbreakdRun == 0) && (checkpspawnhook == 0) && (checkth0rmarker == 0) && (checkuncovermarker == 0)) && (checkchimeramarker == 0)){
+    } else if(((checkjbdRun == 0) && (checkpspawnhook == 0) && (checkth0rmarkerFinal == 0) && (checkuncovermarker == 0)) && (checkchimeramarker == 0)){
         
         if ((checkuncovermarker == 0) && (checkchimeramarker == 1) && (checkth0rmarkerFinal == 0)){
             saveCustomSetting(@"RestoreFS", 0);
@@ -583,6 +596,7 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/releases/";//github.c
         }
             if (checkcheckRa1nmarker == 0) {
                 
+
                 newTFcheckMyRemover4me = FALSE;
                 saveCustomSetting(@"RestoreFS", 1);
                 JUSTremovecheck = false;
@@ -627,7 +641,7 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/releases/";//github.c
                 goto end;
             }
 
-    } else if(((checkjailbreakdRun == 0) && (checkpspawnhook == 0) && (checkth0rmarker == 1) && (checkth0rmarkerFinal == 0) && (checkuncovermarker == 0)) && (checkchimeramarker == 0)){
+    } else if(((checkjbdRun == 0) && (checkpspawnhook == 0) && (checkth0rmarkerFinal == 1) && (checkuncovermarker == 0)) && (checkchimeramarker == 0)){
         newTFcheckMyRemover4me = FALSE;
         [self.buttontext setEnabled:YES];
         if (shouldRestoreFS()) {
@@ -828,17 +842,16 @@ void wannaSliceOfMe() {
     uint32_t flags;
     csops(getpid(), CS_OPS_STATUS, &flags, 0);
     int checkuncovermarker = (file_exists("/.installed_unc0ver"));
-    int checkth0rmarker = (file_exists("/.freya_bootstrap"));
     int checkth0rmarkerFinal = (file_exists("/.freya_installed"));
     int checkchimeramarker = (file_exists("/.procursus_strapped"));
     int checkJBRemoverMarker = (file_exists("/var/mobile/Media/.bootstrapped_Th0r_remover"));
-    int checkjailbreakdRun = (file_exists("/var/tmp/jailbreakd.pid"));
+    int checkjbdRun = (file_exists("/var/tmp/suckmyd.pid"));
     int checkpspawnhook = (file_exists("/var/run/pspawn_hook.ts"));
     
     [[NSUserDefaults standardUserDefaults] setValue:@(NO) forKey:@"_UIConstraintBasedLayoutLogUnsatisfiable"];
     //currentViewController = self;
     //sharedController = self;
-    if ((checkjailbreakdRun == 1) && (checkpspawnhook == 1) && (checkth0rmarker == 1) && (checkuncovermarker == 0) && (checkchimeramarker == 0)){
+    if ((checkjbdRun == 1) && (checkpspawnhook == 1) && (checkth0rmarkerFinal == 1) && (checkuncovermarker == 0) && (checkchimeramarker == 0)){
         dispatch_async(dispatch_get_main_queue(), ^{
             [ViewController.sharedController.buttontext setHidden:NO];//setTitle:localize(@"Remove Freya?") forState:UIControlStateNormal];
            // [ViewController.buttontext setHidden:NO];
@@ -855,7 +868,7 @@ void wannaSliceOfMe() {
         });
         [ViewController.sharedController shareTh0r];
         goto end;
-    } else if ((checkjailbreakdRun == 1) && (checkth0rmarker == 1) && (checkuncovermarker == 0) && (checkchimeramarker == 0)) {
+    } else if ((checkjbdRun == 1) && (checkth0rmarkerFinal == 1) && (checkuncovermarker == 0) && (checkchimeramarker == 0)) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [ViewController.sharedController.buttontext setEnabled:YES];
             [ViewController.sharedController.settingsButton setHidden:YES];
@@ -894,7 +907,6 @@ void wannaSliceOfMe() {
         //2 = Voucher_Swap
         //3 = SockPuppet
         //4 = timewaste
-        dothesploit();
         runExploit(getExploitType()); //Change this depending on what device you have...
         dothepatch();
         ourprogressMeter();
@@ -1010,8 +1022,21 @@ end:
         [self->_buttontext setTitle:@"Saved Offsets" forState: normal];
     });
 }
+-(void)wait4fun{
+    int ut =0 ;
+    while ((ut = 89 - uptime()) > 0 ) {
+        NSString *msg = [NSString stringWithFormat:localize(@"waiting %ds"), ut];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            printf("please wait %d sec\n", ut);
+            [self->_buttontext setTitle:localize(msg) forState: normal];
+        });
+        sleep(1);
+    }
+}
 -(void)sploitn{
     dispatch_async(dispatch_get_main_queue(), ^{
+  
+
         [self->_buttontext setTitle:@"exploiting" forState: normal];
     });
 }
@@ -1060,7 +1085,7 @@ end:
 -(void)RunningTheD{
 
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self->_buttontext setTitle:@"Jailbreakd..." forState: normal];
+        [self->_buttontext setTitle:@"jbd..." forState: normal];
     });
 }
 
@@ -1102,7 +1127,7 @@ end:
 }
 
 - (IBAction)jailbreak:(id)sender {
-    
+
     //HERE
     if (shouldRestoreFS())
     {
@@ -1189,6 +1214,9 @@ void findoffs() {
 
 void dothesploit() {
     [[ViewController currentViewController] sploitn];
+}
+void juswaitn() {
+    [[ViewController currentViewController] wait4fun];
 }
 void yeasnapshot() {
     [[ViewController currentViewController] remountsnap];

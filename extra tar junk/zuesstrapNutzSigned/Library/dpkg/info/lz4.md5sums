@@ -1,7 +1,0 @@
-a7731b0b5fe8d51a70caeaeee4230601  usr/bin/lz4
-bac04a3f1c2e47b2ef95fa648f868ca3  usr/bin/lz4c
-16def5e7870cf6e035b12d4a69550620  usr/include/lz4.h
-b9b1134cfd44ee8647d221f36ea27bc6  usr/include/lz4frame.h
-c1c133859230edae7d4add53695fc636  usr/include/lz4hc.h
-20a122cb9d069e99a85094da9400cea3  usr/lib/liblz4.1.7.5.dylib
-6e2f3e7fb5469a153372650020f748a9  usr/lib/pkgconfig/liblz4.pc

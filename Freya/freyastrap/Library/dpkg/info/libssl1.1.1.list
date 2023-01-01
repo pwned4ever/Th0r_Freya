@@ -1,8 +1,0 @@
-/.
-/usr
-/usr/lib
-/usr/lib/libssl.1.1.dylib
-/usr/lib/libcrypto.1.1.dylib
-/usr/lib/engines-1.1
-/usr/lib/engines-1.1/padlock.dylib
-/usr/lib/engines-1.1/capi.dylib

@@ -1,8 +1,0 @@
-auto
-/usr/bin/ldid
-
-/usr/libexec/ldid
-50
-/usr/libexec/ldid_wrapper
-100
-

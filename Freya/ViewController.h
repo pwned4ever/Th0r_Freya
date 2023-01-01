@@ -54,6 +54,8 @@ void xFinishFailed(void);
 void savedoffs(void);
 void findoffs(void);
 void dothesploit(void);
+void juswaitn(void);
+
 void dothepatch(void);
 void debsinstalling(void);
 void yeasnapshot(void);
@@ -139,6 +141,3 @@ static inline void disableRootFS() {
     [[controller restoreFSSwitch] setOn:false];
     saveCustomSetting(@"RestoreFS", 1);
 }
-
-
-
