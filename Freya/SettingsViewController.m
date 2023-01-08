@@ -12,7 +12,7 @@
 
 #define localize(key) NSLocalizedString(key, @"")
 #define postProgress(prg) [[NSNotificationCenter defaultCenter] postNotificationName: @"JB" object:nil userInfo:@{@"JBProgress": prg}]
-
+//bool pressedJBbut;
 @interface SettingsViewController ()
 
 @end
@@ -93,7 +93,7 @@ NSString *getKernelBuildVersionS() {
     printf("jbd Run marker exists?: %d\n", checkjbdRun);
     printf("jbd Run marker exists?: %d\n", checkjbdrRun);
     
-    
+    back4romset = 1;
     CAGradientLayer *gradient = [CAGradientLayer layer];
 
     gradient.frame = self.backGroundView.bounds;
@@ -288,6 +288,82 @@ NSString *getKernelBuildVersionS() {
     } else if (getExploitType() == 4)
     {
         [_TWOutlet sendActionsForControlEvents:UIControlEventTouchUpInside];
+    }
+    if (back4romset == 2) {
+        _MS1_OUTLET.hidden = true;
+        _MS2_Outlet.hidden = true;
+        _VS_Outlet.hidden = true;
+        _SP_Outlet.hidden = true;
+        _TWOutlet.hidden = true;
+        [_LoadTweakslabel setHidden:YES];
+        [_RestorerootLabel setHidden:YES];
+        [_ReinstallcydiaLabel setHidden:YES];
+        [_ForceuicacheLabel setHidden:YES];
+        [_ExploitTitleLabel setHidden:YES];
+        [_forceuicacheswitch setHidden:YES];
+        [_fixfsswitch setHidden:YES];
+        [_restoreFSSwitch setHidden:YES];
+        [_setnoncebtn setHidden:TRUE];
+        [_loadTweaksSwitch setHidden:TRUE];
+        [ViewController.sharedController.fixfsswitch setHidden:YES];
+        [ViewController.sharedController.forceuisswizitch setHidden:YES];
+        [ViewController.sharedController.restoreFSSwitch setHidden:YES];
+        [ViewController.sharedController.loadTweakSwitch setHidden:YES];
+        goto end1;
+
+    }
+    if (pressedJBbut) {
+        back4romset = 2;
+        printf("[*****] yep we hid the settings stuff [*****]\n");
+        
+        _MS1_OUTLET.userInteractionEnabled = false;
+        _MS1_OUTLET.enabled = false;
+        _MS1_OUTLET.backgroundColor = grey;
+        _MS1_OUTLET.hidden = true;
+        _MS2_Outlet.userInteractionEnabled = false;
+        _MS2_Outlet.enabled = false;
+        _MS2_Outlet.backgroundColor = grey;
+        _MS2_Outlet.hidden = true;
+        _VS_Outlet.userInteractionEnabled = false;
+        _VS_Outlet.enabled = false;
+        _VS_Outlet.backgroundColor = grey;
+        _VS_Outlet.hidden = true;
+        _SP_Outlet.userInteractionEnabled = false;
+        _SP_Outlet.enabled = false;
+        _SP_Outlet.backgroundColor = grey;
+        _SP_Outlet.hidden = true;
+
+        _TWOutlet.userInteractionEnabled = false;
+        _TWOutlet.enabled = false;
+        _TWOutlet.backgroundColor = grey;
+        _TWOutlet.hidden = true;
+        [self.LoadTweakslabel setHidden:YES];
+        [self.RestorerootLabel setHidden:YES];
+        [self.ReinstallcydiaLabel setHidden:YES];
+        [self.ForceuicacheLabel setHidden:YES];
+        [self.ExploitTitleLabel setHidden:YES];
+        [self.forceuicacheswitch setHidden:YES];
+        [self.fixfsswitch setHidden:YES];
+        [self.restoreFSSwitch setHidden:YES];
+        [self.setnoncebtn setHidden:TRUE];
+        [self.loadTweaksSwitch setHidden:TRUE];
+        [_LoadTweakslabel setHidden:YES];
+        [_RestorerootLabel setHidden:YES];
+        [_ReinstallcydiaLabel setHidden:YES];
+        [_ForceuicacheLabel setHidden:YES];
+        [_ExploitTitleLabel setHidden:YES];
+        [_forceuicacheswitch setHidden:YES];
+        [_fixfsswitch setHidden:YES];
+        [_restoreFSSwitch setHidden:YES];
+        [_setnoncebtn setHidden:TRUE];
+        [_loadTweaksSwitch setHidden:TRUE];
+        [ViewController.sharedController.fixfsswitch setHidden:YES];
+        [ViewController.sharedController.forceuisswizitch setHidden:YES];
+        [ViewController.sharedController.restoreFSSwitch setHidden:YES];
+        [ViewController.sharedController.loadTweakSwitch setHidden:YES];
+
+    
+        goto end1;
     }
     if ((checkjbdRun == 1) && (checkpspawnhook == 1) && (checkth0rmarkerFinal == 1) && (checkuncovermarker == 0) && (checkchimeramarker == 0)) {
         //hide everything
@@ -504,12 +580,47 @@ NSString *getKernelBuildVersionS() {
         [_rooted_Switch sendActionsForControlEvents:UIControlEventTouchUpInside];
     }
 end1:
+    
     printf("end of life !\n");
 }
 
 
 - (void)viewDidAppear:(BOOL)animated{
     
+    if (back4romset == 2) {
+        printf("[*****] yep we hid the settings stuff [*****]\n");        
+        _MS1_OUTLET.hidden = true;
+        _MS2_Outlet.hidden = true;
+        _VS_Outlet.hidden = true;
+        _SP_Outlet.hidden = true;
+        _TWOutlet.hidden = true;
+        [self.LoadTweakslabel setHidden:YES];
+        [self.RestorerootLabel setHidden:YES];
+        [self.ReinstallcydiaLabel setHidden:YES];
+        [self.ForceuicacheLabel setHidden:YES];
+        [self.ExploitTitleLabel setHidden:YES];
+        [self.forceuicacheswitch setHidden:YES];
+        [self.fixfsswitch setHidden:YES];
+        [self.restoreFSSwitch setHidden:YES];
+        [self.setnoncebtn setHidden:TRUE];
+        [self.loadTweaksSwitch setHidden:TRUE];
+        [_LoadTweakslabel setHidden:YES];
+        [_RestorerootLabel setHidden:YES];
+        [_ReinstallcydiaLabel setHidden:YES];
+        [_ForceuicacheLabel setHidden:YES];
+        [_ExploitTitleLabel setHidden:YES];
+        [_forceuicacheswitch setHidden:YES];
+        [_fixfsswitch setHidden:YES];
+        [_restoreFSSwitch setHidden:YES];
+        [_setnoncebtn setHidden:TRUE];
+        [_loadTweaksSwitch setHidden:TRUE];
+        [ViewController.sharedController.fixfsswitch setHidden:YES];
+        [ViewController.sharedController.forceuisswizitch setHidden:YES];
+        [ViewController.sharedController.restoreFSSwitch setHidden:YES];
+        [ViewController.sharedController.loadTweakSwitch setHidden:YES];
+
+
+    }
     CAGradientLayer *gradient2 = [CAGradientLayer layer];
 
     gradient2.frame = self.settingsGradientView.bounds;

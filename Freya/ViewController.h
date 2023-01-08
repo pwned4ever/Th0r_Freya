@@ -18,6 +18,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *uptimelabel;
 @property (weak, nonatomic) IBOutlet UILabel *versionlabel;
 @property (weak, nonatomic) IBOutlet UILabel *appverlabel;
+@property (strong, nonatomic) IBOutlet UISwitch *forceuisswizitch;
 
 @property (weak, nonatomic) IBOutlet UILabel *devicelabel;
 @property (strong, nonatomic) IBOutlet UIView *backGroundView;
@@ -32,6 +33,7 @@
 @property (weak, nonatomic) IBOutlet UIView *credits_view;
 @property (strong, nonatomic) IBOutlet UISwitch *restoreFSSwitch;
 @property (strong, nonatomic) IBOutlet UISwitch *fixfsswitch;
+
 @property (strong, nonatomic) IBOutlet UISwitch *loadTweakSwitch;
 
 @property (weak, nonatomic) IBOutlet UITextView *textView;
@@ -55,6 +57,7 @@ void savedoffs(void);
 void findoffs(void);
 void dothesploit(void);
 void juswaitn(void);
+void juswaitn4pad(void);
 
 void dothepatch(void);
 void debsinstalling(void);
@@ -71,6 +74,8 @@ void respringing(char *msg);
 extern bool newTFcheckMyRemover4me;
 extern bool newTFcheckofCyforce;
 extern bool JUSTremovecheck;
+extern int back4romset;
+extern bool pressedJBbut;
 
 static inline void showAlertWithCancel(NSString *title, NSString *message, Boolean wait, Boolean destructive, NSString *cancel) {
     dispatch_semaphore_t semaphore;

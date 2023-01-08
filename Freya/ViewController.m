@@ -43,7 +43,7 @@ struct timeval tv1, tv2;
 mach_port_t statusphier = MACH_PORT_NULL;
 
 bool newTFcheckMyRemover4me;
-
+int back4romset;
 
 bool newTFcheckofCyforce;
 bool JUSTremovecheck;
@@ -192,10 +192,10 @@ double uptime(){
 }
  */
 
-NSString *freyaversion = @"1.2.7⚡️";
-char *freyaversionnew = "1.2.7⚡️";
+NSString *freyaversion = @"1.2.8⚡️";
+char *freyaversionnew = "1.2.8⚡️";
 
-char *freyaupdateDate = "12:30PM 1/1/23";
+char *freyaupdateDate = "2:00PM 1/8/23";
 char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/releases/";//github.com/pwned4ever/Th0r_Freya/blob/main/Releases/Freya.ipa";// "mega.nz/file/BhNxBSgJ#gNcngNQBtXS0Ipa5ivX09-jtIr7BckUhrA7YMkSFaNM"//
 
 - (void)u0alertreboot {
@@ -358,7 +358,8 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/releases/";//github.c
     CAGradientLayer *gradient = [CAGradientLayer layer];
 
     gradient.frame = self.backGroundView.bounds;
-    gradient.colors = @[(id)[[UIColor colorWithRed:0.56 green:0.52 blue:0.54 alpha:1.0] CGColor], (id)[[UIColor colorWithRed:0.09 green:0.35 blue:0.62 alpha:1.0] CGColor]];
+    gradient.colors = @[(id)[[UIColor colorWithRed:0.56 green:0.02 blue:0.54 alpha:1.0] CGColor],
+                        (id)[[UIColor colorWithRed:0.09 green:0.45 blue:0.42 alpha:1.0] CGColor]];
     //gradient.colors = @[(id)[[UIColor colorWithRed:0.02 green:0.02 blue:0.02 alpha:1.0] CGColor], (id)[[UIColor colorWithRed:0.29 green:0.05 blue:0.22 alpha:1.0] CGColor]];
     dispatch_async(dispatch_get_main_queue(), ^{
 
@@ -704,6 +705,10 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/releases/";//github.c
     end:
 err:
     
+    if (back4romset == 1) {
+        back4romset = 2;
+        
+    }
     printf("oof\n");
     
 }
@@ -1022,6 +1027,20 @@ end:
         [self->_buttontext setTitle:@"Saved Offsets" forState: normal];
     });
 }
+
+-(void)wait4pad {
+    int ut =0 ;
+    while ((ut = 69 - uptime()) > 0 ) {
+        NSString *msg = [NSString stringWithFormat:localize(@"waiting %ds"), ut];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            printf("please wait %d sec\n", ut);
+            [self->_buttontext setTitle:localize(msg) forState: normal];
+        });
+        sleep(1);
+    }
+
+}
+
 -(void)wait4fun{
     int ut =0 ;
     while ((ut = 89 - uptime()) > 0 ) {
@@ -1126,8 +1145,10 @@ end:
     });
 }
 
+bool pressedJBbut;
 - (IBAction)jailbreak:(id)sender {
-
+    pressedJBbut = true;
+    back4romset = 2;
     //HERE
     if (shouldRestoreFS())
     {
@@ -1152,10 +1173,16 @@ end:
     [sender setEnabled:false];
     
     //Disable and fade out the settings button
-    [[self settingsButton] setEnabled:false];
+
+    [[self fixfsswitch] setHidden:true];
+    [[self loadTweakSwitch] setHidden:true];
+    [[self forceuisswizitch] setHidden:true];
+    [[self restoreFSSwitch] setHidden:true];
     [UIView animateWithDuration:1.0f animations:^{
-        [[self settingsButton] setAlpha:0.0f];
+        [[self settingsButton] setEnabled:false];
+
     }];
+    
     ourprogressMeter();
     //Run the exploit in a void.
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0ul), ^{
@@ -1166,6 +1193,8 @@ end:
 
 
 - (IBAction)fixfsswitch:(id)sender {
+}
+- (IBAction)forceuisswizitch:(id)sender {
 }
 @end
 void log_toView(const char *text)
@@ -1217,6 +1246,9 @@ void dothesploit() {
 }
 void juswaitn() {
     [[ViewController currentViewController] wait4fun];
+}
+void juswaitn4pad() {
+    [[ViewController currentViewController] wait4pad];
 }
 void yeasnapshot() {
     [[ViewController currentViewController] remountsnap];

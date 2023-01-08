@@ -71,7 +71,7 @@ unsigned off_csb_platform_path = 0xAC;
 unsigned off_csb_cd = 0x80;
 
 // task
-unsigned off_t_flags = 0x3A0;
+unsigned off_t_flags = 0x390;//0x3A0;
 
 // mount
 unsigned off_mnt_devvp = 0x980;

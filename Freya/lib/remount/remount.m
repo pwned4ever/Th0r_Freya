@@ -185,24 +185,25 @@ bool remount(uint64_t launchd_proc) {
         //uint32_t vflag = ReadKernel32(vmount + koffset(KSTRUCT_OFFSET_MOUNT_MNT_FLAG)) & ~(MNT_RDONLY);//343986184 rdonly
        // uint32_t allvflags = vflag & vflag2; //343986176
         uint32_t v_flag = ReadKernel32(vmount + koffset(KSTRUCT_OFFSET_MOUNT_MNT_FLAG));//3439986185
-        
-        //v_flag = v_flag & ~MNT_NOSUID;
-       // v_flag = v_flag & ~MNT_RDONLY;
+        //343986185
+        v_flag = v_flag & ~MNT_NOSUID;//343986177 = 000000008
+        v_flag = v_flag & ~MNT_RDONLY;//343986184 = 000000001
+        v_flag = v_flag & ~MNT_RDONLY & ~MNT_NOSUID;
+
        // if ((v_flag & (MNT_RDONLY | MNT_NOSUID))) {
-        v_flag = v_flag & ~(MNT_RDONLY | MNT_NOSUID);
+       // v_flag = v_flag & ~(MNT_RDONLY | MNT_NOSUID);
         //}
         //v_flag = v_flag & ~(MNT_NOSUID | MNT_RDONLY);
 
         //wk32(v_mount + offsetof_mnt_flag, v_flag & ~MNT_ROOTFS);
         
         WriteKernel32(vmount + koffset(KSTRUCT_OFFSET_MOUNT_MNT_FLAG), v_flag & ~MNT_ROOTFS);
-        //WriteKernel32(vmount + koffset(KSTRUCT_OFFSET_MOUNT_MNT_FLAG), vflag & ~MNT_ROOTFS);
-
         char* dev_path = strdup("/dev/disk0s1s1");
         int retval = mount("apfs", "/", MNT_UPDATE, (void *)&dev_path);
-        //int retval = mount("apfs", "/", MNT_UPDATE, &dev_path);
-        //int retvalreload = mount("apfs", "/", MNT_RELOAD, (void *)&dev_path);
+        //int retval = mount("apfs", "/", MNT_UPDATE, (void *)&dev_path);
         free(dev_path);
+        //WriteKernel32(vmount + koffset(KSTRUCT_OFFSET_MOUNT_MNT_FLAG), v_flag & ~MNT_ROOTFS);
+        WriteKernel32(vmount + koffset(KSTRUCT_OFFSET_MOUNT_MNT_FLAG), v_flag & ~MNT_ROOTFS);
 
 //        WriteKernel32(vmount + koffset(KSTRUCT_OFFSET_MOUNT_MNT_FLAG), vflag2 & ~(MNT_NOSUID));
        // WriteKernel32(vmount + koffset(KSTRUCT_OFFSET_MOUNT_MNT_FLAG), vflag2 & ~(MNT_ROOTFS));
@@ -340,6 +341,7 @@ int mountRealRootfs(uint64_t rootvnode) {
     gettimeofday(nil, &mntargs.hfs_timezone);
     
     int retval = mount("apfs", mntpath, 0, &mntargs);
+//    int retval = mount("apfs", mntpath, 0, &mntargs);
     free(fspec);
     
     util_info("Mount completed with status: %d", retval);
