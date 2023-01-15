@@ -67,6 +67,38 @@ NSString *getKernelBuildVersionS() {
 - (IBAction)jbbutton:(id)sender {
     
 }
+char *sysctlWithNameSet(const char *name) {
+    kern_return_t kr = KERN_FAILURE;
+    char *ret = NULL;
+    size_t *size = NULL;
+    size = (size_t *)malloc(sizeof(size_t));
+    if (size == NULL) goto out;
+    bzero(size, sizeof(size_t));
+    if (sysctlbyname(name, NULL, size, NULL, 0) != ERR_SUCCESS) goto out;
+    ret = (char *)malloc(*size);
+    if (ret == NULL) goto out;
+    bzero(ret, *size);
+    if (sysctlbyname(name, ret, size, NULL, 0) != ERR_SUCCESS) goto out;
+    kr = KERN_SUCCESS;
+    out:
+    if (kr == KERN_FAILURE)
+    {
+        free(ret);
+        ret = NULL;
+    }
+    free(size);
+    size = NULL;
+    return ret;
+}
+
+bool machineNameContainsSet(const char *string) {
+    char *machineName = sysctlWithNameSet("hw.machine");
+    if (machineName == NULL) return false;
+    bool ret = strstr(machineName, string) != NULL;
+    free(machineName);
+    machineName = NULL;
+    return ret;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -74,24 +106,34 @@ NSString *getKernelBuildVersionS() {
     #define CS_OPS_STATUS       0   /* return status */
     uint32_t flags;
     csops(getpid(), CS_OPS_STATUS, &flags, 0);
-    int checkcheckRa1nmarker2 = (file_exists("/.bootstrapped"));
+    int resultofflag = csops(getpid(), CS_OPS_STATUS, (void *)&flags, 0);
     int checkuncovermarker = (file_exists("/.installed_unc0ver"));
+    int checkcheckRa1nmarker = (file_exists("/.bootstrapped"));
     int checkth0rmarkerFinal = (file_exists("/.freya_installed"));
     int checkchimeramarker = (file_exists("/.procursus_strapped"));
-    int checkcheckRa1nmarker = (file_exists("/.bootstrapped"));
     int checkJBRemoverMarker = (file_exists("/var/mobile/Media/.bootstrapped_Th0r_remover"));
     int checkjbdRun = (file_exists("/var/tmp/suckmyd.pid"));
+    int checku0slide = (file_exists("/var/tmp/slide.txt"));
+    int checkcylog = (file_exists("/var/tmp/cydia.log"));
+    int checkrcd = (file_exists("/etc/rc.d/substrate"));
     int checkjbdrRun = (file_exists("/var/run/suckmyd.pid"));
     int checkpspawnhook = (file_exists("/var/run/pspawn_hook.ts"));
+    uint32_t whatisflags = CS_PLATFORM_BINARY; // 67108864 nonjb  // jb stat 67108864
+    int permaflag = &flags;// 1869694292 jb state 1866810708  // non jb state 1873429876 / 1864992116
+    int permaflagplat = flags & CS_PLATFORM_BINARY;// 0  905981956 jb state 905981956 // non jb state 1864992116
+    bool boopermaflagplat = (void *)&flags; //1 statejb true //& CS_PLATFORM_BINARY;// 905981956 jb state  // non jb state 1864992116
     printf("JUSTremovecheck exists?: %d\n",JUSTremovecheck);
+    printf("permaflagplat: %d\n", permaflagplat);
+    printf("checku0slide: %d\n", checku0slide);
+    
+    printf("resultofflag: %d\n", resultofflag);
+    printf("boopermaflagplat: %d\n", boopermaflagplat);
+    printf("whatisflags: %d\n", whatisflags);
+    printf("permaflag: %d\n", permaflag);
     printf("Uncover marker exists?: %d\n", checkuncovermarker);
-    printf("checkRa1n marker exists?: %d\n", checkcheckRa1nmarker);
-    printf("pspawnhook marker exists?: %d\n", checkpspawnhook);
-    printf("JBRemover marker exists?: %d\n", checkJBRemoverMarker);
-    printf("Th0r Final marker exists?: %d\n", checkth0rmarkerFinal);
-    printf("Chimera marker exists?: %d\n", checkchimeramarker);
-    printf("jbd Run marker exists?: %d\n", checkjbdRun);
-    printf("jbd Run marker exists?: %d\n", checkjbdrRun);
+    printf("checkcylog marker exists?: %d\n", checkcylog);
+    printf("checkrcd marker exists?: %d\n", checkrcd);
+    
     
     back4romset = 1;
     CAGradientLayer *gradient = [CAGradientLayer layer];
@@ -138,26 +180,48 @@ NSString *getKernelBuildVersionS() {
         _TWOutlet.enabled = true;
         _TWOutlet.backgroundColor = grey;
     } else if (kCFCoreFoundationVersionNumber == 1575.17) { //12.4
-        self.MS1_OUTLET.hidden = YES;
-        _MS1_OUTLET.userInteractionEnabled = FALSE;
-        _MS1_OUTLET.enabled = false;
-        _MS1_OUTLET.backgroundColor = grey;
-        self.VS_Outlet.hidden = YES;
-        _VS_Outlet.userInteractionEnabled = FALSE;
-        _VS_Outlet.enabled = false;
-        _VS_Outlet.backgroundColor = grey;
-        self.MS2_Outlet.hidden = YES;
-        _MS2_Outlet.userInteractionEnabled = FALSE;
-        _MS2_Outlet.enabled = false;
-        _MS2_Outlet.backgroundColor = grey;
-        self.SP_Outlet.hidden = NO;
-        _SP_Outlet.userInteractionEnabled = TRUE;
-        _SP_Outlet.enabled = true;
-        _SP_Outlet.backgroundColor = grey;
-        _TWOutlet.userInteractionEnabled = TRUE;
-        _TWOutlet.enabled = true;
-        _TWOutlet.backgroundColor = grey;
+        if ((kCFCoreFoundationVersionNumber >= 1575.17) && machineNameContainsSet("iPhone10,")) { // > 12.4
+            self.MS1_OUTLET.hidden = YES;
+            _MS1_OUTLET.userInteractionEnabled = FALSE;
+            _MS1_OUTLET.enabled = false;
+            _MS1_OUTLET.backgroundColor = grey;
+            self.VS_Outlet.hidden = YES;
 
+            _VS_Outlet.userInteractionEnabled = FALSE;
+            _VS_Outlet.enabled = false;
+            _VS_Outlet.backgroundColor = grey;
+            self.MS2_Outlet.hidden = YES;
+            _MS2_Outlet.userInteractionEnabled = FALSE;
+            _MS2_Outlet.enabled = false;
+            _MS2_Outlet.backgroundColor = grey;
+            self.SP_Outlet.hidden = YES;
+            _SP_Outlet.userInteractionEnabled = FALSE;
+            _SP_Outlet.enabled = false;
+            _SP_Outlet.backgroundColor = grey;
+            _TWOutlet.userInteractionEnabled = TRUE;
+            _TWOutlet.enabled = true;
+            _TWOutlet.backgroundColor = grey;
+        } else {
+            self.MS1_OUTLET.hidden = YES;
+            _MS1_OUTLET.userInteractionEnabled = FALSE;
+            _MS1_OUTLET.enabled = false;
+            _MS1_OUTLET.backgroundColor = grey;
+            self.VS_Outlet.hidden = YES;
+            _VS_Outlet.userInteractionEnabled = FALSE;
+            _VS_Outlet.enabled = false;
+            _VS_Outlet.backgroundColor = grey;
+            self.MS2_Outlet.hidden = YES;
+            _MS2_Outlet.userInteractionEnabled = FALSE;
+            _MS2_Outlet.enabled = false;
+            _MS2_Outlet.backgroundColor = grey;
+            self.SP_Outlet.hidden = NO;
+            _SP_Outlet.userInteractionEnabled = TRUE;
+            _SP_Outlet.enabled = true;
+            _SP_Outlet.backgroundColor = grey;
+            _TWOutlet.userInteractionEnabled = TRUE;
+            _TWOutlet.enabled = true;
+            _TWOutlet.backgroundColor = grey;
+        }
     } else if (kCFCoreFoundationVersionNumber == 1570.15) { //12.2
         self.MS1_OUTLET.hidden = YES;
         _MS1_OUTLET.userInteractionEnabled = FALSE;
@@ -457,7 +521,36 @@ NSString *getKernelBuildVersionS() {
         [self.fixfsswitch setHidden:YES];
         [self.fixfsswitch setEnabled:NO];
         [self.fixfsswitch setUserInteractionEnabled:NO]; }
-    if ((checkuncovermarker == 0) && (checkchimeramarker == 1) && (checkth0rmarkerFinal == 0)){
+    if ((checkuncovermarker == 1) && (checku0slide == 1) || (checkuncovermarker == 1) && (checkcylog == 1)){
+        [ViewController.sharedController.buttontext setTitle:localize(@"Remove u0 1st") forState:UIControlStateNormal];
+        newTFcheckMyRemover4me = TRUE;
+        JUSTremovecheck = true;
+        saveCustomSetting(@"RestoreFS", 0);
+        [_loadTweaksSwitch setEnabled:NO];
+        [_loadTweaksSwitch setOn:TRUE];
+        [_restoreFSSwitch setOn:true];
+        [_loadTweaksSwitch setUserInteractionEnabled:NO];
+        [_restoreFSSwitch setEnabled:NO];
+        [_restoreFSSwitch setUserInteractionEnabled:NO];
+        [ViewController.sharedController.restoreFSSwitch setEnabled:NO];
+        [ViewController.sharedController.restoreFSSwitch setUserInteractionEnabled:NO];
+        //    goto end;
+
+    } else if ((checkuncovermarker == 1) && (checku0slide == 0)){
+        [ViewController.sharedController.buttontext setTitle:localize(@"Remove u0?") forState:UIControlStateNormal];
+        newTFcheckMyRemover4me = TRUE;
+        JUSTremovecheck = true;
+        saveCustomSetting(@"RestoreFS", 0);
+        [_loadTweaksSwitch setEnabled:NO];
+        [_loadTweaksSwitch setOn:TRUE];
+        [_restoreFSSwitch setOn:true];
+        [_loadTweaksSwitch setUserInteractionEnabled:NO];
+        [_restoreFSSwitch setEnabled:NO];
+        [_restoreFSSwitch setUserInteractionEnabled:NO];
+        [ViewController.sharedController.restoreFSSwitch setEnabled:NO];
+        [ViewController.sharedController.restoreFSSwitch setUserInteractionEnabled:NO];
+
+    } else if ((checkuncovermarker == 0) && (checkchimeramarker == 1) && (checkth0rmarkerFinal == 0)){
         [ViewController.sharedController.buttontext setTitle:localize(@"Remove Chimera?") forState:UIControlStateNormal];
         newTFcheckMyRemover4me = TRUE;
         JUSTremovecheck = true;
@@ -521,7 +614,7 @@ NSString *getKernelBuildVersionS() {
                      });
             } else {
                 
-                if (checkcheckRa1nmarker2 == 0) {
+                if (checkcheckRa1nmarker == 0) {
                         dispatch_async(dispatch_get_main_queue(), ^{
                             [ViewController.sharedController.buttontext setTitle:localize(@"Enable Freya?") forState:UIControlStateNormal];
                             [self.fixfsswitch setOn:FALSE];
