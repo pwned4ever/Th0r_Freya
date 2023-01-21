@@ -27,7 +27,7 @@
 #import <UIKit/UIDevice.h>
 #import "offsets.h"
 #import "log.h"
-
+#include "ViewController.h"
 #define SYSTEM_VERSION_EQUAL_TO(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedSame)
 #define SYSTEM_VERSION_GREATER_THAN(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedDescending)
 #define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
@@ -38,6 +38,7 @@
 static char* mntpathSW;
 static char* otamntpath;
 static char* otamntpathpriv;
+static char* otamntpathLib;
 static char* otamntpathREMOVE;
 static char* mntpath;
 
@@ -46,6 +47,7 @@ bool remount(uint64_t launchd_proc) {
     mntpath = strdup("/var/rootfsmnt");
     otamntpath = "/var/MobileSoftwareUpdate/mnt1";
     otamntpathpriv = "/private/var/MobileSoftwareUpdate/mnt1";
+    otamntpathLib = "/private/var/Library/MobileSoftwareUpdate/mnt1";
     otamntpathREMOVE = "/var/MobileSoftwareUpdate";
     uint64_t rootvnode = findRootVnode(launchd_proc);
     util_info("rootvnode: 0x%llx", rootvnode);
@@ -66,6 +68,8 @@ bool remount(uint64_t launchd_proc) {
             unlink(otamntpathREMOVE);
             remove(otamntpathREMOVE); }
         if(isOTAMounted()) {
+            waitOTAOK("deleting OTA...");
+            util_info("OTA update already mounted, removing now please wait.........");
             [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithUTF8String:otamntpath] error:nil];
             [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithUTF8String:otamntpathpriv] error:nil];
             [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithUTF8String:otamntpathREMOVE] error:nil];
@@ -75,7 +79,6 @@ bool remount(uint64_t launchd_proc) {
             remove(otamntpathpriv);
             unlink(otamntpathREMOVE);
             remove(otamntpathREMOVE);
-            util_info("OTA update already mounted");
             if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"12.5.6")) {
                 [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithUTF8String:otamntpath] error:nil];
                 [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithUTF8String:otamntpathREMOVE] error:nil];

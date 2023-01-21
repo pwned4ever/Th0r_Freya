@@ -42,14 +42,17 @@ NS_ASSUME_NONNULL_BEGIN
 @property (weak, nonatomic) IBOutlet UIButton *MS2_Outlet;
 @property (weak, nonatomic) IBOutlet UIButton *SP_Outlet;
 @property (weak, nonatomic) IBOutlet UIButton *TWOutlet;
+@property (weak, nonatomic) IBOutlet UIButton *CicutaOutlet;
+@property (weak, nonatomic) IBOutlet UIButton *SPuppet_Outlet;
 
 //the exploit buttons action
-
 - (IBAction)MS1_ACTION:(UIButton *)sender;
 - (IBAction)MS2_ACTION:(UIButton *)sender;
 - (IBAction)VS_ACTION:(UIButton *)sender;
 - (IBAction)SP_Action:(UIButton *)sender;
 - (IBAction)TW_Action:(UIButton *)sender;
+- (IBAction)Spuppet_Action:(UIButton *)sender;
+- (IBAction)Cicuta_Action:(UIButton *)sender;
 
 //THE PACKAGE MANAGER BUTTONS outlet
 @property (weak, nonatomic) IBOutlet UIButton *Cydia_Outlet;

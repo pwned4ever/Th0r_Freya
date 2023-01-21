@@ -9,22 +9,28 @@
 /* Begin PBXBuildFile section */
 		4F14C7B42834082700D03B72 /* post_exploit.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F14C7B32834082700D03B72 /* post_exploit.m */; };
 		601EE13129720FE4002A475C /* Zeus.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 601EE13029720FE3002A475C /* Zeus.mp3 */; };
+		60FA76B92974BA6200841606 /* kapi_memory.c in Sources */ = {isa = PBXBuildFile; fileRef = 60FA76B22974BA6200841606 /* kapi_memory.c */; };
+		60FA76BA2974BA6200841606 /* IOSurface_lib.c in Sources */ = {isa = PBXBuildFile; fileRef = 60FA76B32974BA6200841606 /* IOSurface_lib.c */; };
+		60FA76BC2974BA6200841606 /* sys_darwin.c in Sources */ = {isa = PBXBuildFile; fileRef = 60FA76B52974BA6200841606 /* sys_darwin.c */; };
+		60FA76BD2974BA6200841606 /* k_utils.c in Sources */ = {isa = PBXBuildFile; fileRef = 60FA76B62974BA6200841606 /* k_utils.c */; };
+		60FA76BE2974BA6200841606 /* user_kernel_alloc.c in Sources */ = {isa = PBXBuildFile; fileRef = 60FA76B72974BA6200841606 /* user_kernel_alloc.c */; };
+		60FA76BF2974BA6200841606 /* k_offsets.c in Sources */ = {isa = PBXBuildFile; fileRef = 60FA76B82974BA6200841606 /* k_offsets.c */; };
+		60FA76DF2979DDD300841606 /* cicuta_log.c in Sources */ = {isa = PBXBuildFile; fileRef = 60FA76D32979DDD300841606 /* cicuta_log.c */; };
+		60FA76E02979DDD300841606 /* fake_element_spray.c in Sources */ = {isa = PBXBuildFile; fileRef = 60FA76D42979DDD300841606 /* fake_element_spray.c */; };
+		60FA76E12979DDD300841606 /* descriptors_utils.c in Sources */ = {isa = PBXBuildFile; fileRef = 60FA76D52979DDD300841606 /* descriptors_utils.c */; };
+		60FA76E22979DDD300841606 /* cicuta_virosa.c in Sources */ = {isa = PBXBuildFile; fileRef = 60FA76D72979DDD300841606 /* cicuta_virosa.c */; };
+		60FA76E32979DDD300841606 /* voucher_utils.c in Sources */ = {isa = PBXBuildFile; fileRef = 60FA76D82979DDD300841606 /* voucher_utils.c */; };
+		60FA76E42979DDD300841606 /* exploit_utilities.c in Sources */ = {isa = PBXBuildFile; fileRef = 60FA76DC2979DDD300841606 /* exploit_utilities.c */; };
+		60FA76E6297B23F800841606 /* undecimusRemove.m in Sources */ = {isa = PBXBuildFile; fileRef = 60FA76E5297B23F800841606 /* undecimusRemove.m */; };
+		60FA76E9297B243100841606 /* electraRemove.m in Sources */ = {isa = PBXBuildFile; fileRef = 60FA76E8297B243100841606 /* electraRemove.m */; };
+		60FA76EC297B245700841606 /* FreyaRemove.m in Sources */ = {isa = PBXBuildFile; fileRef = 60FA76EB297B245700841606 /* FreyaRemove.m */; };
+		60FA76EF297B248200841606 /* chimeraRemove.m in Sources */ = {isa = PBXBuildFile; fileRef = 60FA76EE297B248200841606 /* chimeraRemove.m */; };
+		60FA76F9297C5D9300841606 /* SockPuppet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 60FA76F2297C5D9300841606 /* SockPuppet.cpp */; };
+		60FA76FA297C5D9300841606 /* SockPuppet3.mm in Sources */ = {isa = PBXBuildFile; fileRef = 60FA76F4297C5D9300841606 /* SockPuppet3.mm */; };
+		60FA76FB297C5D9300841606 /* Utility.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 60FA76F8297C5D9300841606 /* Utility.cpp */; };
 		8850DDEA229AF1E000D18B83 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8850DDE9229AF1E000D18B83 /* LaunchScreen.storyboard */; };
 		88E01545228B629A00F9E519 /* voucher_swap.c in Sources */ = {isa = PBXBuildFile; fileRef = 88E01537228B629A00F9E519 /* voucher_swap.c */; };
 		88EFC47B228369E8005FA5BB /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88EFC47A228369E8005FA5BB /* IOKit.framework */; };
-		901F1E8E22B6B5FD00D9A390 /* SF-Pro-Rounded-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = 901F1E8122B6B5FC00D9A390 /* SF-Pro-Rounded-Black.otf */; };
-		901F1E8F22B6B5FD00D9A390 /* SF-Pro-Display-ThinItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 901F1E8222B6B5FC00D9A390 /* SF-Pro-Display-ThinItalic.otf */; };
-		901F1E9022B6B5FD00D9A390 /* SF-Pro-Display-Ultralight.otf in Resources */ = {isa = PBXBuildFile; fileRef = 901F1E8322B6B5FC00D9A390 /* SF-Pro-Display-Ultralight.otf */; };
-		901F1E9122B6B5FD00D9A390 /* SF-Pro-Rounded-Heavy.otf in Resources */ = {isa = PBXBuildFile; fileRef = 901F1E8422B6B5FC00D9A390 /* SF-Pro-Rounded-Heavy.otf */; };
-		901F1E9222B6B5FD00D9A390 /* SF-Pro-Rounded-Semibold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 901F1E8522B6B5FC00D9A390 /* SF-Pro-Rounded-Semibold.otf */; };
-		901F1E9322B6B5FD00D9A390 /* SF-Pro-Rounded-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 901F1E8622B6B5FC00D9A390 /* SF-Pro-Rounded-Medium.otf */; };
-		901F1E9422B6B5FD00D9A390 /* SF-Pro-Rounded-Ultralight.otf in Resources */ = {isa = PBXBuildFile; fileRef = 901F1E8722B6B5FC00D9A390 /* SF-Pro-Rounded-Ultralight.otf */; };
-		901F1E9522B6B5FD00D9A390 /* SF-Pro-Rounded-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 901F1E8822B6B5FC00D9A390 /* SF-Pro-Rounded-Bold.otf */; };
-		901F1E9622B6B5FD00D9A390 /* SF-Pro-Rounded-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 901F1E8922B6B5FC00D9A390 /* SF-Pro-Rounded-Light.otf */; };
-		901F1E9722B6B5FD00D9A390 /* SF-Pro-Rounded-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 901F1E8A22B6B5FC00D9A390 /* SF-Pro-Rounded-Regular.otf */; };
-		901F1E9822B6B5FD00D9A390 /* SF-Pro-Rounded-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = 901F1E8B22B6B5FC00D9A390 /* SF-Pro-Rounded-Thin.otf */; };
-		901F1E9922B6B5FD00D9A390 /* SF-Pro-Display-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = 901F1E8C22B6B5FC00D9A390 /* SF-Pro-Display-Thin.otf */; };
-		901F1E9A22B6B5FD00D9A390 /* SF-Pro-Display-UltralightItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 901F1E8D22B6B5FD00D9A390 /* SF-Pro-Display-UltralightItalic.otf */; };
 		B8268669228760C90062035C /* bootstrap in Resources */ = {isa = PBXBuildFile; fileRef = B8268668228760C90062035C /* bootstrap */; };
 		B862F49F22C8261F003B79E6 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B862F49E22C8261F003B79E6 /* SettingsViewController.m */; };
 		B866F3CE228B7A7200616377 /* machswap2.m in Sources */ = {isa = PBXBuildFile; fileRef = B866F3CC228B7A7200616377 /* machswap2.m */; };
@@ -39,7 +45,7 @@
 		B8C0B80222837DDD0030AE1E /* ms_offs.m in Sources */ = {isa = PBXBuildFile; fileRef = B8C0B80022837DDD0030AE1E /* ms_offs.m */; };
 		B8C0B80A228385DA0030AE1E /* ImportantHolders.c in Sources */ = {isa = PBXBuildFile; fileRef = B8C0B808228385DA0030AE1E /* ImportantHolders.c */; };
 		B8D6CFF022D8DCC800437880 /* shenanigans.m in Sources */ = {isa = PBXBuildFile; fileRef = B8D6CFEE22D8DCC800437880 /* shenanigans.m */; };
-		B8E7D08A22E3B75C00D1D85F /* exploit.c in Sources */ = {isa = PBXBuildFile; fileRef = B8E7D08822E3B75C00D1D85F /* exploit.c */; };
+		B8E7D08A22E3B75C00D1D85F /* sockPort.c in Sources */ = {isa = PBXBuildFile; fileRef = B8E7D08822E3B75C00D1D85F /* sockPort.c */; };
 		B8E7D08D22E3B79300D1D85F /* exploit_utilities.c in Sources */ = {isa = PBXBuildFile; fileRef = B8E7D08B22E3B79300D1D85F /* exploit_utilities.c */; };
 		B8E7D09022E3B7B900D1D85F /* iosurface.c in Sources */ = {isa = PBXBuildFile; fileRef = B8E7D08E22E3B7B900D1D85F /* iosurface.c */; };
 		B8E8A9BA22891CE00049F87D /* insert_dylib.c in Sources */ = {isa = PBXBuildFile; fileRef = B8E8A9B822891CE00049F87D /* insert_dylib.c */; };
@@ -91,25 +97,50 @@
 /* Begin PBXFileReference section */
 		4F14C7B32834082700D03B72 /* post_exploit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = post_exploit.m; sourceTree = "<group>"; };
 		601EE13029720FE3002A475C /* Zeus.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = Zeus.mp3; sourceTree = "<group>"; };
+		60FA76AD2974BA6200841606 /* kapi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kapi.h; sourceTree = "<group>"; };
+		60FA76AE2974BA6200841606 /* user_kernel_alloc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = user_kernel_alloc.h; sourceTree = "<group>"; };
+		60FA76AF2974BA6200841606 /* k_offsets.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = k_offsets.h; sourceTree = "<group>"; };
+		60FA76B02974BA6200841606 /* k_utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = k_utils.h; sourceTree = "<group>"; };
+		60FA76B12974BA6200841606 /* mycommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mycommon.h; sourceTree = "<group>"; };
+		60FA76B22974BA6200841606 /* kapi_memory.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = kapi_memory.c; sourceTree = "<group>"; };
+		60FA76B32974BA6200841606 /* IOSurface_lib.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = IOSurface_lib.c; sourceTree = "<group>"; };
+		60FA76B52974BA6200841606 /* sys_darwin.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sys_darwin.c; sourceTree = "<group>"; };
+		60FA76B62974BA6200841606 /* k_utils.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = k_utils.c; sourceTree = "<group>"; };
+		60FA76B72974BA6200841606 /* user_kernel_alloc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = user_kernel_alloc.c; sourceTree = "<group>"; };
+		60FA76B82974BA6200841606 /* k_offsets.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = k_offsets.c; sourceTree = "<group>"; };
+		60FA76D32979DDD300841606 /* cicuta_log.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cicuta_log.c; sourceTree = "<group>"; };
+		60FA76D42979DDD300841606 /* fake_element_spray.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = fake_element_spray.c; sourceTree = "<group>"; };
+		60FA76D52979DDD300841606 /* descriptors_utils.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = descriptors_utils.c; sourceTree = "<group>"; };
+		60FA76D62979DDD300841606 /* exploit_utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = exploit_utilities.h; sourceTree = "<group>"; };
+		60FA76D72979DDD300841606 /* cicuta_virosa.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cicuta_virosa.c; sourceTree = "<group>"; };
+		60FA76D82979DDD300841606 /* voucher_utils.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = voucher_utils.c; sourceTree = "<group>"; };
+		60FA76D92979DDD300841606 /* cicuta_log.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cicuta_log.h; sourceTree = "<group>"; };
+		60FA76DA2979DDD300841606 /* fake_element_spray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fake_element_spray.h; sourceTree = "<group>"; };
+		60FA76DB2979DDD300841606 /* voucher_utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = voucher_utils.h; sourceTree = "<group>"; };
+		60FA76DC2979DDD300841606 /* exploit_utilities.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = exploit_utilities.c; sourceTree = "<group>"; };
+		60FA76DD2979DDD300841606 /* cicuta_virosa.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cicuta_virosa.h; sourceTree = "<group>"; };
+		60FA76DE2979DDD300841606 /* descriptors_utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = descriptors_utils.h; sourceTree = "<group>"; };
+		60FA76E5297B23F800841606 /* undecimusRemove.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = undecimusRemove.m; sourceTree = "<group>"; };
+		60FA76E7297B241000841606 /* undecimusRemove.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = undecimusRemove.h; sourceTree = "<group>"; };
+		60FA76E8297B243100841606 /* electraRemove.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = electraRemove.m; sourceTree = "<group>"; };
+		60FA76EA297B243E00841606 /* electraRemove.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = electraRemove.h; sourceTree = "<group>"; };
+		60FA76EB297B245700841606 /* FreyaRemove.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FreyaRemove.m; sourceTree = "<group>"; };
+		60FA76ED297B246800841606 /* FreyaRemove.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FreyaRemove.h; sourceTree = "<group>"; };
+		60FA76EE297B248200841606 /* chimeraRemove.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = chimeraRemove.m; sourceTree = "<group>"; };
+		60FA76F0297B248C00841606 /* chimeraRemove.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = chimeraRemove.h; sourceTree = "<group>"; };
+		60FA76F2297C5D9300841606 /* SockPuppet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SockPuppet.cpp; sourceTree = "<group>"; };
+		60FA76F3297C5D9300841606 /* Utility.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Utility.hpp; sourceTree = "<group>"; };
+		60FA76F4297C5D9300841606 /* SockPuppet3.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SockPuppet3.mm; sourceTree = "<group>"; };
+		60FA76F5297C5D9300841606 /* SockPuppetStructures.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SockPuppetStructures.h; sourceTree = "<group>"; };
+		60FA76F6297C5D9300841606 /* SockPuppet.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SockPuppet.hpp; sourceTree = "<group>"; };
+		60FA76F7297C5D9300841606 /* SockPuppet3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SockPuppet3.h; sourceTree = "<group>"; };
+		60FA76F8297C5D9300841606 /* Utility.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Utility.cpp; sourceTree = "<group>"; };
 		8850DDE9229AF1E000D18B83 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		888DFDA9229D9E9B004F4F6F /* AVKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVKit.framework; path = System/Library/Frameworks/AVKit.framework; sourceTree = SDKROOT; };
 		88E01537228B629A00F9E519 /* voucher_swap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = voucher_swap.c; sourceTree = "<group>"; };
 		88E01538228B629A00F9E519 /* voucher_swap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = voucher_swap.h; sourceTree = "<group>"; };
 		88E01546228B638700F9E519 /* ipc_port.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ipc_port.h; sourceTree = "<group>"; };
 		88EFC47A228369E8005FA5BB /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = "../../../Downloads/v3ntex-master/IOKit.framework"; sourceTree = "<group>"; };
-		901F1E8122B6B5FC00D9A390 /* SF-Pro-Rounded-Black.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SF-Pro-Rounded-Black.otf"; path = "Artwork/Fonts/SF-Pro-Rounded-Black.otf"; sourceTree = SOURCE_ROOT; };
-		901F1E8222B6B5FC00D9A390 /* SF-Pro-Display-ThinItalic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SF-Pro-Display-ThinItalic.otf"; path = "Artwork/Fonts/SF-Pro-Display-ThinItalic.otf"; sourceTree = SOURCE_ROOT; };
-		901F1E8322B6B5FC00D9A390 /* SF-Pro-Display-Ultralight.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SF-Pro-Display-Ultralight.otf"; path = "Artwork/Fonts/SF-Pro-Display-Ultralight.otf"; sourceTree = SOURCE_ROOT; };
-		901F1E8422B6B5FC00D9A390 /* SF-Pro-Rounded-Heavy.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SF-Pro-Rounded-Heavy.otf"; path = "Artwork/Fonts/SF-Pro-Rounded-Heavy.otf"; sourceTree = SOURCE_ROOT; };
-		901F1E8522B6B5FC00D9A390 /* SF-Pro-Rounded-Semibold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SF-Pro-Rounded-Semibold.otf"; path = "Artwork/Fonts/SF-Pro-Rounded-Semibold.otf"; sourceTree = SOURCE_ROOT; };
-		901F1E8622B6B5FC00D9A390 /* SF-Pro-Rounded-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SF-Pro-Rounded-Medium.otf"; path = "Artwork/Fonts/SF-Pro-Rounded-Medium.otf"; sourceTree = SOURCE_ROOT; };
-		901F1E8722B6B5FC00D9A390 /* SF-Pro-Rounded-Ultralight.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SF-Pro-Rounded-Ultralight.otf"; path = "Artwork/Fonts/SF-Pro-Rounded-Ultralight.otf"; sourceTree = SOURCE_ROOT; };
-		901F1E8822B6B5FC00D9A390 /* SF-Pro-Rounded-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SF-Pro-Rounded-Bold.otf"; path = "Artwork/Fonts/SF-Pro-Rounded-Bold.otf"; sourceTree = SOURCE_ROOT; };
-		901F1E8922B6B5FC00D9A390 /* SF-Pro-Rounded-Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SF-Pro-Rounded-Light.otf"; path = "Artwork/Fonts/SF-Pro-Rounded-Light.otf"; sourceTree = SOURCE_ROOT; };
-		901F1E8A22B6B5FC00D9A390 /* SF-Pro-Rounded-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SF-Pro-Rounded-Regular.otf"; path = "Artwork/Fonts/SF-Pro-Rounded-Regular.otf"; sourceTree = SOURCE_ROOT; };
-		901F1E8B22B6B5FC00D9A390 /* SF-Pro-Rounded-Thin.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SF-Pro-Rounded-Thin.otf"; path = "Artwork/Fonts/SF-Pro-Rounded-Thin.otf"; sourceTree = SOURCE_ROOT; };
-		901F1E8C22B6B5FC00D9A390 /* SF-Pro-Display-Thin.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SF-Pro-Display-Thin.otf"; path = "Artwork/Fonts/SF-Pro-Display-Thin.otf"; sourceTree = SOURCE_ROOT; };
-		901F1E8D22B6B5FD00D9A390 /* SF-Pro-Display-UltralightItalic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SF-Pro-Display-UltralightItalic.otf"; path = "Artwork/Fonts/SF-Pro-Display-UltralightItalic.otf"; sourceTree = SOURCE_ROOT; };
 		B8268668228760C90062035C /* bootstrap */ = {isa = PBXFileReference; lastKnownFileType = folder; path = bootstrap; sourceTree = "<group>"; };
 		B862F49D22C8261F003B79E6 /* SettingsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
 		B862F49E22C8261F003B79E6 /* SettingsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
@@ -143,8 +174,8 @@
 		B8C0B809228385DA0030AE1E /* ImportantHolders.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImportantHolders.h; sourceTree = "<group>"; };
 		B8D6CFEE22D8DCC800437880 /* shenanigans.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = shenanigans.m; sourceTree = "<group>"; };
 		B8D6CFEF22D8DCC800437880 /* shenanigans.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = shenanigans.h; sourceTree = "<group>"; };
-		B8E7D08822E3B75C00D1D85F /* exploit.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = exploit.c; sourceTree = "<group>"; };
-		B8E7D08922E3B75C00D1D85F /* exploit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = exploit.h; sourceTree = "<group>"; };
+		B8E7D08822E3B75C00D1D85F /* sockPort.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = sockPort.c; sourceTree = "<group>"; };
+		B8E7D08922E3B75C00D1D85F /* sockPort.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = sockPort.h; sourceTree = "<group>"; };
 		B8E7D08B22E3B79300D1D85F /* exploit_utilities.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = exploit_utilities.c; sourceTree = "<group>"; };
 		B8E7D08C22E3B79300D1D85F /* exploit_utilities.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = exploit_utilities.h; sourceTree = "<group>"; };
 		B8E7D08E22E3B7B900D1D85F /* iosurface.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = iosurface.c; sourceTree = "<group>"; };
@@ -262,6 +293,57 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		60FA76AB2974BA6200841606 /* mylib */ = {
+			isa = PBXGroup;
+			children = (
+				60FA76AD2974BA6200841606 /* kapi.h */,
+				60FA76AE2974BA6200841606 /* user_kernel_alloc.h */,
+				60FA76AF2974BA6200841606 /* k_offsets.h */,
+				60FA76B02974BA6200841606 /* k_utils.h */,
+				60FA76B12974BA6200841606 /* mycommon.h */,
+				60FA76B22974BA6200841606 /* kapi_memory.c */,
+				60FA76B32974BA6200841606 /* IOSurface_lib.c */,
+				60FA76B52974BA6200841606 /* sys_darwin.c */,
+				60FA76B62974BA6200841606 /* k_utils.c */,
+				60FA76B72974BA6200841606 /* user_kernel_alloc.c */,
+				60FA76B82974BA6200841606 /* k_offsets.c */,
+			);
+			path = mylib;
+			sourceTree = "<group>";
+		};
+		60FA76D22979DDD300841606 /* cicuta_virosa */ = {
+			isa = PBXGroup;
+			children = (
+				60FA76D32979DDD300841606 /* cicuta_log.c */,
+				60FA76D92979DDD300841606 /* cicuta_log.h */,
+				60FA76D72979DDD300841606 /* cicuta_virosa.c */,
+				60FA76DD2979DDD300841606 /* cicuta_virosa.h */,
+				60FA76D52979DDD300841606 /* descriptors_utils.c */,
+				60FA76DE2979DDD300841606 /* descriptors_utils.h */,
+				60FA76DC2979DDD300841606 /* exploit_utilities.c */,
+				60FA76D62979DDD300841606 /* exploit_utilities.h */,
+				60FA76D42979DDD300841606 /* fake_element_spray.c */,
+				60FA76DA2979DDD300841606 /* fake_element_spray.h */,
+				60FA76D82979DDD300841606 /* voucher_utils.c */,
+				60FA76DB2979DDD300841606 /* voucher_utils.h */,
+			);
+			path = cicuta_virosa;
+			sourceTree = "<group>";
+		};
+		60FA76F1297C5D9300841606 /* SockPuppet3 */ = {
+			isa = PBXGroup;
+			children = (
+				60FA76F2297C5D9300841606 /* SockPuppet.cpp */,
+				60FA76F6297C5D9300841606 /* SockPuppet.hpp */,
+				60FA76F7297C5D9300841606 /* SockPuppet3.h */,
+				60FA76F4297C5D9300841606 /* SockPuppet3.mm */,
+				60FA76F5297C5D9300841606 /* SockPuppetStructures.h */,
+				60FA76F8297C5D9300841606 /* Utility.cpp */,
+				60FA76F3297C5D9300841606 /* Utility.hpp */,
+			);
+			path = SockPuppet3;
+			sourceTree = "<group>";
+		};
 		88E0151E228B629A00F9E519 /* voucher_swap */ = {
 			isa = PBXGroup;
 			children = (
@@ -280,27 +362,6 @@
 				88EFC47A228369E8005FA5BB /* IOKit.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		901F1E8022B6B5F000D9A390 /* Fonts */ = {
-			isa = PBXGroup;
-			children = (
-				901F1E8C22B6B5FC00D9A390 /* SF-Pro-Display-Thin.otf */,
-				901F1E8222B6B5FC00D9A390 /* SF-Pro-Display-ThinItalic.otf */,
-				901F1E8322B6B5FC00D9A390 /* SF-Pro-Display-Ultralight.otf */,
-				901F1E8D22B6B5FD00D9A390 /* SF-Pro-Display-UltralightItalic.otf */,
-				901F1E8122B6B5FC00D9A390 /* SF-Pro-Rounded-Black.otf */,
-				901F1E8822B6B5FC00D9A390 /* SF-Pro-Rounded-Bold.otf */,
-				901F1E8422B6B5FC00D9A390 /* SF-Pro-Rounded-Heavy.otf */,
-				901F1E8922B6B5FC00D9A390 /* SF-Pro-Rounded-Light.otf */,
-				901F1E8622B6B5FC00D9A390 /* SF-Pro-Rounded-Medium.otf */,
-				901F1E8A22B6B5FC00D9A390 /* SF-Pro-Rounded-Regular.otf */,
-				901F1E8522B6B5FC00D9A390 /* SF-Pro-Rounded-Semibold.otf */,
-				901F1E8B22B6B5FC00D9A390 /* SF-Pro-Rounded-Thin.otf */,
-				901F1E8722B6B5FC00D9A390 /* SF-Pro-Rounded-Ultralight.otf */,
-			);
-			name = Fonts;
-			path = ../Artwork/Fonts;
 			sourceTree = "<group>";
 		};
 		B89BAA0522826A9F00964B6F = {
@@ -324,9 +385,9 @@
 			isa = PBXGroup;
 			children = (
 				B89BAA1A22826AA000964B6F /* Assets.xcassets */,
+				60FA76AB2974BA6200841606 /* mylib */,
 				B8268668228760C90062035C /* bootstrap */,
 				B8C0B7FB22837D6E0030AE1E /* exploits */,
-				901F1E8022B6B5F000D9A390 /* Fonts */,
 				B8C0B80322837E040030AE1E /* headers */,
 				F7A70BEA27F65C4700839E5E /* lib */,
 				B8C0B806228385C80030AE1E /* utils */,
@@ -350,9 +411,11 @@
 		B8C0B7FB22837D6E0030AE1E /* exploits */ = {
 			isa = PBXGroup;
 			children = (
+				60FA76F1297C5D9300841606 /* SockPuppet3 */,
+				60FA76D22979DDD300841606 /* cicuta_virosa */,
 				F7F3F02127EA6E7A007B1B58 /* wasteoftfime */,
 				B8C7055422D7CF3D00DA550D /* Machswap */,
-				B8C7055322D7CF3600DA550D /* SockPuppet */,
+				B8C7055322D7CF3600DA550D /* SockPort */,
 				88E0151E228B629A00F9E519 /* voucher_swap */,
 				B8C0B7FF22837DD40030AE1E /* offsets */,
 			);
@@ -409,6 +472,14 @@
 				F785C78D27E3B9C800BBC4D0 /* utilsZS.h */,
 				F785C78C27E3B9C800BBC4D0 /* utilsZS.m */,
 				4F14C7B32834082700D03B72 /* post_exploit.m */,
+				60FA76E5297B23F800841606 /* undecimusRemove.m */,
+				60FA76E7297B241000841606 /* undecimusRemove.h */,
+				60FA76EE297B248200841606 /* chimeraRemove.m */,
+				60FA76F0297B248C00841606 /* chimeraRemove.h */,
+				60FA76EB297B245700841606 /* FreyaRemove.m */,
+				60FA76ED297B246800841606 /* FreyaRemove.h */,
+				60FA76E8297B243100841606 /* electraRemove.m */,
+				60FA76EA297B243E00841606 /* electraRemove.h */,
 			);
 			path = utils;
 			sourceTree = "<group>";
@@ -422,17 +493,17 @@
 			path = holders;
 			sourceTree = "<group>";
 		};
-		B8C7055322D7CF3600DA550D /* SockPuppet */ = {
+		B8C7055322D7CF3600DA550D /* SockPort */ = {
 			isa = PBXGroup;
 			children = (
-				B8E7D08822E3B75C00D1D85F /* exploit.c */,
-				B8E7D08922E3B75C00D1D85F /* exploit.h */,
+				B8E7D08822E3B75C00D1D85F /* sockPort.c */,
+				B8E7D08922E3B75C00D1D85F /* sockPort.h */,
 				B8E7D08B22E3B79300D1D85F /* exploit_utilities.c */,
 				B8E7D08C22E3B79300D1D85F /* exploit_utilities.h */,
 				B8E7D08E22E3B7B900D1D85F /* iosurface.c */,
 				B8E7D08F22E3B7B900D1D85F /* iosurface.h */,
 			);
-			path = SockPuppet;
+			path = SockPort;
 			sourceTree = "<group>";
 		};
 		B8C7055422D7CF3D00DA550D /* Machswap */ = {
@@ -715,23 +786,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				901F1E9622B6B5FD00D9A390 /* SF-Pro-Rounded-Light.otf in Resources */,
-				901F1E9722B6B5FD00D9A390 /* SF-Pro-Rounded-Regular.otf in Resources */,
 				B89BAA1B22826AA000964B6F /* Assets.xcassets in Resources */,
-				901F1E9822B6B5FD00D9A390 /* SF-Pro-Rounded-Thin.otf in Resources */,
-				901F1E9322B6B5FD00D9A390 /* SF-Pro-Rounded-Medium.otf in Resources */,
 				B89BAA1922826A9F00964B6F /* Main.storyboard in Resources */,
-				901F1E9422B6B5FD00D9A390 /* SF-Pro-Rounded-Ultralight.otf in Resources */,
-				901F1E9022B6B5FD00D9A390 /* SF-Pro-Display-Ultralight.otf in Resources */,
-				901F1E9922B6B5FD00D9A390 /* SF-Pro-Display-Thin.otf in Resources */,
-				901F1E8E22B6B5FD00D9A390 /* SF-Pro-Rounded-Black.otf in Resources */,
 				8850DDEA229AF1E000D18B83 /* LaunchScreen.storyboard in Resources */,
-				901F1E8F22B6B5FD00D9A390 /* SF-Pro-Display-ThinItalic.otf in Resources */,
 				F7B0BCFA27FD32FA00E3625A /* freyaicestaff.jpg in Resources */,
-				901F1E9122B6B5FD00D9A390 /* SF-Pro-Rounded-Heavy.otf in Resources */,
-				901F1E9522B6B5FD00D9A390 /* SF-Pro-Rounded-Bold.otf in Resources */,
-				901F1E9A22B6B5FD00D9A390 /* SF-Pro-Display-UltralightItalic.otf in Resources */,
-				901F1E9222B6B5FD00D9A390 /* SF-Pro-Rounded-Semibold.otf in Resources */,
 				601EE13129720FE4002A475C /* Zeus.mp3 in Resources */,
 				B8268669228760C90062035C /* bootstrap in Resources */,
 				F784120427E4724F00D1A7CC /* TH0R12icon.jpg in Resources */,
@@ -746,14 +804,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				B8E7D09022E3B7B900D1D85F /* iosurface.c in Sources */,
+				60FA76EF297B248200841606 /* chimeraRemove.m in Sources */,
 				F7A70C4327F65C4700839E5E /* kc_parameters.c in Sources */,
 				B8E7D08D22E3B79300D1D85F /* exploit_utilities.c in Sources */,
+				60FA76EC297B245700841606 /* FreyaRemove.m in Sources */,
 				B89BAA1622826A9F00964B6F /* ViewController.m in Sources */,
 				F7A70C5327F65C4700839E5E /* lzssdec.cpp in Sources */,
 				F7EAE3E927EB926F00F91FB8 /* exploit_utilities_waste.c in Sources */,
 				F7A70C4B27F65C4700839E5E /* kernel_exec.m in Sources */,
 				F7A70C4427F65C4700839E5E /* platform.c in Sources */,
 				88E01545228B629A00F9E519 /* voucher_swap.c in Sources */,
+				60FA76E6297B23F800841606 /* undecimusRemove.m in Sources */,
 				F7A70C3B27F65C4700839E5E /* PFOffs.c in Sources */,
 				F785C79027E3B9C800BBC4D0 /* utilsZS.m in Sources */,
 				B89BAA2122826AA000964B6F /* main.m in Sources */,
@@ -761,19 +822,31 @@
 				F7EAE3EA27EB926F00F91FB8 /* IOAccelerator_stuff.c in Sources */,
 				F7A70C3F27F65C4700839E5E /* parameters.c in Sources */,
 				F7A70C4E27F65C4700839E5E /* amfi_utils.m in Sources */,
+				60FA76E22979DDD300841606 /* cicuta_virosa.c in Sources */,
+				60FA76B92974BA6200841606 /* kapi_memory.c in Sources */,
 				F7A70C5027F65C4700839E5E /* ArchiveUtils.m in Sources */,
 				F7A70C4A27F65C4700839E5E /* kexecute.c in Sources */,
+				60FA76E02979DDD300841606 /* fake_element_spray.c in Sources */,
 				F7A70C3D27F65C4700839E5E /* bypass.m in Sources */,
+				60FA76BA2974BA6200841606 /* IOSurface_lib.c in Sources */,
+				60FA76BE2974BA6200841606 /* user_kernel_alloc.c in Sources */,
+				60FA76BD2974BA6200841606 /* k_utils.c in Sources */,
 				F7F3F02427EA6F36007B1B58 /* wasteoftime.c in Sources */,
+				60FA76E12979DDD300841606 /* descriptors_utils.c in Sources */,
+				60FA76E32979DDD300841606 /* voucher_utils.c in Sources */,
 				F7A70C5827F65C4700839E5E /* libsnappy.c in Sources */,
 				F7A70C5427F65C4700839E5E /* remap_tfp_set_hsp.c in Sources */,
+				60FA76DF2979DDD300841606 /* cicuta_log.c in Sources */,
 				F7A70C4127F65C4700839E5E /* kernel_call.c in Sources */,
+				60FA76E42979DDD300841606 /* exploit_utilities.c in Sources */,
 				F7A70C5727F65C4700839E5E /* patchfinder64.c in Sources */,
 				F7A70C3C27F65C4700839E5E /* OSObj.c in Sources */,
 				B8B3F9952283B36E000E8427 /* KernelUtils.c in Sources */,
 				F7A70C4727F65C4700839E5E /* kernel_memory.c in Sources */,
 				4F14C7B42834082700D03B72 /* post_exploit.m in Sources */,
 				B8C0B7FE22837D990030AE1E /* machswap.m in Sources */,
+				60FA76F9297C5D9300841606 /* SockPuppet.cpp in Sources */,
+				60FA76E9297B243100841606 /* electraRemove.m in Sources */,
 				F7A70C5927F65C4700839E5E /* remount.m in Sources */,
 				B862F49F22C8261F003B79E6 /* SettingsViewController.m in Sources */,
 				F7A70C4227F65C4700839E5E /* user_client.c in Sources */,
@@ -781,11 +854,14 @@
 				F7A70C4D27F65C4700839E5E /* amfi.m in Sources */,
 				F7A70C4627F65C4700839E5E /* pac.c in Sources */,
 				F7A70C5627F65C4700839E5E /* NSString+SHA256.m in Sources */,
-				B8E7D08A22E3B75C00D1D85F /* exploit.c in Sources */,
+				60FA76FA297C5D9300841606 /* SockPuppet3.mm in Sources */,
+				B8E7D08A22E3B75C00D1D85F /* sockPort.c in Sources */,
 				F7A70C5127F65C4700839E5E /* ArchiveFile.m in Sources */,
 				B89BAA1322826A9F00964B6F /* AppDelegate.m in Sources */,
 				B872296A230A2D2000440993 /* cpBootHash.c in Sources */,
 				B8D6CFF022D8DCC800437880 /* shenanigans.m in Sources */,
+				60FA76FB297C5D9300841606 /* Utility.cpp in Sources */,
+				60FA76BF2974BA6200841606 /* k_offsets.c in Sources */,
 				B8E8A9BA22891CE00049F87D /* insert_dylib.c in Sources */,
 				F7A70C4827F65C4700839E5E /* offsets.m in Sources */,
 				B8C0B80A228385DA0030AE1E /* ImportantHolders.c in Sources */,
@@ -794,6 +870,7 @@
 				F7A70C5227F65C4700839E5E /* vnode_utils.m in Sources */,
 				F7A70C5A27F65C4700839E5E /* unlocknvram.c in Sources */,
 				F7A70C4C27F65C4700839E5E /* kernel_slide.c in Sources */,
+				60FA76BC2974BA6200841606 /* sys_darwin.c in Sources */,
 				B866F3CE228B7A7200616377 /* machswap2.m in Sources */,
 				F7A70C5527F65C4700839E5E /* NSData+GZip.m in Sources */,
 				F7EAE3ED27EB928000F91FB8 /* offsets_TW.m in Sources */,
@@ -937,11 +1014,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1.2.9;
+				CURRENT_PROJECT_VERSION = 1.3;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = YES;
 				INFOPLIST_FILE = Freya/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -950,7 +1027,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Freya/headers",
 				);
-				MARKETING_VERSION = 1.2.9;
+				MARKETING_VERSION = 1.3;
 				OTHER_LDFLAGS = (
 					"-framework",
 					IOKit,
@@ -971,11 +1048,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1.2.9;
+				CURRENT_PROJECT_VERSION = 1.3;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = YES;
 				INFOPLIST_FILE = Freya/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -984,7 +1061,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Freya/headers",
 				);
-				MARKETING_VERSION = 1.2.9;
+				MARKETING_VERSION = 1.3;
 				OTHER_LDFLAGS = (
 					"-framework",
 					IOKit,

@@ -107,6 +107,9 @@ _Bool offs_init() {
         off_itk_space = 0x308;
         off_csb_platform_binary = 0xA4;
         off_csb_platform_path = 0xA8;
+        off_t_flags = 0x3A0;
+
+        
     } else if (SYSTEM_VERSION_BETWEEN_OR_EQUAL_TO(@"12.0", @"13.0") && !SYSTEM_VERSION_EQUAL_TO(@"13.0")) {
         off_p_pid = 0x60;
         off_task = 0x10;

@@ -110,13 +110,19 @@ bool machineNameContainsSet(const char *string) {
     int checkuncovermarker = (file_exists("/.installed_unc0ver"));
     int checkcheckRa1nmarker = (file_exists("/.bootstrapped"));
     int checkth0rmarkerFinal = (file_exists("/.freya_installed"));
+    int checkelectra = (file_exists("/.bootstrapped_electra"));
+
     int checkchimeramarker = (file_exists("/.procursus_strapped"));
     int checkJBRemoverMarker = (file_exists("/var/mobile/Media/.bootstrapped_Th0r_remover"));
-    int checkjbdRun = (file_exists("/var/tmp/suckmyd.pid"));
+
     int checku0slide = (file_exists("/var/tmp/slide.txt"));
     int checkcylog = (file_exists("/var/tmp/cydia.log"));
     int checkrcd = (file_exists("/etc/rc.d/substrate"));
-    int checkjbdrRun = (file_exists("/var/run/suckmyd.pid"));
+    
+    int checksuckmydTmpRun = (file_exists("/var/tmp/suckmyd.pid"));
+    int checkjbdrRun = (file_exists("/var/run/jailbreakd.pid"));
+    printf("jbd Run marker exists?: %d\n", checkjbdrRun);
+
     int checkpspawnhook = (file_exists("/var/run/pspawn_hook.ts"));
     uint32_t whatisflags = CS_PLATFORM_BINARY; // 67108864 nonjb  // jb stat 67108864
     int permaflag = &flags;// 1869694292 jb state 1866810708  // non jb state 1873429876 / 1864992116
@@ -134,7 +140,8 @@ bool machineNameContainsSet(const char *string) {
     printf("checkcylog marker exists?: %d\n", checkcylog);
     printf("checkrcd marker exists?: %d\n", checkrcd);
     
-    
+    [self.setnoncebtn setUserInteractionEnabled:YES];
+
     back4romset = 1;
     CAGradientLayer *gradient = [CAGradientLayer layer];
 
@@ -157,7 +164,39 @@ bool machineNameContainsSet(const char *string) {
     UIColor *grey = [UIColor colorWithRed:0.30 green:0.00 blue:0.30 alpha:0.5];;
     double whatsmykoreNUMBER = kCFCoreFoundationVersionNumber;
     printf("whatsmykoreNUMBER: %f\n", whatsmykoreNUMBER);
-    if (kCFCoreFoundationVersionNumber > 1575.17) { // > 12.4 //1556.00 12.0
+    self.SPuppet_Outlet.hidden =true;
+    if (kCFCoreFoundationVersionNumber > 1675.17) { // > 14
+        
+        self.MS1_OUTLET.hidden = YES;
+        _MS1_OUTLET.userInteractionEnabled = FALSE;
+        _MS1_OUTLET.enabled = false;
+        _MS1_OUTLET.backgroundColor = grey;
+        self.VS_Outlet.hidden = YES;
+
+        _VS_Outlet.userInteractionEnabled = FALSE;
+        _VS_Outlet.enabled = false;
+        _VS_Outlet.backgroundColor = grey;
+        self.MS2_Outlet.hidden = YES;
+        _MS2_Outlet.userInteractionEnabled = FALSE;
+        _MS2_Outlet.enabled = false;
+        _MS2_Outlet.backgroundColor = grey;
+        self.SP_Outlet.hidden = YES;
+        _SP_Outlet.userInteractionEnabled = FALSE;
+        _SP_Outlet.enabled = false;
+        _SP_Outlet.backgroundColor = grey;
+        _TWOutlet.userInteractionEnabled = FALSE;
+        _TWOutlet.enabled = false;
+        _TWOutlet.backgroundColor = grey;
+        self.TWOutlet.hidden = YES;
+        /*_SPuppet_Outlet.userInteractionEnabled = FALSE;
+        _SPuppet_Outlet.enabled = false;
+        _SPuppet_Outlet.backgroundColor = grey;
+        self.SPuppet_Outlet.hidden = YES;
+*/
+        _CicutaOutlet.userInteractionEnabled = TRUE;
+        _CicutaOutlet.enabled = true;
+        _CicutaOutlet.backgroundColor = grey;
+    } else if (kCFCoreFoundationVersionNumber > 1575.17) { // > 12.4 //1556.00 12.0
         
         self.MS1_OUTLET.hidden = YES;
         _MS1_OUTLET.userInteractionEnabled = FALSE;
@@ -179,6 +218,14 @@ bool machineNameContainsSet(const char *string) {
         _TWOutlet.userInteractionEnabled = TRUE;
         _TWOutlet.enabled = true;
         _TWOutlet.backgroundColor = grey;
+        self.CicutaOutlet.hidden = YES;
+        _CicutaOutlet.userInteractionEnabled = FALSE;
+        _CicutaOutlet.enabled = false;
+        /*_SPuppet_Outlet.userInteractionEnabled = TRUE;
+        _SPuppet_Outlet.enabled = true;
+        _SPuppet_Outlet.backgroundColor = grey;
+        self.SPuppet_Outlet.hidden = YES;
+*/
     } else if (kCFCoreFoundationVersionNumber == 1575.17) { //12.4
         if ((kCFCoreFoundationVersionNumber >= 1575.17) && machineNameContainsSet("iPhone10,")) { // > 12.4
             self.MS1_OUTLET.hidden = YES;
@@ -198,9 +245,17 @@ bool machineNameContainsSet(const char *string) {
             _SP_Outlet.userInteractionEnabled = FALSE;
             _SP_Outlet.enabled = false;
             _SP_Outlet.backgroundColor = grey;
+            /*_SPuppet_Outlet.userInteractionEnabled = TRUE;
+            _SPuppet_Outlet.enabled = true;
+            _SPuppet_Outlet.backgroundColor = grey;
+            self.SPuppet_Outlet.hidden = NO;*/
             _TWOutlet.userInteractionEnabled = TRUE;
             _TWOutlet.enabled = true;
             _TWOutlet.backgroundColor = grey;
+            self.CicutaOutlet.hidden = YES;
+            _CicutaOutlet.userInteractionEnabled = FALSE;
+            _CicutaOutlet.enabled = false;
+            
         } else {
             self.MS1_OUTLET.hidden = YES;
             _MS1_OUTLET.userInteractionEnabled = FALSE;
@@ -218,9 +273,16 @@ bool machineNameContainsSet(const char *string) {
             _SP_Outlet.userInteractionEnabled = TRUE;
             _SP_Outlet.enabled = true;
             _SP_Outlet.backgroundColor = grey;
+            /*_SPuppet_Outlet.userInteractionEnabled = TRUE;
+            _SPuppet_Outlet.enabled = true;
+            _SPuppet_Outlet.backgroundColor = grey;*/
             _TWOutlet.userInteractionEnabled = TRUE;
             _TWOutlet.enabled = true;
             _TWOutlet.backgroundColor = grey;
+            self.CicutaOutlet.hidden = YES;
+            _CicutaOutlet.userInteractionEnabled = FALSE;
+            _CicutaOutlet.enabled = false;
+
         }
     } else if (kCFCoreFoundationVersionNumber == 1570.15) { //12.2
         self.MS1_OUTLET.hidden = YES;
@@ -239,9 +301,16 @@ bool machineNameContainsSet(const char *string) {
         _SP_Outlet.userInteractionEnabled = TRUE;
         _SP_Outlet.enabled = true;
         _SP_Outlet.backgroundColor = grey;
+        /*_SPuppet_Outlet.userInteractionEnabled = TRUE;
+        _SPuppet_Outlet.enabled = true;
+        _SPuppet_Outlet.backgroundColor = grey;*/
         _TWOutlet.userInteractionEnabled = TRUE;
         _TWOutlet.enabled = true;
         _TWOutlet.backgroundColor = grey;
+        self.CicutaOutlet.hidden = YES;
+        _CicutaOutlet.userInteractionEnabled = FALSE;
+        _CicutaOutlet.enabled = false;
+
 
     } else if (kCFCoreFoundationVersionNumber >= 1570.13) { //12.3
         self.MS1_OUTLET.hidden = YES;
@@ -260,9 +329,17 @@ bool machineNameContainsSet(const char *string) {
         _SP_Outlet.userInteractionEnabled = FALSE;
         _SP_Outlet.enabled = false;
         _SP_Outlet.backgroundColor = grey;
+        /*_SPuppet_Outlet.userInteractionEnabled = FALSE;
+        _SPuppet_Outlet.enabled = false;
+        _SPuppet_Outlet.backgroundColor = grey;
+        self.SPuppet_Outlet.hidden = YES;*/
         _TWOutlet.userInteractionEnabled = TRUE;
         _TWOutlet.enabled = true;
         _TWOutlet.backgroundColor = grey;
+        self.CicutaOutlet.hidden = YES;
+        _CicutaOutlet.userInteractionEnabled = FALSE;
+        _CicutaOutlet.enabled = false;
+
 
     } else if (kCFCoreFoundationVersionNumber >= 1561.00) { //12.1.4 // 12.1.3 = 1561.
         
@@ -288,34 +365,44 @@ bool machineNameContainsSet(const char *string) {
                     _SP_Outlet.userInteractionEnabled = TRUE;
                     _SP_Outlet.enabled = true;
                     _SP_Outlet.backgroundColor = grey;
+                    /*_SPuppet_Outlet.userInteractionEnabled = TRUE;
+                    _SPuppet_Outlet.enabled = true;
+                    _SPuppet_Outlet.backgroundColor = grey;*/
                     _TWOutlet.userInteractionEnabled = TRUE;
                     _TWOutlet.enabled = true;
                     _TWOutlet.backgroundColor = grey;
+                    self.CicutaOutlet.hidden = YES;
+                    _CicutaOutlet.userInteractionEnabled = FALSE;
+                    _CicutaOutlet.enabled = false;
+
                 }
             }
-        } else {
+        } else { // ios what
         
-        self.MS1_OUTLET.hidden = YES;
-        _MS1_OUTLET.userInteractionEnabled = FALSE;
-        _MS1_OUTLET.enabled = false;
-        _MS1_OUTLET.backgroundColor = grey;
-        self.VS_Outlet.hidden = YES;
-        _VS_Outlet.userInteractionEnabled = FALSE;
-        _VS_Outlet.enabled = false;
-        _VS_Outlet.backgroundColor = grey;
-        self.MS2_Outlet.hidden = YES;
-        _MS2_Outlet.userInteractionEnabled = FALSE;
-        _MS2_Outlet.enabled = false;
-        _MS2_Outlet.backgroundColor = grey;
-        self.SP_Outlet.hidden = NO;
-        _SP_Outlet.userInteractionEnabled = TRUE;
-        _SP_Outlet.enabled = true;
-        _SP_Outlet.backgroundColor = grey;
+            self.MS1_OUTLET.hidden = YES;
+            _MS1_OUTLET.userInteractionEnabled = FALSE;
+            _MS1_OUTLET.enabled = false;
+            _MS1_OUTLET.backgroundColor = grey;
+            self.VS_Outlet.hidden = YES;
+            _VS_Outlet.userInteractionEnabled = FALSE;
+            _VS_Outlet.enabled = false;
+            _VS_Outlet.backgroundColor = grey;
+            self.MS2_Outlet.hidden = YES;
+            _MS2_Outlet.userInteractionEnabled = FALSE;
+            _MS2_Outlet.enabled = false;
+            _MS2_Outlet.backgroundColor = grey;
+            self.SP_Outlet.hidden = NO;
+            _SP_Outlet.userInteractionEnabled = TRUE;
+            _SP_Outlet.enabled = true;
+            _SP_Outlet.backgroundColor = grey;
+            _TWOutlet.userInteractionEnabled = TRUE;
+            _TWOutlet.enabled = true;
+            _TWOutlet.backgroundColor = grey;
+            self.CicutaOutlet.hidden = YES;
+            _CicutaOutlet.userInteractionEnabled = FALSE;
+            _CicutaOutlet.enabled = false;
 
-        _TWOutlet.userInteractionEnabled = TRUE;
-        _TWOutlet.enabled = true;
-        _TWOutlet.backgroundColor = grey;
-        }
+            }
     } else { //12.0
         _MS1_OUTLET.userInteractionEnabled = TRUE;
         _MS1_OUTLET.enabled = true;
@@ -329,10 +416,16 @@ bool machineNameContainsSet(const char *string) {
         _SP_Outlet.userInteractionEnabled = TRUE;
         _SP_Outlet.enabled = true;
         _SP_Outlet.backgroundColor = grey;
-
+        /*_SPuppet_Outlet.userInteractionEnabled = TRUE;
+        _SPuppet_Outlet.enabled = true;
+        _SPuppet_Outlet.backgroundColor = grey;*/
         _TWOutlet.userInteractionEnabled = TRUE;
         _TWOutlet.enabled = true;
         _TWOutlet.backgroundColor = grey;
+        self.CicutaOutlet.hidden = YES;
+        _CicutaOutlet.userInteractionEnabled = FALSE;
+        _CicutaOutlet.enabled = false;
+
 
     }
     
@@ -359,6 +452,9 @@ bool machineNameContainsSet(const char *string) {
         _VS_Outlet.hidden = true;
         _SP_Outlet.hidden = true;
         _TWOutlet.hidden = true;
+        _SPuppet_Outlet.hidden = true;
+        _CicutaOutlet.hidden = true;
+
         [_LoadTweakslabel setHidden:YES];
         [_RestorerootLabel setHidden:YES];
         [_ReinstallcydiaLabel setHidden:YES];
@@ -396,6 +492,8 @@ bool machineNameContainsSet(const char *string) {
         _SP_Outlet.enabled = false;
         _SP_Outlet.backgroundColor = grey;
         _SP_Outlet.hidden = true;
+        _SPuppet_Outlet.hidden = true;
+        _CicutaOutlet.hidden = true;
 
         _TWOutlet.userInteractionEnabled = false;
         _TWOutlet.enabled = false;
@@ -429,7 +527,7 @@ bool machineNameContainsSet(const char *string) {
     
         goto end1;
     }
-    if ((checkjbdRun == 1) && (checkpspawnhook == 1) && (checkth0rmarkerFinal == 1) && (checkuncovermarker == 0) && (checkchimeramarker == 0)) {
+    if ((checkpspawnhook == 1) && (checkth0rmarkerFinal == 1) && (checkuncovermarker == 0) && (checkchimeramarker == 0) && (checksuckmydTmpRun == 1)) {
         //hide everything
         _MS1_OUTLET.userInteractionEnabled = false;
         _MS1_OUTLET.enabled = false;
@@ -447,6 +545,66 @@ bool machineNameContainsSet(const char *string) {
         _SP_Outlet.enabled = false;
         _SP_Outlet.backgroundColor = grey;
         _SP_Outlet.hidden = true;
+        _SPuppet_Outlet.hidden = true;
+        _CicutaOutlet.hidden = true;
+
+        _TWOutlet.userInteractionEnabled = false;
+        _TWOutlet.enabled = false;
+        _TWOutlet.backgroundColor = grey;
+        _TWOutlet.hidden = true;
+        [self.LoadTweakslabel setHidden:YES];
+        [self.RestorerootLabel setHidden:YES];
+        [self.ReinstallcydiaLabel setHidden:YES];
+        [self.ForceuicacheLabel setHidden:YES];
+        [self.ExploitTitleLabel setHidden:YES];
+
+        
+        [self.forceuicacheswitch setOn:FALSE];
+        [self.forceuicacheswitch setHidden:YES];
+        [self.forceuicacheswitch setEnabled:NO];
+        [self.forceuicacheswitch setUserInteractionEnabled:NO];
+        
+        [self.fixfsswitch setOn:FALSE];
+        [self.fixfsswitch setHidden:YES];
+        [self.fixfsswitch setEnabled:NO];
+        [self.fixfsswitch setUserInteractionEnabled:NO];
+        [self.restoreFSSwitch setOn:FALSE];
+        [self.restoreFSSwitch setHidden:YES];
+        [self.restoreFSSwitch setEnabled:NO];
+        [self.restoreFSSwitch setUserInteractionEnabled:NO];
+        [self.setnoncebtn setEnabled:FALSE];
+        [self.setnoncebtn setHidden:TRUE];
+        [self.setnoncebtn setUserInteractionEnabled:NO];
+
+        [self.loadTweaksSwitch setEnabled:TRUE];
+        [self.loadTweaksSwitch setHidden:TRUE];
+        [self.loadTweaksSwitch setUserInteractionEnabled:NO];
+
+        //[ViewController.sharedController.loadTweakSwitch setEnabled:YES];
+        //[ViewController.sharedController.loadTweakSwitch setOn:TRUE];
+
+        goto end1;
+    }
+    if ((checkjbdrRun == 1) || (checkpspawnhook == 1)) {
+        //hide everything
+        _MS1_OUTLET.userInteractionEnabled = false;
+        _MS1_OUTLET.enabled = false;
+        _MS1_OUTLET.backgroundColor = grey;
+        _MS1_OUTLET.hidden = true;
+        _MS2_Outlet.userInteractionEnabled = false;
+        _MS2_Outlet.enabled = false;
+        _MS2_Outlet.backgroundColor = grey;
+        _MS2_Outlet.hidden = true;
+        _VS_Outlet.userInteractionEnabled = false;
+        _VS_Outlet.enabled = false;
+        _VS_Outlet.backgroundColor = grey;
+        _VS_Outlet.hidden = true;
+        _SP_Outlet.userInteractionEnabled = false;
+        _SP_Outlet.enabled = false;
+        _SP_Outlet.backgroundColor = grey;
+        _SP_Outlet.hidden = true;
+        _SPuppet_Outlet.hidden = true;
+        _CicutaOutlet.hidden = true;
 
         _TWOutlet.userInteractionEnabled = false;
         _TWOutlet.enabled = false;
@@ -495,7 +653,17 @@ bool machineNameContainsSet(const char *string) {
         [self.forceuicacheswitch setHidden:NO];
         [self.forceuicacheswitch setEnabled:YES];
         [self.forceuicacheswitch setUserInteractionEnabled:YES]; }
-    if (shouldLoadTweaks()) { [_loadTweaksSwitch setOn:true]; } else { [_loadTweaksSwitch setOn:false]; }
+    if (shouldLoadTweaks()) {
+        [_loadTweaksSwitch setOn:true];
+        [self.loadTweaksSwitch setOn:TRUE];
+        [self.loadTweaksSwitch setEnabled:TRUE];
+        [self.loadTweaksSwitch setHidden:FALSE];
+        [self.loadTweaksSwitch setUserInteractionEnabled:YES];
+        [self.setnoncebtn setUserInteractionEnabled:YES];
+
+    }
+    else {
+        [_loadTweaksSwitch setOn:false]; }
     if (checkth0rmarkerFinal == 1) {
         if (checkfsfixswitch == 1) {
             [self.fixfsswitch setOn:TRUE];
@@ -512,28 +680,76 @@ bool machineNameContainsSet(const char *string) {
             [self.restoreFSSwitch setEnabled:YES];
             [self.restoreFSSwitch setUserInteractionEnabled:YES];
             [self.restoreFSSwitch setHidden:NO];
+            //[self.loadTweaksSwitch setOn:TRUE];
+            //[self.loadTweaksSwitch setEnabled:TRUE];
+            [self.loadTweaksSwitch setHidden:FALSE];
+            [self.loadTweaksSwitch setUserInteractionEnabled:YES];
+            [self.setnoncebtn setUserInteractionEnabled:YES];
+
             [ViewController.sharedController.restoreFSSwitch setEnabled:YES];
             [ViewController.sharedController.restoreFSSwitch setOn:YES];
             [ViewController.sharedController.restoreFSSwitch setHidden:NO];
-            [ViewController.sharedController.restoreFSSwitch setUserInteractionEnabled:YES]; }
-    } else {
+            [ViewController.sharedController.restoreFSSwitch setUserInteractionEnabled:YES]; } }
+    else {
         [self.fixfsswitch setOn:FALSE];
         [self.fixfsswitch setHidden:YES];
         [self.fixfsswitch setEnabled:NO];
         [self.fixfsswitch setUserInteractionEnabled:NO]; }
-    if ((checkuncovermarker == 1) && (checku0slide == 1) || (checkuncovermarker == 1) && (checkcylog == 1)){
+    if (((checkuncovermarker == 1) && (checku0slide == 1)) || ((checkuncovermarker == 1) && (checkcylog == 1))){
         [ViewController.sharedController.buttontext setTitle:localize(@"Remove u0 1st") forState:UIControlStateNormal];
         newTFcheckMyRemover4me = TRUE;
         JUSTremovecheck = true;
         saveCustomSetting(@"RestoreFS", 0);
-        [_loadTweaksSwitch setEnabled:NO];
-        [_loadTweaksSwitch setOn:TRUE];
-        [_restoreFSSwitch setOn:true];
-        [_loadTweaksSwitch setUserInteractionEnabled:NO];
-        [_restoreFSSwitch setEnabled:NO];
-        [_restoreFSSwitch setUserInteractionEnabled:NO];
-        [ViewController.sharedController.restoreFSSwitch setEnabled:NO];
-        [ViewController.sharedController.restoreFSSwitch setUserInteractionEnabled:NO];
+        _MS1_OUTLET.userInteractionEnabled = false;
+        _MS1_OUTLET.enabled = false;
+        _MS1_OUTLET.backgroundColor = grey;
+        _MS1_OUTLET.hidden = true;
+        _MS2_Outlet.userInteractionEnabled = false;
+        _MS2_Outlet.enabled = false;
+        _MS2_Outlet.backgroundColor = grey;
+        _MS2_Outlet.hidden = true;
+        _VS_Outlet.userInteractionEnabled = false;
+        _VS_Outlet.enabled = false;
+        _VS_Outlet.backgroundColor = grey;
+        _VS_Outlet.hidden = true;
+        _SP_Outlet.userInteractionEnabled = false;
+        _SP_Outlet.enabled = false;
+        _SP_Outlet.backgroundColor = grey;
+        _SP_Outlet.hidden = true;
+        _SPuppet_Outlet.hidden = true;
+        _CicutaOutlet.hidden = true;
+
+        _TWOutlet.userInteractionEnabled = false;
+        _TWOutlet.enabled = false;
+        _TWOutlet.backgroundColor = grey;
+        _TWOutlet.hidden = true;
+        [self.LoadTweakslabel setHidden:YES];
+        [self.RestorerootLabel setHidden:YES];
+        [self.ReinstallcydiaLabel setHidden:YES];
+        [self.ForceuicacheLabel setHidden:YES];
+        [self.ExploitTitleLabel setHidden:YES];
+
+        
+        [self.forceuicacheswitch setOn:FALSE];
+        [self.forceuicacheswitch setHidden:YES];
+        [self.forceuicacheswitch setEnabled:NO];
+        [self.forceuicacheswitch setUserInteractionEnabled:NO];
+        
+        [self.fixfsswitch setOn:FALSE];
+        [self.fixfsswitch setHidden:YES];
+        [self.fixfsswitch setEnabled:NO];
+        [self.fixfsswitch setUserInteractionEnabled:NO];
+        [self.restoreFSSwitch setOn:FALSE];
+        [self.restoreFSSwitch setHidden:YES];
+        [self.restoreFSSwitch setEnabled:NO];
+        [self.restoreFSSwitch setUserInteractionEnabled:NO];
+        [self.setnoncebtn setEnabled:FALSE];
+        [self.setnoncebtn setHidden:TRUE];
+        [self.setnoncebtn setUserInteractionEnabled:NO];
+
+       // [self.loadTweaksSwitch setEnabled:TRUE];
+        [self.loadTweaksSwitch setHidden:TRUE];
+        //[self.loadTweaksSwitch setUserInteractionEnabled:NO];
         //    goto end;
 
     } else if ((checkuncovermarker == 1) && (checku0slide == 0)){
@@ -541,43 +757,245 @@ bool machineNameContainsSet(const char *string) {
         newTFcheckMyRemover4me = TRUE;
         JUSTremovecheck = true;
         saveCustomSetting(@"RestoreFS", 0);
-        [_loadTweaksSwitch setEnabled:NO];
-        [_loadTweaksSwitch setOn:TRUE];
+       // [_loadTweaksSwitch setEnabled:NO];
+       // [_loadTweaksSwitch setOn:FALSE];
         [_restoreFSSwitch setOn:true];
+        [self.LoadTweakslabel setHidden:YES];
+        //[self.loadTweaksSwitch setEnabled:FALSE];
+        [self.loadTweaksSwitch setHidden:TRUE];
         [_loadTweaksSwitch setUserInteractionEnabled:NO];
+        
         [_restoreFSSwitch setEnabled:NO];
         [_restoreFSSwitch setUserInteractionEnabled:NO];
         [ViewController.sharedController.restoreFSSwitch setEnabled:NO];
         [ViewController.sharedController.restoreFSSwitch setUserInteractionEnabled:NO];
+        
+        [self.RestorerootLabel setHidden:NO];
+        [self.ReinstallcydiaLabel setHidden:YES];
+        [self.ForceuicacheLabel setHidden:YES];
+        [self.forceuicacheswitch setOn:FALSE];
+        [self.forceuicacheswitch setHidden:YES];
+        [self.forceuicacheswitch setEnabled:NO];
+        [self.forceuicacheswitch setUserInteractionEnabled:NO];
+        [self.fixfsswitch setOn:FALSE];
+        [self.fixfsswitch setHidden:YES];
+        [self.fixfsswitch setEnabled:NO];
+        [self.fixfsswitch setUserInteractionEnabled:NO];
+        [self.setnoncebtn setEnabled:FALSE];
+        [self.setnoncebtn setHidden:TRUE];
+        [self.setnoncebtn setUserInteractionEnabled:NO];
 
+    } else if ((checkelectra == 1) && (checkjbdrRun == 1)){
+        [ViewController.sharedController.buttontext setTitle:localize(@"Remove Electra 1st") forState:UIControlStateNormal];
+        newTFcheckMyRemover4me = TRUE;
+        JUSTremovecheck = true;
+        saveCustomSetting(@"RestoreFS", 0);
+        _MS1_OUTLET.userInteractionEnabled = false;
+        _MS1_OUTLET.enabled = false;
+        _MS1_OUTLET.backgroundColor = grey;
+        _MS1_OUTLET.hidden = true;
+        _MS2_Outlet.userInteractionEnabled = false;
+        _MS2_Outlet.enabled = false;
+        _MS2_Outlet.backgroundColor = grey;
+        _MS2_Outlet.hidden = true;
+        _VS_Outlet.userInteractionEnabled = false;
+        _VS_Outlet.enabled = false;
+        _VS_Outlet.backgroundColor = grey;
+        _VS_Outlet.hidden = true;
+        _SP_Outlet.userInteractionEnabled = false;
+        _SP_Outlet.enabled = false;
+        _SP_Outlet.backgroundColor = grey;
+        _SP_Outlet.hidden = true;
+        _SPuppet_Outlet.hidden = true;
+        _CicutaOutlet.hidden = true;
+
+        _TWOutlet.userInteractionEnabled = false;
+        _TWOutlet.enabled = false;
+        _TWOutlet.backgroundColor = grey;
+        _TWOutlet.hidden = true;
+        [self.LoadTweakslabel setHidden:YES];
+        [self.RestorerootLabel setHidden:YES];
+        [self.ReinstallcydiaLabel setHidden:YES];
+        [self.ForceuicacheLabel setHidden:YES];
+        [self.ExploitTitleLabel setHidden:YES];
+
+        
+        [self.forceuicacheswitch setOn:FALSE];
+        [self.forceuicacheswitch setHidden:YES];
+        [self.forceuicacheswitch setEnabled:NO];
+        [self.forceuicacheswitch setUserInteractionEnabled:NO];
+        
+        [self.fixfsswitch setOn:FALSE];
+        [self.fixfsswitch setHidden:YES];
+        [self.fixfsswitch setEnabled:NO];
+        [self.fixfsswitch setUserInteractionEnabled:NO];
+        [self.restoreFSSwitch setOn:FALSE];
+        [self.restoreFSSwitch setHidden:YES];
+        [self.restoreFSSwitch setEnabled:NO];
+        [self.restoreFSSwitch setUserInteractionEnabled:NO];
+        [self.setnoncebtn setEnabled:FALSE];
+        [self.setnoncebtn setHidden:TRUE];
+        [self.setnoncebtn setUserInteractionEnabled:NO];
+
+       // [self.loadTweaksSwitch setEnabled:TRUE];
+        [self.loadTweaksSwitch setHidden:TRUE];
+       // [self.loadTweaksSwitch setUserInteractionEnabled:NO];
+    } else if ((checkuncovermarker == 0) && (checkchimeramarker == 0) && (checkelectra == 1) && (checkth0rmarkerFinal == 0)){
+        [ViewController.sharedController.buttontext setTitle:localize(@"Remove Electra?") forState:UIControlStateNormal];
+        newTFcheckMyRemover4me = TRUE;
+        JUSTremovecheck = true;
+        saveCustomSetting(@"RestoreFS", 0);
+        //[_loadTweaksSwitch setEnabled:NO];
+        //[_loadTweaksSwitch setOn:FALSE];
+        [_restoreFSSwitch setOn:true];
+        [self.LoadTweakslabel setHidden:YES];
+        //[self.loadTweaksSwitch setEnabled:FALSE];
+        [self.loadTweaksSwitch setHidden:TRUE];
+        //[_loadTweaksSwitch setUserInteractionEnabled:NO];
+        
+        [_restoreFSSwitch setEnabled:NO];
+        [_restoreFSSwitch setUserInteractionEnabled:NO];
+        [ViewController.sharedController.restoreFSSwitch setEnabled:NO];
+        [ViewController.sharedController.restoreFSSwitch setUserInteractionEnabled:NO];
+        
+        [self.RestorerootLabel setHidden:NO];
+        [self.ReinstallcydiaLabel setHidden:YES];
+        [self.ForceuicacheLabel setHidden:YES];
+        [self.forceuicacheswitch setOn:FALSE];
+        [self.forceuicacheswitch setHidden:YES];
+        [self.forceuicacheswitch setEnabled:NO];
+        [self.forceuicacheswitch setUserInteractionEnabled:NO];
+        [self.fixfsswitch setOn:FALSE];
+        [self.fixfsswitch setHidden:YES];
+        [self.fixfsswitch setEnabled:NO];
+        [self.fixfsswitch setUserInteractionEnabled:NO];
+        [self.setnoncebtn setEnabled:FALSE];
+        [self.setnoncebtn setHidden:TRUE];
+        [self.setnoncebtn setUserInteractionEnabled:NO];
+
+
+        
+        //    goto end;
+    } else if ((checkchimeramarker == 1) && (checkjbdrRun == 1)){
+        [ViewController.sharedController.buttontext setTitle:localize(@"Remove Chimera 1st") forState:UIControlStateNormal];
+        newTFcheckMyRemover4me = TRUE;
+        JUSTremovecheck = true;
+        saveCustomSetting(@"RestoreFS", 0);
+        _MS1_OUTLET.userInteractionEnabled = false;
+        _MS1_OUTLET.enabled = false;
+        _MS1_OUTLET.backgroundColor = grey;
+        _MS1_OUTLET.hidden = true;
+        _MS2_Outlet.userInteractionEnabled = false;
+        _MS2_Outlet.enabled = false;
+        _MS2_Outlet.backgroundColor = grey;
+        _MS2_Outlet.hidden = true;
+        _VS_Outlet.userInteractionEnabled = false;
+        _VS_Outlet.enabled = false;
+        _VS_Outlet.backgroundColor = grey;
+        _VS_Outlet.hidden = true;
+        _SP_Outlet.userInteractionEnabled = false;
+        _SP_Outlet.enabled = false;
+        _SP_Outlet.backgroundColor = grey;
+        _SP_Outlet.hidden = true;
+        _SPuppet_Outlet.hidden = true;
+        _CicutaOutlet.hidden = true;
+
+        _TWOutlet.userInteractionEnabled = false;
+        _TWOutlet.enabled = false;
+        _TWOutlet.backgroundColor = grey;
+        _TWOutlet.hidden = true;
+        [self.LoadTweakslabel setHidden:YES];
+        [self.RestorerootLabel setHidden:YES];
+        [self.ReinstallcydiaLabel setHidden:YES];
+        [self.ForceuicacheLabel setHidden:YES];
+        [self.ExploitTitleLabel setHidden:YES];
+
+        
+        [self.forceuicacheswitch setOn:FALSE];
+        [self.forceuicacheswitch setHidden:YES];
+        [self.forceuicacheswitch setEnabled:NO];
+        [self.forceuicacheswitch setUserInteractionEnabled:NO];
+        
+        [self.fixfsswitch setOn:FALSE];
+        [self.fixfsswitch setHidden:YES];
+        [self.fixfsswitch setEnabled:NO];
+        [self.fixfsswitch setUserInteractionEnabled:NO];
+        [self.restoreFSSwitch setOn:FALSE];
+        [self.restoreFSSwitch setHidden:YES];
+        [self.restoreFSSwitch setEnabled:NO];
+        [self.restoreFSSwitch setUserInteractionEnabled:NO];
+        [self.setnoncebtn setEnabled:FALSE];
+        [self.setnoncebtn setHidden:TRUE];
+        [self.setnoncebtn setUserInteractionEnabled:NO];
+
+       // [self.loadTweaksSwitch setEnabled:TRUE];
+        [self.loadTweaksSwitch setHidden:TRUE];
+       // [self.loadTweaksSwitch setUserInteractionEnabled:NO];
     } else if ((checkuncovermarker == 0) && (checkchimeramarker == 1) && (checkth0rmarkerFinal == 0)){
         [ViewController.sharedController.buttontext setTitle:localize(@"Remove Chimera?") forState:UIControlStateNormal];
         newTFcheckMyRemover4me = TRUE;
         JUSTremovecheck = true;
         saveCustomSetting(@"RestoreFS", 0);
-        [_loadTweaksSwitch setEnabled:NO];
-        [_loadTweaksSwitch setOn:TRUE];
+       // [_loadTweaksSwitch setEnabled:NO];
+       // [_loadTweaksSwitch setOn:FALSE];
         [_restoreFSSwitch setOn:true];
-
-        [_loadTweaksSwitch setUserInteractionEnabled:NO];
+        [self.LoadTweakslabel setHidden:YES];
+       // [self.loadTweaksSwitch setEnabled:FALSE];
+        [self.loadTweaksSwitch setHidden:TRUE];
+       // [_loadTweaksSwitch setUserInteractionEnabled:NO];
+        
         [_restoreFSSwitch setEnabled:NO];
         [_restoreFSSwitch setUserInteractionEnabled:NO];
         [ViewController.sharedController.restoreFSSwitch setEnabled:NO];
         [ViewController.sharedController.restoreFSSwitch setUserInteractionEnabled:NO];
+        
+        [self.RestorerootLabel setHidden:NO];
+        [self.ReinstallcydiaLabel setHidden:YES];
+        [self.ForceuicacheLabel setHidden:YES];
+        [self.forceuicacheswitch setOn:FALSE];
+        [self.forceuicacheswitch setHidden:YES];
+        [self.forceuicacheswitch setEnabled:NO];
+        [self.forceuicacheswitch setUserInteractionEnabled:NO];
+        [self.fixfsswitch setOn:FALSE];
+        [self.fixfsswitch setHidden:YES];
+        [self.fixfsswitch setEnabled:NO];
+        [self.fixfsswitch setUserInteractionEnabled:NO];
+        [self.setnoncebtn setEnabled:FALSE];
+        [self.setnoncebtn setHidden:TRUE];
+        [self.setnoncebtn setUserInteractionEnabled:NO];
         //    goto end;
     } else if ((checkuncovermarker == 1) && (checkchimeramarker == 0) && (checkth0rmarkerFinal == 0)){
         [ViewController.sharedController.buttontext setTitle:localize(@"Remove u0?") forState:UIControlStateNormal];
         newTFcheckMyRemover4me = TRUE;
         JUSTremovecheck = true;
         saveCustomSetting(@"RestoreFS", 0);
-        [_loadTweaksSwitch setEnabled:NO];
-        [_loadTweaksSwitch setOn:TRUE];
+       // [_loadTweaksSwitch setEnabled:NO];
+        //[_loadTweaksSwitch setOn:FALSE];
         [_restoreFSSwitch setOn:true];
+        [self.LoadTweakslabel setHidden:YES];
+       // [self.loadTweaksSwitch setEnabled:FALSE];
+        [self.loadTweaksSwitch setHidden:TRUE];
         [_loadTweaksSwitch setUserInteractionEnabled:NO];
+        
         [_restoreFSSwitch setEnabled:NO];
         [_restoreFSSwitch setUserInteractionEnabled:NO];
         [ViewController.sharedController.restoreFSSwitch setEnabled:NO];
         [ViewController.sharedController.restoreFSSwitch setUserInteractionEnabled:NO];
+        
+        [self.RestorerootLabel setHidden:NO];
+        [self.ReinstallcydiaLabel setHidden:YES];
+        [self.ForceuicacheLabel setHidden:YES];
+        [self.forceuicacheswitch setOn:FALSE];
+        [self.forceuicacheswitch setHidden:YES];
+        [self.forceuicacheswitch setEnabled:NO];
+        [self.forceuicacheswitch setUserInteractionEnabled:NO];
+        [self.fixfsswitch setOn:FALSE];
+        [self.fixfsswitch setHidden:YES];
+        [self.fixfsswitch setEnabled:NO];
+        [self.fixfsswitch setUserInteractionEnabled:NO];
+        [self.setnoncebtn setEnabled:FALSE];
+        [self.setnoncebtn setHidden:TRUE];
+        [self.setnoncebtn setUserInteractionEnabled:NO];
         //    goto end;
     } else if ((checkth0rmarkerFinal == 1) && (checkuncovermarker == 0) && (checkchimeramarker == 0)) {
         if (shouldRestoreFS())
@@ -595,6 +1013,13 @@ bool machineNameContainsSet(const char *string) {
                 [self.restoreFSSwitch setUserInteractionEnabled:YES];
                 [self.setnoncebtn setEnabled:FALSE];
                 [self.setnoncebtn setHidden:TRUE];
+               // [self.loadTweaksSwitch setEnabled:NO];
+               // [self.loadTweaksSwitch setOn:FALSE];
+                [self.LoadTweakslabel setHidden:YES];
+               // [self.loadTweaksSwitch setEnabled:FALSE];
+                [self.loadTweaksSwitch setHidden:TRUE];
+                //[self.loadTweaksSwitch setUserInteractionEnabled:NO];
+
             });
         } else {
             
@@ -634,6 +1059,12 @@ bool machineNameContainsSet(const char *string) {
                             [self.setnoncebtn setHidden:FALSE];
                             [ViewController.sharedController.loadTweakSwitch setEnabled:YES];
                             [ViewController.sharedController.loadTweakSwitch setOn:TRUE];
+                           // [self.loadTweaksSwitch setOn:TRUE];
+                           // [self.loadTweaksSwitch setEnabled:TRUE];
+                           // [self.loadTweaksSwitch setHidden:FALSE];
+                           // [self.loadTweaksSwitch setUserInteractionEnabled:YES];
+
+
                         });
                 } else {
                     dispatch_async(dispatch_get_main_queue(), ^{
@@ -687,6 +1118,7 @@ end1:
         _VS_Outlet.hidden = true;
         _SP_Outlet.hidden = true;
         _TWOutlet.hidden = true;
+        _SPuppet_Outlet.hidden = true;
         [self.LoadTweakslabel setHidden:YES];
         [self.RestorerootLabel setHidden:YES];
         [self.ReinstallcydiaLabel setHidden:YES];
@@ -774,8 +1206,71 @@ end1:
     [self.MS1_OUTLET setTitleColor:black forState:UIControlStateNormal];
     [self.MS2_Outlet setTitleColor:white forState:UIControlStateNormal];
     [self.SP_Outlet setTitleColor:white forState:UIControlStateNormal];
+    
+    self.CicutaOutlet.backgroundColor = purple;
+    [self.CicutaOutlet setTitleColor:white forState:UIControlStateNormal];
+    //self.SPuppet_Outlet.backgroundColor = purple;
+    //[self.SPuppet_Outlet setTitleColor:white forState:UIControlStateNormal];
+
 
     
+}
+
+
+/*- (IBAction)Spuppet_Action:(id)sender {
+    saveCustomSetting(@"ExploitType", 6);
+    
+    UIColor *purple = [UIColor colorWithRed:0.43 green:0.53 blue:0.82 alpha:1.0];
+    UIColor *white = [UIColor colorWithRed:1.00 green:1.00 blue:1.00 alpha:1.0];;
+    UIColor *black = [UIColor colorWithRed:0.00 green:0.00 blue:0.00 alpha:1.0];;
+    
+    self.VS_Outlet.backgroundColor = purple;
+    self.MS1_OUTLET.backgroundColor = purple;
+    self.MS2_Outlet.backgroundColor = purple;
+    self.SP_Outlet.backgroundColor = purple;
+    self.TWOutlet.backgroundColor = purple;
+    self.CicutaOutlet.backgroundColor = purple;
+    self.SPuppet_Outlet.backgroundColor = white;
+
+    
+    //button label color
+    [self.TWOutlet setTitleColor:white forState:UIControlStateNormal];
+    [self.VS_Outlet setTitleColor:white forState:UIControlStateNormal];
+    [self.MS1_OUTLET setTitleColor:white forState:UIControlStateNormal];
+    [self.MS2_Outlet setTitleColor:white forState:UIControlStateNormal];
+    [self.SP_Outlet setTitleColor:white forState:UIControlStateNormal];
+    [self.CicutaOutlet setTitleColor:white forState:UIControlStateNormal];
+    [self.SPuppet_Outlet setTitleColor:black forState:UIControlStateNormal];
+
+}*/
+
+- (IBAction)Cicuta_Action:(id)sender {
+    saveCustomSetting(@"ExploitType", 5);
+    
+    UIColor *purple = [UIColor colorWithRed:0.43 green:0.53 blue:0.82 alpha:1.0];
+    UIColor *white = [UIColor colorWithRed:1.00 green:1.00 blue:1.00 alpha:1.0];;
+    UIColor *black = [UIColor colorWithRed:0.00 green:0.00 blue:0.00 alpha:1.0];;
+    
+    self.VS_Outlet.backgroundColor = purple;
+    self.MS1_OUTLET.backgroundColor = purple;
+    self.MS2_Outlet.backgroundColor = purple;
+    self.SP_Outlet.backgroundColor = purple;
+    self.TWOutlet.backgroundColor = purple;
+    self.CicutaOutlet.backgroundColor = white;
+
+    
+    //button label color
+    [self.TWOutlet setTitleColor:white forState:UIControlStateNormal];
+    [self.VS_Outlet setTitleColor:white forState:UIControlStateNormal];
+    [self.MS1_OUTLET setTitleColor:white forState:UIControlStateNormal];
+    [self.MS2_Outlet setTitleColor:white forState:UIControlStateNormal];
+    [self.SP_Outlet setTitleColor:white forState:UIControlStateNormal];
+    [self.CicutaOutlet setTitleColor:black forState:UIControlStateNormal];
+    
+    //self.SPuppet_Outlet.backgroundColor = purple;
+    //[self.SPuppet_Outlet setTitleColor:white forState:UIControlStateNormal];
+
+
 }
 
 - (IBAction)MS2_ACTION:(UIButton *)sender {
@@ -799,6 +1294,11 @@ end1:
     [self.MS1_OUTLET setTitleColor:white forState:UIControlStateNormal];
     [self.MS2_Outlet setTitleColor:black forState:UIControlStateNormal];
     [self.SP_Outlet setTitleColor:white forState:UIControlStateNormal];
+    self.CicutaOutlet.backgroundColor = purple;
+    [self.CicutaOutlet setTitleColor:white forState:UIControlStateNormal];
+    //self.SPuppet_Outlet.backgroundColor = purple;
+    //[self.SPuppet_Outlet setTitleColor:white forState:UIControlStateNormal];
+
 
 }
 
@@ -824,6 +1324,10 @@ end1:
     [self.MS1_OUTLET setTitleColor:white forState:UIControlStateNormal];
     [self.MS2_Outlet setTitleColor:white forState:UIControlStateNormal];
     [self.SP_Outlet setTitleColor:white forState:UIControlStateNormal];
+    self.CicutaOutlet.backgroundColor = purple;
+    [self.CicutaOutlet setTitleColor:white forState:UIControlStateNormal];
+   // self.SPuppet_Outlet.backgroundColor = purple;
+   // [self.SPuppet_Outlet setTitleColor:white forState:UIControlStateNormal];
 
     
 }
@@ -850,6 +1354,11 @@ end1:
     [self.MS2_Outlet setTitleColor:white forState:UIControlStateNormal];
     [self.SP_Outlet setTitleColor:black forState:UIControlStateNormal];
     [self.TWOutlet setTitleColor:white forState:UIControlStateNormal];
+    [self.CicutaOutlet setTitleColor:white forState:UIControlStateNormal];
+    self.CicutaOutlet.backgroundColor = purple;
+    //self.SPuppet_Outlet.backgroundColor = purple;
+    //[self.SPuppet_Outlet setTitleColor:white forState:UIControlStateNormal];
+
 
 }
 
@@ -875,6 +1384,11 @@ end1:
     [self.MS2_Outlet setTitleColor:white forState:UIControlStateNormal];
     [self.SP_Outlet setTitleColor:white forState:UIControlStateNormal];
     [self.TWOutlet setTitleColor:black forState:UIControlStateNormal];
+    self.CicutaOutlet.backgroundColor = purple;
+    [self.CicutaOutlet setTitleColor:white forState:UIControlStateNormal];
+    //self.SPuppet_Outlet.backgroundColor = purple;
+    //[self.SPuppet_Outlet setTitleColor:white forState:UIControlStateNormal];
+
 
 }
 
@@ -1054,10 +1568,10 @@ static ViewController *currentViewController;
                             [self.restoreFSSwitch setHidden:YES];
                             [self.restoreFSSwitch setEnabled:NO];
                             [self.restoreFSSwitch setUserInteractionEnabled:NO];
-                             [self.setnoncebtn setEnabled:TRUE];
-                             [self.setnoncebtn setHidden:FALSE];
-                             [ViewController.sharedController.loadTweakSwitch setEnabled:YES];
-                             [ViewController.sharedController.loadTweakSwitch setOn:TRUE];
+                            [self.setnoncebtn setEnabled:TRUE];
+                            [self.setnoncebtn setHidden:FALSE];
+                            [ViewController.sharedController.loadTweakSwitch setEnabled:YES];
+                            [ViewController.sharedController.loadTweakSwitch setOn:TRUE];
                          });
                     UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Important notice:"
                                                                  message:@"This option requires internet to succeed. Please make sure you're connected to the internet before proceeding. !You've been warned!"
@@ -1075,11 +1589,18 @@ static ViewController *currentViewController;
                         [self.restoreFSSwitch setEnabled:YES];
                         [self.restoreFSSwitch setOn:FALSE];
                         [self.restoreFSSwitch setHidden:NO];
+                        [self.restoreFSSwitch setUserInteractionEnabled:YES];
+
 
                     } else {
                         [ViewController.sharedController.buttontext setTitle:localize(@"checkra1n & Freya?") forState:UIControlStateNormal];
                         [_setnoncebtn setHidden:NO];
                         [_setnoncebtn setEnabled:YES];
+                        [self.fixfsswitch setOn:FALSE];
+                        [self.restoreFSSwitch setEnabled:YES];
+                        [self.restoreFSSwitch setOn:FALSE];
+                        [self.restoreFSSwitch setHidden:NO];
+                        [self.restoreFSSwitch setUserInteractionEnabled:YES];
 
                     }
                 }
@@ -1118,6 +1639,10 @@ static ViewController *currentViewController;
                 [self.fixfsswitch setHidden:YES];
                 [self.fixfsswitch setEnabled:NO];
                 [self.fixfsswitch setUserInteractionEnabled:NO];
+                [self.loadTweaksSwitch setOn:TRUE];
+                [self.loadTweaksSwitch setEnabled:TRUE];
+                [self.loadTweaksSwitch setHidden:FALSE];
+                [self.loadTweaksSwitch setUserInteractionEnabled:YES];
 
                 [self.restoreFSSwitch setOn:FALSE];
                 [self.restoreFSSwitch setHidden:NO];
@@ -1155,10 +1680,26 @@ static ViewController *currentViewController;
             [self.fixfsswitch setHidden:YES];
             [self.fixfsswitch setEnabled:NO];
             [self.fixfsswitch setUserInteractionEnabled:NO];
+            [self.forceuicacheswitch setOn:FALSE];
+            [self.forceuicacheswitch setHidden:YES];
+            [self.forceuicacheswitch setEnabled:NO];
+            [self.forceuicacheswitch setUserInteractionEnabled:NO];
+            [self.ForceuicacheLabel setHidden:YES];
+            [self.ReinstallcydiaLabel setHidden:YES];
+
             [self.restoreFSSwitch setHidden:NO];
             [self.restoreFSSwitch setEnabled:YES];
             [self.restoreFSSwitch setOn:TRUE];
             [self.restoreFSSwitch setUserInteractionEnabled:YES];
+            [self.loadTweaksSwitch setEnabled:NO];
+            [self.loadTweaksSwitch setOn:FALSE];
+            [self.LoadTweakslabel setHidden:YES];
+            [self.loadTweaksSwitch setEnabled:FALSE];
+            [self.loadTweaksSwitch setHidden:TRUE];
+            [self.loadTweaksSwitch setUserInteractionEnabled:NO];
+            [_setnoncebtn setHidden:YES];
+            [_setnoncebtn setEnabled:NO];
+
         } else if ((checkuncovermarker == 1) && (checkth0rmarkerFinal == 0) && (checkchimeramarker == 0)) {
             [ViewController.sharedController.buttontext setTitle:localize(@"Remove u0?") forState:UIControlStateNormal];
             newTFcheckMyRemover4me = TRUE;
@@ -1169,6 +1710,26 @@ static ViewController *currentViewController;
             JUSTremovecheck = true;
             [ViewController.sharedController.restoreFSSwitch setEnabled:NO];
             [ViewController.sharedController.restoreFSSwitch setUserInteractionEnabled:NO];
+            [self.forceuicacheswitch setOn:FALSE];
+            [self.forceuicacheswitch setHidden:YES];
+            [self.forceuicacheswitch setEnabled:NO];
+            [self.forceuicacheswitch setUserInteractionEnabled:NO];
+            [self.ForceuicacheLabel setHidden:YES];
+            [self.ReinstallcydiaLabel setHidden:YES];
+            [self.fixfsswitch setOn:FALSE];
+            [self.fixfsswitch setHidden:YES];
+            [self.fixfsswitch setEnabled:NO];
+            [self.fixfsswitch setUserInteractionEnabled:NO];
+
+            [self.loadTweaksSwitch setEnabled:NO];
+            [self.loadTweaksSwitch setOn:FALSE];
+            [self.LoadTweakslabel setHidden:YES];
+            [self.loadTweaksSwitch setEnabled:FALSE];
+            [self.loadTweaksSwitch setHidden:TRUE];
+            [self.loadTweaksSwitch setUserInteractionEnabled:NO];
+            [_setnoncebtn setHidden:YES];
+            [_setnoncebtn setEnabled:NO];
+
 
         } else if ((checkuncovermarker == 0) && (checkchimeramarker == 1) && (checkth0rmarkerFinal == 0)){
             [ViewController.sharedController.buttontext setTitle:localize(@"Remove Chimera?") forState:UIControlStateNormal];
@@ -1180,6 +1741,26 @@ static ViewController *currentViewController;
             JUSTremovecheck = true;
             [ViewController.sharedController.restoreFSSwitch setEnabled:NO];
             [ViewController.sharedController.restoreFSSwitch setUserInteractionEnabled:NO];
+            [self.forceuicacheswitch setOn:FALSE];
+            [self.forceuicacheswitch setHidden:YES];
+            [self.forceuicacheswitch setEnabled:NO];
+            [self.forceuicacheswitch setUserInteractionEnabled:NO];
+            [self.ForceuicacheLabel setHidden:YES];
+            [self.ReinstallcydiaLabel setHidden:YES];
+            [self.fixfsswitch setOn:FALSE];
+            [self.fixfsswitch setHidden:YES];
+            [self.fixfsswitch setEnabled:NO];
+            [self.fixfsswitch setUserInteractionEnabled:NO];
+
+            [self.loadTweaksSwitch setEnabled:NO];
+            [self.loadTweaksSwitch setOn:FALSE];
+            [self.LoadTweakslabel setHidden:YES];
+            [self.loadTweaksSwitch setEnabled:FALSE];
+            [self.loadTweaksSwitch setHidden:TRUE];
+            [self.loadTweaksSwitch setUserInteractionEnabled:NO];
+            [_setnoncebtn setHidden:YES];
+            [_setnoncebtn setEnabled:NO];
+
             //    goto end;
         } else {
             [ViewController.sharedController.buttontext setTitle:localize(@"Remove JB?") forState:UIControlStateNormal];
@@ -1192,6 +1773,22 @@ static ViewController *currentViewController;
             [self.restoreFSSwitch setEnabled:YES];
             [self.restoreFSSwitch setOn:TRUE];
             [self.restoreFSSwitch setUserInteractionEnabled:YES];
+            [self.loadTweaksSwitch setEnabled:NO];
+            [self.loadTweaksSwitch setOn:FALSE];
+            [self.LoadTweakslabel setHidden:YES];
+            [self.loadTweaksSwitch setEnabled:FALSE];
+            [self.loadTweaksSwitch setHidden:TRUE];
+            [self.loadTweaksSwitch setUserInteractionEnabled:NO];
+            [self.forceuicacheswitch setOn:FALSE];
+            [self.forceuicacheswitch setHidden:YES];
+            [self.forceuicacheswitch setEnabled:NO];
+            [self.forceuicacheswitch setUserInteractionEnabled:NO];
+            [self.ForceuicacheLabel setHidden:YES];
+            [self.ReinstallcydiaLabel setHidden:YES];
+            [_setnoncebtn setHidden:YES];
+            [_setnoncebtn setEnabled:NO];
+
+
         }
         JUSTremovecheck = true;
         saveCustomSetting(@"RestoreFS", 0);
@@ -1199,17 +1796,40 @@ static ViewController *currentViewController;
         if ((checkth0rmarkerFinal == 1) && (checkuncovermarker == 0) && (checkchimeramarker == 0)){
             if (checkfsfixswitch == 1) {
                  dispatch_async(dispatch_get_main_queue(), ^{
-                         [ViewController.sharedController.buttontext setTitle:localize(@"Fix FS?") forState:UIControlStateNormal];
-                         [self.fixfsswitch setOn:TRUE];
-                         [self.restoreFSSwitch setOn:FALSE];
-                         [self.restoreFSSwitch setHidden:YES];
-                         [self.restoreFSSwitch setEnabled:NO];
-                         [self.restoreFSSwitch setUserInteractionEnabled:NO];
-
+                        [ViewController.sharedController.buttontext setTitle:localize(@"Fix FS?") forState:UIControlStateNormal];
+                        [self.restoreFSSwitch setOn:FALSE];
+                        [self.restoreFSSwitch setHidden:YES];
+                        [self.restoreFSSwitch setEnabled:NO];
+                        [self.restoreFSSwitch setUserInteractionEnabled:NO];
+                            
                         [self.setnoncebtn setEnabled:TRUE];
-                         [self.setnoncebtn setHidden:FALSE];
-                         [ViewController.sharedController.loadTweakSwitch setEnabled:YES];
-                         [ViewController.sharedController.loadTweakSwitch setOn:TRUE];
+                        [self.setnoncebtn setHidden:FALSE];
+                        [self.loadTweaksSwitch setEnabled:YES];
+                        [self.loadTweaksSwitch setOn:TRUE];
+                        [self.LoadTweakslabel setHidden:NO];
+                        [self.loadTweaksSwitch setEnabled:TRUE];
+                        [self.loadTweaksSwitch setHidden:FALSE];
+                        [self.loadTweaksSwitch setUserInteractionEnabled:YES];
+
+                        [ViewController.sharedController.loadTweakSwitch setEnabled:YES];
+                        [ViewController.sharedController.loadTweakSwitch setOn:TRUE];
+                        [self.forceuicacheswitch setOn:FALSE];
+                        [self.forceuicacheswitch setHidden:YES];
+                        [self.forceuicacheswitch setEnabled:NO];
+                        [self.forceuicacheswitch setUserInteractionEnabled:NO];
+                        [self.ForceuicacheLabel setHidden:YES];
+                        [self.ReinstallcydiaLabel setHidden:YES];
+                        [self.fixfsswitch setOn:TRUE];
+                        [self.fixfsswitch setHidden:NO];
+                        [self.fixfsswitch setEnabled:YES];
+                        [self.fixfsswitch setUserInteractionEnabled:YES];
+                        [self.restoreFSSwitch setOn:NO];
+                        [self.restoreFSSwitch setHidden:YES];
+                        [self.restoreFSSwitch setEnabled:NO];
+                        [self.restoreFSSwitch setUserInteractionEnabled:NO];
+                        [_setnoncebtn setHidden:NO];
+                        [_setnoncebtn setEnabled:YES];
+
                      });
                 UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Important notice:"
                                                              message:@"This option requires internet to succeed. Please make sure you're connected to the internet before proceeding. !You've been warned!"
@@ -1218,19 +1838,68 @@ static ViewController *currentViewController;
                                                    otherButtonTitles:@"OK", nil];
                 [alert show];
             } else {
+                
                 if (checkcheckRa1nmarker2 == 0) {
 
                     [ViewController.sharedController.buttontext setTitle:localize(@"Enable Freya?") forState:UIControlStateNormal];
                     [_setnoncebtn setHidden:NO];
                     [_setnoncebtn setEnabled:YES];
                     [self.restoreFSSwitch setHidden:NO];
+                    [self.loadTweaksSwitch setEnabled:YES];
+                    [self.loadTweaksSwitch setOn:TRUE];
+                    [self.LoadTweakslabel setHidden:NO];
+                    [self.loadTweaksSwitch setEnabled:TRUE];
+                    [self.loadTweaksSwitch setHidden:FALSE];
+                    [self.loadTweaksSwitch setUserInteractionEnabled:YES];
+
+                    
+                    [self.forceuicacheswitch setOn:FALSE];
+                    [self.forceuicacheswitch setHidden:NO];
+                    [self.forceuicacheswitch setEnabled:YES];
+                    [self.forceuicacheswitch setUserInteractionEnabled:YES];
+                    [self.ForceuicacheLabel setHidden:NO];
+                    [self.ReinstallcydiaLabel setHidden:NO];
+                    [self.fixfsswitch setOn:NO];
+                    [self.fixfsswitch setHidden:NO];
+                    [self.fixfsswitch setEnabled:YES];
+                    [self.fixfsswitch setUserInteractionEnabled:YES];
+                    [self.restoreFSSwitch setOn:NO];
+                    [self.restoreFSSwitch setHidden:NO];
+                    [self.restoreFSSwitch setEnabled:YES];
+                    [self.restoreFSSwitch setUserInteractionEnabled:YES];
+                    [_setnoncebtn setHidden:NO];
+                    [_setnoncebtn setEnabled:YES];
 
                 } else {
                     [ViewController.sharedController.buttontext setTitle:localize(@"checkra1n & Freya?") forState:UIControlStateNormal];
                     [_setnoncebtn setHidden:NO];
                     [_setnoncebtn setEnabled:YES];
+                    [self.restoreFSSwitch setHidden:NO];
+                    [self.loadTweaksSwitch setEnabled:YES];
+                    [self.loadTweaksSwitch setOn:TRUE];
+                    [self.LoadTweakslabel setHidden:NO];
+                    [self.loadTweaksSwitch setEnabled:TRUE];
+                    [self.loadTweaksSwitch setHidden:FALSE];
+                    [self.loadTweaksSwitch setUserInteractionEnabled:YES];
+                    [self.forceuicacheswitch setOn:FALSE];
+                    [self.forceuicacheswitch setHidden:NO];
+                    [self.forceuicacheswitch setEnabled:YES];
+                    [self.forceuicacheswitch setUserInteractionEnabled:YES];
+                    [self.ForceuicacheLabel setHidden:NO];
+                    [self.ReinstallcydiaLabel setHidden:NO];
+                    [self.fixfsswitch setOn:NO];
+                    [self.fixfsswitch setHidden:NO];
+                    [self.fixfsswitch setEnabled:YES];
+                    [self.fixfsswitch setUserInteractionEnabled:YES];
+                    [self.restoreFSSwitch setOn:NO];
+                    [self.restoreFSSwitch setHidden:NO];
+                    [self.restoreFSSwitch setEnabled:YES];
+                    [self.restoreFSSwitch setUserInteractionEnabled:YES];
+                    [_setnoncebtn setHidden:NO];
+                    [_setnoncebtn setEnabled:YES];
 
                 }
+                
             }
         } else if ((checkuncovermarker == 1) && (checkth0rmarkerFinal == 0) && (checkchimeramarker == 0)) {
             [ViewController.sharedController.buttontext setTitle:localize(@"Remove u0 1st") forState:UIControlStateNormal];
@@ -1245,19 +1914,67 @@ static ViewController *currentViewController;
             [ViewController.sharedController.restoreFSSwitch setUserInteractionEnabled:NO];
 
             [ViewController.sharedController.buttontext setEnabled:false];
+            [self.forceuicacheswitch setOn:FALSE];
+            [self.forceuicacheswitch setHidden:YES];
+            [self.forceuicacheswitch setEnabled:NO];
+            [self.forceuicacheswitch setUserInteractionEnabled:NO];
+            [self.ForceuicacheLabel setHidden:YES];
+            [self.ReinstallcydiaLabel setHidden:YES];
+            [self.fixfsswitch setOn:FALSE];
+            [self.fixfsswitch setHidden:YES];
+            [self.fixfsswitch setEnabled:NO];
+            [self.fixfsswitch setUserInteractionEnabled:NO];
+
+            [self.restoreFSSwitch setOn:TRUE];
+            [self.restoreFSSwitch setHidden:YES];
+            [self.restoreFSSwitch setEnabled:YES];
+            [self.restoreFSSwitch setUserInteractionEnabled:NO];
+            [self.loadTweaksSwitch setEnabled:NO];
+            [self.loadTweaksSwitch setOn:FALSE];
+            [self.LoadTweakslabel setHidden:YES];
+            [self.loadTweaksSwitch setEnabled:FALSE];
+            [self.loadTweaksSwitch setHidden:TRUE];
+            [self.loadTweaksSwitch setUserInteractionEnabled:NO];
+            [_setnoncebtn setHidden:YES];
+            [_setnoncebtn setEnabled:NO];
+
+
         } else if ((checkuncovermarker == 0) && (checkchimeramarker == 1) && (checkth0rmarkerFinal == 0)){
             [ViewController.sharedController.buttontext setTitle:localize(@"Remove Chimera 1st") forState:UIControlStateNormal];
             newTFcheckMyRemover4me = TRUE;
             saveCustomSetting(@"RestoreFS", 0);
             [_restoreFSSwitch setHidden:YES];
-
             [_restoreFSSwitch setEnabled:NO];
             [_restoreFSSwitch setUserInteractionEnabled:NO];
             JUSTremovecheck = true;
             [ViewController.sharedController.restoreFSSwitch setEnabled:NO];
             [ViewController.sharedController.restoreFSSwitch setUserInteractionEnabled:NO];
             [ViewController.sharedController.buttontext setEnabled:false];
+            [self.forceuicacheswitch setOn:FALSE];
+            [self.forceuicacheswitch setHidden:YES];
+            [self.forceuicacheswitch setEnabled:NO];
+            [self.forceuicacheswitch setUserInteractionEnabled:NO];
+            [self.ForceuicacheLabel setHidden:YES];
+            [self.ReinstallcydiaLabel setHidden:YES];
+            [self.fixfsswitch setOn:FALSE];
+            [self.fixfsswitch setHidden:YES];
+            [self.fixfsswitch setEnabled:NO];
+            [self.fixfsswitch setUserInteractionEnabled:NO];
 
+            [self.restoreFSSwitch setOn:TRUE];
+            [self.restoreFSSwitch setHidden:YES];
+            [self.restoreFSSwitch setEnabled:YES];
+            [self.restoreFSSwitch setUserInteractionEnabled:NO];
+            [self.loadTweaksSwitch setEnabled:NO];
+            [self.loadTweaksSwitch setOn:FALSE];
+            [self.LoadTweakslabel setHidden:YES];
+            [self.loadTweaksSwitch setEnabled:FALSE];
+            [self.loadTweaksSwitch setHidden:TRUE];
+            [self.loadTweaksSwitch setUserInteractionEnabled:NO];
+            [_setnoncebtn setHidden:YES];
+            [_setnoncebtn setEnabled:NO];
+
+            
         } else {
             [_setnoncebtn setHidden:NO];
             [_setnoncebtn setEnabled:NO];
@@ -1272,6 +1989,19 @@ static ViewController *currentViewController;
             [self.restoreFSSwitch setHidden:NO];
             [self.restoreFSSwitch setEnabled:YES];
             [self.restoreFSSwitch setUserInteractionEnabled:YES];
+            [self.loadTweaksSwitch setEnabled:YES];
+            [self.loadTweaksSwitch setOn:TRUE];
+            [self.LoadTweakslabel setHidden:NO];
+            [self.loadTweaksSwitch setEnabled:TRUE];
+            [self.loadTweaksSwitch setHidden:FALSE];
+            [self.loadTweaksSwitch setUserInteractionEnabled:YES];
+            [self.forceuicacheswitch setOn:FALSE];
+            [self.forceuicacheswitch setHidden:YES];
+            [self.forceuicacheswitch setEnabled:NO];
+            [self.forceuicacheswitch setUserInteractionEnabled:NO];
+            [self.ForceuicacheLabel setHidden:YES];
+            [self.ReinstallcydiaLabel setHidden:YES];
+            
 
         }
         newTFcheckMyRemover4me = false;

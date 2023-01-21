@@ -53,7 +53,7 @@ void util_printf(const char *fmt, ...) __printflike(1, 2);
 void preMountFS(const char *thedisk, int root_fs, const char **snapshots, const char *origfs);
 
 bool is_mountpoint(const char *filename);
-int run(const char *cmd);
+//int run(const char *cmd);
 char* itoa(long n);
 void do_restart(void);
 void post_exploit(void);

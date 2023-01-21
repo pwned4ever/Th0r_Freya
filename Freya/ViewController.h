@@ -58,6 +58,7 @@ void findoffs(void);
 void dothesploit(void);
 void juswaitn(void);
 void juswaitn4pad(void);
+void waitOTAOK(char *msg);
 
 void dothepatch(void);
 void debsinstalling(void);
@@ -68,7 +69,7 @@ void youknowtryagain(void);
 void thelabelbtnchange(char *msg);
 void cydiaDone(char *msg);
 void uicaching(char *msg);
-void startJBD(char *msg);
+void startingJBD(char *msg);
 void jbdfinished(char *msg);
 void respringing(char *msg);
 extern bool newTFcheckMyRemover4me;

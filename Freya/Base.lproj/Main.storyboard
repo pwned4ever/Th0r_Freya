@@ -2,20 +2,12 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="xk3-Xi-BHR">
     <device id="retina4_0" orientation="portrait" appearance="dark"/>
     <dependencies>
-        <deployment version="4352" identifier="iOS"/>
+        <deployment version="4144" identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
-    <customFonts key="customFonts">
-        <array key="SF-Pro-Rounded-Bold.otf">
-            <string>SFProRounded-Bold</string>
-        </array>
-        <array key="SF-Pro-Rounded-Semibold.otf">
-            <string>SFProRounded-Semibold</string>
-        </array>
-    </customFonts>
     <scenes>
         <!--Tab Bar Controller-->
         <scene sceneID="wSO-in-1gp">
@@ -215,7 +207,7 @@
                                 <rect key="frame" x="0.0" y="27" width="320" height="553"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jRh-Zo-1pH">
-                                        <rect key="frame" x="138" y="421" width="50" height="30"/>
+                                        <rect key="frame" x="138" y="446" width="50" height="30"/>
                                         <state key="normal" title="Credits">
                                             <color key="titleColor" systemColor="systemTealColor"/>
                                         </state>
@@ -223,8 +215,20 @@
                                             <action selector="creditspressed:" destination="cbb-OQ-T38" eventType="touchUpInside" id="3nV-sj-E4v"/>
                                         </connections>
                                     </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="E5X-B1-3a0">
+                                        <rect key="frame" x="79" y="403" width="162" height="36"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="36" id="Hfs-ib-abt"/>
+                                        </constraints>
+                                        <state key="normal" title="SET NONCE" backgroundImage="Button">
+                                            <color key="titleColor" red="0.42745098040000001" green="0.52549019610000003" blue="0.81568627449999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="setnoncepressedbtn:" destination="cbb-OQ-T38" eventType="touchUpInside" id="xsI-M2-ZHm"/>
+                                        </connections>
+                                    </button>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="r3g-G4-d9t" userLabel="Options view">
-                                        <rect key="frame" x="14" y="66" width="298" height="346"/>
+                                        <rect key="frame" x="14" y="56" width="298" height="346"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="18" translatesAutoresizingMaskIntoConstraints="NO" id="RWk-Xr-3Ts">
                                                 <rect key="frame" x="0.0" y="158" width="292" height="153"/>
@@ -233,18 +237,18 @@
                                                         <rect key="frame" x="0.0" y="0.0" width="292" height="153"/>
                                                         <subviews>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Exploit" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="VKd-Qr-8aR">
-                                                                <rect key="frame" x="122.5" y="7" width="47" height="18"/>
-                                                                <fontDescription key="fontDescription" name="SFProRounded-Bold" family="SF Pro Rounded" pointSize="15"/>
+                                                                <rect key="frame" x="121" y="-23" width="50.5" height="18"/>
+                                                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
-                                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="2XJ-H5-4tg">
-                                                                <rect key="frame" x="24" y="30" width="244" height="115"/>
+                                                            <stackView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="263" axis="vertical" distribution="fillEqually" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="2XJ-H5-4tg">
+                                                                <rect key="frame" x="24" y="3" width="244" height="149"/>
                                                                 <subviews>
                                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cnZ-mN-oLo">
-                                                                        <rect key="frame" x="0.0" y="0.0" width="244" height="16.5"/>
+                                                                        <rect key="frame" x="0.0" y="0.0" width="244" height="14.5"/>
                                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                                        <fontDescription key="fontDescription" name="SFProRounded-Semibold" family="SF Pro Rounded" pointSize="17"/>
+                                                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                                                         <state key="normal" title="Voucher Swap">
                                                                             <color key="titleColor" systemColor="viewFlipsideBackgroundColor"/>
                                                                         </state>
@@ -259,9 +263,10 @@
                                                                         </connections>
                                                                     </button>
                                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="o2D-uC-hca">
-                                                                        <rect key="frame" x="0.0" y="24.5" width="244" height="16.5"/>
+                                                                        <rect key="frame" x="0.0" y="22.5" width="244" height="14.5"/>
                                                                         <color key="backgroundColor" red="0.42745098039215684" green="0.52549019607843139" blue="0.81568627450980391" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                                        <fontDescription key="fontDescription" name="SFProRounded-Semibold" family="SF Pro Rounded" pointSize="17"/>
+                                                                        <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="17"/>
+                                                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                                         <state key="normal" title="Mach Swap 1">
                                                                             <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                         </state>
@@ -272,13 +277,13 @@
                                                                             </userDefinedRuntimeAttribute>
                                                                         </userDefinedRuntimeAttributes>
                                                                         <connections>
-                                                                            <action selector="MS1_ACTION:" destination="cbb-OQ-T38" eventType="touchUpInside" id="esw-j0-ozs"/>
+                                                                            <action selector="MS1_ACTION:" destination="cbb-OQ-T38" eventType="touchUpInside" id="eGZ-Eu-ewU"/>
                                                                         </connections>
                                                                     </button>
                                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WPt-xM-ZeO">
-                                                                        <rect key="frame" x="0.0" y="49" width="244" height="17"/>
+                                                                        <rect key="frame" x="0.0" y="45" width="244" height="14.5"/>
                                                                         <color key="backgroundColor" red="0.42745098039215684" green="0.52549019607843139" blue="0.81568627450980391" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                                        <fontDescription key="fontDescription" name="SFProRounded-Semibold" family="SF Pro Rounded" pointSize="17"/>
+                                                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                                                         <state key="normal" title="Mach Swap 2">
                                                                             <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                         </state>
@@ -292,12 +297,24 @@
                                                                             <action selector="MS2_ACTION:" destination="cbb-OQ-T38" eventType="touchUpInside" id="RlH-TV-nxe"/>
                                                                         </connections>
                                                                     </button>
-                                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="i38-mJ-9UE">
-                                                                        <rect key="frame" x="0.0" y="74" width="244" height="16.5"/>
-                                                                        <color key="backgroundColor" red="0.42745098040000001" green="0.52549019610000003" blue="0.81568627449999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                                        <fontDescription key="fontDescription" name="SFProRounded-Semibold" family="SF Pro Rounded" pointSize="16"/>
-                                                                        <color key="tintColor" red="0.42745098040000001" green="0.52549019610000003" blue="0.81568627449999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zL9-Qu-Zcy" userLabel="SPuppetOutlet">
+                                                                        <rect key="frame" x="0.0" y="67.5" width="244" height="14"/>
+                                                                        <color key="backgroundColor" red="0.42854648829999997" green="0.52412092690000001" blue="0.81642812490000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                                         <state key="normal" title="Sock Puppet">
+                                                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                                        </state>
+                                                                        <connections>
+                                                                            <action selector="Spuppet_Action:" destination="cbb-OQ-T38" eventType="touchUpInside" id="f8g-YF-39d"/>
+                                                                        </connections>
+                                                                    </button>
+                                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="i38-mJ-9UE">
+                                                                        <rect key="frame" x="0.0" y="89.5" width="244" height="14.5"/>
+                                                                        <color key="backgroundColor" red="0.42745098040000001" green="0.52549019610000003" blue="0.81568627449999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                                                        <color key="tintColor" red="0.42745098040000001" green="0.52549019610000003" blue="0.81568627449999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                                        <state key="normal" title="Sock Port">
                                                                             <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                         </state>
                                                                         <userDefinedRuntimeAttributes>
@@ -311,9 +328,9 @@
                                                                         </connections>
                                                                     </button>
                                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ttd-ho-Oh0" userLabel="TWOutlet">
-                                                                        <rect key="frame" x="0.0" y="98.5" width="244" height="16.5"/>
+                                                                        <rect key="frame" x="0.0" y="112" width="244" height="14.5"/>
                                                                         <color key="backgroundColor" red="0.42745098040000001" green="0.52549019610000003" blue="0.81568627449999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                                        <fontDescription key="fontDescription" name="SFProRounded-Semibold" family="SF Pro Rounded" pointSize="16"/>
+                                                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                                                         <color key="tintColor" red="0.42745098040000001" green="0.52549019610000003" blue="0.81568627449999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                         <state key="normal" title="Time Waste">
                                                                             <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -328,16 +345,27 @@
                                                                             <action selector="TW_Action:" destination="cbb-OQ-T38" eventType="touchUpInside" id="zKL-Rr-kjp"/>
                                                                         </connections>
                                                                     </button>
+                                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sl2-HU-s8M" userLabel="CicutaOutlet">
+                                                                        <rect key="frame" x="0.0" y="134.5" width="244" height="14.5"/>
+                                                                        <color key="backgroundColor" red="0.42854648829999997" green="0.52412092690000001" blue="0.81642812490000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                                        <state key="normal" title="Cicuta">
+                                                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                                        </state>
+                                                                        <connections>
+                                                                            <action selector="Cicuta_Action:" destination="cbb-OQ-T38" eventType="touchUpInside" id="jiS-Nu-uRr"/>
+                                                                        </connections>
+                                                                    </button>
                                                                 </subviews>
                                                             </stackView>
                                                         </subviews>
                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <constraints>
-                                                            <constraint firstAttribute="bottom" secondItem="2XJ-H5-4tg" secondAttribute="bottom" constant="8" id="Hon-Mv-hyP"/>
-                                                            <constraint firstItem="VKd-Qr-8aR" firstAttribute="top" secondItem="oki-pA-yhn" secondAttribute="top" constant="7" id="Xwu-85-hpD"/>
-                                                            <constraint firstItem="VKd-Qr-8aR" firstAttribute="centerX" secondItem="oki-pA-yhn" secondAttribute="centerX" id="YfI-7y-s1M"/>
-                                                            <constraint firstItem="2XJ-H5-4tg" firstAttribute="top" secondItem="oki-pA-yhn" secondAttribute="top" constant="30" id="ahP-bc-C3f"/>
-                                                            <constraint firstItem="2XJ-H5-4tg" firstAttribute="top" secondItem="VKd-Qr-8aR" secondAttribute="bottom" constant="5" id="iPK-D1-N71"/>
+                                                            <constraint firstAttribute="bottom" secondItem="2XJ-H5-4tg" secondAttribute="bottom" constant="1" id="Hon-Mv-hyP"/>
+                                                            <constraint firstItem="2XJ-H5-4tg" firstAttribute="top" secondItem="oki-pA-yhn" secondAttribute="top" constant="3" id="ahP-bc-C3f"/>
+                                                            <constraint firstItem="VKd-Qr-8aR" firstAttribute="centerX" secondItem="2XJ-H5-4tg" secondAttribute="centerX" id="atj-yJ-IQU"/>
+                                                            <constraint firstItem="2XJ-H5-4tg" firstAttribute="top" secondItem="VKd-Qr-8aR" secondAttribute="bottom" constant="8" id="d5x-n6-Mbi"/>
                                                             <constraint firstAttribute="trailing" secondItem="2XJ-H5-4tg" secondAttribute="trailing" constant="24" id="nxD-vm-rxf"/>
                                                             <constraint firstItem="2XJ-H5-4tg" firstAttribute="leading" secondItem="oki-pA-yhn" secondAttribute="leading" constant="24" id="tfT-NS-Zew"/>
                                                         </constraints>
@@ -382,10 +410,10 @@ uicache -a</string>
                                                                 </connections>
                                                             </switch>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumFontSize="13" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="n1J-Cl-y9d">
-                                                                <rect key="frame" x="15.5" y="0.0" width="44" height="35"/>
+                                                                <rect key="frame" x="14.5" y="0.0" width="45" height="35"/>
                                                                 <string key="text">Load
 Tweaks</string>
-                                                                <fontDescription key="fontDescription" name="SFProRounded-Semibold" family="SF Pro Rounded" pointSize="13"/>
+                                                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
@@ -430,15 +458,15 @@ Tweaks</string>
                                                                 <rect key="frame" x="5" y="-1" width="61" height="33.5"/>
                                                                 <string key="text">Re-install
 Cydia</string>
-                                                                <fontDescription key="fontDescription" name="SFProRounded-Bold" family="SF Pro Rounded" pointSize="15"/>
+                                                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kup-ex-n4C">
-                                                                <rect key="frame" x="4" y="85.5" width="49.5" height="33.5"/>
+                                                                <rect key="frame" x="4" y="85.5" width="50" height="33.5"/>
                                                                 <string key="text">Restore
 RootFS</string>
-                                                                <fontDescription key="fontDescription" name="SFProRounded-Bold" family="SF Pro Rounded" pointSize="14"/>
+                                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
@@ -473,29 +501,14 @@ RootFS</string>
                                                     </view>
                                                 </subviews>
                                             </stackView>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="E5X-B1-3a0">
-                                                <rect key="frame" x="65" y="315" width="162" height="36"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="36" id="Hfs-ib-abt"/>
-                                                </constraints>
-                                                <state key="normal" title="SET NONCE" backgroundImage="Button">
-                                                    <color key="titleColor" red="0.42745098040000001" green="0.52549019610000003" blue="0.81568627449999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                </state>
-                                                <connections>
-                                                    <action selector="setnoncepressedbtn:" destination="cbb-OQ-T38" eventType="touchUpInside" id="xsI-M2-ZHm"/>
-                                                </connections>
-                                            </button>
                                         </subviews>
                                         <constraints>
-                                            <constraint firstItem="E5X-B1-3a0" firstAttribute="leading" secondItem="r3g-G4-d9t" secondAttribute="leading" constant="65" id="9Em-IO-ch7"/>
                                             <constraint firstItem="RWk-Xr-3Ts" firstAttribute="leading" secondItem="r3g-G4-d9t" secondAttribute="leading" id="ERs-mP-hLQ"/>
                                             <constraint firstAttribute="bottom" secondItem="RWk-Xr-3Ts" secondAttribute="bottom" constant="35" id="F4i-CB-czt"/>
                                             <constraint firstItem="ybb-Xc-HH8" firstAttribute="top" secondItem="r3g-G4-d9t" secondAttribute="top" id="H9O-io-mc7"/>
-                                            <constraint firstItem="E5X-B1-3a0" firstAttribute="centerX" secondItem="RWk-Xr-3Ts" secondAttribute="centerX" id="bIw-E9-m4y"/>
                                             <constraint firstItem="ybb-Xc-HH8" firstAttribute="centerX" secondItem="r3g-G4-d9t" secondAttribute="centerX" id="kIo-3H-aub"/>
                                             <constraint firstAttribute="trailing" secondItem="RWk-Xr-3Ts" secondAttribute="trailing" constant="6" id="lyJ-1a-I1j"/>
                                             <constraint firstItem="RWk-Xr-3Ts" firstAttribute="top" secondItem="ybb-Xc-HH8" secondAttribute="bottom" constant="34" id="nwE-vX-R9X"/>
-                                            <constraint firstItem="E5X-B1-3a0" firstAttribute="top" secondItem="RWk-Xr-3Ts" secondAttribute="bottom" constant="4" id="vNf-Ew-rMo"/>
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IGj-Bm-Rpn">
@@ -507,7 +520,7 @@ RootFS</string>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gzt-C3-qzb">
                                                         <rect key="frame" x="0.0" y="0.0" width="126" height="28"/>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                        <fontDescription key="fontDescription" name="SFProRounded-Semibold" family="SF Pro Rounded" pointSize="17"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                         <state key="normal" title="Rooted">
                                                             <color key="titleColor" systemColor="viewFlipsideBackgroundColor"/>
                                                         </state>
@@ -524,7 +537,7 @@ RootFS</string>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kaF-x1-Evm">
                                                         <rect key="frame" x="144" y="0.0" width="126" height="28"/>
                                                         <color key="backgroundColor" red="0.47843137254901957" green="0.4392156862745098" blue="0.83137254901960778" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                        <fontDescription key="fontDescription" name="SFProRounded-Semibold" family="SF Pro Rounded" pointSize="17"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                         <state key="normal" title="Rootless">
                                                             <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         </state>
@@ -543,10 +556,10 @@ RootFS</string>
                                                     <constraint firstAttribute="height" constant="28" id="riV-L9-G5P"/>
                                                 </constraints>
                                             </stackView>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Freya Version 1.2.9" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sTm-7g-Qnr">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Freya Version 1.3" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sTm-7g-Qnr">
                                                 <rect key="frame" x="11" y="6" width="270" height="28"/>
                                                 <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                <fontDescription key="fontDescription" name="SFProRounded-Bold" family="SF Pro Rounded" pointSize="17"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
@@ -571,18 +584,21 @@ RootFS</string>
                                         </userDefinedRuntimeAttributes>
                                     </view>
                                 </subviews>
-                                <color key="backgroundColor" systemColor="darkTextColor"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <gestureRecognizers/>
                                 <constraints>
+                                    <constraint firstItem="E5X-B1-3a0" firstAttribute="leading" secondItem="1Zh-Ol-RFb" secondAttribute="leading" constant="79" id="0eM-L3-Dih"/>
                                     <constraint firstItem="IGj-Bm-Rpn" firstAttribute="leading" secondItem="1Zh-Ol-RFb" secondAttribute="leading" constant="14" id="CSJ-fZ-3OQ"/>
                                     <constraint firstAttribute="width" constant="320" id="CV1-9K-VPR"/>
                                     <constraint firstAttribute="trailing" secondItem="IGj-Bm-Rpn" secondAttribute="trailing" constant="14" id="KbT-3P-Tf5"/>
+                                    <constraint firstItem="E5X-B1-3a0" firstAttribute="centerX" secondItem="IGj-Bm-Rpn" secondAttribute="centerX" id="eCa-UD-8h9"/>
                                     <constraint firstItem="jRh-Zo-1pH" firstAttribute="centerX" secondItem="r3g-G4-d9t" secondAttribute="centerX" id="hdD-M6-bgn"/>
-                                    <constraint firstItem="r3g-G4-d9t" firstAttribute="top" secondItem="IGj-Bm-Rpn" secondAttribute="bottom" constant="10" id="jj4-gp-V41"/>
-                                    <constraint firstItem="jRh-Zo-1pH" firstAttribute="top" secondItem="r3g-G4-d9t" secondAttribute="bottom" constant="9" id="sGf-q7-eeZ"/>
+                                    <constraint firstItem="r3g-G4-d9t" firstAttribute="top" secondItem="IGj-Bm-Rpn" secondAttribute="bottom" id="jj4-gp-V41"/>
+                                    <constraint firstItem="jRh-Zo-1pH" firstAttribute="top" secondItem="r3g-G4-d9t" secondAttribute="bottom" constant="44" id="sGf-q7-eeZ"/>
                                     <constraint firstItem="IGj-Bm-Rpn" firstAttribute="top" secondItem="1Zh-Ol-RFb" secondAttribute="top" constant="16" id="tjE-4Z-ETb"/>
                                     <constraint firstAttribute="trailing" secondItem="r3g-G4-d9t" secondAttribute="trailing" constant="8" id="yUo-rQ-J3S"/>
+                                    <constraint firstItem="E5X-B1-3a0" firstAttribute="top" secondItem="r3g-G4-d9t" secondAttribute="bottom" constant="1" id="yfh-5E-GPC"/>
                                     <constraint firstItem="r3g-G4-d9t" firstAttribute="leading" secondItem="1Zh-Ol-RFb" secondAttribute="leading" constant="14" id="zrd-RC-tcZ"/>
                                 </constraints>
                                 <userDefinedRuntimeAttributes>
@@ -595,27 +611,14 @@ RootFS</string>
                                     <outletCollection property="gestureRecognizers" destination="Hh5-YI-wB3" appends="YES" id="z3m-4n-GUv"/>
                                 </connections>
                             </view>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pUp-uq-J7j">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="27"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="320" id="TcH-wL-xfj"/>
-                                    <constraint firstAttribute="height" constant="27" id="nSj-G8-SG7"/>
-                                </constraints>
-                                <connections>
-                                    <action selector="dismissButton:" destination="cbb-OQ-T38" eventType="touchUpInside" id="hC1-Yr-a0a"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="JGj-py-015"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstAttribute="bottom" secondItem="1Zh-Ol-RFb" secondAttribute="bottom" constant="-12" id="2H1-PF-8tX"/>
-                            <constraint firstItem="pUp-uq-J7j" firstAttribute="top" secondItem="RXn-ci-c8f" secondAttribute="top" id="Igu-8u-TD1"/>
-                            <constraint firstItem="1Zh-Ol-RFb" firstAttribute="top" secondItem="pUp-uq-J7j" secondAttribute="bottom" id="Ocr-I3-pop"/>
+                            <constraint firstItem="1Zh-Ol-RFb" firstAttribute="top" secondItem="JGj-py-015" secondAttribute="top" constant="27" id="9Iq-bQ-Hrf"/>
                             <constraint firstItem="1Zh-Ol-RFb" firstAttribute="leading" secondItem="JGj-py-015" secondAttribute="leading" id="SC5-o3-NZG"/>
                             <constraint firstItem="1Zh-Ol-RFb" firstAttribute="trailing" secondItem="JGj-py-015" secondAttribute="trailing" id="l3k-l0-W9x"/>
-                            <constraint firstItem="pUp-uq-J7j" firstAttribute="leading" secondItem="JGj-py-015" secondAttribute="leading" id="tqJ-05-zMC"/>
-                            <constraint firstItem="pUp-uq-J7j" firstAttribute="trailing" secondItem="JGj-py-015" secondAttribute="trailing" id="z3C-a5-JEz"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Settings" image="gear-7" id="ZtR-nP-FJc">
@@ -625,6 +628,7 @@ RootFS</string>
                     </tabBarItem>
                     <value key="contentSizeForViewInPopover" type="size" width="320" height="548"/>
                     <connections>
+                        <outlet property="CicutaOutlet" destination="sl2-HU-s8M" id="o8f-6t-rMS"/>
                         <outlet property="ExploitTitleLabel" destination="VKd-Qr-8aR" id="dZM-ri-QfN"/>
                         <outlet property="ForceuicacheLabel" destination="xRQ-bX-yTe" id="0md-pC-l44"/>
                         <outlet property="LoadTweakslabel" destination="n1J-Cl-y9d" id="cko-ZQ-zVQ"/>
@@ -633,6 +637,7 @@ RootFS</string>
                         <outlet property="ReinstallcydiaLabel" destination="ljK-FO-Cp2" id="6KQ-aK-sUe"/>
                         <outlet property="RestorerootLabel" destination="kup-ex-n4C" id="yML-bx-0k2"/>
                         <outlet property="SP_Outlet" destination="i38-mJ-9UE" id="PF1-Es-KCp"/>
+                        <outlet property="SPuppet_Outlet" destination="zL9-Qu-Zcy" id="VbL-Ar-Zpa"/>
                         <outlet property="TWOutlet" destination="Ttd-ho-Oh0" id="LtU-rC-ygS"/>
                         <outlet property="VS_Outlet" destination="cnZ-mN-oLo" id="5Na-D5-W4X"/>
                         <outlet property="backGroundView" destination="RXn-ci-c8f" id="MTy-MA-Spg"/>
@@ -664,9 +669,6 @@ RootFS</string>
         <image name="freyaicestaff.jpg" width="933" height="1002"/>
         <image name="gear-7" width="15" height="15"/>
         <image name="house-7" width="15" height="15"/>
-        <systemColor name="darkTextColor">
-            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-        </systemColor>
         <systemColor name="lightTextColor">
             <color white="1" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

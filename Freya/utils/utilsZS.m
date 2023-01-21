@@ -36,7 +36,7 @@
 #include "OffsetHolder.h"
 #include "offsets.h"
 #include <sys/mount.h>
-#include "exploit.h"
+#include "sockPort.h"
 #include <spawn.h>
 #include <pwd.h>
 #include "kernel_exec.h"
@@ -60,6 +60,15 @@
 #include "remount.h"
 #include "amfi.h"
 #include "file_utils.h"
+#include "cicuta_virosa.h"
+#include "mycommon.h"
+#include "undecimusRemove.h"
+#include "electraRemove.h"
+#include "chimeraRemove.h"
+#include "FreyaRemove.h"
+#include "SockPuppet3.h"
+
+
 //#include "jelbrekLib.h"
 /*
  
@@ -212,8 +221,11 @@ bool supportsExploit(int exploit) {
     //0 = MachSwap
     //1 = MachSwap2
     //2 = Voucher_Swap
-    //3 = SockPuppet
+    //3 = SockPort
+    //6 = SockPuppet
     //4 = Timewaste
+    //5 = cicuta?
+
     /** 12.0     1556.00
     * 12.1     1560.10
     * 12.2     1570.15
@@ -252,13 +264,20 @@ bool supportsExploit(int exploit) {
     }
     switch (exploit) {
             
+       /* case 6: {
+            minKernelBuildVersion = @"4397.0.0.2.4~1";
+            maxKernelBuildVersion = @"4903.270.47~7";// <- 12.4 @"4903.262.2~2";//ios 12.3
+            break;
+        }*/
         case 5: {
-            minKernelBuildVersion = @"5397.0.0.2.4~1";
-            maxKernelBuildVersion = @"5903.270.47~7";
-
+            if ((kCFCoreFoundationVersionNumber >= 1675.17) && (kCFCoreFoundationVersionNumber < 1751.108)) { // > 12.4
+                minKernelBuildVersion = @"5397.0.0.2.4~1";
+                maxKernelBuildVersion = @"9903.270.47~7";
+                break;
+            }
             // @"4903.270.47~7"
 
-            break;
+           
         }
            
         case 4: {
@@ -348,12 +367,13 @@ int autoSelectExploit()
     //0 = MachSwap
     //1 = MachSwap2
     //2 = Voucher_Swap
-    //3 = SockPuppet
+    //3 = SockPort
+    //6 = SockPuppet
     //4 = timewaste
+    //5 = cicuta
     
     if (supportsExploit(0))
     {
-        printf("supports voucherswap\n");
         return 0;
         
     } else if (supportsExploit(1))
@@ -362,21 +382,20 @@ int autoSelectExploit()
         return 1;
     } else if (supportsExploit(2))
     {
-        printf("supports machswap2\n");
         return 2;
     } else if (supportsExploit(3))
     {
-        printf("supports sockpuppet\n");
         return 3;
     } else if (supportsExploit(4))
     {
-        printf("supports timewaste\n");
-
         return 4;
-    }else {
-        printf("supports what exploit\n");
-
+    }else if (supportsExploit(5))
+    {
         return 5;
+    }else if (supportsExploit(6)){
+        return 6;
+    }else {
+        return 7;
     }
     
 }
@@ -388,24 +407,22 @@ void set_csflags(uint64_t proc) {
     WriteKernel32(proc + off_p_csflags, csflags);
 }
 
-NSString *getNameFromInt(int exp_int)
-{
-    if (exp_int == 0)
-    {
+NSString *getNameFromInt(int exp_int) {
+    if (exp_int == 0) {
         return @"Machswap";
-    } else if (exp_int == 1)
-    {
+    } else if (exp_int == 1) {
         return @"Machswap 2";
-    } else if (exp_int == 2)
-    {
+    } else if (exp_int == 2) {
         return @"Voucher_Swap";
-    } else if (exp_int == 3)
-    {
-        return @"SockPuppet";
-    } else if (exp_int == 4)
-    {
+    } else if (exp_int == 3) {
+        return @"SockPort";
+    } else if (exp_int == 4) {
         return @"Timewaste";
-    }else {
+    } else if (exp_int == 5) {
+        return @"Cicuta";
+    } /*else if (exp_int == 6) {
+        return @"SockPuppet";
+    }*/ else {
         return @"ERROR";
     }
 }
@@ -648,13 +665,7 @@ void runMachswap() {
         showMSG(str, true, false);
         exit(7);
     } else {
-        util_info("TFP0: 0x%x", tfp0);
-        util_info("KERNEL BASE: 0x%llx", kbase);
-        util_info("KERNEL SLIDE: 0x%llx", kernel_slide);
-
-        util_info("UID: %u", getuid());
-        util_info("GID: %u", getgid());
-        
+        util_info("TFP0: 0x%x\nKERNEL BASE: 0x%llx\nKERNEL SLIDE: 0x%llx\nUID: %u, GID: %u ", tfp0, kbase, kernel_slide, getuid(), getgid());
     }
     
 }
@@ -680,13 +691,7 @@ void runMachswap2() {
         showMSG(str, true, false);
         exit(7);
     } else {
-        util_info("TFP0: 0x%x", tfp0);
-        util_info("KERNEL BASE: 0x%llx", kbase);
-        util_info("KERNEL SLIDE: 0x%llx", kernel_slide);
-
-        util_info("UID: %u", getuid());
-        util_info("GID: %u", getgid());
-        
+        util_info("TFP0: 0x%x\nKERNEL BASE: 0x%llx\nKERNEL SLIDE: 0x%llx\nUID: %u, GID: %u ", tfp0, kbase, kernel_slide, getuid(), getgid());
     }
     
 }
@@ -752,17 +757,34 @@ void runVoucherSwap() {
         showMSG(str, true, false);
         exit(7);
     } else {
-        util_info("TFP0: 0x%x", tfp0);
-        util_info("KERNEL BASE: 0x%llx", kbase);
-        util_info("KERNEL SLIDE: 0x%llx", kernel_slide);
-
-        util_info("UID: %u", getuid());
-        util_info("GID: %u", getgid());
-        
+        util_info("TFP0: 0x%x\nKERNEL BASE: 0x%llx\nKERNEL SLIDE: 0x%llx\nUID: %u, GID: %u ", tfp0, kbase, kernel_slide, getuid(), getgid());
     }
 }
 
-void runSockPuppet() {
+void runCicuta() {
+    if (cicuta_virosa() == 0) {
+        if (MACH_PORT_VALID(tfp0)) {
+            if (kernelbase_exportedBYTW != 0) {
+                kbase = kernelbase_exportedBYTW; }
+            else {
+                kbase = find_kernel_base_sockpuppet(); }
+            kernel_slide = (kbase - KADD_SEARCH); // runShenPatchOWO = true;
+        }
+        if (tfp0 == 0) { util_info("ERROR!");
+            NSString *str = [NSString stringWithFormat:@"Exploit failed, however with sockpuppet. You can open the app up again and just keep trying again until it either, kernel panics or succeeds. tfp: 0x%x", tfp0];
+            showMSG(str, true, false);
+            dispatch_sync( dispatch_get_main_queue(), ^{
+                UIApplication *app = [UIApplication sharedApplication];
+                [app performSelector:@selector(suspend)]; //wait 2 seconds while app is going background
+                [NSThread sleepForTimeInterval:1.0]; //exit app when app is in background
+                exit(0); });
+        } else {
+            util_info("TFP0: 0x%x\nKERNEL BASE: 0x%llx\nKERNEL SLIDE: 0x%llx\nUID: %u, GID: %u ", tfp0, kbase, kernel_slide, getuid(), getgid());            ourprogressMeter();
+        }
+    }
+    
+}
+void runSockPort() {
     ourprogressMeter();
     dothesploit();
 
@@ -799,17 +821,70 @@ void runSockPuppet() {
 
         
     } else {
-        util_info("TFP0: 0x%x", tfp0);
-        util_info("KERNEL BASE: 0x%llx", kbase);
-        util_info("KERNEL SLIDE: 0x%llx", kernel_slide);
-
-        util_info("UID: %u", getuid());
-        util_info("GID: %u", getgid());
+        util_info("TFP0: 0x%x\nKERNEL BASE: 0x%llx\nKERNEL SLIDE: 0x%llx\nUID: %u, GID: %u ", tfp0, kbase, kernel_slide, getuid(), getgid());
         ourprogressMeter();
     }
     
 }
 
+/*void runSockPuppet() {
+    ourprogressMeter();
+    dothesploit();
+    SockPuppet3.run;
+    
+    if (SYSTEM_VERSION_EQUAL_TO(@"12.4") || SYSTEM_VERSION_LESS_THAN_OR_EQUAL_TO(@"12.2")){ }
+            if (!([SockPuppet3 run])){
+     return false;
+     }
+     tfp0 = [SockPuppet3 fakeKernelTaskPort];
+     init_kernel_memory(tfp0);
+     task_addr_cache = [SockPuppet3 currentTaskAddress];
+     
+     uint64_t itk_space = rk64(task_addr_cache + koffset(KSTRUCT_OFFSET_TASK_ITK_SPACE));
+     uint64_t task_xd = rk64(itk_space + 0x28);
+     uint64_t selfproc = rk64(task_xd + koffset(KSTRUCT_OFFSET_TASK_BSD_INFO));
+     selfproc_cached = selfproc;
+     
+     kbase = get_kbase(&kslide, tfp0);
+     
+     if (escapeSandboxSock() == false){
+     return false;
+     }
+     } else {
+     time_waste();
+     kbase = get_kbase(&kslide, tfp0);
+     if (escapeSandboxTime() == false){
+     return false;
+     }
+     }
+     
+     if (tfp0 != 0x0){
+     return true;
+     }
+     return false;
+     
+     
+    if (MACH_PORT_VALID(tfp0)) {
+        if (kernelbase_exportedBYTW != 0) {
+            kbase = kernelbase_exportedBYTW; }
+        else {
+            kbase = find_kernel_base_sockpuppet(); }
+        kernel_slide = (kbase - KADD_SEARCH);// runShenPatchOWO = true;
+    }
+    if (tfp0 == 0) {
+        util_info("ERROR!");
+        NSString *str = [NSString stringWithFormat:@"Exploit failed, however with sockpuppet. You can open the app up again and just keep trying again until it either, kernel panics or succeeds. tfp: 0x%x", tfp0];
+        showMSG(str, true, false);
+        dispatch_sync( dispatch_get_main_queue(), ^{
+            UIApplication *app = [UIApplication sharedApplication];
+            [app performSelector:@selector(suspend)]; //wait 2 seconds while app is going background
+            [NSThread sleepForTimeInterval:1.0]; //exit app when app is in background
+            exit(0); }); }
+    else {
+        util_info("TFP0: 0x%x\nKERNEL BASE: 0x%llx\nKERNEL SLIDE: 0x%llx\nUID: %u, GID: %u", tfp0, kbase, kernel_slide, getuid(), getgid());
+        ourprogressMeter(); }
+}
+*/
 void runTIMEWaste()
 {
     ourprogressMeter();
@@ -846,32 +921,16 @@ void runTIMEWaste()
         runShenPatchOWO = true;
         
     }
-    if (tfp0 == 0) {
-        util_info("ERROR!");
+    if (tfp0 == 0) { util_info("ERROR!");
         NSString *str = [NSString stringWithFormat:@"Exploit failed, Please reboot your device and try again. Timewaste exploit will not succeed on this bootup unfortunately."];
         showMSG(str, true, false);
-        
         dispatch_sync( dispatch_get_main_queue(), ^{
             UIApplication *app = [UIApplication sharedApplication];
-            [app performSelector:@selector(suspend)];
-
-            //wait 2 seconds while app is going background
-            [NSThread sleepForTimeInterval:1.0];
-
-            //exit app when app is in background
-            exit(0);
-
-        });
-        
-
-        
+            [app performSelector:@selector(suspend)];//wait 2 seconds while app is going background
+            [NSThread sleepForTimeInterval:1.0];//exit app when app is in background
+            exit(0); });
     } else {
-        util_info("TFP0: 0x%x", tfp0);
-        util_info("KERNEL BASE: 0x%llx", kbase);
-        util_info("KERNEL SLIDE: 0x%llx", kernel_slide);
-
-        util_info("UID: %u", getuid());
-        util_info("GID: %u", getgid());
+        util_info("TFP0: 0x%x\nKERNEL BASE: 0x%llx\nKERNEL SLIDE: 0x%llx\nUID: %u, GID: %u ", tfp0, kbase, kernel_slide, getuid(), getgid());
         runShenPatchOWO = true;
 
         ourprogressMeter();
@@ -881,71 +940,42 @@ void runTIMEWaste()
 
 void runExploit(int expType)
 {
-    //0 = MachSwap
-    //1 = MachSwap2
-    //2 = Voucher_Swap
-    //3 = SockPuppet
-    if (expType == 0)
-    {
-        util_info("Running MachSwap...");
-        runMachswap();
-    } else if (expType == 1)
-    {
-        util_info("Running MachSwap");// MachSwap2...");
-        runMachswap2();
-    } else if (expType == 2)
-    {
-        util_info("Running Voucher_Swap...");
-        runVoucherSwap();
-    } else if (expType == 3)
-    {
-        runSockPuppet();
-        
-        if (MACH_PORT_VALID(kernel_task_port))
-        {
+    //0 = MachSwap //1 = MachSwap2 //2 = Voucher_Swap //3 = Sockport //6 = SockPuppet //4 = timewaste //5 = cicuta
+    if (expType == 0) { util_info("Running MachSwap..."); runMachswap(); }
+    else if (expType == 1) { util_info("Running MachSwap2"); runMachswap2(); }
+    else if (expType == 2) { util_info("Running Voucher_Swap..."); runVoucherSwap(); }
+    else if (expType == 3) { util_info("Running SockPort..."); runSockPort();
+        if (MACH_PORT_VALID(kernel_task_port)) {
             set_tfp0(kernel_task_port);
             kernel_slide_init();
             kbase = (kernel_slide + KADD_SEARCH);
             NSString *str = [NSString stringWithFormat:@"TFP0: 0x%x", tfp0];
-            showMSG(str, true, false);
-        }
-        
-    } else if (expType == 4)
-    {
-        runTIMEWaste();
-        printf("TFP0: 0x%x\n", tfp0);
-        printf("TFP0 from tw: 0x%x\n", tfp0_exportedBYTW);
-
-        if (MACH_PORT_VALID(kernel_task_port))
-        {
+            showMSG(str, true, false); } }
+    else if (expType == 4) { util_info("Running Timewaste..."); runTIMEWaste(); printf("TFP0: 0x%x\nTFP0 from tw: 0x%x\n", tfp0, tfp0_exportedBYTW);
+        if (MACH_PORT_VALID(kernel_task_port)) {
             set_tfp0(kernel_task_port);
             kernel_slide_init();
             kbase = (kernel_slide + KADD_SEARCH);
             NSString *str = [NSString stringWithFormat:@"TFP0: 0x%x", tfp0];
-            showMSG(str, true, false);
-        }
-        
-    } else if (expType == 5){
-    
-        printf("TFP0: 0x%x\n", tfp0);
-        printf("TFP0 from tw: 0x%x\n", tfp0_exportedBYTW);
-
-        if (MACH_PORT_VALID(kernel_task_port))
-        {
+            showMSG(str, true, false); } }
+    else if (expType == 5){ util_info("Running Cicuta Virosa..."); runCicuta();printf("TFP0: 0x%x\nTFP0 from Cicuta: 0x%x\n", tfp0, tfp0_exportedBYTW);
+        if (MACH_PORT_VALID(kernel_task_port)) {
             set_tfp0(kernel_task_port);
             kernel_slide_init();
             kbase = (kernel_slide + KADD_SEARCH);
             NSString *str = [NSString stringWithFormat:@"TFP0: 0x%x", tfp0];
-            showMSG(str, true, false);
-        }
-    } else {
-        util_info("No Exploit? Tf...");
-        exit(1);
-    }
+            showMSG(str, true, false); } }
+    /*else if (expType == 6){ util_info("Running Sock Puppet..."); runSockPuppet(); printf("TFP0: 0x%x\nTFP0 from Cicuta: 0x%x\n", tfp0, tfp0_exportedBYTW);
+        if (MACH_PORT_VALID(kernel_task_port)) {
+            set_tfp0(kernel_task_port);
+            kernel_slide_init();
+            kbase = (kernel_slide + KADD_SEARCH);
+            NSString *str = [NSString stringWithFormat:@"TFP0: 0x%x", tfp0];
+            showMSG(str, true, false); } }*/
+    else { util_info("No Exploit? Tf..."); exit(1); }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 NSString *get_path_res(NSString *resource) {
     static NSString *sourcePath;
@@ -1007,6 +1037,21 @@ NSString *get_debian12_file(NSString *file)
     //return get_path_res([@"bootstrap/DEBS/" stringByAppendingString:file]);
 }
 
+
+void ls (const char *path) {
+    NSError *error;
+    NSString *pathToSearch = [NSString stringWithUTF8String:path];
+    NSArray *filesInDir = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:pathToSearch error:&error];
+    
+    if (error) {
+        LOG("ERROR LS: %@", error);
+    } else {
+        NSLog(@"Contents Of %@:", pathToSearch);
+        for (NSString *file in filesInDir) {
+            NSLog(@"%@", file);
+        }
+    }
+}
 
 bool canRead(const char *file) {
     NSString *path = @(file);
@@ -1359,7 +1404,6 @@ void getOffsets() {
     findPFOffset(vfs_context_current);
     findPFOffset(vnode_lookup);
     findPFOffset(vnode_put);
-    findPFOffset(kernel_task);
     findPFOffset(lck_mtx_lock);
     findPFOffset(lck_mtx_unlock);
     if (kCFCoreFoundationVersionNumber >= 1535.12) {
@@ -1631,11 +1675,24 @@ bool patchtheSIGNSofCOde(){
     takeoverAmfid(amfid_pid);
     //trust_file(@"/freya/inject_criticald");
     if (file_exists("/freya/inject_criticald")) {
-        execCmd("/freya/inject_criticald", itoa(amfid_pid), "/usr/lib/amfid_payload.dylib", NULL);
-        util_info("amfid has been infected by our dynamic library, it is now dismantled");//dismantled
+        int amfidpatchtest = execCmd("/freya/inject_criticald", itoa(amfid_pid), "/usr/lib/amfid_payload.dylib", NULL);
+        if (amfidpatchtest == 0) {
+            util_info("amfid has been infected by our dynamic library, it is now dismantled");//dismantled
         doweneedamfidPatch = 1;
+            return true;
 
-        return true;
+        } else {
+            showMSG(NSLocalizedString(@"Error patching amfid, rebooting device", nil), 1, 1);
+            dispatch_sync( dispatch_get_main_queue(), ^{
+                UIApplication *app = [UIApplication sharedApplication];
+                [app performSelector:@selector(suspend)];//wait 2 seconds while app is going background
+                [NSThread sleepForTimeInterval:1.0];//exit app when app is in background
+                reboot(RB_QUICK); });
+
+            return false;
+
+        }
+
     }
     return false;
 
@@ -1646,7 +1703,7 @@ int waitFF(const char *filename) {
     printf(".");
     rv = access(filename, F_OK);
     for (int i = 0; !(i >= 1000 || rv == ERR_SUCCESS); i++) {
-        usleep(1000);
+        usleep(10000);
         printf(".");
         rv = access(filename, F_OK);
     }
@@ -1685,7 +1742,7 @@ void restoreRootFS()
     int checkuncovermarker = (file_exists("/.installed_unc0ver"));
     int checkbash = (file_exists("/bin/bash"));
     int checkuicache = (file_exists("/usr/bin/uicache"));
-    
+    int checkelectra = (file_exists("/.bootstrapped_electra"));
     int checkth0rmarkerFinal = (file_exists("/.freya_installed"));
     int checkchimeramarker = (file_exists("/.procursus_strapped"));
     int checkJBRemoverMarker = (file_exists("/var/mobile/Media/.bootstrapped_Th0r_remover"));
@@ -1696,7 +1753,7 @@ void restoreRootFS()
     printf("Uncover marker exists?: %d\n", checkuncovermarker);
     printf("pspawnhook marker exists?: %d\n", checkpspawnhook);
     printf("checkbash marker exists?: %d\n", checkbash);
-    printf("Uncover marker exists?: %d\n", checkuncovermarker);
+    printf("electra exist = %d\n", checkelectra);
     printf("JBRemover marker exists?: %d\n", checkJBRemoverMarker);
     printf("Th0r Final marker exists?: %d\n", checkth0rmarkerFinal);
     printf("chimera marker exists?: %d\n", checkchimeramarker);
@@ -1745,40 +1802,143 @@ void restoreRootFS()
             unlink("/usr/bin/uicache");
             removeFileIfExists("/usr/bin/uicache");
             //extractFile(get_bootstrap_file(@"uicache5s.tar"), @"/");
-            extractFile(get_bootstrap_file(@"restoreUtils.tar"), @"/");
-            //extractFile(get_bootstrap_file(@"uicache5s.tar"), @"/");
+            extractFile(get_bootstrap_file(@"rsync.tar"), @"/");
+            mkdir("/freya", 0777);
+            extractFile(get_bootstrap_file(@"rmDevice.tar"), @"/freya");
+            extractFile(get_bootstrap_file(@"uicacheDevice.tar"), @"/freya");
 
-            _assert(execCmd("/usr/bin/rsync", "-vaxcH", "--progress", "--delete", [@(systemSnapshotMountPoint) stringByAppendingPathComponent:@"Applications/."].UTF8String, "/Applications", NULL) == 0, localize(@"Unable to sync /Applications."), true);
         }
+        removingChimeraiOS();
+        _assert(execCmd("/usr/bin/rsync", "-vaxcH", "--progress", "--delete", [@(systemSnapshotMountPoint) stringByAppendingPathComponent:@"Applications/."].UTF8String, "/Applications", NULL) == 0, localize(@"Unable to sync /Applications."), true);
         _assert(unmount(systemSnapshotMountPoint, MNT_FORCE) == ERR_SUCCESS, localize(@"Unable to unmount original snapshot mount point."), true);
         close(rootfd);
         
-    } else if (checkuncovermarker == 1) {
-        char *const systemSnapshotMountPoint = "/private/var/mnt";
+    } else if (checkelectra ==1) {
+        char *const systemSnapshotMountPoint = "/var/rootfsmnt";
         if (is_mountpoint(systemSnapshotMountPoint)) {
-            _assert(unmount(systemSnapshotMountPoint, MNT_FORCE) == ERR_SUCCESS, localize(@"Unable to unmount old snapshot mount point."), true);
+            _assert(unmount(systemSnapshotMountPoint, MNT_FORCE) == ERR_SUCCESS, localize(@"Unable to unmount old RootFS mount point."), true);
         }
+
         _assert(clean_file(systemSnapshotMountPoint), localize(@"Unable to clean old snapshot mount point."), true);
         _assert(ensure_directory(systemSnapshotMountPoint, root_pw->pw_uid, 0755), localize(@"Unable to create snapshot mount point."), true);
         _assert(fs_snapshot_mount(rootfd, systemSnapshotMountPoint, snapshot, 0) == ERR_SUCCESS, localize(@"Unable to mount original snapshot."), true);
         const char *systemSnapshotLaunchdPath = [@(systemSnapshotMountPoint) stringByAppendingPathComponent:@"sbin/launchd"].UTF8String;
         _assert(waitFF(systemSnapshotLaunchdPath) == ERR_SUCCESS, localize(@"Unable to verify mounted snapshot."), true);
         //int runtest = execCmd("/bin/bash", NULL);
-        if (checkbash == 1) {
-            _assert(clean_file("/usr/bin/uicache"), localize(@"Unable to clean old uicache binary."), true);
-            unlink("/usr/bin/uicache");
-            removeFileIfExists("/usr/bin/uicache");
+        if (checkbash ==1 ) {
+            extractFile(get_bootstrap_file(@"aJBDofSorts.tar.gz"), @"/");
+            if (doweneedamfidPatch == 1) {
+                util_info("Amfid done fucked up already!");
+            } else {
+                if (patchtheSIGNSofCOde()){
+                    util_info("Amfid bombed for restore process!");
+                } else {
+                    util_info("Failure to bomb Amfid");
+                    showMSG(NSLocalizedString(@"Failure to bomb Amfid! We are going to reboot your device.", nil), 1, 1);
+                    dispatch_sync( dispatch_get_main_queue(), ^{
+                        UIApplication *app = [UIApplication sharedApplication];
+                        [app performSelector:@selector(suspend)]; //wait 2 seconds while app is going background
+                        [NSThread sleepForTimeInterval:1.0]; //exit app when app is in background
+                        reboot(RB_QUICK); }); } }
             
-            //extractFile(get_bootstrap_file(@"uicache5s.tar"), @"/");
-            extractFile(get_bootstrap_file(@"restoreUtils.tar"), @"/");
-            //extractFile(get_bootstrap_file(@"uicache5s.tar"), @"/");
-            _assert(execCmd("/usr/bin/rsync", "-vaxcH", "--progress", "--delete", [@(systemSnapshotMountPoint) stringByAppendingPathComponent:@"Applications/."].UTF8String, "/Applications", NULL) == 0, localize(@"Unable to sync /Applications."), true);
+            extractFile(get_bootstrap_file(@"rsync.tar"), @"/");
+            mkdir("/freya", 0777);
+            
+            extractFile(get_bootstrap_file(@"rmDevice.tar"), @"/freya");
+            extractFile(get_bootstrap_file(@"uicacheDevice.tar"), @"/freya");
+            
+           // int check4fileexists = execCmd("/freya/rm", "-rdvf", "/usr/bin/snappy", NULL);
+           // printf("[*] Removed snappy at usr/bin/snappy?  %d=\n",check4fileexists);
+
         }
+        removingElectraiOS();
+        _assert(execCmd("/freya/rm", "-rvdf", "/usr/lib/suckmyd", NULL) >= 0, localize(@"Unable to remove suckmyd."), true);
+        _assert(execCmd("/freya/rm", "-rvdf", "/usr/lib/suckmyd_client", NULL) >= 0, localize(@"Unable to remove suckmyd_client."), true);
+        _assert(execCmd("/freya/rm", "-rvdf", "/usr/lib/libjailbreak.dylib", NULL) >= 0, localize(@"Unable to remove libjailbreak."), true);
+
+        _assert(execCmd("/usr/bin/rsync", "-vaxcH", "--progress", "--delete", [@(systemSnapshotMountPoint) stringByAppendingPathComponent:@"Applications/."].UTF8String, "/Applications", NULL) == 0, localize(@"Unable to sync /Applications."), true);
         _assert(unmount(systemSnapshotMountPoint, MNT_FORCE) == ERR_SUCCESS, localize(@"Unable to unmount original snapshot mount point."), true);
-        close(rootfd);
+         close(rootfd);
         
+    } else if (checkuncovermarker == 1) {
+        if (/* iOS 12 lower */ kCFCoreFoundationVersionNumber < 1556.00){
+            char *const systemSnapshotMountPoint = "/private/var/mnt";
+            if (is_mountpoint(systemSnapshotMountPoint)) {
+                _assert(unmount(systemSnapshotMountPoint, MNT_FORCE) == ERR_SUCCESS, localize(@"Unable to unmount old snapshot mount point."), true);
+            }
+            _assert(clean_file(systemSnapshotMountPoint), localize(@"Unable to clean old snapshot mount point."), true);
+            _assert(ensure_directory(systemSnapshotMountPoint, root_pw->pw_uid, 0755), localize(@"Unable to create snapshot mount point."), true);
+            _assert(fs_snapshot_mount(rootfd, systemSnapshotMountPoint, snapshot, 0) == ERR_SUCCESS, localize(@"Unable to mount original snapshot."), true);
+            const char *systemSnapshotLaunchdPath = [@(systemSnapshotMountPoint) stringByAppendingPathComponent:@"sbin/launchd"].UTF8String;
+            _assert(waitFF(systemSnapshotLaunchdPath) == ERR_SUCCESS, localize(@"Unable to verify mounted snapshot."), true);
+            //int runtest = execCmd("/bin/bash", NULL);
+            if (checkbash == 1) {
+                extractFile(get_bootstrap_file(@"aJBDofSorts.tar.gz"), @"/");
+                if (doweneedamfidPatch == 1) {
+                    util_info("Amfid done fucked up already!");
+                } else {
+                    if (patchtheSIGNSofCOde()){
+                        util_info("Amfid bombed for restore process!");
+                    } else {
+                        util_info("Failure to bomb Amfid");
+                        showMSG(NSLocalizedString(@"Failure to bomb Amfid! We are going to reboot your device.", nil), 1, 1);
+                        dispatch_sync( dispatch_get_main_queue(), ^{
+                            UIApplication *app = [UIApplication sharedApplication];
+                            [app performSelector:@selector(suspend)]; //wait 2 seconds while app is going background
+                            [NSThread sleepForTimeInterval:1.0]; //exit app when app is in background
+                            reboot(RB_QUICK); }); } }
+                _assert(clean_file("/usr/bin/uicache"), localize(@"Unable to clean old uicache binary."), true);
+                unlink("/usr/bin/uicache");
+                removeFileIfExists("/usr/bin/uicache");
+                extractFile(get_bootstrap_file(@"rsync.tar"), @"/");
+                mkdir("/freya", 0777);
+                extractFile(get_bootstrap_file(@"rmDevice.tar"), @"/freya");
+                extractFile(get_bootstrap_file(@"uicacheDevice.tar"), @"/freya");
+                /////lets try snapping your snaphsot
+                //            int rvchecsnap1 = launch((char*)("/electra/snappy"), "-xr", "orig-fs", "-f/", NULL, NULL, NULL, NULL);
+                // printf("[*] Trying snappy result = %d \n" , rvchecsnap1);
+               // int check4fileexists = execCmd("/freya/rm", "-rdvf", "/usr/bin/snappy", NULL);
+               // printf("[*] Removed snappy at usr/bin/snappy?  %d=\n",check4fileexists);
+                //printf("[****] [bootstrapper] deleted Jailbreak files at root w/snappy ...\n");
+                //int rv = open("/var/mobile/Media/.bootstrapped_electraremover", O_RDWR|O_CREAT);
+                //close(rv);
+            }
+            removingu0iOS();
+            _assert(execCmd("/freya/uicache", NULL) >= 0, localize(@"Unable to refresh icon cache."), true);
+            _assert(execCmd("/usr/bin/uicache", NULL) >= 0, localize(@"Unable to refresh icon cache."), true);
+
+            _assert(execCmd("/usr/bin/rsync", "-vaxcH", "--progress", "--delete", [@(systemSnapshotMountPoint) stringByAppendingPathComponent:@"Applications/."].UTF8String, "/Applications", NULL) == 0, localize(@"Unable to sync /Applications."), true);
+            _assert(unmount(systemSnapshotMountPoint, MNT_FORCE) == ERR_SUCCESS, localize(@"Unable to unmount original snapshot mount point."), true);
+            close(rootfd);
+        } else {
+            char *const systemSnapshotMountPoint = "/private/var/mnt";
+            if (is_mountpoint(systemSnapshotMountPoint)) {
+                _assert(unmount(systemSnapshotMountPoint, MNT_FORCE) == ERR_SUCCESS, localize(@"Unable to unmount old snapshot mount point."), true);
+            }
+            _assert(clean_file(systemSnapshotMountPoint), localize(@"Unable to clean old snapshot mount point."), true);
+            _assert(ensure_directory(systemSnapshotMountPoint, root_pw->pw_uid, 0755), localize(@"Unable to create snapshot mount point."), true);
+            _assert(fs_snapshot_mount(rootfd, systemSnapshotMountPoint, snapshot, 0) == ERR_SUCCESS, localize(@"Unable to mount original snapshot."), true);
+            const char *systemSnapshotLaunchdPath = [@(systemSnapshotMountPoint) stringByAppendingPathComponent:@"sbin/launchd"].UTF8String;
+            _assert(waitFF(systemSnapshotLaunchdPath) == ERR_SUCCESS, localize(@"Unable to verify mounted snapshot."), true);
+            //int runtest = execCmd("/bin/bash", NULL);
+            if (checkbash == 1) {
+                _assert(clean_file("/usr/bin/uicache"), localize(@"Unable to clean old uicache binary."), true);
+                unlink("/usr/bin/uicache");
+                removeFileIfExists("/usr/bin/uicache");
+                
+                extractFile(get_bootstrap_file(@"aJBDofSorts.tar.gz"), @"/");
+                extractFile(get_bootstrap_file(@"rsync.tar"), @"/");
+                mkdir("/freya", 0777);
+                extractFile(get_bootstrap_file(@"rmDevice.tar"), @"/freya");
+                extractFile(get_bootstrap_file(@"uicacheDevice.tar"), @"/freya");
+
+            }
+            _assert(execCmd("/usr/bin/rsync", "-vaxcH", "--progress", "--delete", [@(systemSnapshotMountPoint) stringByAppendingPathComponent:@"Applications/."].UTF8String, "/Applications", NULL) == 0, localize(@"Unable to sync /Applications."), true);
+            _assert(unmount(systemSnapshotMountPoint, MNT_FORCE) == ERR_SUCCESS, localize(@"Unable to unmount original snapshot mount point."), true);
+            close(rootfd);
+        }
     } else {
-        char *const systemSnapshotMountPoint = "/var/rootfsmnt";
+        char *const systemSnapshotMountPoint = "/var/rootfsmnt"; //freya removing
         if (is_mountpoint(systemSnapshotMountPoint)) {
             _assert(unmount(systemSnapshotMountPoint, MNT_FORCE) == ERR_SUCCESS, localize(@"Unable to unmount old RootFS mount point."), true);
         }
@@ -1788,7 +1948,7 @@ void restoreRootFS()
         const char *systemSnapshotLaunchdPath = [@(systemSnapshotMountPoint) stringByAppendingPathComponent:@"sbin/launchd"].UTF8String;
         _assert(waitFF(systemSnapshotLaunchdPath) == ERR_SUCCESS, localize(@"Unable to verify mounted snapshot."), true);
         //int runtest = execCmd("/bin/bash", NULL);
-        if (checkbash == 1) {
+        if (checkbash == 1) { //freya removing
              extractFile(get_bootstrap_file(@"aJBDofSorts.tar.gz"), @"/");
             if (doweneedamfidPatch == 1) {
                 util_info("Amfid done fucked up already!");
@@ -1800,25 +1960,26 @@ void restoreRootFS()
                     showMSG(NSLocalizedString(@"Failure to bomb Amfid! We are going to reboot your device.", nil), 1, 1);
                     dispatch_sync( dispatch_get_main_queue(), ^{
                         UIApplication *app = [UIApplication sharedApplication];
-                        [app performSelector:@selector(suspend)];
-                        //wait 2 seconds while app is going background
-                        [NSThread sleepForTimeInterval:1.0];
-                        //exit app when app is in background
-                        reboot(RB_QUICK);
-                    });
-                }
-            }
+                        [app performSelector:@selector(suspend)]; //wait 2 seconds while app is going background
+                        [NSThread sleepForTimeInterval:1.0]; //exit app when app is in background
+                        reboot(RB_QUICK); }); } }
             cp("/freya/uicache", "/usr/bin/uicache");
+            cp("/freya/rm", "/bin/rm");
             _assert(clean_file("/usr/bin/uicache"), localize(@"Unable to clean old uicache binary."), true);
             unlink("/usr/bin/uicache");
             removeFileIfExists("/usr/bin/uicache");
-            
-            extractFile(get_bootstrap_file(@"uicache5s.tar"), @"/");
-            extractFile(get_bootstrap_file(@"restoreUtils.tar"), @"/");
-            extractFile(get_bootstrap_file(@"uicache5s.tar"), @"/");
-            
-            _assert(execCmd("/usr/bin/rsync", "-vaxcH", "--progress", "--delete", [@(systemSnapshotMountPoint) stringByAppendingPathComponent:@"Applications/."].UTF8String, "/Applications", NULL) == 0, localize(@"Unable to sync /Applications."), true);
+            extractFile(get_bootstrap_file(@"rsync.tar"), @"/");
+            mkdir("/freya", 0777);
+            extractFile(get_bootstrap_file(@"rmDevice.tar"), @"/freya");
+            extractFile(get_bootstrap_file(@"uicacheDevice.tar"), @"/freya");
         }
+        
+        removingFreyaiOS();
+        _assert(execCmd("/freya/rm", "-rvdf", "/usr/lib/suckmyd", NULL) >= 0, localize(@"Unable to remove suckmyd."), true);
+        _assert(execCmd("/freya/rm", "-rvdf", "/usr/lib/suckmyd_client", NULL) >= 0, localize(@"Unable to remove suckmyd_client."), true);
+        _assert(execCmd("/freya/rm", "-rvdf", "/usr/lib/libjailbreak.dylib", NULL) >= 0, localize(@"Unable to remove libjailbreak."), true);
+
+        _assert(execCmd("/usr/bin/rsync", "-vaxcH", "--progress", "--delete", [@(systemSnapshotMountPoint) stringByAppendingPathComponent:@"Applications/."].UTF8String, "/Applications", NULL) == 0, localize(@"Unable to sync /Applications."), true);
         _assert(unmount(systemSnapshotMountPoint, MNT_FORCE) == ERR_SUCCESS, localize(@"Unable to unmount original snapshot mount point."), true);
 
         close(rootfd);
@@ -1836,8 +1997,10 @@ void restoreRootFS()
 
         uicaching("uicache");
         trust_file(@"/usr/bin/uicache");
+        _assert(clean_file("/usr/lib/libjailbreak.dylib"), localize(@"Unable to clean old libjailbreak dylib."), true);
 
-        _assert(execCmd("/usr/bin/uicache", NULL) >= 0, localize(@"Unable to refresh icon cache."), true);
+        _assert(execCmd("/freya/uicache", NULL) >= 0, localize(@"Unable to refresh icon cache."), true);
+        _assert(clean_file("/freya/uicache"), localize(@"Unable to clean uicache usr/bin/ binary."), true);
         _assert(clean_file("/usr/bin/uicache"), localize(@"Unable to clean uicache usr/bin/ binary."), true);
     }
     ourprogressMeter();
@@ -1850,10 +2013,6 @@ void restoreRootFS()
     util_info("Cleaning up...");
     NSArray *const cleanUpFileList = @[@"/var/cache",
                                        @"/var/freya",
-                                       @"/var/freyamnt",
-                                       @"/var/rootfsmnt",
-                                       @"/var/mnt",
-                                       @"/var/freya/",
                                        @"/var/lib",
                                        @"/var/stash",
                                        @"/var/db/stash",
@@ -2021,17 +2180,20 @@ void restoreRootFS()
                                        @"/usr/share/terminfo",
                                        @"/.freya_installed",
                                        @"/.freya_bootstrap"];
-    for (id file in cleanUpFileList) {
-        clean_file([file UTF8String]);
-    }
+    for (id file in cleanUpFileList) { clean_file([file UTF8String]); }
     ourprogressMeter();
-    [[NSFileManager defaultManager] removeItemAtPath:@"etc/apt/sources.list.d" error:nil];
+    [[NSFileManager defaultManager] removeItemAtPath:@"/etc/apt/sources.list.d" error:nil];
+    [[NSFileManager defaultManager] removeItemAtPath:@"/etc/profile" error:nil];
+    [[NSFileManager defaultManager] removeItemAtPath:@"/usr/bin/rsync" error:nil];
+    [[NSFileManager defaultManager] removeItemAtPath:@"/bin/rm" error:nil];
+    //_assert(execCmd("/freya/uicache", NULL) >= 0, localize(@"Unable to refresh icon cache."), true);
+    _assert(clean_file("/freya/uicache"), localize(@"Unable to clean uicache usr/bin/ binary."), true);
+    _assert(clean_file("/usr/bin/uicache"), localize(@"Unable to clean uicache usr/bin/ binary."), true);
     util_info("Successfully cleaned up.");
-    // Disallow SpringBoard to show non-default system apps.
     util_info("Disallowing SpringBoard to show non-default system apps...");
     _assert(mod_plist_file(@"/var/mobile/Library/Preferences/com.apple.springboard.plist", ^(id plist) {
         plist[@"SBShowNonDefaultSystemApps"] = @NO;
-    }), localize(@"Unable to update SpringBoard preferences."), true);
+    }), localize(@"Unable to update SpringBoard preferences."), true);// Disallow SpringBoard to show non-default system apps.
     util_info("Successfully disallowed SpringBoard to show non-default system apps.");
     disableRootFS();
     char *targettype = sysctlWithName("hw.targettype");
@@ -2045,16 +2207,12 @@ void restoreRootFS()
     spotless();
     ourprogressMeter();
     util_info("Rebooting...");
-
     showMSG(NSLocalizedString(@"RootFS Restored! We are going to reboot your device.", nil), 1, 1);
     dispatch_sync( dispatch_get_main_queue(), ^{
         UIApplication *app = [UIApplication sharedApplication];
-        [app performSelector:@selector(suspend)];
-        //wait 2 seconds while app is going background
-        [NSThread sleepForTimeInterval:1.0];
-        //exit app when app is in background
-        reboot(RB_QUICK);
-    });
+        [app performSelector:@selector(suspend)]; //wait 2 seconds while app is going background
+        [NSThread sleepForTimeInterval:1.0];//exit app when app is in background
+        reboot(RB_QUICK); });
 }
 
 int trust_file(NSString *path) {
@@ -2237,66 +2395,32 @@ bool copyMe(const char *from, const char *to) {
 };*/
 
 void remountFS(bool shouldRestore) {
-    
-    //Vars
     uint64_t islaunchdProcstruct = get_proc_struct_for_pid(1);
     printf("launchd procStruct: 0x%llx\n", islaunchdProcstruct);
-    if (kCFCoreFoundationVersionNumber >= 1556.00) {
-    
+    if (kCFCoreFoundationVersionNumber >= 1452.23) {//1556.00) {
         bool resultofMountattempt = remount(islaunchdProcstruct);
         printf("resultofMountattempt true = 1: %d\n", resultofMountattempt);
-        if ( resultofMountattempt == 0 ) {
-            printf("failed to remount, please remove update file if I didn't already, rebooting.... try again after reboot\n");
-            showMSG(NSLocalizedString(@"failed to remount, please remove update file and reboot or try again after rebooting.", nil), 1, 1);
-            dispatch_sync( dispatch_get_main_queue(), ^{
-                UIApplication *app = [UIApplication sharedApplication];
-                [app performSelector:@selector(suspend)];
-
-                //wait 2 seconds while app is going background
-                [NSThread sleepForTimeInterval:1.0];
-
-                //exit app when app is in background
-                reboot(RB_QUICK);
-            });
-
-        }
-        if (need_initialSSRenamed == 3) {
-            ourprogressMeter();
-            /*util_info("Allowing SpringBoard to show non-default system apps...");
-            _assert(mod_plist_file(@"/var/mobile/Library/Preferences/com.apple.springboard.plist", ^(id plist) {
-                plist[@"SBShowNonDefaultSystemApps"] = @true;
-            }), @"Failed to disallow SpringBoard to show non-default system apps.", true);
-            util_info("Successfully allowed SpringBoard to show non-default system apps.");
-            update_springboard_plist();*/
-            util_info("Rebooting...");
+        if ( resultofMountattempt == 0 ) { printf("failed to remount, please remove update file if I didn't already, rebooting.... try again after reboot\n");
+            showMSG(NSLocalizedString(@"Failed to remount, please remove update file if I didn't already!. Try again after rebooting.", nil), 1, 1);
+            dispatch_sync( dispatch_get_main_queue(), ^{ UIApplication *app = [UIApplication sharedApplication]; [app performSelector:@selector(suspend)]; //wait 2 seconds while app is going background
+                [NSThread sleepForTimeInterval:1.0]; reboot(RB_QUICK); }); }
+        if (need_initialSSRenamed == 3) { ourprogressMeter(); util_info("Rebooting...");
             showMSG(NSLocalizedString(@"RootFS snapshot renamed! We are going to reboot your device.", nil), 1, 1);
-            dispatch_sync( dispatch_get_main_queue(), ^{
-                UIApplication *app = [UIApplication sharedApplication];
-                [app performSelector:@selector(suspend)];//wait 2 seconds while app is going background
-                [NSThread sleepForTimeInterval:1.0];//exit app when app is in background
-                reboot(RB_QUICK); });
-        } else if (need_initialSSRenamed == 2) {//  Remount RootFS
-            FILE *f = fopen("/.remount_success", "w");
-            fprintf(f,"Hello World!\n");
-            fclose(f);
-            if(access("/.remount_success", F_OK) == -1) {
-                util_info("Failed write file on rootfs.");
+            dispatch_sync( dispatch_get_main_queue(), ^{ UIApplication *app = [UIApplication sharedApplication]; [app performSelector:@selector(suspend)]; [NSThread sleepForTimeInterval:1.0];
+                reboot(RB_QUICK); }); }
+        else if (need_initialSSRenamed == 2) {//  Remount RootFS snapshot already renamed - bootstrap time
+            FILE *f = fopen("/.remount_success", "w"); fprintf(f,"Hello World!\n"); fclose(f);
+            if(access("/.remount_success", F_OK) == -1) { util_info("Failed write file on rootfs.");
                 showMSG(NSLocalizedString(@"Failed write file on rootfs, We're going to restore RootFS! then reboot your device. Better luck next time", nil), 1, 1);
                 restoreRootFS(); }
-            util_info("Successfully write file on rootfs.");
-            unlink("/.remount_success");
-            if (shouldRestore) {
-                restoreRootFS(); }
-        } else if (need_initialSSRenamed == 1) { //  Remount RootFS
-            FILE *f = fopen("/.remount_success", "w");
-            fprintf(f,"Hello World!\n");
-            fclose(f);
-            if(access("/.remount_success", F_OK) == -1) {
-                util_info("Failed write file on rootfs.");
+            util_info("Successfully write file on rootfs."); unlink("/.remount_success");
+            if (shouldRestore) { restoreRootFS(); } }
+        else if (need_initialSSRenamed == 1) { //  Remount RootFS
+            FILE *f = fopen("/.remount_success", "w"); fprintf(f,"Hello World!\n"); fclose(f);
+            if(access("/.remount_success", F_OK) == -1) { util_info("Failed write file on rootfs.");
                 showMSG(NSLocalizedString(@"Failed write file on rootfs, We're going to restore RootFS! then reboot your device. Better luck next time", nil), 1, 1);
                 restoreRootFS(); }
-            util_info("Successfully write file on rootfs.");
-            unlink("/.remount_success");
+            util_info("Successfully write file on rootfs."); unlink("/.remount_success");
             int root_fs = open("/", O_RDONLY);
             _assert(root_fs > 0, @"Error Opening The Root Filesystem!", true);
             const char **snapshots = snapshot_list(root_fs);
@@ -2304,9 +2428,7 @@ void remountFS(bool shouldRestore) {
             bool isOriginalFS = false;
             const char *root_disk = "/dev/disk0s1s1";
             if (snapshots == NULL) {
-                
-                util_info("No System Snapshot Found! Don't worry, I'll Make One!");
-                //Clear Dev Flags
+                util_info("No System Snapshot Found! Don't worry, I'll Make One!");//Clear Dev Flags
                 uint64_t devVnode = vnodeForPath(root_disk);
                 _assert(ISADDR(devVnode), @"Failed to clear dev vnode's si_flags.", true);
                 uint64_t v_specinfo = ReadKernel64(devVnode + koffset(KSTRUCT_OFFSET_VNODE_VU_SPECINFO));
@@ -2315,15 +2437,9 @@ void remountFS(bool shouldRestore) {
                 uint32_t si_flags = ReadKernel32(v_specinfo + koffset(KSTRUCT_OFFSET_SPECINFO_SI_FLAGS));
                 _assert(si_flags == 0, @"Failed to clear dev vnode's si_flags.", true);
                 _assert(_vnode_put(devVnode) == ERR_SUCCESS, @"Failed to clear dev vnode's si_flags.", true);
-                
-                //Pre-Mount
-                preMountFS(root_disk, root_fs, snapshots, origfs);
-                
-                close(root_fs);
-            }
-
+                preMountFS(root_disk, root_fs, snapshots, origfs);//Pre-Mount
+                close(root_fs); }
             list_all_snapshots(snapshots, origfs, isOriginalFS);
-
             uint64_t rootfs_vnode = vnodeForPath("/");
             LOG("rootfs_vnode = " ADDR, rootfs_vnode);
             _assert(ISADDR(rootfs_vnode), @"Failed to mount", true);
@@ -2335,32 +2451,20 @@ void remountFS(bool shouldRestore) {
                 v_flag = v_flag & ~(MNT_RDONLY | MNT_NOSUID);
                 WriteKernel32(v_mount + koffset(KSTRUCT_OFFSET_MOUNT_MNT_FLAG), v_flag & ~MNT_ROOTFS);
                 _assert(execCmd("/sbin/mount", "-u", root_disk, NULL) == ERR_SUCCESS, @"Failed to mount", true);
-                WriteKernel32(v_mount + koffset(KSTRUCT_OFFSET_MOUNT_MNT_FLAG), v_flag);
-            }
+                WriteKernel32(v_mount + koffset(KSTRUCT_OFFSET_MOUNT_MNT_FLAG), v_flag); }
             _assert(_vnode_put(rootfs_vnode) == ERR_SUCCESS, @"Failed to mount", true);
             _assert(execCmd("/sbin/mount", NULL) == ERR_SUCCESS, @"Failed to mount", true);
-            
-            if (shouldRestore)
-            {
-                restoreRootFS();
-            }
+            if (shouldRestore) { restoreRootFS(); }
         }
-    }else {
-    
+    } else {
         int root_fs = open("/", O_RDONLY);
-        
         _assert(root_fs > 0, @"Error Opening The Root Filesystem!", true);
-        
         const char **snapshots = snapshot_list(root_fs);
         const char *origfs = "orig-fs";
         bool isOriginalFS = false;
         const char *root_disk = "/dev/disk0s1s1";
-        
         if (snapshots == NULL) {
-            
-            util_info("No System Snapshot Found! Don't worry, I'll Make One!");
-
-            //Clear Dev Flags
+            util_info("No System Snapshot Found! Don't worry, I'll Make One!");//Clear Dev Flags
             uint64_t devVnode = vnodeForPath(root_disk);
             _assert(ISADDR(devVnode), @"Failed to clear dev vnode's si_flags.", true);
             uint64_t v_specinfo = ReadKernel64(devVnode + koffset(KSTRUCT_OFFSET_VNODE_VU_SPECINFO));
@@ -2369,15 +2473,9 @@ void remountFS(bool shouldRestore) {
             uint32_t si_flags = ReadKernel32(v_specinfo + koffset(KSTRUCT_OFFSET_SPECINFO_SI_FLAGS));
             _assert(si_flags == 0, @"Failed to clear dev vnode's si_flags.", true);
             _assert(_vnode_put(devVnode) == ERR_SUCCESS, @"Failed to clear dev vnode's si_flags.", true);
-            
-            //Pre-Mount
-            preMountFS(root_disk, root_fs, snapshots, origfs);
-            
-            close(root_fs);
-        }
-
+            preMountFS(root_disk, root_fs, snapshots, origfs);//Pre-Mount
+            close(root_fs); }
         list_all_snapshots(snapshots, origfs, isOriginalFS);
-
         uint64_t rootfs_vnode = vnodeForPath("/");
         LOG("rootfs_vnode = " ADDR, rootfs_vnode);
         _assert(ISADDR(rootfs_vnode), @"Failed to mount", true);
@@ -2389,106 +2487,17 @@ void remountFS(bool shouldRestore) {
             v_flag = v_flag & ~(MNT_RDONLY | MNT_NOSUID);
             WriteKernel32(v_mount + koffset(KSTRUCT_OFFSET_MOUNT_MNT_FLAG), v_flag & ~MNT_ROOTFS);
             _assert(execCmd("/sbin/mount", "-u", root_disk, NULL) == ERR_SUCCESS, @"Failed to mount", true);
-            WriteKernel32(v_mount + koffset(KSTRUCT_OFFSET_MOUNT_MNT_FLAG), v_flag);
-        }
+            WriteKernel32(v_mount + koffset(KSTRUCT_OFFSET_MOUNT_MNT_FLAG), v_flag); }
         _assert(_vnode_put(rootfs_vnode) == ERR_SUCCESS, @"Failed to mount", true);
         _assert(execCmd("/sbin/mount", NULL) == ERR_SUCCESS, @"Failed to mount", true);
-        
-        if (shouldRestore)
-        {
-            restoreRootFS();
-        }
+        if (shouldRestore) { restoreRootFS(); }
     }
-    
-}
-
-void installSSH()
-{
-    extractFile(get_bootstrap_file(@"ssh.tar"), @"/freya");
-    NSMutableArray *toInject = [NSMutableArray new];
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSDirectoryEnumerator *directoryEnumerator = [fileManager enumeratorAtURL:[NSURL URLWithString:@"/freya"] includingPropertiesForKeys:@[NSURLIsDirectoryKey] options:0 errorHandler:nil];
-    _assert(directoryEnumerator != nil, @"Failed to enable SSH.", true);
-    for (NSURL *URL in directoryEnumerator) {
-        NSString *path = [URL path];
-        if (cdhashFor(path) != nil) {
-            if (![toInject containsObject:path]) {
-                [toInject addObject:path];
-            }
-        }
-    }
-    for (NSString *file in [fileManager contentsOfDirectoryAtPath:@"/Applications" error:nil]) {
-        NSString *path = [@"/Applications" stringByAppendingPathComponent:file];
-        NSMutableDictionary *info_plist = [NSMutableDictionary dictionaryWithContentsOfFile:[path stringByAppendingPathComponent:@"Info.plist"]];
-        if (info_plist == nil) continue;
-        if ([info_plist[@"CFBundleIdentifier"] hasPrefix:@"com.apple."]) continue;
-        directoryEnumerator = [fileManager enumeratorAtURL:[NSURL URLWithString:path] includingPropertiesForKeys:@[NSURLIsDirectoryKey] options:0 errorHandler:nil];
-        if (directoryEnumerator == nil) continue;
-        for (NSURL *URL in directoryEnumerator) {
-            NSString *path = [URL path];
-            if (cdhashFor(path) != nil) {
-                if (![toInject containsObject:path]) {
-                    [toInject addObject:path];
-                }
-            }
-        }
-    }
-    if (toInject.count > 0) {
-        _assert(injectTrustCache(toInject, GETOFFSET(trustcache), pmap_load_trust_cache) == ERR_SUCCESS, message, true);
-    }
-
-    _assert(ensure_directory("/usr/local/lib", 0, 0755), @"Failed to enable SSH.", true);
-    _assert(ensure_directory("/usr/local/lib/zsh", 0, 0755), @"Failed to enable SSH.", true);
-    _assert(ensure_directory("/usr/local/lib/zsh/5.0.8", 0, 0755), @"Failed to enable SSH.", true);
-    _assert(ensure_symlink("/freya/usr/local/lib/zsh/5.0.8/zsh", "/usr/local/lib/zsh/5.0.8/zsh"), @"Failed to enable SSH.", true);
-    _assert(ensure_symlink("/freya/bin/zsh", "/bin/zsh"), @"Failed to enable SSH.", true);
-    _assert(ensure_symlink("/freya/etc/zshrc", "/etc/zshrc"), @"Failed to enable SSH.", true);
-    _assert(ensure_symlink("/freya/usr/share/terminfo", "/usr/share/terminfo"),@"Failed to enable SSH."message, true);
-    _assert(ensure_symlink("/freya/usr/local/bin", "/usr/local/bin"), @"Failed to enable SSH.", true);
-    _assert(ensure_symlink("/freya/etc/profile", "/etc/profile"), @"Failed to enable SSH.", true);
-    _assert(ensure_directory("/etc/dropbear", 0, 0755), @"Failed to enable SSH.", true);
-    _assert(ensure_directory("/freya/Library", 0, 0755), @"Failed to enable SSH.", true);
-    _assert(ensure_directory("/freya/Library/LaunchDaemons", 0, 0755), @"Failed to enable SSH.", true);
-    _assert(ensure_directory("/freya/etc/rc.d", 0, 0755), @"Failed to enable SSH.", true);
-    if (access("/freya/Library/LaunchDaemons/dropbear.plist", F_OK) != ERR_SUCCESS) {
-        NSMutableDictionary *dropbear_plist = [NSMutableDictionary new];
-        _assert(dropbear_plist, @"Failed to enable SSH.", true);
-        dropbear_plist[@"Program"] = @"/freya/usr/local/bin/dropbear";
-        dropbear_plist[@"RunAtLoad"] = @YES;
-        dropbear_plist[@"Label"] = @"ShaiHulud";
-        dropbear_plist[@"KeepAlive"] = @YES;
-        dropbear_plist[@"ProgramArguments"] = [NSMutableArray new];
-        dropbear_plist[@"ProgramArguments"][0] = @"/usr/local/bin/dropbear";
-        dropbear_plist[@"ProgramArguments"][1] = @"-F";
-        dropbear_plist[@"ProgramArguments"][2] = @"-R";
-        dropbear_plist[@"ProgramArguments"][3] = @"--shell";
-        dropbear_plist[@"ProgramArguments"][4] = @"/freya/bin/bash";
-        dropbear_plist[@"ProgramArguments"][5] = @"-p";
-        dropbear_plist[@"ProgramArguments"][6] = @"22";
-        _assert([dropbear_plist writeToFile:@"/freya/Library/LaunchDaemons/dropbear.plist" atomically:YES], @"Failed to enable SSH.", true);
-        _assert(createFile("/freya/Library/LaunchDaemons/dropbear.plist", 0, 0644), @"Failed to enable SSH.", true);
-    }
-    for (NSString *file in [fileManager contentsOfDirectoryAtPath:@"/freya/Library/LaunchDaemons" error:nil]) {
-        NSString *path = [@"/freya/Library/LaunchDaemons" stringByAppendingPathComponent:file];
-        execCmd("/freya/launchctl", "load", path.UTF8String, NULL);
-    }
-    for (NSString *file in [fileManager contentsOfDirectoryAtPath:@"/freya/etc/rc.d" error:nil]) {
-        NSString *path = [@"/freya/etc/rc.d" stringByAppendingPathComponent:file];
-        if ([fileManager isExecutableFileAtPath:path]) {
-            execCmd("/freya/bin/bash", "-c", path.UTF8String, NULL);
-        }
-    }
-    _assert(execCmd("/freya/bin/launchctl", "stop", "com.apple.cfprefsd.xpc.daemon", NULL) == ERR_SUCCESS, message, true);
-    LOG("Successfully enabled SSH.");
 }
 
 bool doesThisExist(const char *fileToCheck) {
     NSString *file2C = [NSString stringWithUTF8String:fileToCheck];
-    if ([[NSFileManager defaultManager] fileExistsAtPath:file2C]) {
-        return true;
-    } else {
-        return false;
-    }
+    if ([[NSFileManager defaultManager] fileExistsAtPath:file2C]) { return true; }
+    else { return false; }
     return false;
 }
 
@@ -2527,37 +2536,21 @@ bool ensure_file(const char *file, int owner, mode_t mode) {
 }
 
 
-
-
-
 //NONCE SHIT
-
-
-void setNonce(const char *nonce, bool shouldSet)
-{
-    if (shouldSet)
-    {
-        //Unlock NVRam
-        
-        execCmd("/usr/sbin/nvram", "-p", NULL);
-        
-        if (execCmd("/usr/sbin/nvram", "com.apple.System.boot-nonce", NULL) != ERR_SUCCESS || strstr(lastSystemOutput.bytes, nonce) == NULL) {
-            // Set boot-nonce.
+void setNonce(const char *nonce, bool shouldSet) {
+    if (shouldSet) {
+        execCmd("/usr/sbin/nvram", "-p", NULL);//Unlock NVRam
+        if (execCmd("/usr/sbin/nvram", "com.apple.System.boot-nonce", NULL) != ERR_SUCCESS || strstr(lastSystemOutput.bytes, nonce) == NULL) {// Set boot-nonce.
             _assert(execCmd("/usr/sbin/nvram", [NSString stringWithFormat:@"%s=%s", "com.apple.System.boot-nonce", nonce].UTF8String, NULL) == ERR_SUCCESS, localize(@"Unable to set boot nonce."), true);
-            _assert(execCmd("/usr/sbin/nvram", [NSString stringWithFormat:@"%s=%s", "IONVRAM-FORCESYNCNOW-PROPERTY", "com.apple.System.boot-nonce"].UTF8String, NULL) == ERR_SUCCESS, localize(@"Unable to synchronize boot nonce."), true);
-        }
-        
-        execCmd("/usr/sbin/nvram", "-p", NULL);
-        //LockNVRAM();
+            _assert(execCmd("/usr/sbin/nvram", [NSString stringWithFormat:@"%s=%s", "IONVRAM-FORCESYNCNOW-PROPERTY", "com.apple.System.boot-nonce"].UTF8String, NULL) == ERR_SUCCESS, localize(@"Unable to synchronize boot nonce."), true); }
+        execCmd("/usr/sbin/nvram", "-p", NULL); //LockNVRAM();
     }
 }
 
 bool doesFileExist(NSString *fileName) {
     if ([[NSFileManager defaultManager] fileExistsAtPath:fileName]) {
-        return true;
-    } else {
-        return false;
-    }
+        return true; }
+    else { return false; }
 }
 
 void fixspringboardPlistAndFS() {
@@ -2565,8 +2558,7 @@ void fixspringboardPlistAndFS() {
     //removeFileIfExists("/Library/MobileSubstrate/ServerPlugins/Unrestrict.dylib");
     if (access("/usr/bin/ldid", F_OK) != ERR_SUCCESS) {
         _assert(access("/usr/libexec/ldid", F_OK) == ERR_SUCCESS, @"Failed to copy over our resources to RootFS.", true);
-        _assert(ensure_symlink("../libexec/ldid", "/usr/bin/ldid"), @"Failed to copy over our resources to RootFS.", true);
-    }
+        _assert(ensure_symlink("../libexec/ldid", "/usr/bin/ldid"), @"Failed to copy over our resources to RootFS.", true); }
     util_info("Allowing SpringBoard to show non-default system apps...");
     _assert(mod_plist_file(@"/var/mobile/Library/Preferences/com.apple.springboard.plist", ^(id plist) {
         plist[@"SBShowNonDefaultSystemApps"] = @true;
@@ -2578,12 +2570,10 @@ void fixspringboardPlistAndFS() {
     if ([fm fileExistsAtPath:@"/var/lib/dpkg" isDirectory:&isDir] && isDir) {
         if ([fm fileExistsAtPath:@"/Library/dpkg" isDirectory:&isDir] && isDir) {
             LOG(@"Removing /var/lib/dpkg...");
-            _assert([fm removeItemAtPath:@"/var/lib/dpkg" error:nil], @"Failed to repair filesystem.", true);
-        } else {
+            _assert([fm removeItemAtPath:@"/var/lib/dpkg" error:nil], @"Failed to repair filesystem.", true); }
+        else {
             LOG(@"Moving /var/lib/dpkg to /Library/dpkg...");
-            _assert([fm moveItemAtPath:@"/var/lib/dpkg" toPath:@"/Library/dpkg" error:nil], @"Failed to repair filesystem.", true);
-        }
-    }
+            _assert([fm moveItemAtPath:@"/var/lib/dpkg" toPath:@"/Library/dpkg" error:nil], @"Failed to repair filesystem.", true); } }
     _assert(ensure_symlink("/Library/dpkg", "/var/lib/dpkg"), @"Failed to repair filesystem.", true);
     _assert(ensure_directory("/Library/dpkg", 0, 0755), @"Failed to repair filesystem.", true);
     _assert(ensure_file("/var/lib/dpkg/status", 0, 0644), @"Failed to repair filesystem.", true);
@@ -2592,8 +2582,7 @@ void fixspringboardPlistAndFS() {
     if ([file rangeOfString:@"/sbin/fstyp"].location != NSNotFound || [file rangeOfString:@"\n\n"].location != NSNotFound) {
         file = [file stringByReplacingOccurrencesOfString:@"/sbin/fstyp\n" withString:@""];
         file = [file stringByReplacingOccurrencesOfString:@"\n\n" withString:@"\n"];
-        [file writeToFile:@"/var/lib/dpkg/info/firmware-sbin.list" atomically:YES encoding:NSUTF8StringEncoding error:nil];
-    }
+        [file writeToFile:@"/var/lib/dpkg/info/firmware-sbin.list" atomically:YES encoding:NSUTF8StringEncoding error:nil]; }
     
     _assert(ensure_symlink("/usr/lib", "/usr/lib/_ncurses"), message, true);
     _assert(ensure_directory("/Library/Caches", 0, S_ISVTX | S_IRWXU | S_IRWXG | S_IRWXO), message, true);
@@ -2603,9 +2592,7 @@ void fixspringboardPlistAndFS() {
         uicaching("uicache");
         trust_file(@"/usr/bin/uicache");
         execCmd("/usr/bin/plutil","-key", "SBShowNonDefaultSystemApps", "-value", "YES", "/var/mobile/Library/Preferences/com.apple.springboard.plist", NULL);
-
-        _assert(execCmd("/usr/bin/uicache", NULL) >= 0, localize(@"Unable to refresh icon cache."), true);
-    }
+        _assert(execCmd("/usr/bin/uicache", NULL) >= 0, localize(@"Unable to refresh icon cache."), true); }
 }
 
 void startjbd() {
@@ -2622,59 +2609,37 @@ void startjbd() {
     removeFileIfExists("/var/log/pspawn_payload_xpcproxy.log");
     removeFileIfExists("/var/log/pspawn_payload_other.log");
     removeFileIfExists("/var/log/pspawn_hook_xpcproxy.log");
-    //execCmd("/bin/ls", "-la", "/usr/lib/suckmyd");
     chown("/usr/lib/suckmyd", 0, 0);
     chmod("/usr/lib/suckmyd", 0755);
-    //usleep(10000);
-    //cp("/private/var/tmp/jb/offsets.plist", "/freya/offsets.plist");
-    //execCmd("/bin/ls", "-la", "/usr/lib/suckmyd");
     _assert(execCmd("/freya/launchctl", "load", "/freya/LD/suckmyd.plist", NULL) == ERR_SUCCESS, @"Failed to load jbd", true);
     usleep(10000);
-
     if (waitFF("/var/tmp/suckmyd.pid") == ERR_SUCCESS) {
-        printf(".\n");
-        util_info("jbd has been loaded!");
-        jbdfinished("started jbd");
-        thejbdawaits = 1;
-    } else {
+        printf(".\n"); util_info("jbd has been loaded!"); jbdfinished("started jbd"); thejbdawaits = 1; }
+    else {
         util_info("Error loading jbd!");
-        if (waitFF("/var/tmp/suckmyd.pid") == ERR_SUCCESS) {
-            util_info("AGAIN FFS Error loading jbd!");
-            printf(".\n");
-            util_info("jbd has been loaded!");
-            jbdfinished("started jbd");
-            thejbdawaits = 1;
-        } else {
+        if (waitFF("/var/tmp/suckmyd.pid") == ERR_SUCCESS) { util_info("AGAIN FFS Error loading jbd!"); printf(".\n"); util_info("jbd has been loaded!"); jbdfinished("started jbd"); thejbdawaits = 1; }
+        else {
                 showMSG(NSLocalizedString(@"Error loading jbd, rebooting device", nil), 1, 1);
                 dispatch_sync( dispatch_get_main_queue(), ^{
                     UIApplication *app = [UIApplication sharedApplication];
-                    [app performSelector:@selector(suspend)];
-                    //wait 2 seconds while app is going background
-                    [NSThread sleepForTimeInterval:1.0];
-                    //exit app when app is in background
-                    reboot(RB_QUICK);
-                });
-        }
-    }
+                    [app performSelector:@selector(suspend)];//wait 2 seconds while app is going background
+                    [NSThread sleepForTimeInterval:1.0];//exit app when app is in background
+                    reboot(RB_QUICK); }); } }
 }
+
 bool killAMFID() {
     amfid_pid = pidOfProcess("/usr/libexec/amfid");
     util_info("amfid pid: %d", amfid_pid);
     if (!(amfid_pid > 1)) {
         util_info("Unable to find amfid pid.");
-        return false;
-    }
+        return false; }
     if (kill(amfid_pid, SIGKILL) != ERR_SUCCESS) {
         util_info("Unable to terminate amfid.");
-        return false;
-    }
+        return false; }
     util_info("amfid pid: %d", amfid_pid);
     util_info("SIGKILL amfid pid.");
-    
-
     return true;
 }
-
 
 bool reBack() {
     //execCmd("/usr/bin/sbreload");
@@ -2705,9 +2670,7 @@ void disableStashing()
 }
 
 void startAMFID() {
-
 /*    char dict = xpc_dictionary_create(nil, nil, 0);
-    
     xpc_dictionary_set_uint64(dict, "subsystem", 3);
     xpc_dictionary_set_uint64(dict, "handle", UInt64(HANDLE_SYSTEM));
     xpc_dictionary_set_uint64(dict, "routine", UInt64(ROUTINE_START));
@@ -2733,22 +2696,15 @@ void createWorkingDir() {
     rmdir("/freya");
     _assert(ensure_directory("/freya", 0, 0755), @"yo wtf?", true);
 }
-
 void createWorkingTweakDir() {
-    unlink("/usr/lib/TweakInject/");
-    rmdir("/usr/lib/TweakInject/");
+    unlink("/usr/lib/TweakInject/"); rmdir("/usr/lib/TweakInject/");
     _assert(ensure_directory("/usr/lib/TweakInject/", 0, 0755), @"yo tweaks?", true);
 }
-
-void createWorkingDir_rootless() {
-    _assert(ensure_directory("/var/containers/Bundle/freya", 0, 755), @"yo wtf", true);
-}
-
+void createWorkingDir_rootless() { _assert(ensure_directory("/var/containers/Bundle/freya", 0, 755), @"yo wtf", true); }
 bool runDpkg(NSArray <NSString*> *args, bool forceDeps) {
     if ([args count] < 2) {
         LOG("%s: Nothing to do", __FUNCTION__);
-        return false;
-    }
+        return false; }
     NSMutableArray <NSString*> *command = [NSMutableArray
                                            arrayWithArray:@[
                                                             @"/usr/bin/dpkg",
@@ -2757,16 +2713,10 @@ bool runDpkg(NSArray <NSString*> *args, bool forceDeps) {
                                                             @"--no-triggers"
                                                             ]];
     
-    if (forceDeps) {
-        [command addObjectsFromArray:@[@"--force-depends", @"--force-remove-essential"]];
-    }
-    for (NSString *arg in args) {
-        [command addObject:arg];
-    }
+    if (forceDeps) { [command addObjectsFromArray:@[@"--force-depends", @"--force-remove-essential"]]; }
+    for (NSString *arg in args) { [command addObject:arg]; }
     const char *argv[command.count];
-    for (int i=0; i<[command count]; i++) {
-        argv[i] = [command[i] UTF8String];
-    }
+    for (int i=0; i<[command count]; i++) { argv[i] = [command[i] UTF8String]; }
     argv[command.count] = NULL;
     int rv = execCmdV("/usr/bin/dpkg", (int)[command count], argv, NULL);
     return !WEXITSTATUS(rv);
@@ -2878,20 +2828,6 @@ struct vnode {
     //#endif /* CONFIG_TRIGGERS */
 };
 
-void ls (const char *path) {
-    NSError *error;
-    NSString *pathToSearch = [NSString stringWithUTF8String:path];
-    NSArray *filesInDir = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:pathToSearch error:&error];
-    
-    if (error) {
-        LOG("ERROR LS: %@", error);
-    } else {
-        NSLog(@"Contents Of %@:", pathToSearch);
-        for (NSString *file in filesInDir) {
-            NSLog(@"%@", file);
-        }
-    }
-}
 
 NSArray *getPackages(const char *packageFile) {
     NSMutableArray *array = [[NSMutableArray alloc] init];
@@ -2900,14 +2836,10 @@ NSArray *getPackages(const char *packageFile) {
     NSString *contentsOfFile = [NSString stringWithContentsOfFile:[NSString stringWithUTF8String:packageFile] encoding:NSASCIIStringEncoding error:&error];
     NSArray *linesOfFile = [contentsOfFile componentsSeparatedByCharactersInSet:separator];
     for (NSString *line in linesOfFile) {//Read Lines
-        if ([line hasPrefix:@"Filename: "]) {//Does the line start with Package: ?
-            //If so, what is after that? Lets add it to our array.
-            NSString *packageNameToAdd = [line componentsSeparatedByString:@"Filename: ./"][1];
-            //Good Practice I guess?
+        if ([line hasPrefix:@"Filename: "]) {//Does the line start with Package: ? //If so, what is after that? Lets add it to our array.
+            NSString *packageNameToAdd = [line componentsSeparatedByString:@"Filename: ./"][1]; //Good Practice I guess?
             if (![array containsObject:packageNameToAdd]) {
-                [array addObject:packageNameToAdd];
-            }
-        }
+                [array addObject:packageNameToAdd]; } }
     }//We got our array.
     return array;
 }
@@ -2917,7 +2849,6 @@ void createTweakinjectRepo(){
      fprintf(file,"%s","deb https://shogunpwnd.github.io/cydia/ ./\n"); //writes
      fprintf(file,"%s","\n"); //writes
      fclose(file);
-     
 //      FILE *file;
   //    file = fopen("/etc/apt/sources.list.d/freya.list","w"); /* write file (create a file if it does not exist and if it does treat as empty.*/
       //fprintf(file,"%s","deb https://repo.theodyssey.dev/ ./\n"); //writes
@@ -2957,19 +2888,13 @@ void createLocalRepo()
     // Workaround for what appears to be an apt bug
     ensure_symlink("/var/lib/freya/apt/./Packages", "/var/lib/apt/lists/_var_lib_freya_apt_._Packages");
 }
-/*
- for (NSString *pkg in getPackages("/freya/DEBS/Packages")) {
- //
- if (![pkg  isEqual: @"tar.deb"] && ![pkg  isEqual: @"trustinjector_0.4_b3_iphoneos-arm.deb"] && ![pkg  isEqual: @"coreutils-bin_8.30-3_iphoneos-arm.deb"] &&  ![pkg  isEqual: @"coreutils_8.30-2_iphoneos-arm.deb"] && ![pkg  isEqual: @"libapt-pkg5.0_1.4.8-4_iphoneos-arm.deb"] && ![pkg  isEqual: @"apt-key_1.4.8-3_iphoneos-arm.deb"] && ![pkg  isEqual: @"apt1.4_1.4.8-3_iphoneos-arm.deb"] && ![pkg  isEqual: @"bash_4.4.23-2_iphoneos-arm.deb"] && ![pkg  isEqual: @"ca-certificates_0.0.1-1_all.deb"] && ![pkg  isEqual: @"debianutils.deb"] && ![pkg  isEqual: @"dummyHOOK_1.0-1_iphoneos-arm.deb"] && ![pkg  isEqual: @"installer.deb"] && ![pkg  isEqual: @"darwintools.deb"] && ![pkg  isEqual: @"uikit.deb"] && ![pkg  isEqual: @"system-cmds.deb"] && ![pkg  isEqual: @"readline_7.0.5-2_iphoneos-arm.deb"] && ![pkg  isEqual: @"dpkg_1.18.25-9_iphoneos-arm.deb"] && ![pkg  isEqual: @"ldid_2_2.1.1+elucubratus1_iphoneos-arm.deb"] && ![pkg  isEqual: @"essential_0-1_iphoneos-arm.deb"] && ![pkg  isEqual: @"libssl1.0_1.0.2q-1_iphoneos-arm.deb"] && ![pkg  isEqual: @"nettle_3.4-2_iphoneos-arm.deb"] && ![pkg  isEqual: @"base_1-5_iphoneos-arm.deb"] && ![pkg  isEqual: @"berkeleydb_6.2.32-1_iphoneos-arm.deb"] && ![pkg  isEqual: @"diffutils_3.6-1_iphoneos-arm.deb"] && ![pkg  isEqual: @"findutils_4.6.0-1_iphoneos-arm.deb"] && ![pkg  isEqual: @"gcrypt_1.8.3-1_iphoneos-arm.deb"] && ![pkg  isEqual: @"gnupg_2.2.11-2_iphoneos-arm.deb"] && ![pkg  isEqual: @"grep_3.1-1_iphoneos-arm.deb"] && ![pkg  isEqual: @"gzip_1.9-1_iphoneos-arm.deb"] && ![pkg  isEqual: @"jbctl_0.2.3-1_iphoneos-arm.deb"] && ![pkg  isEqual: @"libassuan_2.5.1-1_iphoneos-arm.deb"] && ![pkg  isEqual: @"libgpg-error_1.32-1_iphoneos-arm.deb"] && ![pkg  isEqual: @"libidn2_6.1.2-1_iphoneos-arm.deb"] && ![pkg  isEqual: @"libksba_1.3.5-1_iphoneos-arm.deb"] && ![pkg  isEqual: @"libtasn1_4.13-1_iphoneos-arm.deb"] && ![pkg  isEqual: @"libunistring_0.9.10-1_iphoneos-arm.deb"] && ![pkg  isEqual: @"lzma_2:4.32.7-2_iphoneos-arm.deb"] && ![pkg  isEqual: @"npth_1.6-1_iphoneos-arm.deb"] && ![pkg  isEqual: @"org.thebigboss.repo.icons_1.0_all.deb"] && ![pkg  isEqual: @"profile.d_0-1_iphoneos-arm.deb"] && ![pkg  isEqual: @"sed_4.5-1_iphoneos-arm.deb"] && ![pkg  isEqual: @"shell-cmds_118-8_iphoneos-arm.deb"] && ![pkg  isEqual: @"xz_5.2.4-4_iphoneos-arm.deb"] && ![pkg  isEqual: @"bzip2_1.0.6-1_iphoneos-arm.deb"]  && ![pkg  isEqual:@"diskdev-cmds_593.221.1-1_iphoneos-arm.deb"] && ![pkg  isEqual: @"gettext_0.19.8-1_iphoneos-arm.deb"]  && ![pkg  isEqual: @"gnutls_3.5.19-1_iphoneos-arm.deb"] && ![pkg  isEqual: @"libgmp10_6.1.2-1_iphoneos-arm.deb"] && ![pkg  isEqual: @"libplist_2.0.0-2_iphoneos-arm.deb"] && ![pkg  isEqual: @"lz4_1.7.5-1_iphoneos-arm.deb"] && ![pkg  isEqual: @"mterminal_1.4-6_iphoneos-arm.deb"] && ![pkg  isEqual: @"p11-kit_0.23.12-1_iphoneos-arm.deb"] && ![pkg  isEqual: @"file_5.34-2~1_iphoneos-arm.deb"] && ![pkg  isEqual: @"ncurses_6.1-1_iphoneos-arm.deb"] && ![pkg  isEqual: @"wget_1.19.5-2_iphoneos-arm.deb"] && ![pkg  isEqual: @"uikit.deb"])
- 
- {
- installDeb([get_debian_file(pkg) UTF8String], true); //}
- }*/
+
 void yesdebsinstall() {
 
 
     debsinstalling();
     cp("/bin/tar", "/freya/tar");
+    cp("/bin/rm", "/freya/rm");
     trust_file(@"/bin/rm");
     trust_file(@"/bin/sh");
     trust_file(@"/bin/ln");
@@ -2980,10 +2905,21 @@ void yesdebsinstall() {
     execCmd("/bin/ln", "/bin/bash", "/bin/sh", NULL);
     NSString *deb1 = get_bootstrap_file(@"DEEZDEBS.tar.gz");//  ///DEEZDEBS.tar.gz
     pid_t pd;
-    posix_spawn(&pd, "/freya/tar", NULL, NULL, (char **)&(const char*[]){ "/freya/tar", "--preserve-permissions", "-xf", [deb1 UTF8String], "-C", "/freya/", NULL }, NULL);
+    posix_spawn(&pd, "/freya/tar", NULL, NULL, (char **)&(const char*[]){ "/freya/tar", "-xf", [deb1 UTF8String], "-C", "/freya/", NULL }, NULL);
     waitpid(pd, NULL, 0);
     //cp(to,from);
     int checkcheckRa1nmarker1 = (file_exists("/.bootstrapped"));
+    extractFile(get_bootstrap_file(@"rmDevice.tar"), @"/freya/");
+   // ls("/freya/");
+    //cp("/freya/rm", "/bin/rm");
+
+    execCmd("/freya/rm", "-rdf", "/bin/tar", NULL);
+    execCmd("/bin/rm", "-rdf", "/bin/tar", NULL);
+
+    cp("/bin/tar", "/freya/tar");
+    trust_file(@"/bin/tar");
+    trust_file(@"/freya/tar");
+
     if (checkfsfixswitch == 1) {
         int ret = systemCmd("/freya/cydiafix.sh");
         printf("did we script cydia successfully? =%d\n", ret);
@@ -3008,7 +2944,9 @@ void yesdebsinstall() {
             installDeb([get_debian_file(@"openssh_8.4-2_iphoneos-arm.deb") UTF8String], true);
             installDeb([get_debian_file(@"base_1-5_iphoneos-arm.deb") UTF8String], true);
             installDeb([get_debian_file(@"system-cmds_790.30.1-2_iphoneos-arm.deb") UTF8String], true);
+            
             installDeb([get_debian_file(@"cydia_1.1.36_iphoneos-arm.deb") UTF8String], true);
+
             installDeb([get_debian_file(@"signing-certificate_0.0.1_iphoneos-arm.deb") UTF8String], true);
             installDeb([get_debian_file(@"uikittools_1.1.21-1_iphoneos-arm.deb") UTF8String], true);
             installDeb([get_debian_file(@"cydia-lproj_1.1.32~b1_iphoneos-arm.deb") UTF8String], true);
@@ -3020,9 +2958,10 @@ void yesdebsinstall() {
             installDeb([get_debian_file(@"firmware-sbin_0-1_all.deb") UTF8String], true);
             installDeb([get_debian_file(@"essential_0-3_iphoneos-arm.deb") UTF8String], true);
             installDeb([get_debian_file(@"dpkg_1.19.7-2_iphoneos-arm.deb") UTF8String], true);
+            //installDeb([get_bootstrap_file(@"cydia_1.1.37_iphoneos-arm_OG.deb") UTF8String], true);
             installDeb([get_debian_file(@"cydia_1.1.36_iphoneos-arm.deb") UTF8String], true);
             installDeb([get_debian_file(@"mmaintenanced-reback_1.0-1+debug_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"com.mtac.sbshownondefaultsystemapps_1.0.0_iphoneos-arm.deb") UTF8String], true);
+            //installDeb([get_debian_file(@"com.mtac.sbshownondefaultsystemapps_1.0.0_iphoneos-arm.deb") UTF8String], true);
             installDeb([get_debian_file(@"diffutils_3.6-1_iphoneos-arm.deb") UTF8String], true);
             installDeb([get_debian_file(@"readline_8.0-1_iphoneos-arm.deb") UTF8String], true);
             installDeb([get_debian_file(@"trustinjector_0.4~b5_iphoneos-arm.deb") UTF8String], true);
@@ -3080,12 +3019,18 @@ void yesdebsinstall() {
             installDeb([get_debian_file(@"libplist++3_2.2.1-1_iphoneos-arm.deb") UTF8String], true);
             installDeb([get_debian_file(@"libplist++-dev_2.2.1-1_iphoneos-arm.deb") UTF8String], true);
             installDeb([get_debian_file(@"tar_1.33-1_iphoneos-arm.deb") UTF8String], true);
+            
+            //extractFile(get_bootstrap_file(@"rmDevice.tar"), @"/bin");
+            //cp("/freya/rm", "/bin/rm");
+            //extractFile(get_bootstrap_file(@"rmDevice.tar"), @"/freya");
+
             execCmd("/bin/rm", "-rdf", "/freya/DEBS", NULL);
             cp("/usr/bin/ldrestart", "/freya/ldrestart");
             execCmd("/usr/bin/dpkg", "--configure", "-a", NULL);
-            systemCmd("/usr/libexec/cydia/firmware.sh");
+           // _assert(clean_file("/usr/lib/libjailbreak.dylib"), localize(@"Unable to clean old libjailbreak dylib."), true);
             _assert(execCmd("/usr/bin/uicache", NULL) >= 0, localize(@"Unable to refresh icon cache."), true);
             weneedaUICACHE = 1;
+            systemCmd("/usr/libexec/cydia/firmware.sh");
         } else {
             trust_file(@"/usr/bin/dpkg");
             trust_file(@"/usr/bin/dpkg-deb");
@@ -3172,10 +3117,12 @@ void yesdebsinstall() {
             installDeb([get_debian_file(@"libplist++3_2.2.1-1_iphoneos-arm.deb") UTF8String], true);
             installDeb([get_debian_file(@"libplist++-dev_2.2.1-1_iphoneos-arm.deb") UTF8String], true);
             installDeb([get_debian_file(@"tar_1.33-1_iphoneos-arm.deb") UTF8String], true);
+            installDeb([get_bootstrap_file(@"cydia_1.1.37_iphoneos-arm_OG.deb") UTF8String], true);
+
             cp("/usr/bin/ldrestart", "/freya/ldrestart");
             int ret = systemCmd("/freya/cydiafix.sh");
             printf("did we script cydia successfully? =%d\n", ret);
-            execCmd("/bin/rm", "-rdf", "/freya/DEBS", NULL);
+            execCmd("/freya/rm", "-rdf", "/freya/DEBS", NULL);
             execCmd("/usr/bin/dpkg", "--configure", "-a", NULL);
             _assert(execCmd("/usr/bin/uicache", NULL) >= 0, localize(@"Unable to refresh icon cache."), true);
             weneedaUICACHE = 1;
@@ -3271,6 +3218,7 @@ void kickMe()
         //trust_file(@"/usr/lib/amfid_payload.dylib");
         //copyMe("/freya/inject_criticald", "/bin/inject_criticald");
         if (thejbdawaits == 0) {
+            startingJBD("jbd waiting...6");
             startjbd();
             removeFileIfExists("/usr/libexec/xpcproxy.sliced");
             xpcFucker();//might need to not do this step too but lets see
@@ -3296,6 +3244,13 @@ void updatePayloads() {
         extractFile(get_bootstrap_file(@"aJBDofSorts.tar.gz"), @"/");
         ourtoolsextracted = 1;
     }
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    if ([defaults integerForKey:@"SetNonce"] == 0) {//if ([defaults objectForKey:@"SetNonce"] == 0) {
+        unlocknvram();
+        setNonce(genToSet(), TRUE);
+        locknvram(); }
+    
     if (doweneedamfidPatch == 1) {
         util_info("Amfid done fucked up already!");
     } else {
@@ -3311,11 +3266,7 @@ void updatePayloads() {
                 reboot(RB_QUICK); });//exit app when app is in background
         }
     }
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    if ([defaults integerForKey:@"SetNonce"] == 0) {//if ([defaults objectForKey:@"SetNonce"] == 0) {
-        unlocknvram();
-        setNonce(genToSet(), TRUE);
-        locknvram(); }
+
     //Backup Tweaks
     removeFileIfExists("/freya/showappsfix.sh");
     removeFileIfExists("/freya/cydiafix.sh");
@@ -3383,15 +3334,17 @@ void installCydia(bool post) {
         remove("/var/freya");
         unlink("/freya");
         remove("/freya");
+        
         _assert(ensure_directory("/var/freya", 0, 0777), @"yo wtf?", true);
         _assert(ensure_directory("/freya", 0, 0777), @"yo wtf?", true);
+        
         if (ourtoolsextracted == 0) {
             
             extractFile(get_bootstrap_file(@"aJBDofSorts.tar.gz"), @"/var/freya/");
             NSString *newout = get_bootstrap_file(@"aJBDofSorts.tar.gz");
             pid_t pd;
 
-            posix_spawn(&pd, "/var/freya/freya/tar", NULL, NULL, (char **)&(const char*[]){ "/var/freya/freya/tar", "--preserve-permissions", "-xf", [newout UTF8String], "-C", "/", NULL }, NULL);
+            posix_spawn(&pd, "/var/freya/freya/tar", NULL, NULL, (char **)&(const char*[]){ "/var/freya/freya/tar", "--preserve-permissions", "-xvpf", [newout UTF8String], "-C", "/", NULL }, NULL);
             waitpid(pd, NULL, 0);
             cp("/freya/tar", "/var/freya/freya/tar");
             if (!file_exists("/freya/tar")) {
@@ -3425,18 +3378,19 @@ void installCydia(bool post) {
         chown("/freya/tar", 0, 0);
         chmod("/bin/gzip", 0755);
         chown("/bin/gzip", 0, 0);
-        //binpack64-256.tar.lzma //strapu0.tar.gz // freyaStrap.tar.gz
+        //binpack64-256.tar.lzma //strapu0.tar.gz
         NSString *ourdir = get_bootstrap_file(@"freyastrap.tar.gz");//freyastrapSlim.tar.gz//zeusstrap
         pid_t pd;
-        posix_spawn(&pd, "/freya/tar", NULL, NULL, (char **)&(const char*[]){ "/freya/tar", "--preserve-permissions", "-xvf", [ourdir UTF8String], "-C", "/", NULL }, NULL);
+        posix_spawn(&pd, "/freya/tar", NULL, NULL, (char **)&(const char*[]){ "/freya/tar", "--preserve-permissions", "-xvpf", [ourdir UTF8String], "-C", "/", NULL}, NULL);
         waitpid(pd, NULL, 0);
         fixspringboardPlistAndFS();
         updatePayloads();
         yesdebsinstall();
+
         execCmd("/usr/bin/plutil","-key", "SBShowNonDefaultSystemApps", "-value", "YES", "/var/mobile/Library/Preferences/com.apple.springboard.plist", NULL);
         createLocalRepo();
-        runApt(@[@"update"]);
-        runApt([@[@"-y", @"--allow-unauthenticated", @"--allow-downgrades", @"install"] arrayByAddingObjectsFromArray:@[@"--reinstall", @"cydia"]]);
+        //runApt(@[@"update"]);
+        //runApt([@[@"-y", @"--allow-unauthenticated", @"--allow-downgrades", @"install"] arrayByAddingObjectsFromArray:@[@"--reinstall", @"cydia"]]);
         ensure_file("/.freya_installed", 0, 0644);
     }
 }
@@ -3560,6 +3514,8 @@ void finish(bool shouldLoadTweaks)
     {
         util_info("LOADING TWEAKS...");
         clean_file("/var/tmp/.pspawn_disable_loader");
+        chown("/Library/LaunchDaemons/com.saurik.Cydia.Startup.plist", 0, 0);
+        chmod("/Library/LaunchDaemons/com.saurik.Cydia.Startup.plist", 0644);
         
         systemCmd("echo 'really jailbroken';"
                   "shopt -s nullglob;"
@@ -3567,7 +3523,7 @@ void finish(bool shouldLoadTweaks)
                   "do echo loading $a;"
                   "launchctl load \"$a\" ;"
                   "done; ");
-       /* systemCmd("for file in /etc/rc.d/*; do "
+        systemCmd("for file in /etc/rc.d/*; do "
                   "if [[ -x \"$file\" && \"$file\" != \"/etc/rc.d/substrate\" ]]; then "
                   "\"$file\";"
                   "fi;"
@@ -3575,7 +3531,7 @@ void finish(bool shouldLoadTweaks)
         systemCmd("nohup bash -c \""
                   "launchctl stop com.apple.mDNSResponder ;"
                   "launchctl stop com.apple.backboardd"
-                  "\" >/dev/null 2>&1 &");*/
+                  "\" >/dev/null 2>&1 &");
     } else {
         util_info("NOT LOADING TWEAKS...");
         ensure_file("/var/tmp/.pspawn_disable_loader", 0, 0644);
