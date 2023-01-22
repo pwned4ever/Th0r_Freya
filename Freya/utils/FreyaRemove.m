@@ -139,15 +139,6 @@ int systemCmdFreya(const char *cmd) {
 
 void removingFreyaiOS() {
     
-    execCmdFreya("/freya/rm", "-rdvf", "/var/mobile/Media/.bootstrapped_electraremover", NULL);
-    execCmdFreya("/freya/rm", "-rdvf", "/var/mobile/testremover.txt", NULL);
-    execCmdFreya("/freya/rm", "-rdvf", "/.bootstrapped_Th0r", NULL);
-    execCmdFreya("/freya/rm", "-rdvf", "/.freya_installed", NULL);
-    execCmdFreya("/freya/rm", "-rdvf", "/.bootstrapped_electra", NULL);
-    execCmdFreya("/freya/rm", "-rdvf", "/.installed_unc0ver", NULL);
-    execCmdFreya("/freya/rm", "-rdvf", "/.install_unc0ver", NULL);
-    execCmdFreya("/freya/rm", "-rdvf", "/.electra_no_snapshot", NULL);
-    execCmdFreya("/freya/rm", "-rdvf", "/.installed_unc0vered", NULL);
     util_info("Removing Files...");
     //removingJailbreaknotice();
     /////////START REMOVING FILES
@@ -163,7 +154,16 @@ void removingFreyaiOS() {
         printf("[*] Trying find . with ._* delete result = %d \n" , rvchecdothidden1);
         
         printf("[*] Removing Jailbreak with custom remover...\n");
-        
+        execCmdFreya("/freya/rm", "-rdvf", "/var/mobile/Media/.bootstrapped_electraremover", NULL);
+        execCmdFreya("/freya/rm", "-rdvf", "/var/mobile/testremover.txt", NULL);
+        execCmdFreya("/freya/rm", "-rdvf", "/.bootstrapped_Th0r", NULL);
+        execCmdFreya("/freya/rm", "-rdvf", "/.freya_installed", NULL);
+        execCmdFreya("/freya/rm", "-rdvf", "/.bootstrapped_electra", NULL);
+        execCmdFreya("/freya/rm", "-rdvf", "/.installed_unc0ver", NULL);
+        execCmdFreya("/freya/rm", "-rdvf", "/.install_unc0ver", NULL);
+        execCmdFreya("/freya/rm", "-rdvf", "/.electra_no_snapshot", NULL);
+        execCmdFreya("/freya/rm", "-rdvf", "/.installed_unc0vered", NULL);
+
         
         execCmdFreya("/freya/rm", "-rdvf", "/private/etc/motd", NULL);
         execCmdFreya("/freya/rm", "-rdvf", "/.cydia_no_stash", NULL);
@@ -1597,6 +1597,9 @@ void removingFreyaiOS() {
         if (testexec == 0) {
             ////usr/etc//
             ////etc folder cleanup
+            ///        execCmdFreya("/freya/rm", "-rdvf", "/RWTEST", NULL);
+            ///            execCmdFreya("/freya/rm", "-rdvf", "/var/mobile/Media/.bootstrapped_electraremover", NULL);
+            execCmdFreya("/freya/rm", "-rdvf", "/var/mobile/testremover.txt", NULL);
             execCmdFreya("/freya/rm", "-rdvf", "/private/etc/pam.d", NULL);
             //private/etc
             execCmdFreya("/freya/rm", "-rdvf", "/private/etc/apt", NULL);
@@ -1754,7 +1757,8 @@ void removingFreyaiOS() {
             execCmdFreya("/freya/rm", "-rdvf", "/private/var/spool", NULL);
             execCmdFreya("/freya/rm", "-rdvf", "/private/var/tmp/cydia.log", NULL);
             execCmdFreya("/freya/rm", "-rdvf", "/private/var/tweak", NULL);
-            execCmdFreya("/freya/rm", "-rdvf", "/private/var/unlimapps_tweak_resources", NULL);            
+            execCmdFreya("/freya/rm", "-rdvf", "/private/var/unlimapps_tweak_resources", NULL);
+           
         }
         else {
             printf("FAILED TO REMOVE WITH RM FREYA\n");
