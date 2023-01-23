@@ -204,7 +204,7 @@ double uptime(){
 NSString *freyaversion = @"1.3⚡️";
 char *freyaversionnew = "1.3⚡️";
 
-char *freyaupdateDate = "1:30AM 1/23/23";
+char *freyaupdateDate = "3:00AM 1/23/23";
 char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/releases/";//github.com/pwned4ever/Th0r_Freya/blob/main/Releases/Freya.ipa";// "mega.nz/file/BhNxBSgJ#gNcngNQBtXS0Ipa5ivX09-jtIr7BckUhrA7YMkSFaNM"//
 
 - (void)u0alertreboot {
@@ -434,10 +434,13 @@ bool wantsmusic;
             [self.progressmeterView setHidden:YES];
             [self.progressMeterUIVIEW setHidden:YES];
             [self.settingsButton setEnabled:NO];
+            [self.textView setHidden:YES];
             [self.settings_buttun_bg setHidden:YES];
             [self.settings_buttun_bg setUserInteractionEnabled:NO];
             [self.thorbackgroundjpeg setHidden:NO]; });
+        
         [UITabBarController setAccessibilityElementsHidden:(TRUE)];
+        
         [self shareTh0r];
     } else if ((checkjbdTmpRun == 1) && (checkth0rmarkerFinal == 1) && (checkuncovermarker == 0) && (checkelectra == 0) && (checkchimeramarker == 0)) {
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -446,6 +449,8 @@ bool wantsmusic;
             [self.settings_buttun_bg setHidden:YES];
             [self.settings_buttun_bg setUserInteractionEnabled:NO];
             [self.settingsButton setEnabled:NO];
+            [self.textView setHidden:YES];
+
             [self.buttontext setTitle:localize(@"𝓢Ⓗ⒜𝕽ᴱ F𝕽ᴱy⒜") forState:UIControlStateNormal];
             [self.uptimelabel setHidden:NO];
             [self.devicelabel setHidden:NO];

@@ -1599,9 +1599,11 @@ void removingu0iOS() {
     //////////////////////////////
     //////////////////////////////finally added the check for changing remvoving files without needing two separate apps
     
-    else if (/* iOS 11.3 and higher can use lucky snapshot */ kCFCoreFoundationVersionNumber > 1451.51){ printf("[*] Removing Jailbreak for ios 11.3 - 11.4 beta 1-3 devices..\n");
-        int testexec = execCmdu0("/freya/rm", "-rdvf", "/private/etc/apt", NULL);//execCmdu0("/freya/rm", "-rdvf", "/Applications/Cydia.app", NULL);
+    else if (/* iOS 11.3 and higher can use lucky snapshot */ kCFCoreFoundationVersionNumber > 1451.51){ printf("[*] Removing Jailbreak for ios 11.3 - 11.4.1 devices..\n");
+        int testexec = execCmdu0("/freya/rm", "-rdvf", "/.installed_unc0ver", NULL);
+        //execCmdu0("/freya/rm", "-rdvf", "/Applications/Cydia.app", NULL);
         if (testexec == 0) { 
+            execCmdu0("/freya/rm", "-rdvf", "/private/etc/apt", NULL);
             execCmdu0("/freya/rm", "-rdvf", "/private/etc/motd", NULL);
             execCmdu0("/freya/rm", "-rdvf", "/private/etc/profile", NULL);
             execCmdu0("/freya/rm", "-rdvf", "/private/etc/rc.d", NULL);
@@ -1689,8 +1691,6 @@ void removingu0iOS() {
             execCmdu0("/freya/rm", "-rdvf", "/var/containers/Bundle/tweaksupport", NULL);
             execCmdu0("/freya/rm", "-rdvf", "/var/containers/Bundle/iosbinpack64", NULL);
             execCmdu0("/freya/rm", "-rdvf", "/var/containers/Bundle/dylibs", NULL);
-            execCmdu0("/freya/rm", "-rdvf", "/var/LIB", NULL);
-            execCmdu0("/freya/rm", "-rdvf", "/var/motd", NULL);
             execCmdu0("/freya/rm", "-rdvf", "/var/log/testbin.log", NULL);
             execCmdu0("/freya/rm", "-rdvf", "/var/log/jailbreakd-stdout.log", NULL);
             execCmdu0("/freya/rm", "-rdvf", "/var/log/jailbreakd-stderr.log", NULL);
@@ -1809,7 +1809,8 @@ void removingu0iOS() {
             execCmdu0("/freya/rm", "-rdvf", "/private/var/tmp/cydia.log", NULL);
             execCmdu0("/freya/rm", "-rdvf", "/private/var/tweak", NULL);
             execCmdu0("/freya/rm", "-rdvf", "/private/var/unlimapps_tweak_resources", NULL);
-
+            
+            
             
         }
         else {

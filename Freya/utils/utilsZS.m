@@ -1882,7 +1882,8 @@ void restoreRootFS()
         _assert(fs_snapshot_mount(rootfd, systemSnapshotMountPoint, snapshot, 0) == ERR_SUCCESS, localize(@"Unable to mount original snapshot."), true);
         const char *systemSnapshotLaunchdPath = [@(systemSnapshotMountPoint) stringByAppendingPathComponent:@"sbin/launchd"].UTF8String;
         _assert(waitFF(systemSnapshotLaunchdPath) == ERR_SUCCESS, localize(@"Unable to verify mounted snapshot."), true);
-        if (checkbash == 1) {
+        ourprogressMeter();
+       if (checkbash == 1) {
             _assert(clean_file("/usr/bin/uicache"), localize(@"Unable to clean old uicache binary."), true);
             unlink("/usr/bin/uicache");removeFileIfExists("/usr/bin/uicache");extractFile(get_bootstrap_file(@"rsync.tar"), @"/");mkdir("/freya", 0777);
             extractFile(get_bootstrap_file(@"rmDevice.tar"), @"/freya");extractFile(get_bootstrap_file(@"uicacheDevice.tar"), @"/freya"); }
@@ -1908,7 +1909,8 @@ void restoreRootFS()
             unlink("/usr/bin/uicache");removeFileIfExists("/usr/bin/uicache");
             extractFile(get_bootstrap_file(@"rsync.tar"), @"/");mkdir("/freya", 0777);
             extractFile(get_bootstrap_file(@"rmDevice.tar"), @"/freya");extractFile(get_bootstrap_file(@"uicacheDevice.tar"), @"/freya");
-        }//removingu0iOS();
+        }removingu0iOS();
+        
         _assert(execCmd("/usr/bin/rsync", "-vaxcH", "--progress", "--delete", [@(systemSnapshotMountPoint) stringByAppendingPathComponent:@"Applications/."].UTF8String, "/Applications", NULL) == 0, localize(@"Unable to sync /Applications."), true);
         _assert(unmount(systemSnapshotMountPoint, MNT_FORCE) == ERR_SUCCESS, localize(@"Unable to unmount original snapshot mount point."), true);
         close(rootfd); }
@@ -1932,10 +1934,12 @@ void restoreRootFS()
                               unlink("/usr/bin/uicache");
                 removeFileIfExists("/usr/bin/uicache");extractFile(get_bootstrap_file(@"rsync.tar"), @"/");mkdir("/freya", 0777);
                 extractFile(get_bootstrap_file(@"rmDevice.tar"), @"/freya");extractFile(get_bootstrap_file(@"uicacheDevice.tar"), @"/freya");
-                //removingFreyaiOS();
+                removingFreyaiOS();
             }
             _assert(execCmd("/freya/rm", "-rvdf", "/usr/lib/suckmyd", NULL) >= 0, localize(@"Unable to remove suckmyd."), true);
-            _assert(execCmd("/freya/rm", "-rvdf", "/usr/lib/suckmyd_client", NULL) >= 0, localize(@"Unable to remove suckmyd_client."), true);
+        _assert(execCmd("/freya/rm", "-rvdf", "/usr/lib/suckmyd_client", NULL) >= 0, localize(@"Unable to remove suckmyd_client."), true);
+        _assert(execCmd("/freya/rm", "-rvdf", "/usr/lib/TweakInject", NULL) >= 0, localize(@"Unable to remove tweakinject."), true);
+        _assert(execCmd("/freya/rm", "-rvdf", "/usr/lib/TweakInject.dylib", NULL) >= 0, localize(@"Unable to remove tweakinject."), true);
             _assert(execCmd("/freya/rm", "-rvdf", "/usr/lib/libjailbreak.dylib", NULL) >= 0, localize(@"Unable to remove libjailbreak."), true);
             _assert(execCmd("/usr/bin/rsync", "-vaxcH", "--progress", "--delete", [@(systemSnapshotMountPoint) stringByAppendingPathComponent:@"Applications/."].UTF8String, "/Applications", NULL) == 0, localize(@"Unable to sync /Applications."), true);
             _assert(unmount(systemSnapshotMountPoint, MNT_FORCE) == ERR_SUCCESS, localize(@"Unable to unmount original snapshot mount point."), true);
@@ -1946,7 +1950,8 @@ void restoreRootFS()
         _assert(execCmd("/freya/uicache", NULL) >= 0, localize(@"Unable to refresh icon cache."), true);
         _assert(clean_file("/freya/uicache"), localize(@"Unable to clean uicache usr/bin/ binary."), true);
         _assert(clean_file("/usr/bin/uicache"), localize(@"Unable to clean uicache usr/bin/ binary."), true);}
-    ourprogressMeter();
+    ourprogressMeter();ourprogressMeter();ourprogressMeter();ourprogressMeter();
+
     _assert(clean_file("/usr/bin/find"), localize(@"Unable to clean find binary."), true);
     util_info("Successfully reverted back RootFS remount. Cleaning up...");
     NSArray *const cleanUpFileList = @[@"/var/cache",

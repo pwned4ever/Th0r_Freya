@@ -582,6 +582,7 @@ bool machineNameContainsSet(const char *string) {
         [self.loadTweaksSwitch setEnabled:TRUE];
         [self.loadTweaksSwitch setHidden:TRUE];
         [self.loadTweaksSwitch setUserInteractionEnabled:NO];
+        [self.freyashotbackgroud setHidden:NO];
 
         //[ViewController.sharedController.loadTweakSwitch setEnabled:YES];
         //[ViewController.sharedController.loadTweakSwitch setOn:TRUE];
