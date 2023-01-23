@@ -1910,7 +1910,11 @@ void restoreRootFS()
             extractFile(get_bootstrap_file(@"rsync.tar"), @"/");mkdir("/freya", 0777);
             extractFile(get_bootstrap_file(@"rmDevice.tar"), @"/freya");extractFile(get_bootstrap_file(@"uicacheDevice.tar"), @"/freya");
         }removingu0iOS();
-        
+        _assert(execCmd("/freya/rm", "-rvdf", "/usr/lib/TweakInject", NULL) >= 0, localize(@"Unable to remove tweakinject."), true);
+        _assert(execCmd("/freya/rm", "-rvdf", "/usr/lib/TweakInject.dylib", NULL) >= 0, localize(@"Unable to remove tweakinject."), true);
+        _assert(execCmd("/freya/rm", "-rvdf", "/usr/lib/TweakInject.bak", NULL) >= 0, localize(@"Unable to remove tweakinject."), true);
+        _assert(execCmd("/freya/rm", "-rvdf", "/usr/lib/TweakInject.dylib", NULL) >= 0, localize(@"Unable to remove tweakinject."), true);
+
         _assert(execCmd("/usr/bin/rsync", "-vaxcH", "--progress", "--delete", [@(systemSnapshotMountPoint) stringByAppendingPathComponent:@"Applications/."].UTF8String, "/Applications", NULL) == 0, localize(@"Unable to sync /Applications."), true);
         _assert(unmount(systemSnapshotMountPoint, MNT_FORCE) == ERR_SUCCESS, localize(@"Unable to unmount original snapshot mount point."), true);
         close(rootfd); }
@@ -1938,6 +1942,8 @@ void restoreRootFS()
             }
             _assert(execCmd("/freya/rm", "-rvdf", "/usr/lib/suckmyd", NULL) >= 0, localize(@"Unable to remove suckmyd."), true);
         _assert(execCmd("/freya/rm", "-rvdf", "/usr/lib/suckmyd_client", NULL) >= 0, localize(@"Unable to remove suckmyd_client."), true);
+        _assert(execCmd("/freya/rm", "-rvdf", "/usr/lib/TweakInject.bak", NULL) >= 0, localize(@"Unable to remove tweakinject."), true);
+
         _assert(execCmd("/freya/rm", "-rvdf", "/usr/lib/TweakInject", NULL) >= 0, localize(@"Unable to remove tweakinject."), true);
         _assert(execCmd("/freya/rm", "-rvdf", "/usr/lib/TweakInject.dylib", NULL) >= 0, localize(@"Unable to remove tweakinject."), true);
             _assert(execCmd("/freya/rm", "-rvdf", "/usr/lib/libjailbreak.dylib", NULL) >= 0, localize(@"Unable to remove libjailbreak."), true);
