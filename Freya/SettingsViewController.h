@@ -13,6 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (strong, nonatomic) IBOutlet UIView *backGroundView;
 @property (weak, nonatomic) IBOutlet UIView *settingsGradientView;
+@property (weak, nonatomic) IBOutlet UIImageView *freyashotbackgroud;
 
 @property (weak, nonatomic) IBOutlet UITextField *noncesettertxtfeild;
 @property (weak, nonatomic) IBOutlet UILabel *ExploitTitleLabel;

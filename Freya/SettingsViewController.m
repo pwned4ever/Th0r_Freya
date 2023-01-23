@@ -144,6 +144,7 @@ bool machineNameContainsSet(const char *string) {
 
     back4romset = 1;
     CAGradientLayer *gradient = [CAGradientLayer layer];
+    [self.freyashotbackgroud setHidden:YES];
 
     gradient.frame = self.backGroundView.bounds;
     //gradient.colors = @[(id)[[UIColor colorWithRed:0.26 green:0.81 blue:0.64 alpha:1.0] CGColor], (id)[[UIColor colorWithRed:0.09 green:0.35 blue:0.62 alpha:1.0] CGColor]];
@@ -470,6 +471,7 @@ bool machineNameContainsSet(const char *string) {
         [ViewController.sharedController.restoreFSSwitch setHidden:YES];
         [ViewController.sharedController.loadTweakSwitch setHidden:YES];
         goto end1;
+        [self.freyashotbackgroud setHidden:YES];
 
     }
     if (pressedJBbut) {
@@ -523,6 +525,7 @@ bool machineNameContainsSet(const char *string) {
         [ViewController.sharedController.forceuisswizitch setHidden:YES];
         [ViewController.sharedController.restoreFSSwitch setHidden:YES];
         [ViewController.sharedController.loadTweakSwitch setHidden:YES];
+        [self.freyashotbackgroud setHidden:YES];
 
     
         goto end1;
@@ -587,6 +590,8 @@ bool machineNameContainsSet(const char *string) {
     }
     if ((checkjbdrRun == 1) || (checkpspawnhook == 1)) {
         //hide everything
+        [self.freyashotbackgroud setHidden:NO];
+
         _MS1_OUTLET.userInteractionEnabled = false;
         _MS1_OUTLET.enabled = false;
         _MS1_OUTLET.backgroundColor = grey;

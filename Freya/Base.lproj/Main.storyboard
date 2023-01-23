@@ -170,7 +170,6 @@
                         <outlet property="devicelabel" destination="bz0-lI-Wh5" id="c5W-x4-AVw"/>
                         <outlet property="progressMeterUIVIEW" destination="ZN4-X6-cIq" id="Fbh-dk-bPl"/>
                         <outlet property="progressmeterView" destination="ZN4-X6-cIq" id="cJ3-E7-aP6"/>
-                        <outlet property="textView" destination="jye-mo-TB9" id="4A7-SV-jTU"/>
                         <outlet property="thorbackgroundjpeg" destination="1x6-Pm-yls" id="8Fo-Sc-FQa"/>
                         <outlet property="uptimelabel" destination="Mon-ks-vZq" id="gWv-B5-ATK"/>
                     </connections>
@@ -239,7 +238,7 @@
                                                                 <rect key="frame" x="24" y="3" width="244" height="149"/>
                                                                 <subviews>
                                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cnZ-mN-oLo">
-                                                                        <rect key="frame" x="0.0" y="0.0" width="244" height="11.5"/>
+                                                                        <rect key="frame" x="0.0" y="0.0" width="244" height="14.5"/>
                                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                                                         <state key="normal" title="Voucher Swap">
@@ -256,7 +255,7 @@
                                                                         </connections>
                                                                     </button>
                                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="o2D-uC-hca">
-                                                                        <rect key="frame" x="0.0" y="19.5" width="244" height="12"/>
+                                                                        <rect key="frame" x="0.0" y="22.5" width="244" height="14.5"/>
                                                                         <color key="backgroundColor" red="0.42745098039215684" green="0.52549019607843139" blue="0.81568627450980391" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                         <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="17"/>
                                                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -274,7 +273,7 @@
                                                                         </connections>
                                                                     </button>
                                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WPt-xM-ZeO">
-                                                                        <rect key="frame" x="0.0" y="39.5" width="244" height="11.5"/>
+                                                                        <rect key="frame" x="0.0" y="45" width="244" height="14.5"/>
                                                                         <color key="backgroundColor" red="0.42745098039215684" green="0.52549019607843139" blue="0.81568627450980391" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                                                         <state key="normal" title="Mach Swap 2">
@@ -291,7 +290,7 @@
                                                                         </connections>
                                                                     </button>
                                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zL9-Qu-Zcy" userLabel="SPuppetOutlet">
-                                                                        <rect key="frame" x="0.0" y="59" width="244" height="11.5"/>
+                                                                        <rect key="frame" x="0.0" y="67.5" width="244" height="14"/>
                                                                         <color key="backgroundColor" red="0.42854648829999997" green="0.52412092690000001" blue="0.81642812490000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -303,7 +302,7 @@
                                                                         </connections>
                                                                     </button>
                                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="i38-mJ-9UE">
-                                                                        <rect key="frame" x="0.0" y="78.5" width="244" height="11.5"/>
+                                                                        <rect key="frame" x="0.0" y="89.5" width="244" height="14.5"/>
                                                                         <color key="backgroundColor" red="0.42745098040000001" green="0.52549019610000003" blue="0.81568627449999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                                                         <color key="tintColor" red="0.42745098040000001" green="0.52549019610000003" blue="0.81568627449999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -320,14 +319,8 @@
                                                                             <action selector="SP_Action:" destination="cbb-OQ-T38" eventType="touchUpInside" id="ecm-4d-BnE"/>
                                                                         </connections>
                                                                     </button>
-                                                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="jye-mo-TB9">
-                                                                        <rect key="frame" x="0.0" y="98" width="244" height="12"/>
-                                                                        <color key="textColor" systemColor="lightTextColor"/>
-                                                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                                                                    </textView>
                                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ttd-ho-Oh0" userLabel="TWOutlet">
-                                                                        <rect key="frame" x="0.0" y="118" width="244" height="11.5"/>
+                                                                        <rect key="frame" x="0.0" y="112" width="244" height="14.5"/>
                                                                         <color key="backgroundColor" red="0.42745098040000001" green="0.52549019610000003" blue="0.81568627449999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                                                         <color key="tintColor" red="0.42745098040000001" green="0.52549019610000003" blue="0.81568627449999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -345,7 +338,7 @@
                                                                         </connections>
                                                                     </button>
                                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sl2-HU-s8M" userLabel="CicutaOutlet">
-                                                                        <rect key="frame" x="0.0" y="137.5" width="244" height="11.5"/>
+                                                                        <rect key="frame" x="0.0" y="134.5" width="244" height="14.5"/>
                                                                         <color key="backgroundColor" red="0.42854648829999997" green="0.52412092690000001" blue="0.81642812490000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -640,6 +633,7 @@ RootFS</string>
                         <outlet property="creditsbutton" destination="jRh-Zo-1pH" id="W8J-PI-nRo"/>
                         <outlet property="fixfsswitch" destination="1NP-Hz-MEu" id="ZMR-SX-FVO"/>
                         <outlet property="forceuicacheswitch" destination="gBH-1e-5H6" id="A0Q-D7-Htl"/>
+                        <outlet property="freyashotbackgroud" destination="aSq-lB-JNx" id="rTK-GG-9CY"/>
                         <outlet property="loadTweaksSwitch" destination="dBn-W7-HWD" id="HBW-dp-PJ1"/>
                         <outlet property="restoreFSSwitch" destination="O0g-wh-Gie" id="S44-Yl-N0f"/>
                         <outlet property="rooted_Switch" destination="gzt-C3-qzb" id="wFb-rY-74l"/>
@@ -666,9 +660,6 @@ RootFS</string>
         <image name="freyashot" width="1920" height="1080"/>
         <image name="gear-7" width="15" height="15"/>
         <image name="house-7" width="15" height="15"/>
-        <systemColor name="lightTextColor">
-            <color white="1" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-        </systemColor>
         <systemColor name="systemBlueColor">
             <color red="0.0" green="0.47843137254901963" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>

@@ -23,6 +23,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *devicelabel;
 @property (strong, nonatomic) IBOutlet UIView *backGroundView;
 @property (weak, nonatomic) IBOutlet UIImageView *thorbackgroundjpeg;
+
 @property (strong, nonatomic) IBOutlet UILabel *sliceLabel;
 @property (weak, nonatomic) IBOutlet UIProgressView *progressmeterView;
 @property (strong, nonatomic) IBOutlet UIImageView *paintBrush;
