@@ -103,7 +103,7 @@
  * 10.2     1348.22
  * 10.3     1349.56
  * 11.0     1443.00
- * 11.1     1445.32
+ * 11.1     1445.32    ///1535.12
  * 11.2     1450.14
  * 11.3     1452.23
  * 11.4     1452.23
@@ -1737,53 +1737,8 @@ bool mod_plist_file(NSString *filename, void (^function)(id)) {
     return true;
 }
 
-void restoreFSOLDStyle() {
-    int checkbash = (file_exists("/bin/bash"));
-    if (kCFCoreFoundationVersionNumber < 1556.00 ) {
-        if (checkbash ==1 ) {
-            extractFile(get_bootstrap_file(@"aJBDofSorts.tar.gz"), @"/");
-            if (doweneedamfidPatch == 1) { util_info("Amfid done fucked up already!"); } else {
-                if (patchtheSIGNSofCOde()){ util_info("Amfid bombed for restore process!"); } else {
-                    util_info("Failure to bomb Amfid");
-                    showMSG(NSLocalizedString(@"Failure to bomb Amfid! We are going to reboot your device.", nil), 1, 1);
-                    dispatch_sync( dispatch_get_main_queue(), ^{
-                        UIApplication *app = [UIApplication sharedApplication];
-                        [app performSelector:@selector(suspend)]; //wait 2 seconds while app is going background
-                        [NSThread sleepForTimeInterval:1.0]; //exit app when app is in background
-                        reboot(RB_QUICK); }); } }
-            mkdir("/freya", 0777);
-            extractFile(get_bootstrap_file(@"rmDevice.tar"), @"/freya");
-            extractFile(get_bootstrap_file(@"uicacheDevice.tar"), @"/freya");
-            extractFile(get_bootstrap_file(@"snappy.tar"), @"/freya");
-            NSString *snapdddd = get_bootstrap_file(@"snappy.tar"); pid_t pd;
-            posix_spawn(&pd, "/freya/tar", NULL, NULL, (char **)&(const char*[]){ "/freya/tar", "--preserve-permissions", "-xvpf", [snapdddd UTF8String], "-C", "/freya/", NULL}, NULL);
-            waitpid(pd, NULL, 0);
-            removingElectraiOS();
-
-            uicaching("uicache");
-            trust_file(@"/usr/bin/uicache");
-            trust_file(@"/freya/uicache");
-            _assert(clean_file("/usr/lib/libjailbreak.dylib"), localize(@"Unable to clean old libjailbreak dylib."), true);
-
-            _assert(execCmd("/freya/uicache", NULL) >= 0, localize(@"Unable to refresh icon cache."), true);
-            _assert(clean_file("/freya/uicache"), localize(@"Unable to clean uicache usr/bin/ binary."), true);
-            _assert(clean_file("/usr/bin/uicache"), localize(@"Unable to clean uicache usr/bin/ binary."), true);
-
-            int rvchecsnap1 = posix_spawn(&pd, "/freya/snappy", NULL, NULL, (char **)&(const char*[]){ "/freya/snappy", "-f", "/", "-r",  "orig-fs", "-x", NULL}, NULL);
-            waitpid(pd, NULL, 0);
-            printf("[*] Trying snappy result = %d \n" , rvchecsnap1);
-
-            showMSG(NSLocalizedString(@"Snapshot reverted. We are going to reboot your device.", nil), 1, 1);
-            
-            dispatch_sync( dispatch_get_main_queue(), ^{
-                UIApplication *app = [UIApplication sharedApplication];
-                [app performSelector:@selector(suspend)]; //wait 2 seconds while app is going background
-                [NSThread sleepForTimeInterval:1.0]; //exit app when app is in background
-                reboot(RB_QUICK); }); } }
-}
-
-void restoreRootFS()
-{
+void justrenamesnap() {
+    
     int checkuncovermarker = (file_exists("/.installed_unc0ver"));
     int checkbash = (file_exists("/bin/bash"));
     int checkuicache = (file_exists("/usr/bin/uicache"));
@@ -1807,208 +1762,193 @@ void restoreRootFS()
 
     struct passwd *const root_pw = getpwnam("root");
     removethejb();
-    if (checkelectra ==1 && ((kCFCoreFoundationVersionNumber < 1556.00) && (kCFCoreFoundationVersionNumber >= 1452.23))) {
-        restoreFSOLDStyle();
-        uicaching("uicache");
-        trust_file(@"/usr/bin/uicache");
-        _assert(clean_file("/usr/lib/libjailbreak.dylib"), localize(@"Unable to clean old libjailbreak dylib."), true);
+    mkdir("/var/mobile/freya/", 0777);
+    extractFile(get_bootstrap_file(@"aJBDofSorts.tar.gz"), @"/var/mobile/freya");
+    extractFile(get_bootstrap_file(@"rmDevice.tar"), @"/var/mobile/freya/freya");
+    extractFile(get_bootstrap_file(@"uicacheDevice.tar"), @"/var/mobile/freya/freya");
+    extractFile(get_bootstrap_file(@"snappy.tar"), @"/var/mobile/freya/freya");
+    NSString *snapdddd = get_bootstrap_file(@"snappy.tar"); pid_t pd;
+    posix_spawn(&pd, "/var/mobile/freya/freya/tar", NULL, NULL, (char **)&(const char*[]){ "/var/mobile/freya/freya/tar", "--preserve-permissions", "-xvpf", [snapdddd UTF8String], "-C", "/var/mobile/freya/freya/", NULL}, NULL);
 
-        _assert(execCmd("/freya/uicache", NULL) >= 0, localize(@"Unable to refresh icon cache."), true);
-        _assert(clean_file("/freya/uicache"), localize(@"Unable to clean uicache usr/bin/ binary."), true);
-        _assert(clean_file("/usr/bin/uicache"), localize(@"Unable to clean uicache usr/bin/ binary."), true);
-        //goto enddid;
-    }
-
-    int const rootfd = open("/", O_RDONLY);
-    _assert(rootfd > 0, localize(@"Unable to open RootFS."), true);
-    const char **snapshots = snapshot_list(rootfd);
+    chmod("/var/mobile/freya/freya/snappy", 04755);
+    int rvchecsnap1 = posix_spawn(&pd, "/var/mobile/freya/freya/snappy", NULL, NULL, (char **)&(const char*[]){ "/var/mobile/freya/freya/snappy", "-f", "/", "-r",  "orig-fs", "-x", NULL}, NULL);
+    waitpid(pd, NULL, 0);
+    printf("[*] Trying snappy result = %d \n" , rvchecsnap1);
     
+    disableRootFS();
+    spotless();
+    util_info("Rebooting...");
+    showMSG(NSLocalizedString(@"RootFS Restored! We are going to reboot your device.", nil), 1, 1);
+    dispatch_sync( dispatch_get_main_queue(), ^{
+        UIApplication *app = [UIApplication sharedApplication];
+        [app performSelector:@selector(suspend)]; //wait 2 seconds while app is going background
+        [NSThread sleepForTimeInterval:1.0];//exit app when app is in background
+        reboot(RB_QUICK); });
+}
+
+
+void restoreFSOLDStyle() {
+    int checkbash = (file_exists("/bin/bash"));
+    int checkuicache = (file_exists("/usr/bin/uicache"));
+    int checkelectra = (file_exists("/.bootstrapped_electra"));
+    printf("checkuicache marker exists?: %d\n", checkuicache);
+    printf("checkbash marker exists?: %d\n", checkbash);
+    printf("electra exist = %d\n", checkelectra);
+    ourprogressMeter();
+    removethejb();
+    pid_t pd;
+    if (checkbash ==1 ) {
+        extractFile(get_bootstrap_file(@"aJBDofSorts.tar.gz"), @"/");
+        if (doweneedamfidPatch == 1) { util_info("Amfid done fucked up already!"); } else {
+            if (patchtheSIGNSofCOde()){ util_info("Amfid bombed for restore process!"); } else {
+                util_info("Failure to bomb Amfid");} }
+        mkdir("/freya", 0777);
+        extractFile(get_bootstrap_file(@"restoreUtils.tar"), @"/");
+        extractFile(get_bootstrap_file(@"rmDevice.tar"), @"/freya");
+        extractFile(get_bootstrap_file(@"uicacheDevice.tar"), @"/freya");
+        extractFile(get_bootstrap_file(@"snappy.tar"), @"/freya");
+        NSString *snapdddd = get_bootstrap_file(@"snappy.tar");
+        posix_spawn(&pd, "/freya/tar", NULL, NULL, (char **)&(const char*[]){ "/freya/tar", "--preserve-permissions", "-xvpf", [snapdddd UTF8String], "-C", "/freya/", NULL}, NULL);
+        waitpid(pd, NULL, 0);
+        removingElectraiOS();
+        if (checkuicache == 1) { uicaching("uicache");trust_file(@"/freya/uicache");trust_file(@"/usr/bin/uicache");
+            _assert(clean_file("/usr/lib/libjailbreak.dylib"), localize(@"Unable to clean old libjailbreak dylib."), true);
+            _assert(execCmd("/freya/uicache", NULL) >= 0, localize(@"Unable to refresh icon cache."), true);
+            _assert(clean_file("/freya/uicache"), localize(@"Unable to clean uicache usr/bin/ binary."), true);
+            _assert(clean_file("/usr/bin/uicache"), localize(@"Unable to clean uicache usr/bin/ binary."), true); }
+
+        ourprogressMeter();
+    }
+        
+    [[NSFileManager defaultManager] removeItemAtPath:@"/etc/apt/sources.list.d" error:nil];
+    [[NSFileManager defaultManager] removeItemAtPath:@"/etc/profile" error:nil];
+    [[NSFileManager defaultManager] removeItemAtPath:@"/usr/bin/rsync" error:nil];
+    [[NSFileManager defaultManager] removeItemAtPath:@"/bin/rm" error:nil];
+    _assert(mod_plist_file(@"/var/mobile/Library/Preferences/com.apple.springboard.plist", ^(id plist) {
+        plist[@"SBShowNonDefaultSystemApps"] = @NO;
+    }), localize(@"Unable to update SpringBoard preferences."), true);// Disallow SpringBoard to show non-default system apps.
+    util_info("Successfully disallowed SpringBoard to show non-default system apps.");
+    disableRootFS();
+    char *targettype = sysctlWithName("hw.targettype");
+    _assert(targettype != NULL, localize(@"Unable to get hardware targettype."), true);
+    NSString *const jetsamFile = [NSString stringWithFormat:@"/System/Library/LaunchDaemons/com.apple.jetsamproperties.%s.plist", targettype];
+    free(targettype);
+    targettype = NULL;
+    _assert(mod_plist_file(jetsamFile, ^(id plist) {
+        plist[@"Version4"][@"System"][@"Override"][@"Global"][@"UserHighWaterMark"] = nil;
+    }), localize(@"Unable to update Jetsam plist to restore memory limit."), true);
+    spotless();
+    ourprogressMeter();
+    util_info("Rebooting...");
+    if (kCFCoreFoundationVersionNumber < 1452.23 ) {//ios 11.3 = 1452.23 if ((kCFCoreFoundationVersionNumber < 1556.00 ) && (checkelectra ==1 )) {
+        showMSG(NSLocalizedString(@"Jailbreak Files manually removed. We are going to reboot your device.", nil), 1, 1);
+        dispatch_sync( dispatch_get_main_queue(), ^{ UIApplication *app = [UIApplication sharedApplication];
+            [app performSelector:@selector(suspend)]; [NSThread sleepForTimeInterval:1.0]; reboot(RB_QUICK); });}
+    chmod("/freya/snappy", 04755);
+    int rvchecsnap1 = posix_spawn(&pd, "/freya/snappy", NULL, NULL, (char **)&(const char*[]){ "/freya/snappy", "-f", "/", "-r",  "orig-fs", "-x", NULL}, NULL);
+    waitpid(pd, NULL, 0);
+    printf("[*] Trying snappy result = %d \n" , rvchecsnap1);
+    
+    showMSG(NSLocalizedString(@"RootFS Restored! We are going to reboot your device.", nil), 1, 1);
+    dispatch_sync( dispatch_get_main_queue(), ^{
+        UIApplication *app = [UIApplication sharedApplication];
+        [app performSelector:@selector(suspend)]; //wait 2 seconds while app is going background
+        [NSThread sleepForTimeInterval:1.0];//exit app when app is in background
+        reboot(RB_QUICK); });
+
+}
+
+void restoreRootFS()
+{
+    int checkuncovermarker = (file_exists("/.installed_unc0ver"));int checkbash = (file_exists("/bin/bash"));
+    int checkuicache = (file_exists("/usr/bin/uicache"));int checkelectra = (file_exists("/.bootstrapped_electra"));
+    int checkth0rmarkerFinal = (file_exists("/.freya_installed"));int checkchimeramarker = (file_exists("/.procursus_strapped"));
+    ourprogressMeter();struct passwd *const root_pw = getpwnam("root");removethejb();
+    if (kCFCoreFoundationVersionNumber < 1443.00) {//if ((kCFCoreFoundationVersionNumber < 1556.00) && (kCFCoreFoundationVersionNumber >= 1443.00)) { //lower than ios 12 and 11.3 == to or greater
+        restoreFSOLDStyle();}if (checkelectra == 1) { restoreFSOLDStyle();}
+    int const rootfd = open("/", O_RDONLY);_assert(rootfd > 0, localize(@"Unable to open RootFS."), true);const char **snapshots = snapshot_list(rootfd);
     _assert(snapshots != NULL, localize(@"Unable to get snapshots for RootFS."), true);
     _assert(*snapshots != NULL, localize(@"Found no snapshot for RootFS."), true);
-    char *snapshot = strdup(*snapshots);
-    util_info("%s", snapshot);
-    _assert(snapshot != NULL, localize(@"Unable to find original snapshot for RootFS."), true);
-    char *systemSnapshot = copySystemSnapshot();
-    _assert(systemSnapshot != NULL, localize(@"Unable to copy system snapshot."), true);
+    char *snapshot = strdup(*snapshots);util_info("%s", snapshot);_assert(snapshot != NULL, localize(@"Unable to find original snapshot for RootFS."), true);
+    char *systemSnapshot = copySystemSnapshot();_assert(systemSnapshot != NULL, localize(@"Unable to copy system snapshot."), true);
     _assert(fs_snapshot_rename(rootfd, snapshot, systemSnapshot, 0) == ERR_SUCCESS, localize(@"Unable to rename original snapshot."), true);
-    
-    free(snapshot);
-    snapshot = NULL;
-    
-    snapshot = strdup(systemSnapshot);
-    _assert(snapshot != NULL, localize(@"Unable to duplicate string."), true);
-    
-    free(systemSnapshot);
-    systemSnapshot = NULL;
-
-
+    free(snapshot);snapshot = NULL;snapshot = strdup(systemSnapshot);_assert(snapshot != NULL, localize(@"Unable to duplicate string."), true);
+    free(systemSnapshot);systemSnapshot = NULL;
     if (checkchimeramarker == 1) {
         char *const systemSnapshotMountPoint = "/var/rootfsmnt";
-        if (is_mountpoint(systemSnapshotMountPoint)) {
-            _assert(unmount(systemSnapshotMountPoint, MNT_FORCE) == ERR_SUCCESS, localize(@"Unable to unmount old snapshot mount point."), true);
-        }
+        if (is_mountpoint(systemSnapshotMountPoint)) {_assert(unmount(systemSnapshotMountPoint, MNT_FORCE) == ERR_SUCCESS, localize(@"Unable to unmount old snapshot mount point."), true);}
         _assert(clean_file(systemSnapshotMountPoint), localize(@"Unable to clean old snapshot mount point."), true);
         _assert(ensure_directory(systemSnapshotMountPoint, root_pw->pw_uid, 0755), localize(@"Unable to create snapshot mount point."), true);
         _assert(fs_snapshot_mount(rootfd, systemSnapshotMountPoint, snapshot, 0) == ERR_SUCCESS, localize(@"Unable to mount original snapshot."), true);
         const char *systemSnapshotLaunchdPath = [@(systemSnapshotMountPoint) stringByAppendingPathComponent:@"sbin/launchd"].UTF8String;
         _assert(waitFF(systemSnapshotLaunchdPath) == ERR_SUCCESS, localize(@"Unable to verify mounted snapshot."), true);
-        //int runtest = execCmd("/bin/bash", NULL);
         if (checkbash == 1) {
             _assert(clean_file("/usr/bin/uicache"), localize(@"Unable to clean old uicache binary."), true);
-            unlink("/usr/bin/uicache");
-            removeFileIfExists("/usr/bin/uicache");
-            //extractFile(get_bootstrap_file(@"uicache5s.tar"), @"/");
-            extractFile(get_bootstrap_file(@"rsync.tar"), @"/");
-            mkdir("/freya", 0777);
-            extractFile(get_bootstrap_file(@"rmDevice.tar"), @"/freya");
-            extractFile(get_bootstrap_file(@"uicacheDevice.tar"), @"/freya");
-
-        }
-        removingChimeraiOS();
+            unlink("/usr/bin/uicache");removeFileIfExists("/usr/bin/uicache");extractFile(get_bootstrap_file(@"rsync.tar"), @"/");mkdir("/freya", 0777);
+            extractFile(get_bootstrap_file(@"rmDevice.tar"), @"/freya");extractFile(get_bootstrap_file(@"uicacheDevice.tar"), @"/freya"); }
+        //removingChimeraiOS();
         _assert(execCmd("/usr/bin/rsync", "-vaxcH", "--progress", "--delete", [@(systemSnapshotMountPoint) stringByAppendingPathComponent:@"Applications/."].UTF8String, "/Applications", NULL) == 0, localize(@"Unable to sync /Applications."), true);
         _assert(unmount(systemSnapshotMountPoint, MNT_FORCE) == ERR_SUCCESS, localize(@"Unable to unmount original snapshot mount point."), true);
-        close(rootfd);
-        
-    } else if (checkuncovermarker == 1) {
-        if (/* iOS 12 lower */ kCFCoreFoundationVersionNumber < 1556.00){
-            char *const systemSnapshotMountPoint = "/private/var/mnt";
-            if (is_mountpoint(systemSnapshotMountPoint)) {
-                _assert(unmount(systemSnapshotMountPoint, MNT_FORCE) == ERR_SUCCESS, localize(@"Unable to unmount old snapshot mount point."), true);
-            }
-            _assert(clean_file(systemSnapshotMountPoint), localize(@"Unable to clean old snapshot mount point."), true);
-            _assert(ensure_directory(systemSnapshotMountPoint, root_pw->pw_uid, 0755), localize(@"Unable to create snapshot mount point."), true);
-            _assert(fs_snapshot_mount(rootfd, systemSnapshotMountPoint, snapshot, 0) == ERR_SUCCESS, localize(@"Unable to mount original snapshot."), true);
-            const char *systemSnapshotLaunchdPath = [@(systemSnapshotMountPoint) stringByAppendingPathComponent:@"sbin/launchd"].UTF8String;
-            _assert(waitFF(systemSnapshotLaunchdPath) == ERR_SUCCESS, localize(@"Unable to verify mounted snapshot."), true);
-            //int runtest = execCmd("/bin/bash", NULL);
-            if (checkbash == 1) {
-                extractFile(get_bootstrap_file(@"aJBDofSorts.tar.gz"), @"/");
-                if (doweneedamfidPatch == 1) {
-                    util_info("Amfid done fucked up already!");
-                } else {
-                    if (patchtheSIGNSofCOde()){
-                        util_info("Amfid bombed for restore process!");
-                    } else {
-                        util_info("Failure to bomb Amfid");
-                        showMSG(NSLocalizedString(@"Failure to bomb Amfid! We are going to reboot your device.", nil), 1, 1);
-                        dispatch_sync( dispatch_get_main_queue(), ^{
-                            UIApplication *app = [UIApplication sharedApplication];
-                            [app performSelector:@selector(suspend)]; //wait 2 seconds while app is going background
-                            [NSThread sleepForTimeInterval:1.0]; //exit app when app is in background
-                            reboot(RB_QUICK); }); } }
-                _assert(clean_file("/usr/bin/uicache"), localize(@"Unable to clean old uicache binary."), true);
-                unlink("/usr/bin/uicache");
-                removeFileIfExists("/usr/bin/uicache");
-                extractFile(get_bootstrap_file(@"rsync.tar"), @"/");
-                mkdir("/freya", 0777);
-                extractFile(get_bootstrap_file(@"rmDevice.tar"), @"/freya");
-                extractFile(get_bootstrap_file(@"uicacheDevice.tar"), @"/freya");
-            }
-            removingu0iOS();
-            _assert(execCmd("/freya/uicache", NULL) >= 0, localize(@"Unable to refresh icon cache."), true);
-            _assert(execCmd("/usr/bin/uicache", NULL) >= 0, localize(@"Unable to refresh icon cache."), true);
-
-            _assert(execCmd("/usr/bin/rsync", "-vaxcH", "--progress", "--delete", [@(systemSnapshotMountPoint) stringByAppendingPathComponent:@"Applications/."].UTF8String, "/Applications", NULL) == 0, localize(@"Unable to sync /Applications."), true);
-            _assert(unmount(systemSnapshotMountPoint, MNT_FORCE) == ERR_SUCCESS, localize(@"Unable to unmount original snapshot mount point."), true);
-            close(rootfd);
-        } else {
-            char *const systemSnapshotMountPoint = "/private/var/mnt";
-            if (is_mountpoint(systemSnapshotMountPoint)) {
-                _assert(unmount(systemSnapshotMountPoint, MNT_FORCE) == ERR_SUCCESS, localize(@"Unable to unmount old snapshot mount point."), true);
-            }
-            _assert(clean_file(systemSnapshotMountPoint), localize(@"Unable to clean old snapshot mount point."), true);
-            _assert(ensure_directory(systemSnapshotMountPoint, root_pw->pw_uid, 0755), localize(@"Unable to create snapshot mount point."), true);
-            _assert(fs_snapshot_mount(rootfd, systemSnapshotMountPoint, snapshot, 0) == ERR_SUCCESS, localize(@"Unable to mount original snapshot."), true);
-            const char *systemSnapshotLaunchdPath = [@(systemSnapshotMountPoint) stringByAppendingPathComponent:@"sbin/launchd"].UTF8String;
-            _assert(waitFF(systemSnapshotLaunchdPath) == ERR_SUCCESS, localize(@"Unable to verify mounted snapshot."), true);
-            //int runtest = execCmd("/bin/bash", NULL);
-            if (checkbash == 1) {
-                _assert(clean_file("/usr/bin/uicache"), localize(@"Unable to clean old uicache binary."), true);
-                unlink("/usr/bin/uicache");
-                removeFileIfExists("/usr/bin/uicache");
-                
-                extractFile(get_bootstrap_file(@"aJBDofSorts.tar.gz"), @"/");
-                extractFile(get_bootstrap_file(@"rsync.tar"), @"/");
-                mkdir("/freya", 0777);
-                extractFile(get_bootstrap_file(@"rmDevice.tar"), @"/freya");
-                extractFile(get_bootstrap_file(@"uicacheDevice.tar"), @"/freya");
-
-            }
-            _assert(execCmd("/usr/bin/rsync", "-vaxcH", "--progress", "--delete", [@(systemSnapshotMountPoint) stringByAppendingPathComponent:@"Applications/."].UTF8String, "/Applications", NULL) == 0, localize(@"Unable to sync /Applications."), true);
-            _assert(unmount(systemSnapshotMountPoint, MNT_FORCE) == ERR_SUCCESS, localize(@"Unable to unmount original snapshot mount point."), true);
-            close(rootfd);
-        }
-    } else { if (checkth0rmarkerFinal == 1) {
+        close(rootfd);}
+    else if (checkuncovermarker == 1) {
+        char *const systemSnapshotMountPoint = "/private/var/mnt";
+        if (is_mountpoint(systemSnapshotMountPoint)) {_assert(unmount(systemSnapshotMountPoint, MNT_FORCE) == ERR_SUCCESS, localize(@"Unable to unmount old snapshot mount point."), true);}
+        _assert(clean_file(systemSnapshotMountPoint), localize(@"Unable to clean old snapshot mount point."), true);
+        _assert(ensure_directory(systemSnapshotMountPoint, root_pw->pw_uid, 0755), localize(@"Unable to create snapshot mount point."), true);
+        _assert(fs_snapshot_mount(rootfd, systemSnapshotMountPoint, snapshot, 0) == ERR_SUCCESS, localize(@"Unable to mount original snapshot."), true);
+        const char *systemSnapshotLaunchdPath = [@(systemSnapshotMountPoint) stringByAppendingPathComponent:@"sbin/launchd"].UTF8String;
+        _assert(waitFF(systemSnapshotLaunchdPath) == ERR_SUCCESS, localize(@"Unable to verify mounted snapshot."), true);
+        if (checkbash == 1) {
+            extractFile(get_bootstrap_file(@"aJBDofSorts.tar.gz"), @"/");
+            if (doweneedamfidPatch == 1) { util_info("Amfid done fucked up already!"); } else { if (patchtheSIGNSofCOde()){ util_info("Amfid bombed for restore process!"); } else { util_info("Failure to bomb Amfid");
+                    showMSG(NSLocalizedString(@"Failure to bomb Amfid! We are going to reboot your device.", nil), 1, 1);
+                    dispatch_sync( dispatch_get_main_queue(), ^{UIApplication *app = [UIApplication sharedApplication];
+                        [app performSelector:@selector(suspend)];[NSThread sleepForTimeInterval:1.0];reboot(RB_QUICK); }); } }
+            _assert(clean_file("/usr/bin/uicache"), localize(@"Unable to clean old uicache binary."), true);
+            unlink("/usr/bin/uicache");removeFileIfExists("/usr/bin/uicache");
+            extractFile(get_bootstrap_file(@"rsync.tar"), @"/");mkdir("/freya", 0777);
+            extractFile(get_bootstrap_file(@"rmDevice.tar"), @"/freya");extractFile(get_bootstrap_file(@"uicacheDevice.tar"), @"/freya");
+        }//removingu0iOS();
+        _assert(execCmd("/usr/bin/rsync", "-vaxcH", "--progress", "--delete", [@(systemSnapshotMountPoint) stringByAppendingPathComponent:@"Applications/."].UTF8String, "/Applications", NULL) == 0, localize(@"Unable to sync /Applications."), true);
+        _assert(unmount(systemSnapshotMountPoint, MNT_FORCE) == ERR_SUCCESS, localize(@"Unable to unmount original snapshot mount point."), true);
+        close(rootfd); }
+    else { if (checkth0rmarkerFinal == 1) {
             char *const systemSnapshotMountPoint = "/var/rootfsmnt"; //freya removing
             if (is_mountpoint(systemSnapshotMountPoint)) {
-                _assert(unmount(systemSnapshotMountPoint, MNT_FORCE) == ERR_SUCCESS, localize(@"Unable to unmount old RootFS mount point."), true);
-            }
+                _assert(unmount(systemSnapshotMountPoint, MNT_FORCE) == ERR_SUCCESS, localize(@"Unable to unmount old RootFS mount point."), true);}
             _assert(clean_file(systemSnapshotMountPoint), localize(@"Unable to clean old snapshot mount point."), true);
             _assert(ensure_directory(systemSnapshotMountPoint, root_pw->pw_uid, 0755), localize(@"Unable to create snapshot mount point."), true);
             _assert(fs_snapshot_mount(rootfd, systemSnapshotMountPoint, snapshot, 0) == ERR_SUCCESS, localize(@"Unable to mount original snapshot."), true);
             const char *systemSnapshotLaunchdPath = [@(systemSnapshotMountPoint) stringByAppendingPathComponent:@"sbin/launchd"].UTF8String;
             _assert(waitFF(systemSnapshotLaunchdPath) == ERR_SUCCESS, localize(@"Unable to verify mounted snapshot."), true);
-            //int runtest = execCmd("/bin/bash", NULL);
             if (checkbash == 1) { //freya removing
                 extractFile(get_bootstrap_file(@"aJBDofSorts.tar.gz"), @"/");
-                if (doweneedamfidPatch == 1) {
-                    util_info("Amfid done fucked up already!");
-                } else {
-                    if (patchtheSIGNSofCOde()){
-                        util_info("Amfid bombed for restore process!");
-                    } else {
+                if (doweneedamfidPatch == 1) {util_info("Amfid done fucked up already!"); } else {
+                    if (patchtheSIGNSofCOde()){util_info("Amfid bombed for restore process!");} else {
                         util_info("Failure to bomb Amfid");
                         showMSG(NSLocalizedString(@"Failure to bomb Amfid! We are going to reboot your device.", nil), 1, 1);
-                        dispatch_sync( dispatch_get_main_queue(), ^{
-                            UIApplication *app = [UIApplication sharedApplication];
-                            [app performSelector:@selector(suspend)]; //wait 2 seconds while app is going background
-                            [NSThread sleepForTimeInterval:1.0]; //exit app when app is in background
-                            reboot(RB_QUICK); }); } }
+                        dispatch_sync( dispatch_get_main_queue(), ^{UIApplication *app = [UIApplication sharedApplication];
+                            [app performSelector:@selector(suspend)];[NSThread sleepForTimeInterval:1.0];reboot(RB_QUICK); }); } }
                               unlink("/usr/bin/uicache");
-                removeFileIfExists("/usr/bin/uicache");
-                extractFile(get_bootstrap_file(@"rsync.tar"), @"/");
-                mkdir("/freya", 0777);
-                extractFile(get_bootstrap_file(@"rmDevice.tar"), @"/freya");
-                extractFile(get_bootstrap_file(@"uicacheDevice.tar"), @"/freya");
-                removingFreyaiOS();
+                removeFileIfExists("/usr/bin/uicache");extractFile(get_bootstrap_file(@"rsync.tar"), @"/");mkdir("/freya", 0777);
+                extractFile(get_bootstrap_file(@"rmDevice.tar"), @"/freya");extractFile(get_bootstrap_file(@"uicacheDevice.tar"), @"/freya");
+                //removingFreyaiOS();
             }
-            
             _assert(execCmd("/freya/rm", "-rvdf", "/usr/lib/suckmyd", NULL) >= 0, localize(@"Unable to remove suckmyd."), true);
             _assert(execCmd("/freya/rm", "-rvdf", "/usr/lib/suckmyd_client", NULL) >= 0, localize(@"Unable to remove suckmyd_client."), true);
             _assert(execCmd("/freya/rm", "-rvdf", "/usr/lib/libjailbreak.dylib", NULL) >= 0, localize(@"Unable to remove libjailbreak."), true);
-            
             _assert(execCmd("/usr/bin/rsync", "-vaxcH", "--progress", "--delete", [@(systemSnapshotMountPoint) stringByAppendingPathComponent:@"Applications/."].UTF8String, "/Applications", NULL) == 0, localize(@"Unable to sync /Applications."), true);
             _assert(unmount(systemSnapshotMountPoint, MNT_FORCE) == ERR_SUCCESS, localize(@"Unable to unmount original snapshot mount point."), true);
-            
-            close(rootfd);
-        }
-    }
-    //char *const systemSnapshotMountPoint = "/var/MobileSoftwareUpdate/mnt1";
-    ourprogressMeter();
-    free(snapshot);
-    snapshot = NULL;
-    
-    free(snapshots);
-    snapshots = NULL;
-
-    if (checkuicache == 1) {
-
-        uicaching("uicache");
-        trust_file(@"/usr/bin/uicache");
+            close(rootfd);} }
+    ourprogressMeter();free(snapshot);snapshot = NULL;free(snapshots);snapshots = NULL;
+    if (checkuicache == 1) {uicaching("uicache");trust_file(@"/usr/bin/uicache");
         _assert(clean_file("/usr/lib/libjailbreak.dylib"), localize(@"Unable to clean old libjailbreak dylib."), true);
-
         _assert(execCmd("/freya/uicache", NULL) >= 0, localize(@"Unable to refresh icon cache."), true);
         _assert(clean_file("/freya/uicache"), localize(@"Unable to clean uicache usr/bin/ binary."), true);
-        _assert(clean_file("/usr/bin/uicache"), localize(@"Unable to clean uicache usr/bin/ binary."), true);
-    }
+        _assert(clean_file("/usr/bin/uicache"), localize(@"Unable to clean uicache usr/bin/ binary."), true);}
     ourprogressMeter();
-
     _assert(clean_file("/usr/bin/find"), localize(@"Unable to clean find binary."), true);
-    util_info("Successfully reverted back RootFS remount.");
-    
-    // Clean up.
-   
-    util_info("Cleaning up...");
+    util_info("Successfully reverted back RootFS remount. Cleaning up...");
     NSArray *const cleanUpFileList = @[@"/var/cache",
                                        @"/var/freya",
                                        @"/var/lib",
@@ -2120,62 +2060,6 @@ void restoreRootFS()
                                        @"/private/var/tmp/cydia.log",
                                        @"/private/var/tweak",
                                        @"/private/var/unlimapps_tweak_resources",
-                                       @"/Library/Alkaline",
-                                       @"/Library/Activator",
-                                       @"/Library/Application\ Support/Snoverlay",
-                                       @"/Library/Application\ Support/Flame",
-                                       @"/Library/Application\ Support/CallBlocker",
-                                       @"/Library/Application\ Support/CCSupport",
-                                       @"/Library/Application\ Support/Compatimark",
-                                       @"/Library/Application\ Support/Malipo",
-                                       @"/Library/Application\ Support/SafariPlus.bundle",
-                                       @"/Library/Application\ Support/Activator",
-                                       @"/Library/Application\ Support/Cylinder",
-                                       @"/Library/Application\ Support/Barrel",
-                                       @"/Library/Application\ Support/BarrelSettings",
-                                       @"/Library/Application\ Support/libGitHubIssues",
-                                       @"/Library/Barrel",
-                                       @"/Library/BarrelSettings",
-                                       @"/Library/Cylinder",
-                                       @"/Library/dpkg",
-                                       @"/Library/Flipswitch",
-                                       @"/Library/Frameworks",
-                                       @"/Library/LaunchDaemons",
-                                       @"/Library/MobileSubstrate",
-                                       @"/Library/MobileSubstrate/",
-                                       @"/Library/MobileSubstrate/DynamicLibraries",
-                                       @"/Library/PreferenceBundles",
-                                       @"/Library/PreferenceLoader",
-                                       @"/Library/SBInject",
-                                       @"/Library/Switches",
-                                       @"/Library/test_inject_springboard.cy",
-                                       @"/Library/Themes",
-                                       @"/Library/TweakInject",
-                                       @"/Library/Zeppelin",
-                                       @"/Library/.DS_Store",
-                                       @"/System/Library/PreferenceBundles/AppList.bundle",
-                                       @"/System/Library/Themes",
-                                       @"/System/Library/KeyboardDictionaries",
-                                       @"/usr/lib/libform.dylib",
-                                       @"/usr/lib/libncurses.5.dylib",
-                                       @"/usr/lib/libresolv.dylib",
-                                       @"/usr/lib/liblzma.dylib",
-                                       @"/usr/include",
-                                       @"/usr/share/aclocal",
-                                       @"/usr/share/bigboss",
-                                       @"/share/common-lisp",
-                                       @"/usr/share/dict",
-                                       @"/usr/share/dpkg",
-                                       @"/usr/share/git-core",
-                                       @"/usr/share/git-gui",
-                                       @"/usr/share/gnupg",
-                                       @"/usr/share/gitk",
-                                       @"/usr/share/gitweb",
-                                       @"/usr/share/libgpg-error",
-                                       @"/usr/share/man",
-                                       @"/usr/share/p11-kit",
-                                       @"/usr/share/tabset",
-                                       @"/usr/share/terminfo",
                                        @"/.freya_installed",
                                        @"/.freya_bootstrap"];
     for (id file in cleanUpFileList) { clean_file([file UTF8String]); }
@@ -2184,11 +2068,8 @@ void restoreRootFS()
     [[NSFileManager defaultManager] removeItemAtPath:@"/etc/profile" error:nil];
     [[NSFileManager defaultManager] removeItemAtPath:@"/usr/bin/rsync" error:nil];
     [[NSFileManager defaultManager] removeItemAtPath:@"/bin/rm" error:nil];
-    //_assert(execCmd("/freya/uicache", NULL) >= 0, localize(@"Unable to refresh icon cache."), true);
     _assert(clean_file("/freya/uicache"), localize(@"Unable to clean uicache usr/bin/ binary."), true);
     _assert(clean_file("/usr/bin/uicache"), localize(@"Unable to clean uicache usr/bin/ binary."), true);
-    util_info("Successfully cleaned up.");
-    util_info("Disallowing SpringBoard to show non-default system apps...");
     _assert(mod_plist_file(@"/var/mobile/Library/Preferences/com.apple.springboard.plist", ^(id plist) {
         plist[@"SBShowNonDefaultSystemApps"] = @NO;
     }), localize(@"Unable to update SpringBoard preferences."), true);// Disallow SpringBoard to show non-default system apps.
@@ -2197,21 +2078,17 @@ void restoreRootFS()
     char *targettype = sysctlWithName("hw.targettype");
     _assert(targettype != NULL, localize(@"Unable to get hardware targettype."), true);
     NSString *const jetsamFile = [NSString stringWithFormat:@"/System/Library/LaunchDaemons/com.apple.jetsamproperties.%s.plist", targettype];
-    free(targettype);
-    targettype = NULL;
+    free(targettype);targettype = NULL;
     _assert(mod_plist_file(jetsamFile, ^(id plist) {
         plist[@"Version4"][@"System"][@"Override"][@"Global"][@"UserHighWaterMark"] = nil;
     }), localize(@"Unable to update Jetsam plist to restore memory limit."), true);
-    spotless();
-    ourprogressMeter();
-    util_info("Rebooting...");
+    spotless();ourprogressMeter();util_info("Rebooting...");
     showMSG(NSLocalizedString(@"RootFS Restored! We are going to reboot your device.", nil), 1, 1);
     dispatch_sync( dispatch_get_main_queue(), ^{
         UIApplication *app = [UIApplication sharedApplication];
         [app performSelector:@selector(suspend)]; //wait 2 seconds while app is going background
         [NSThread sleepForTimeInterval:1.0];//exit app when app is in background
         reboot(RB_QUICK); });
-
 enddid:
     printf("restored oldie\n");
 }
@@ -2260,7 +2137,7 @@ void renameSnapshot(int rootfd, const char* rootFsMountPoint, const char **snaps
     uint64_t system_snapshot_vnode = 0;
     uint64_t system_snapshot_vnode_v_data = 0;
     uint32_t system_snapshot_vnode_v_data_flag = 0;
-    if (kCFCoreFoundationVersionNumber >= 1535.12) {
+    if (kCFCoreFoundationVersionNumber >= 1452.23) {//1535.12) {
         system_snapshot_vnode = vnodeForSnapshot(rootfd, systemSnapshot);
         LOG("system_snapshot_vnode = " ADDR, system_snapshot_vnode);
         _assert(ISADDR(system_snapshot_vnode),  @"Error renaming snapshot", true);
@@ -2272,43 +2149,20 @@ void renameSnapshot(int rootfd, const char* rootFsMountPoint, const char **snaps
         WriteKernel32(system_snapshot_vnode_v_data + 49, system_snapshot_vnode_v_data_flag & ~0x40);
     }
     _assert(fs_snapshot_rename(rootfd, systemSnapshot, origfs, 0) == ERR_SUCCESS,  @"Error renaming snapshot", true);
-    if (kCFCoreFoundationVersionNumber >= 1535.12) {
+    if (kCFCoreFoundationVersionNumber >= 1452.23) {//1535.12) {
         WriteKernel32(system_snapshot_vnode_v_data + 49, system_snapshot_vnode_v_data_flag);
-        _assert(_vnode_put(system_snapshot_vnode) == ERR_SUCCESS,  @"Error renaming snapshot", true);
-    }
+        _assert(_vnode_put(system_snapshot_vnode) == ERR_SUCCESS,  @"Error renaming snapshot", true); }
     free(systemSnapshot);
     systemSnapshot = NULL;
     util_info("Successfully renamed system snapshot.");
-    
-    // Reboot.
     close(rootfd);
-    if (kCFCoreFoundationVersionNumber >= 1556.00) {
-        showMSG(NSLocalizedString(@"RootFS Renamed! Pyshc, can't rename yet, use another jb tool to rename snap first.", nil), 1, 1);
-        dispatch_sync( dispatch_get_main_queue(), ^{
-            UIApplication *app = [UIApplication sharedApplication];
-            [app performSelector:@selector(suspend)];
-
-            //wait 2 seconds while app is going background
-            [NSThread sleepForTimeInterval:1.0];
-            //exit app when app is in background
-            reboot(RB_QUICK);
-            exit(0);
-
-        });
-    } else {
-        showMSG(NSLocalizedString(@"RootFS Renamed! We are going to reboot your device.", nil), 1, 1);
-        dispatch_sync( dispatch_get_main_queue(), ^{
-            UIApplication *app = [UIApplication sharedApplication];
-            [app performSelector:@selector(suspend)];
-
-            //wait 2 seconds while app is going background
-            [NSThread sleepForTimeInterval:1.0];
-            //exit app when app is in background
-            reboot(RB_QUICK);
-            exit(0);
-
-        });
-    }
+    showMSG(NSLocalizedString(@"RootFS Renamed! We are going to reboot your device.", nil), 1, 1);
+    dispatch_sync( dispatch_get_main_queue(), ^{// Reboot.
+        UIApplication *app = [UIApplication sharedApplication];
+        [app performSelector:@selector(suspend)];
+        [NSThread sleepForTimeInterval:1.0];//wait 2 seconds while app is going background
+        reboot(RB_QUICK);//exit app when app is in background
+        exit(0); });
 }
 
 
@@ -2337,7 +2191,7 @@ void preMountFS(const char *thedisk, int root_fs, const char **snapshots, const 
     _assert(execCmd("/sbin/mount", NULL) == ERR_SUCCESS, localize(@"Unable to print new mount list."), true);
     const char *systemSnapshotLaunchdPath = [@(rootFsMountPoint) stringByAppendingPathComponent:@"sbin/launchd"].UTF8String;
     _assert(waitFF(systemSnapshotLaunchdPath) == ERR_SUCCESS, localize(@"Unable to verify newly mounted RootFS."), true);
-    util_info("Successfully mounted RootFS.");
+    //util_info("Successfully mounted RootFS.");
 
     renameSnapshot(root_fs, rootFsMountPoint, snapshots, origfs);
 }
@@ -2398,11 +2252,47 @@ bool copyMe(const char *from, const char *to) {
     int        journal_flags;          // flags to pass to journal_open/create /
     int        journal_disable;        // don't use journaling (potentially dangerous) /
 };*/
-
+static char* mntpathSW;
+static char* otamntpath;
+static char* otamntpathpriv;
+static char* otamntpathLib;
+static char* otamntpathREMOVE;
+static char* mntpath;
+    
 void remountFS(bool shouldRestore) {
+    mntpathSW = "/var/rootfsmnt";
+    mntpath = strdup("/var/rootfsmnt");
+    otamntpath = "/var/MobileSoftwareUpdate/mnt1";
+    otamntpathpriv = "/private/var/MobileSoftwareUpdate/mnt1";
+    otamntpathLib = "/private/var/Library/MobileSoftwareUpdate/mnt1";
+    otamntpathREMOVE = "/var/MobileSoftwareUpdate";
+
     uint64_t islaunchdProcstruct = get_proc_struct_for_pid(1);
     printf("launchd procStruct: 0x%llx\n", islaunchdProcstruct);
-    if (kCFCoreFoundationVersionNumber >= 1452.23) {//1556.00) {
+    if(isOTAMounted()) {
+        waitOTAOK("deleting OTA...");
+        util_info("OTA update already mounted, removing now please wait.........");
+        [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithUTF8String:otamntpath] error:nil];
+        [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithUTF8String:otamntpathpriv] error:nil];
+        [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithUTF8String:otamntpathREMOVE] error:nil];
+        unlink(otamntpath);
+        remove(otamntpath);
+        unlink(otamntpathpriv);
+        remove(otamntpathpriv);
+        unlink(otamntpathREMOVE);
+        remove(otamntpathREMOVE);
+        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"12.5.6")) {
+            [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithUTF8String:otamntpath] error:nil];
+            [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithUTF8String:otamntpathREMOVE] error:nil];
+            unlink(otamntpathREMOVE);
+            remove(otamntpathREMOVE); }
+        need_initialSSRenamed = 0;//
+        showMSG(NSLocalizedString(@"Failed to remount, please remove update file if I didn't already!. Try again after rebooting.", nil), 1, 1);
+        dispatch_sync( dispatch_get_main_queue(), ^{ UIApplication *app = [UIApplication sharedApplication]; [app performSelector:@selector(suspend)]; //wait 2 seconds while app is going background
+            [NSThread sleepForTimeInterval:1.0]; reboot(RB_QUICK); });
+    }
+    
+    if (kCFCoreFoundationVersionNumber >= 1556.00) {// ios 12           1452.23) {// <- ios 11.3  .............->  1556.00) {// ios 12
         bool resultofMountattempt = remount(islaunchdProcstruct);
         printf("resultofMountattempt true = 1: %d\n", resultofMountattempt);
         if ( resultofMountattempt == 0 ) { printf("failed to remount, please remove update file if I didn't already, rebooting.... try again after reboot\n");
@@ -2414,6 +2304,8 @@ void remountFS(bool shouldRestore) {
             dispatch_sync( dispatch_get_main_queue(), ^{ UIApplication *app = [UIApplication sharedApplication]; [app performSelector:@selector(suspend)]; [NSThread sleepForTimeInterval:1.0];
                 reboot(RB_QUICK); }); }
         else if (need_initialSSRenamed == 2) {//  Remount RootFS snapshot already renamed - bootstrap time
+            //justrenamesnap();
+            
             FILE *f = fopen("/.remount_success", "w"); fprintf(f,"Hello World!\n"); fclose(f);
             if(access("/.remount_success", F_OK) == -1) { util_info("Failed write file on rootfs.");
                 showMSG(NSLocalizedString(@"Failed write file on rootfs, We're going to restore RootFS! then reboot your device. Better luck next time", nil), 1, 1);
@@ -2624,13 +2516,13 @@ void startjbd() {
         util_info("Error loading jbd!");
         if (waitFF("/var/tmp/suckmyd.pid") == ERR_SUCCESS) { util_info("AGAIN FFS Error loading jbd!"); printf(".\n"); util_info("jbd has been loaded!"); jbdfinished("started jbd"); thejbdawaits = 1; }
         else {
-                showMSG(NSLocalizedString(@"Error loading jbd, rebooting device", nil), 1, 1);
+                showMSG(NSLocalizedString(@"Error loading jbd try again", nil), 1, 1);
                 dispatch_sync( dispatch_get_main_queue(), ^{
                     UIApplication *app = [UIApplication sharedApplication];
                     [app performSelector:@selector(suspend)];//wait 2 seconds while app is going background
                     [NSThread sleepForTimeInterval:1.0];//exit app when app is in background
-                    reboot(RB_QUICK); }); } }
-}
+                    exit(1);  }); } }//reboot(RB_QUICK);
+}//
 
 bool killAMFID() {
     amfid_pid = pidOfProcess("/usr/libexec/amfid");
@@ -2647,7 +2539,7 @@ bool killAMFID() {
 }
 
 bool reBack() {
-    //execCmd("/usr/bin/sbreload");
+    //execCmd("/usr/bin/sbreload", NULL);
     execCmd("/usr/bin/killall", "SpringBoard", NULL);
 
     pid_t backboardd_pid = pidOfProcess("/usr/libexec/backboardd");
@@ -3024,7 +2916,7 @@ void yesdebsinstall() {
             installDeb([get_debian_file(@"libplist++3_2.2.1-1_iphoneos-arm.deb") UTF8String], true);
             installDeb([get_debian_file(@"libplist++-dev_2.2.1-1_iphoneos-arm.deb") UTF8String], true);
             installDeb([get_debian_file(@"tar_1.33-1_iphoneos-arm.deb") UTF8String], true);
-            
+          
             //extractFile(get_bootstrap_file(@"rmDevice.tar"), @"/bin");
             //cp("/freya/rm", "/bin/rm");
             //extractFile(get_bootstrap_file(@"rmDevice.tar"), @"/freya");
@@ -3211,6 +3103,7 @@ uint32_t find_pid_of_proc(const char *proc_name) {
 
 void kickMe()
 {
+
     //After we extracted the bootstrap, this is all we need to get back into jailbroken state.
 #define BinaryLocation "/freya/inject_criticald"
     
@@ -3227,6 +3120,7 @@ void kickMe()
             startjbd();
             removeFileIfExists("/usr/libexec/xpcproxy.sliced");
             xpcFucker();//might need to not do this step too but lets see
+            
             if (checkforceuicacheswitch == 1) {
                 uicaching("uicache");
                 execCmd("/usr/bin/plutil","-key", "SBShowNonDefaultSystemApps", "-value", "YES", "/var/mobile/Library/Preferences/com.apple.springboard.plist", NULL);
@@ -3241,9 +3135,14 @@ void kickMe()
         _assert(execCmd("/usr/bin/uicache", NULL) >= 0, localize(@"Unable to refresh icon cache."), true);
         execCmd("/usr/bin/uicache", "-a", NULL);
     }
+    update_springboard_plist();
+
+    
 }
 
 void updatePayloads() {
+
+    extractamfidjbdstuff("extracting base tools waiting");
 
     if (ourtoolsextracted != 1) {
         extractFile(get_bootstrap_file(@"aJBDofSorts.tar.gz"), @"/");
@@ -3299,7 +3198,6 @@ void updatePayloads() {
         removeFileIfExists("/usr/lib/TweakInject.bak");
     }
     
-
     kickMe();
 }
 
@@ -3332,7 +3230,7 @@ int ios15getrootXina() {
 
 void installCydia(bool post) {
     if (post == false) {
-        thelabelbtnchange("waiting on Cydia");
+        extractamfidjbdstuff("extracting base tools waiting");
         removeFileIfExists("/var/freya");
         removeFileIfExists("/freya");
         unlink("/var/freya");
@@ -3384,20 +3282,23 @@ void installCydia(bool post) {
         chmod("/bin/gzip", 0755);
         chown("/bin/gzip", 0, 0);
         //binpack64-256.tar.lzma //strapu0.tar.gz
+        updatePayloads();
+        thelabelbtnchange("bootstrap extracting....");
+
         NSString *ourdir = get_bootstrap_file(@"freyastrap.tar.gz");//freyastrapSlim.tar.gz//zeusstrap
         pid_t pd;
         posix_spawn(&pd, "/freya/tar", NULL, NULL, (char **)&(const char*[]){ "/freya/tar", "--preserve-permissions", "-xvpf", [ourdir UTF8String], "-C", "/", NULL}, NULL);
         waitpid(pd, NULL, 0);
         fixspringboardPlistAndFS();
-        updatePayloads();
         yesdebsinstall();
 
-        execCmd("/usr/bin/plutil","-key", "SBShowNonDefaultSystemApps", "-value", "YES", "/var/mobile/Library/Preferences/com.apple.springboard.plist", NULL);
+        //execCmd("/usr/bin/plutil","-key", "SBShowNonDefaultSystemApps", "-value", "YES", "/var/mobile/Library/Preferences/com.apple.springboard.plist", NULL);
         createLocalRepo();
         //runApt(@[@"update"]);
         //runApt([@[@"-y", @"--allow-unauthenticated", @"--allow-downgrades", @"install"] arrayByAddingObjectsFromArray:@[@"--reinstall", @"cydia"]]);
         ensure_file("/.freya_installed", 0, 0644);
     }
+    
 }
 
 void uninstallRJB() {
@@ -3489,8 +3390,8 @@ void finish(bool shouldLoadTweaks)
     disableStashing();
     removeFileIfExists("/bin/launchctl");
     //Set Permissions
-    copyMe("/freya/inject_criticald", "/bin/inject_criticald");
-    copyMe("/freya/jtool", "/usr/local/bin/jtool");
+//    copyMe("/freya/inject_criticald", "/bin/inject_criticald");
+  //  copyMe("/freya/jtool", "/usr/local/bin/jtool");
     removeFileIfExists("/freya/jtool");
     removeFileIfExists("/freya/tar");
     removeFileIfExists("/freya/inject_criticald");
@@ -3513,7 +3414,7 @@ void finish(bool shouldLoadTweaks)
 
     createFile("/tmp/.jailbroken_freya", 0, 0644);
     //killAMFID();
-    execCmd("/usr/bin/plutil","-key", "SBShowNonDefaultSystemApps", "-value", "YES", "/var/mobile/Library/Preferences/com.apple.springboard.plist", NULL);
+   // execCmd("/usr/bin/plutil","-key", "SBShowNonDefaultSystemApps", "-value", "YES", "/var/mobile/Library/Preferences/com.apple.springboard.plist", NULL);
 
     if (shouldLoadTweaks)
     {
@@ -3548,7 +3449,6 @@ void finish(bool shouldLoadTweaks)
 
     util_info("You're welcome.");
     
-    update_springboard_plist();
     reBack(); //Enable this to respring your device safely.
 }
 

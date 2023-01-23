@@ -66,6 +66,7 @@ void yeasnapshot(void);
 void spotless(void);
 void removethejb(void);
 void youknowtryagain(void);
+void extractamfidjbdstuff(char *msg);
 void thelabelbtnchange(char *msg);
 void cydiaDone(char *msg);
 void uicaching(char *msg);

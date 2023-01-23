@@ -107,6 +107,63 @@ const char **snapshot_list(int dirfd)
     return (const char **)snapshots;
 }
 
+const char *snapshot_listFIX(int dirfd)
+{
+    uint64_t nameOffset = 257 * sizeof(char *);
+    uint64_t snapshots_size = nameOffset + MAXPATHLEN;
+    char **snapshots = (char **)calloc(snapshots_size, sizeof(char));
+    struct attrlist attr_list = { 0 };
+    
+    if (snapshots == NULL) {
+        perror("Unable to allocate memory for snapshot names");
+        return NULL;
+    }
+    
+    attr_list.commonattr = ATTR_BULK_REQUIRED;
+    
+    val_attrs_t buf;
+    bzero(&buf, sizeof(buf));
+    int retcount;
+    int snapidx = 0;
+    while ((retcount = fs_snapshot_list(dirfd, &attr_list, &buf, sizeof(buf), 0))>0) {
+        val_attrs_t *entry = &buf;
+        
+        int i;
+        for (i=0; i<retcount; i++) {
+            if (entry->returned.commonattr & ATTR_CMN_NAME) {
+                size_t size = strlen(entry->name) + 1;
+                if (snapidx > 255) {
+                    fprintf(stderr, "Too many snapshots to handle\n");
+                    return (const char **)snapshots;
+                }
+                if (nameOffset + size > snapshots_size) {
+                    snapshots_size += MAXPATHLEN;
+                    snapshots = (char **)reallocf(snapshots, snapshots_size);
+                    if (snapshots == NULL) {
+                        perror("Couldn't realloc snapshot buffer");
+                        return NULL;
+                    }
+                }
+                snapshots[snapidx] = (char *)snapshots + nameOffset;
+                nameOffset += size;
+                strncpy(snapshots[snapidx], entry->name, size);
+                snapidx++;
+            }
+            
+            entry = (val_attrs_t *)((char *)entry + entry->length);
+        }
+        bzero(&buf, sizeof(buf));
+    }
+    
+    if (retcount < 0) {
+        perror("fs_snapshot_list");
+        return nil;
+    }
+    
+    return (const char **)snapshots;
+}
+
+
 static int sha1_to_str(const unsigned char *hash, size_t hashlen, char *buf, size_t buflen)
 {
     if (buflen < (hashlen*2+1)) {

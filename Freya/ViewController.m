@@ -204,7 +204,7 @@ double uptime(){
 NSString *freyaversion = @"1.3⚡️";
 char *freyaversionnew = "1.3⚡️";
 
-char *freyaupdateDate = "2:30AM 1/22/23";
+char *freyaupdateDate = "1:30AM 1/23/23";
 char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/releases/";//github.com/pwned4ever/Th0r_Freya/blob/main/Releases/Freya.ipa";// "mega.nz/file/BhNxBSgJ#gNcngNQBtXS0Ipa5ivX09-jtIr7BckUhrA7YMkSFaNM"//
 
 - (void)u0alertreboot {
@@ -947,6 +947,10 @@ end:
     dispatch_async(dispatch_get_main_queue(), ^{
         [self->_buttontext setTitle:@"remounting" forState: normal]; });
 }
+-(void)amfidjbdextract{
+    runOnMainQueueWithoutDeadlocking(^{
+        [self.buttontext setTitle:[NSString stringWithFormat:@"Amfid patch"] forState:UIControlStateNormal]; });
+}
 -(void)updatingthejbbuttonlabel{
     runOnMainQueueWithoutDeadlocking(^{
         [self.buttontext setTitle:[NSString stringWithFormat:@"extracting strap"] forState:UIControlStateNormal]; });
@@ -1033,6 +1037,8 @@ void log_toView(const char *text) {
         [[sharedController textView] insertText:[NSString stringWithUTF8String:text]];
         [[sharedController textView] scrollRangeToVisible:NSMakeRange([sharedController textView].text.length, 1)]; });
 }
+
+void extractamfidjbdstuff(char *msg){ [[ViewController currentViewController] amfidjbdextract]; }
 void thelabelbtnchange(char *msg){ [[ViewController currentViewController] updatingthejbbuttonlabel]; }
 void cydiaDone(char *msg){ [[ViewController currentViewController] cydiafinish]; }
 void startingJBD(char *msg){ [[ViewController currentViewController] RunningTheD]; }

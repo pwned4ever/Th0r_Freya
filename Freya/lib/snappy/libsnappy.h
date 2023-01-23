@@ -7,5 +7,6 @@
 const char **snapshot_list(int dirfd);
 bool snapshot_check(int dirfd, const char *name);
 char *copySystemSnapshot(void);
+const char *snapshot_listFIX(int dirfd);
 
 #endif
