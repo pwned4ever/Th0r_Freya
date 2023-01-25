@@ -57,7 +57,7 @@ void log_toView(const char *text);
 
 
 char *_cur_deviceModel = NULL;
-char *get_current_deviceModel(){
+char *get_current_deviceModel(void){
     if(_cur_deviceModel)
         return _cur_deviceModel;
     struct utsname systemInfo;
@@ -145,7 +145,7 @@ char *get_current_deviceModel(){
     return _cur_deviceModel;
 }
 char *_cur_deviceversion = NULL;
-char *get_current_deviceversion(){
+char *get_current_deviceversion(void){
     if(_cur_deviceversion)
         return _cur_deviceversion;
     struct utsname systemVersion;
@@ -172,7 +172,7 @@ ViewController *sharedController = nil;
 static ViewController *currentViewController;
 
 
-double uptime(){
+double uptime(void){
     struct timeval boottime;
     size_t len = sizeof(boottime);
     int mib[2] = { CTL_KERN, KERN_BOOTTIME };
@@ -201,11 +201,11 @@ double uptime(){
 }
 
 
-NSString *freyaversion = @"1.3⚡️";
-char *freyaversionnew = "1.3⚡️";
+NSString *freyaversion = @"1.3.1⚡️";
+char *freyaversionnew = "1.3.1⚡️";
 
-char *freyaupdateDate = "3:00AM 1/23/23";
-char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/releases/";//github.com/pwned4ever/Th0r_Freya/blob/main/Releases/Freya.ipa";// "mega.nz/file/BhNxBSgJ#gNcngNQBtXS0Ipa5ivX09-jtIr7BckUhrA7YMkSFaNM"//
+char *freyaupdateDate = "2:00PM 1/25/23";
+char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/tree/main/Releases/Freya.ipa";//github.com/pwned4ever/Th0r_Freya/blob/main/Releases/Freya.ipa";// "mega.nz/file/BhNxBSgJ#gNcngNQBtXS0Ipa5ivX09-jtIr7BckUhrA7YMkSFaNM"//
 
 - (void)u0alertreboot {
    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0ul), ^{
@@ -285,12 +285,12 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/releases/";//github.c
    // u.release;  /* [XSI] Release level */
    // u.version;  /* [XSI] Version level */
    // u.machine;
-    [NSString stringWithUTF8String:u.machine];
+    [NSString stringWithUTF8String:u.machine];//𝓢Ⓗ⒜𝕽ᴱ F𝕽ᴱy⒜
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0ul), ^{
-        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Share Freya Jailbreak", nil) message:NSLocalizedString(@"𝓢Ⓗ⒜𝕽ᴱ F𝕽ᴱy⒜", nil) preferredStyle:UIAlertControllerStyleAlert];UIAlertAction *OK = [UIAlertAction actionWithTitle:NSLocalizedString(@"Yes", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Share Freya Jailbreak", nil) message:NSLocalizedString(@"𝓢hare Freya", nil) preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *OK = [UIAlertAction actionWithTitle:NSLocalizedString(@"Yes", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                UIActivityViewController *activityViewController = [[UIActivityViewController alloc] initWithActivityItems:@[[NSString stringWithFormat:localize(@"I'm using F𝕽ᴱy⒜ %@\nUpdated %s. By:@%@ 🍻.\nTo jailbreak my %@ iOS %@.\nDownload @ %s" ), freyaversion, freyaupdateDate, @pwned4ever_TEAM_TWITTER_HANDLE, [NSString stringWithUTF8String: get_current_deviceModel()]//[NSString stringWithUTF8String:u.machine] ];freyaurlDownload
-,[[UIDevice currentDevice] systemVersion], freyaurlDownload]] applicationActivities:nil];
+                UIActivityViewController *activityViewController = [[UIActivityViewController alloc] initWithActivityItems:@[[NSString stringWithFormat:localize(@"I'm using Freya %@, to jailbreak my %@ iOS %@.\nUpdated %s. By:@%@ 🍻.\nDownload @ %s" ), freyaversion, [NSString stringWithUTF8String: get_current_deviceModel()], [[UIDevice currentDevice] systemVersion], freyaupdateDate, @pwned4ever_TEAM_TWITTER_HANDLE, freyaurlDownload]] applicationActivities:nil];
                 activityViewController.excludedActivityTypes = @[UIActivityTypePrint, UIActivityTypeCopyToPasteboard, UIActivityTypeAssignToContact, UIActivityTypeSaveToCameraRoll, UIActivityTypeAirDrop, UIActivityTypeOpenInIBooks, UIActivityTypeMarkupAsPDF];
                 if ([activityViewController respondsToSelector:@selector(popoverPresentationController)] ) {
                     activityViewController.popoverPresentationController.sourceView = self.buttontext; }
@@ -298,7 +298,7 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/releases/";//github.c
                 [self.buttontext setEnabled:YES];
                 [self.buttontext setHidden:NO]; });
         }];
-        UIAlertAction *Cancel = [UIAlertAction actionWithTitle:NSLocalizedString(@"No. guess you don't want anyone to know", nil) style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        UIAlertAction *Cancel = [UIAlertAction actionWithTitle:NSLocalizedString(@"No thanks, maybe another time.", nil) style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.buttontext setEnabled:YES];
                 [self.buttontext setHidden:NO]; }); }];
@@ -308,6 +308,7 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/releases/";//github.c
         [self presentViewController:alertController animated:YES completion:nil];
     });
 }
+int wantstoviewlog;
 bool wantsmusic;
 
 - (void)wannaplaymusic {
@@ -354,7 +355,10 @@ bool wantsmusic;
     int checkrcd = (file_exists("/etc/rc.d/substrate"));
     int checksuckmydrRun = (file_exists("/var/run/suckmyd.pid"));
     int checkjbdRun = (file_exists("/var/run/jailbreakd.pid"));
+    int cydiaexists = file_exists("/Applications/Cydia.app/Cydia");
+
     printf("jbd Run marker exists?: %d\n", checkjbdRun);
+    printf("cydiaexists marker exists?: %d\n", cydiaexists);
 
     int checkpspawnhook = (file_exists("/var/run/pspawn_hook.ts"));
     uint32_t whatisflags = CS_PLATFORM_BINARY; // 67108864 nonjb  // jb stat 67108864
@@ -390,6 +394,7 @@ bool wantsmusic;
     dispatch_async(dispatch_get_main_queue(), ^{
         self.textView.layer.borderColor = UIColor.greenColor.CGColor;
         self.textView.text = @"";
+        //[self.textView.textColor initWithHue:10.0 saturation:100.0 brightness:100.0 alpha:1.0];
         self.textView.textContainer.lineBreakMode = NSLineBreakByCharWrapping; });
     log_UI = log_toView;
     CAGradientLayer *gradient = [CAGradientLayer layer];
@@ -399,7 +404,13 @@ bool wantsmusic;
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.progressMeterUIVIEW.layer insertSublayer: gradient atIndex:1];
         [self.backGroundView.layer insertSublayer:gradient atIndex:0];
-        [self.thorbackgroundjpeg setHidden:YES]; });
+        [self.thorbackgroundjpeg setHidden:NO];
+        [self.thorbackgroundjpeg setAlpha: 0.4];
+         //@property(nonatomic) CGFloat alpha;
+         //alpha set:1];
+          // 1.0];
+
+    });
     if ([[NSFileManager defaultManager] fileExistsAtPath:@"/tmp/.jailbroken_freya"]) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [[self buttontext] setEnabled:false]; }); }
@@ -437,7 +448,10 @@ bool wantsmusic;
             [self.textView setHidden:YES];
             [self.settings_buttun_bg setHidden:YES];
             [self.settings_buttun_bg setUserInteractionEnabled:NO];
-            [self.thorbackgroundjpeg setHidden:NO]; });
+            [self.thorbackgroundjpeg setHidden:NO];
+            [self.thorbackgroundjpeg setAlpha: 1.0];
+
+        });
         
         [UITabBarController setAccessibilityElementsHidden:(TRUE)];
         
@@ -457,8 +471,25 @@ bool wantsmusic;
             [self.progressmeterView setHidden:YES];
             [self.progressMeterUIVIEW setHidden:YES];
             [self.thorbackgroundjpeg setHidden:NO];
+            [self.thorbackgroundjpeg setAlpha: 1.0];
+;
         });
         [self shareTh0r];
+    } else if (checkth0rmarkerFinal ==1 && (!file_exists("/Applications/Cydia.app/Cydia"))) {
+        newTFcheckMyRemover4me = FALSE;
+        saveCustomSetting(@"RestoreFS", 1);
+        JUSTremovecheck = false;
+        dispatch_async(dispatch_get_main_queue(), ^{
+                [self.buttontext setEnabled:YES];
+                [self.buttontext setTitle:localize(@"Jailbreak") forState:UIControlStateNormal];
+                [self.restoreFSSwitch setOn:false];
+                [self.loadTweakSwitch setEnabled:YES];
+                [self.loadTweakSwitch setOn:TRUE];
+            if (shouldLoadTweaks()) {
+                loadTweaks = true; }
+            else { loadTweaks = false; }
+        });
+        goto end;
     } else if ((checkth0rmarkerFinal == 1) && (checkuncovermarker == 0) && (checkchimeramarker == 0) && (checkelectra == 0) && (checkjbdTmpRun == 0) && (checkpspawnhook == 0)){
         if (shouldRestoreFS()) {
             JUSTremovecheck = true;
@@ -602,6 +633,21 @@ bool wantsmusic;
             [ViewController.sharedController.restoreFSSwitch setUserInteractionEnabled:NO]; });
         [self chimeraalert];
         goto end;
+    } else if (checkth0rmarkerFinal ==1 && (!file_exists("/Applications/Cydia.app/Cydia"))) {
+            newTFcheckMyRemover4me = FALSE;
+            saveCustomSetting(@"RestoreFS", 1);
+            JUSTremovecheck = false;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.buttontext setEnabled:YES];
+                    [self.buttontext setTitle:localize(@"Jailbreak") forState:UIControlStateNormal];
+                    [self.restoreFSSwitch setOn:false];
+                    [self.loadTweakSwitch setEnabled:YES];
+                    [self.loadTweakSwitch setOn:TRUE];
+                if (shouldLoadTweaks()) {
+                    loadTweaks = true; }
+                else { loadTweaks = false; }
+            });
+            goto end;
     } else if(((checkjbdTmpRun == 0) && (checkpspawnhook == 0) && (checkth0rmarkerFinal == 0) && (checkuncovermarker == 0)) && (checkchimeramarker == 0) && (checkelectra == 0)){
             if (checkcheckRa1nmarker == 0) {
                 newTFcheckMyRemover4me = FALSE;
@@ -793,7 +839,7 @@ bool setNonceBool = false;
 int exploitType = 0;
 int packagerType = 0;//0 = Cydia //1 = Zebra
 
-void wannaSliceOfMe() { //Run The Exploit
+void wannaSliceOfMe(void) { //Run The Exploit
     uint32_t flags;
     csops(getpid(), CS_OPS_STATUS, &flags, 0);
     int checkuncovermarker = (file_exists("/.installed_unc0ver"));
@@ -865,7 +911,23 @@ void wannaSliceOfMe() { //Run The Exploit
         ourprogressMeter();
         term_kexecute();
         ourprogressMeter();
-        finish(loadTweaks);
+        //int exploit
+        while(wantstoviewlog == 0){
+   // switch(wantstoviewlog) {
+     //   case 1: { finish(loadTweaks); continue;}
+       // case 0: {
+            if (wantstoviewlog == 1 ){
+                finish(loadTweaks);
+            } else {waittoviewlogOK("hello log");
+                break;}
+            //}
+    //}
+        }
+        
+
+        if (wantstoviewlog == 1 ){
+            finish(loadTweaks);
+        }
     }
 end:
     printf("swell seeing you here\n");
@@ -922,7 +984,23 @@ end:
 
 -(void)wait4pad {
     int ut =0 ;
-    while ((ut = 69 - uptime()) > 0 ) {
+    while ((ut = 45 - uptime()) > 0 ) {
+         //char msgme = [NSString stringWithFormat:localize(@"sec: %d" ), ut];
+        //showThePopup(@"Wait you're too fast", @"I'm going to close the app, come back in @@ut", true, 0);
+        NSString *msg1 = [NSString stringWithFormat:localize(@"Hold up you're too fast, I'm going to close the app. Please wait %ds before trying again"), ut];
+        showMSG(msg1, 1, 1 );
+
+        //showMSG(NSLocalizedString(@"so soon, closing app. come back in a few seconds.", nil ), 1, 1);
+        printf("%d", ut);
+        dispatch_sync( dispatch_get_main_queue(), ^{
+            
+            UIApplication *app = [UIApplication sharedApplication];
+            [app performSelector:@selector(suspend)];
+            //wait 2 seconds while app is going background
+            [NSThread sleepForTimeInterval:1.0];
+            //exit app when app is in background
+            exit(0); }); }
+    while ((ut = 49 - uptime()) > 0 ) {
         NSString *msg = [NSString stringWithFormat:localize(@"waiting %ds"), ut];
         dispatch_async(dispatch_get_main_queue(), ^{
             printf("please wait %d sec\n", ut);
@@ -932,7 +1010,20 @@ end:
 
 -(void)wait4fun{
     int ut =0 ;
-    while ((ut = 89 - uptime()) > 0 ) {
+    while ((ut = 45 - uptime()) > 0 ) {
+         //char msgme = [NSString stringWithFormat:localize(@"sec: %d" ), ut];
+        NSString *msg1 = [NSString stringWithFormat:localize(@"Hold up you're too fast, I'm going to close the app. Please wait %ds before trying again"), ut];
+        showMSG(msg1, 1, 1 );
+        printf("%d", ut);
+        dispatch_sync( dispatch_get_main_queue(), ^{
+            
+            UIApplication *app = [UIApplication sharedApplication];
+            [app performSelector:@selector(suspend)];
+            //wait 2 seconds while app is going background
+            [NSThread sleepForTimeInterval:1.0];
+            //exit app when app is in background
+            exit(0); }); }
+    while ((ut = 49 - uptime()) > 0 ) {
         NSString *msg = [NSString stringWithFormat:localize(@"waiting %ds"), ut];
         dispatch_async(dispatch_get_main_queue(), ^{
             printf("please wait %d sec\n", ut);
@@ -997,6 +1088,54 @@ end:
         //exit app when app is in background
         exit(0); });
 }
+-(void)showwaitlogOKA {
+    dispatch_sync( dispatch_get_main_queue(), ^{
+        
+        UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Freya finished:"
+                                                        message:@"Would you like to view the log or Respring now......"
+                                                       delegate:self
+                                              cancelButtonTitle:@"View log"
+                                              otherButtonTitles:@"Respring", nil];
+
+        [alert show];});
+}
+
+
+-(void)showwaittoviewlogOKA {
+    dispatch_sync( dispatch_get_main_queue(), ^{
+        
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Freya Jailbreak donzo", nil) message:NSLocalizedString(@"respring NOW or view log", nil) preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *OK = [UIAlertAction actionWithTitle:NSLocalizedString(@"Respring", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [ViewController.sharedController.buttontext setTitle:@"Respringing" forState: normal];
+
+                [self.buttontext setEnabled:NO];
+                [self.buttontext setHidden:NO];
+                //[self->_buttontext setTitle:@"Respringing..." forState: normal];
+            });
+            wantstoviewlog = 1;
+            finish(loadTweaks);
+
+        }];
+        UIAlertAction *Cancel = [UIAlertAction actionWithTitle:NSLocalizedString(@"View log", nil) style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                //[self->_buttontext setTitle:@"Respring?" forState: normal];
+                [ViewController.sharedController.buttontext setTitle:@"Respring?" forState: normal];
+
+                [self.buttontext setEnabled:YES];
+                [self.buttontext setHidden:NO];
+                
+            });
+            wantstoviewlog = 2;
+        }];
+        [alertController addAction:OK];
+        [alertController addAction:Cancel];
+        [alertController setPreferredAction:Cancel];
+        [self presentViewController:alertController animated:YES completion:nil];
+        });
+    
+    
+}
 
 -(void)showwaitOTA {
     dispatch_sync( dispatch_get_main_queue(), ^{
@@ -1018,21 +1157,29 @@ end:
 }
 bool pressedJBbut;
 - (IBAction)jailbreak:(id)sender {
-    pressedJBbut = true;
-    back4romset = 2;
-    if (shouldRestoreFS()) { restore_fs = true; } else { restore_fs = false; }
-    if (shouldfixFS()) { fix_fs = true; } else { fix_fs = false; }
-    if (shouldLoadTweaks()) { loadTweaks = true; } else { loadTweaks = false; }
-    [sender setEnabled:false];//Disable The Button
-    //Disable and fade out the settings button
-    [[self fixfsswitch] setHidden:true];
-    [[self loadTweakSwitch] setHidden:true];
-    [[self forceuisswizitch] setHidden:true];
-    [[self restoreFSSwitch] setHidden:true];
-    [UIView animateWithDuration:1.0f animations:^{ [[self settingsButton] setEnabled:false]; }];
-    ourprogressMeter();
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0ul), ^{
-        wannaSliceOfMe(); });//Run the exploit in a void.
+    if (wantstoviewlog >=1) {
+        finish(loadTweaks);
+        wantstoviewlog = 0;
+    } else {
+        pressedJBbut = true;
+        back4romset = 2;
+        if (shouldRestoreFS()) { restore_fs = true; } else { restore_fs = false; }
+        if (shouldfixFS()) { fix_fs = true; } else { fix_fs = false; }
+        if (shouldLoadTweaks()) { loadTweaks = true; } else { loadTweaks = false; }
+        [sender setEnabled:false];//Disable The Button
+        //Disable and fade out the settings button
+        [[self fixfsswitch] setHidden:true];
+        [[self loadTweakSwitch] setHidden:true];
+        [[self forceuisswizitch] setHidden:true];
+        [[self restoreFSSwitch] setHidden:true];
+        [UIView animateWithDuration:1.0f animations:^{ [[self settingsButton] setEnabled:false]; }];
+        ourprogressMeter();
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0ul), ^{
+            wannaSliceOfMe(); });
+    }
+end:
+    printf("finally we done!");
+    //Run the exploit in a void.
 }
 - (IBAction)fixfsswitch:(id)sender { }
 - (IBAction)forceuisswizitch:(id)sender { }
@@ -1048,10 +1195,13 @@ void thelabelbtnchange(char *msg){ [[ViewController currentViewController] updat
 void cydiaDone(char *msg){ [[ViewController currentViewController] cydiafinish]; }
 void startingJBD(char *msg){ [[ViewController currentViewController] RunningTheD]; }
 void waitOTAOK(char *msg) { [[ViewController currentViewController] showwaitOTA]; }
+void waittoviewlogOK(bool yuppwewaiting) { [[ViewController currentViewController] showwaittoviewlogOKA]; }
+
+
 void jbdfinished(char *msg){ [[ViewController currentViewController] TheDstarted]; }
 void uicaching(char *msg){ [[ViewController currentViewController] thecacheofcaching]; }
 void respringing(char *msg){ [[ViewController currentViewController] respring]; }
-void ourprogressMeter(){ [[ViewController currentViewController] ourprogressMeterjeez]; }
+void ourprogressMeter(void){ [[ViewController currentViewController] ourprogressMeterjeez]; }
 void savedoffs() { [[ViewController currentViewController] savedoffsoutput]; }
 void findoffs() { [[ViewController currentViewController] findingoffsoutput]; }
 void dothesploit() { [[ViewController currentViewController] sploitn]; }

@@ -26,7 +26,7 @@
 #include "../../exploits/wasteoftfime/IOKitLibTW.h"
 #import <UIKit/UIDevice.h>
 #import "offsets.h"
-#import "log.h"
+//#import "log.h"
 #include "ViewController.h"
 #define SYSTEM_VERSION_EQUAL_TO(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedSame)
 #define SYSTEM_VERSION_GREATER_THAN(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedDescending)

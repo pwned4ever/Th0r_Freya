@@ -42,7 +42,7 @@ char *sysctlWithNameS(const char *name) {
 }
 
 
-NSString *getKernelBuildVersionS() {
+NSString *getKernelBuildVersionS(void) {
     NSString *kernelBuild = nil;
     NSString *cleanString = nil;
     char *kernelVersion = NULL;
@@ -1494,11 +1494,12 @@ static ViewController *currentViewController;
 
         });
         UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Important notice:"
-                                                     message:@"This option requires internet to succeed. Please make sure you're connected to the internet before proceeding. !You've been warned!"
+                                                     message:@"This feauture requires internet access. Make sure your wifi is on and connected for it to do it's thing. This uses APT to download and fix cydia for the most part.\n***You've Been Warned***"
                                                     delegate:self
                                            cancelButtonTitle: nil
                                            otherButtonTitles:@"OK", nil];
         [alert show];
+        
     } else {
         saveCustomSetting(@"fixFS", 0);
         checkfsfixswitch = 0;
@@ -2122,7 +2123,12 @@ static ViewController *currentViewController;
     [alertController addAction:set];
     [alertController setPreferredAction:set];
     [alertController addTextFieldWithConfigurationHandler:^(UITextField *textField) {
-        textField.placeholder = [NSString stringWithFormat:@"%s", genToSet()];
+        textField.placeholder = [NSString stringWithFormat:@"%s",
+                                 genToSet()];
+        
+        saveCustomSetting(@"SetNonce", 0);
+        
+        
     }];
     [self presentViewController:alertController animated:YES completion:nil];
 }

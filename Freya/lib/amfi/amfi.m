@@ -230,7 +230,7 @@ void patch_remove_tfp0(uint64_t target_task){
 }
 
 
-mach_port_t patch_retrieve_tfp0(){
+mach_port_t patch_retrieve_tfp0(void){
     tfp0_port = 0;
     task_get_special_port(mach_task_self(), 8, &tfp0_port); // TASK_ACCESS_PORT is 8 in ios13 (for non-PAC), for PAC is 9
     return tfp0_port;
@@ -786,7 +786,7 @@ void* AMFIDExceptionHandler(void* arg) {
         
         for(;;) {
             kern_return_t ret;
-            printf("[amfid][*] Calling mach_msg to receive exception message from amfid\n");
+            //printf("[amfid][*] Calling mach_msg to receive exception message from amfid\n");
             ret = mach_msg(msg, MACH_RCV_MSG | MACH_MSG_TIMEOUT_NONE, 0, size, exceptionPort, 0, 0);
             
             if (ret != KERN_SUCCESS){
@@ -841,9 +841,9 @@ void* AMFIDExceptionHandler(void* arg) {
                 printf("[amfid][+] Got request for: %s\n", filename);
                 //printf("[amfid][*] Original cdhash: %s \n\t", orig_cdhash);
                 for (int i = 0; i < CS_CDHASH_LEN; i++) {
-                    printf("%02x ", orig_cdhash[i]);
+                    //printf("%02x ", orig_cdhash[i]);
                 }
-                printf("\n");
+               // printf("\n");
                 
                 if (strlen((char*)orig_cdhash)) {
                     // legit binary
@@ -891,7 +891,7 @@ void* AMFIDExceptionHandler(void* arg) {
                 if (ret != KERN_SUCCESS) {
                     printf("[amfid][-] Failed to set new thread state %s\n", mach_error_string(ret));
                 } else {
-                    printf("[amfid][+] Success setting new state for amfid!\n");
+                   // printf("[amfid][+] Success setting new state for amfid!\n");
                 }
                 
                 exception_raise_reply reply = {0};
@@ -918,7 +918,7 @@ void* AMFIDExceptionHandler(void* arg) {
                 if (ret != KERN_SUCCESS){
                     printf("[amfid][-] Failed to send the reply to the exception message %s\n", mach_error_string(ret));
                 } else{
-                    printf("[amfid][+] Replied to the amfid exception...\n");
+                    //printf("[amfid][+] Replied to the amfid exception...\n");
                 }
                 
                 if(strcmp(filename, "/freya/amfid_bypassd") == 0) {
@@ -943,7 +943,7 @@ void* AMFIDExceptionHandler(void* arg) {
         
         for(;;) {
             kern_return_t ret;
-            printf("[amfid][*] Calling mach_msg to receive exception message from amfid\n");
+           // printf("[amfid][*] Calling mach_msg to receive exception message from amfid\n");
             ret = mach_msg(msg, MACH_RCV_MSG | MACH_MSG_TIMEOUT_NONE, 0, size, exceptionPort, 0, 0);
             
             if (ret != KERN_SUCCESS){
@@ -998,9 +998,9 @@ void* AMFIDExceptionHandler(void* arg) {
                 printf("[amfid][+] Got request for: %s\n", filename);
                 //printf("[amfid][*] Original cdhash: %s \n\t", orig_cdhash);
                 for (int i = 0; i < CS_CDHASH_LEN; i++) {
-                    printf("%02x ", orig_cdhash[i]);
+                 //   printf("%02x ", orig_cdhash[i]);
                 }
-                printf("\n");
+               // printf("\n");
                 
                 if (strlen((char*)orig_cdhash)) {
                     // legit binary
@@ -1048,7 +1048,7 @@ void* AMFIDExceptionHandler(void* arg) {
                 if (ret != KERN_SUCCESS) {
                     printf("[amfid][-] Failed to set new thread state %s\n", mach_error_string(ret));
                 } else {
-                    printf("[amfid][+] Success setting new state for amfid!\n");
+                    //printf("[amfid][+] Success setting new state for amfid!\n");
                 }
                 
                 exception_raise_reply reply = {0};
@@ -1075,7 +1075,7 @@ void* AMFIDExceptionHandler(void* arg) {
                 if (ret != KERN_SUCCESS){
                     printf("[amfid][-] Failed to send the reply to the exception message %s\n", mach_error_string(ret));
                 } else{
-                    printf("[amfid][+] Replied to the amfid exception...\n");
+                    //printf("[amfid][+] Replied to the amfid exception...\n");
                 }
                 
                 if(strcmp(filename, "/freya/amfid_bypassd") == 0) {
@@ -1099,7 +1099,7 @@ void* AMFIDExceptionHandler(void* arg) {
             
             for(;;) {
                 kern_return_t ret;
-                printf("[amfid][*] Calling mach_msg to receive exception message from amfid\n");
+               // printf("[amfid][*] Calling mach_msg to receive exception message from amfid\n");
                 ret = mach_msg(msg, MACH_RCV_MSG | MACH_MSG_TIMEOUT_NONE, 0, size, exceptionPort, 0, 0);
                 
                 if (ret != KERN_SUCCESS){
@@ -1122,8 +1122,10 @@ void* AMFIDExceptionHandler(void* arg) {
                         //                    char* filename = (char*)amfidRead(new_state.__x[25], 1024);//ios
                         if(!filename) { printf("[amfid][-] No file name?"); continue; }
                         uint8_t *orig_cdhash = (uint8_t*)amfidRead(new_state.__x[25], CS_CDHASH_LEN);
-                        printf("[amfid][+] Got request for: %s\n[amfid][*] Original cdhash: %s\n", filename, orig_cdhash);
-                        for (int i = 0; i < CS_CDHASH_LEN; i++) { printf("%02x ", orig_cdhash[i]); } printf("\n");
+                        printf("[amfid][+] Got request for: %s", filename);
+                        for (int i = 0; i < CS_CDHASH_LEN; i++) {
+                            // printf("%02x ", orig_cdhash[i]);
+                        } //printf("\n");
                         if (strlen((char*)orig_cdhash)) {// legit binary// jump to old MIVSACI
                             printf("[amfid][*] Jumping thread to 0x%llx\n", origAMFID_MISVSACI);
                             new_state.__pc = origAMFID_MISVSACI; }
@@ -1143,7 +1145,10 @@ void* AMFIDExceptionHandler(void* arg) {
                             printf("[amfid][i] Old PC: 0x%llx, new PC: 0x%llx\n", old_state.__pc, new_state.__pc);
                         } // set the new thread state:
                         ret = thread_set_state(thread_port, 6, (thread_state_t)&new_state, sizeof(new_state)/4);
-                        if (ret != KERN_SUCCESS) { printf("[amfid][-] Failed to set new thread state %s\n", mach_error_string(ret)); } else { printf("[amfid][+] Success setting new state for amfid!\n");}
+                        if (ret != KERN_SUCCESS) { printf("[amfid][-] Failed to set new thread state %s\n", mach_error_string(ret)); } else {
+                            //printf("[amfid][+] Success setting new state for amfid!\n");
+                            
+                        }
                         exception_raise_reply reply = {0};
                         reply.Head.msgh_bits = MACH_MSGH_BITS(MACH_MSGH_BITS_REMOTE(req->Head.msgh_bits), 0);
                         reply.Head.msgh_size = sizeof(reply);
@@ -1161,7 +1166,9 @@ void* AMFIDExceptionHandler(void* arg) {
                                        MACH_PORT_NULL);
                         mach_port_deallocate(mach_task_self(), thread_port);
                         mach_port_deallocate(mach_task_self(), task_port);
-                        if (ret != KERN_SUCCESS){ printf("[amfid][-] Failed to send the reply to the exception message %s\n", mach_error_string(ret)); } else { printf("[amfid][+] Replied to the amfid exception...\n");}
+                        if (ret != KERN_SUCCESS){ printf("[amfid][-] Failed to send the reply to the exception message %s\n", mach_error_string(ret)); } else { //printf("[amfid][+] Replied to the amfid exception...\n");
+                            
+                        }
                         if(strcmp(filename, "/freya/amfidebilitate64") == 0) {
                             printf("Found amfidebilitate, no longer need to run this function.");
                             amfidWrite64(patchAddr, origAMFID_MISVSACI);free(filename); free(orig_cdhash);
@@ -1183,8 +1190,11 @@ void* AMFIDExceptionHandler(void* arg) {
                         if(!filename) { printf("[amfid][-] No file name?"); continue; }
                         uint8_t *orig_cdhash = (uint8_t*)amfidRead(new_state.__x[23], CS_CDHASH_LEN);
                         printf("[amfid][+] Got request for: %s\n", filename);
-                        printf("[amfid][*] Original cdhash: %s \n\t", orig_cdhash);
-                        for (int i = 0; i < CS_CDHASH_LEN; i++) { printf("%02x ", orig_cdhash[i]); } printf("\n");
+                        //printf("[amfid][*] Original cdhash: %s \n\t", orig_cdhash);
+                        for (int i = 0; i < CS_CDHASH_LEN; i++) {
+                            //printf("%02x ", orig_cdhash[i]);
+                            
+                        } //printf("\n");
                         if (strlen((char*)orig_cdhash)) {// legit binary // jump to old MIVSACI
                             printf("[amfid][*] Jumping thread to 0x%llx\n", origAMFID_MISVSACI);
                             new_state.__pc = origAMFID_MISVSACI;
@@ -1205,7 +1215,10 @@ void* AMFIDExceptionHandler(void* arg) {
                         } // set the new thread state:
                         ret = thread_set_state(thread_port, 6, (thread_state_t)&new_state, sizeof(new_state)/4);
                         if (ret != KERN_SUCCESS) { printf("[amfid][-] Failed to set new thread state %s\n", mach_error_string(ret));
-                        } else { printf("[amfid][+] Success setting new state for amfid!\n"); }
+                        } else {
+                            //printf("[amfid][+] Success setting new state for amfid!\n");
+                            
+                        }
                         exception_raise_reply reply = {0};
                         reply.Head.msgh_bits = MACH_MSGH_BITS(MACH_MSGH_BITS_REMOTE(req->Head.msgh_bits), 0);
                         reply.Head.msgh_size = sizeof(reply);
@@ -1224,7 +1237,9 @@ void* AMFIDExceptionHandler(void* arg) {
                         mach_port_deallocate(mach_task_self(), thread_port);
                         mach_port_deallocate(mach_task_self(), task_port);
                         if (ret != KERN_SUCCESS){
-                            printf("[amfid][-] Failed to send the reply to the exception message %s\n", mach_error_string(ret)); } else{ printf("[amfid][+] Replied to the amfid exception...\n"); }
+                            printf("[amfid][-] Failed to send the reply to the exception message %s\n", mach_error_string(ret)); } else{ //printf("[amfid][+] Replied to the amfid exception...\n");
+                                
+                            }
                         if(strcmp(filename, "/freya/amfid_bypassd") == 0) { //if(strcmp(filename, "/freya/amfidebilitate64") == 0) {
                             printf("Found amfidebilitate, no longer need to run this function."); amfidWrite64(patchAddr, origAMFID_MISVSACI);
                             free(filename);free(orig_cdhash); resetEntitlements(get_proc_struct_for_pid(getpid())); break; }

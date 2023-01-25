@@ -13,7 +13,7 @@
 #include <sys/time.h>
 
 struct hfs_mount_args {
-    char    *fspec;            /* block special device to mount */
+    char    * _Nullable fspec;            /* block special device to mount */
     uid_t    hfs_uid;        /* uid that owns hfs files (standard HFS only) */
     gid_t    hfs_gid;        /* gid that owns hfs files (standard HFS only) */
     mode_t    hfs_mask;        /* mask to be applied for hfs perms  (standard HFS only) */

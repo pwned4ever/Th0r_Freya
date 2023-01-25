@@ -38,7 +38,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.0" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="freyashot" translatesAutoresizingMaskIntoConstraints="NO" id="1x6-Pm-yls">
+                            <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="freyashot" translatesAutoresizingMaskIntoConstraints="NO" id="1x6-Pm-yls">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                 <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <accessibility key="accessibilityConfiguration">
@@ -50,7 +50,7 @@
                                 <subviews>
                                     <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="3TE-Kb-1Sa" userLabel="TextViewoutput">
                                         <rect key="frame" x="8" y="23" width="304" height="411"/>
-                                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <color key="textColor" red="0.0" green="1" blue="0.70320278349376864" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
@@ -118,13 +118,13 @@
                                         </connections>
                                     </button>
                                     <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ZN4-X6-cIq">
-                                        <rect key="frame" x="113" y="45" width="95" height="4"/>
+                                        <rect key="frame" x="48" y="45" width="226" height="4"/>
                                         <color key="backgroundColor" systemColor="systemBlueColor"/>
                                         <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <color key="progressTintColor" red="0.11372549019607843" green="0.019607843137254902" blue="0.086274509803921567" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     </progressView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=" " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bz0-lI-Wh5">
-                                        <rect key="frame" x="1" y="50" width="319" height="19"/>
+                                        <rect key="frame" x="2" y="50" width="318" height="19"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="19" id="JJJ-xW-NRZ"/>
                                         </constraints>
@@ -135,20 +135,19 @@
                                 </subviews>
                                 <constraints>
                                     <constraint firstItem="vND-PC-IT4" firstAttribute="centerY" secondItem="mkS-6V-QDe" secondAttribute="centerY" constant="25.5" id="0cN-f7-NIj"/>
-                                    <constraint firstItem="Vx9-qz-bUV" firstAttribute="centerX" secondItem="ZN4-X6-cIq" secondAttribute="centerX" constant="0.5" id="3mz-Q4-OhY"/>
+                                    <constraint firstItem="ZN4-X6-cIq" firstAttribute="leading" secondItem="Wcc-Qz-izh" secondAttribute="trailing" constant="1" id="0ss-bG-Ikh"/>
+                                    <constraint firstItem="ZN4-X6-cIq" firstAttribute="trailing" secondItem="Vx9-qz-bUV" secondAttribute="trailing" id="7BZ-J4-uPP"/>
                                     <constraint firstItem="bz0-lI-Wh5" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="vND-PC-IT4" secondAttribute="trailing" id="EkA-ZG-x6N"/>
+                                    <constraint firstItem="ZN4-X6-cIq" firstAttribute="centerX" secondItem="bz0-lI-Wh5" secondAttribute="centerX" id="GLQ-Lx-Z94"/>
+                                    <constraint firstItem="bz0-lI-Wh5" firstAttribute="top" secondItem="ZN4-X6-cIq" secondAttribute="bottom" constant="1" id="Hjl-k7-dQs"/>
+                                    <constraint firstItem="ZN4-X6-cIq" firstAttribute="leading" secondItem="Vx9-qz-bUV" secondAttribute="leading" id="Kj3-xU-iFX"/>
                                     <constraint firstAttribute="trailing" secondItem="vND-PC-IT4" secondAttribute="trailing" id="RrW-e8-tHs"/>
-                                    <constraint firstItem="vND-PC-IT4" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="ZN4-X6-cIq" secondAttribute="trailing" constant="8" symbolic="YES" id="SDm-ed-ZIs"/>
                                     <constraint firstAttribute="bottom" secondItem="bz0-lI-Wh5" secondAttribute="bottom" id="VbU-h7-AJv"/>
-                                    <constraint firstItem="ZN4-X6-cIq" firstAttribute="leading" secondItem="Wcc-Qz-izh" secondAttribute="trailing" constant="66" id="X0G-tr-Caa"/>
-                                    <constraint firstItem="bz0-lI-Wh5" firstAttribute="centerX" secondItem="ZN4-X6-cIq" secondAttribute="centerX" id="Y8b-fb-h8W"/>
                                     <constraint firstItem="vND-PC-IT4" firstAttribute="centerY" secondItem="Wcc-Qz-izh" secondAttribute="centerY" constant="-0.5" id="ZRh-fF-OES"/>
                                     <constraint firstItem="Vx9-qz-bUV" firstAttribute="centerY" secondItem="mkS-6V-QDe" secondAttribute="centerY" constant="-13" id="ZXf-X7-FDd"/>
                                     <constraint firstItem="Vx9-qz-bUV" firstAttribute="top" secondItem="mkS-6V-QDe" secondAttribute="top" id="iD1-km-aCj"/>
                                     <constraint firstItem="Vx9-qz-bUV" firstAttribute="centerX" secondItem="mkS-6V-QDe" secondAttribute="centerX" constant="1" id="nd5-4k-n2Z"/>
-                                    <constraint firstItem="ZN4-X6-cIq" firstAttribute="top" secondItem="Vx9-qz-bUV" secondAttribute="bottom" constant="2" id="nnc-A2-ezE"/>
                                     <constraint firstItem="Wcc-Qz-izh" firstAttribute="baseline" secondItem="vND-PC-IT4" secondAttribute="baseline" constant="0.5" id="oT4-Mx-lUF"/>
-                                    <constraint firstItem="ZN4-X6-cIq" firstAttribute="leading" secondItem="mkS-6V-QDe" secondAttribute="leading" constant="113" id="sV9-9o-H06"/>
                                     <constraint firstItem="bz0-lI-Wh5" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Wcc-Qz-izh" secondAttribute="leading" id="u0N-vy-Yq2"/>
                                 </constraints>
                             </view>
@@ -201,7 +200,7 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1Zh-Ol-RFb">
                                 <rect key="frame" x="0.0" y="27" width="320" height="553"/>
                                 <subviews>
-                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="freyalogo" translatesAutoresizingMaskIntoConstraints="NO" id="aSq-lB-JNx">
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="freyaicestaff.jpg" translatesAutoresizingMaskIntoConstraints="NO" id="aSq-lB-JNx">
                                         <rect key="frame" x="-2" y="-9" width="324" height="571"/>
                                     </imageView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jRh-Zo-1pH">
@@ -389,7 +388,7 @@
                                                         <rect key="frame" x="0.0" y="0.0" width="137" height="124"/>
                                                         <subviews>
                                                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dBn-W7-HWD">
-                                                                <rect key="frame" x="89" y="3" width="51" height="31"/>
+                                                                <rect key="frame" x="84" y="3" width="51" height="31"/>
                                                                 <color key="onTintColor" systemColor="systemGreenColor"/>
                                                                 <connections>
                                                                     <action selector="loadTweaksPushed:" destination="cbb-OQ-T38" eventType="valueChanged" id="wJr-4v-oML"/>
@@ -407,14 +406,14 @@ uicache -a</string>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
                                                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="gBH-1e-5H6">
-                                                                <rect key="frame" x="89" y="91" width="51" height="31"/>
+                                                                <rect key="frame" x="84" y="91" width="51" height="31"/>
                                                                 <color key="onTintColor" systemColor="systemOrangeColor"/>
                                                                 <connections>
                                                                     <action selector="forceuiswitchaction:" destination="cbb-OQ-T38" eventType="valueChanged" id="KCM-gs-LK9"/>
                                                                 </connections>
                                                             </switch>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumFontSize="13" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="n1J-Cl-y9d">
-                                                                <rect key="frame" x="14.5" y="0.0" width="50" height="35"/>
+                                                                <rect key="frame" x="14.5" y="0.0" width="45" height="35"/>
                                                                 <string key="text">Load
 Tweaks</string>
                                                                 <fontDescription key="fontDescription" type="system" pointSize="13"/>
@@ -429,7 +428,7 @@ Tweaks</string>
                                                             <constraint firstItem="dBn-W7-HWD" firstAttribute="leading" secondItem="n1J-Cl-y9d" secondAttribute="trailing" constant="24.5" id="O75-Ny-A3L"/>
                                                             <constraint firstItem="xRQ-bX-yTe" firstAttribute="leading" secondItem="eTb-G4-W4Y" secondAttribute="leading" constant="17" id="VFn-52-u8E"/>
                                                             <constraint firstItem="dBn-W7-HWD" firstAttribute="top" secondItem="eTb-G4-W4Y" secondAttribute="top" constant="3" id="chq-V6-lO4"/>
-                                                            <constraint firstItem="gBH-1e-5H6" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="xRQ-bX-yTe" secondAttribute="trailing" symbolic="YES" id="fcT-mv-aRl"/>
+                                                            <constraint firstItem="gBH-1e-5H6" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="xRQ-bX-yTe" secondAttribute="trailing" constant="3" id="fcT-mv-aRl"/>
                                                             <constraint firstAttribute="bottom" secondItem="xRQ-bX-yTe" secondAttribute="bottom" constant="3" id="jCf-vW-VuB"/>
                                                             <constraint firstItem="xRQ-bX-yTe" firstAttribute="top" secondItem="n1J-Cl-y9d" secondAttribute="bottom" constant="54.5" id="uXo-nc-Lly"/>
                                                             <constraint firstItem="n1J-Cl-y9d" firstAttribute="top" secondItem="eTb-G4-W4Y" secondAttribute="top" id="vMM-v5-GXY"/>
@@ -515,10 +514,10 @@ RootFS</string>
                                         <rect key="frame" x="14" y="16" width="292" height="40"/>
                                         <subviews>
                                             <stackView hidden="YES" opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="18" translatesAutoresizingMaskIntoConstraints="NO" id="rrs-mH-rfR">
-                                                <rect key="frame" x="11" y="6" width="199.5" height="28"/>
+                                                <rect key="frame" x="11" y="6" width="205" height="28"/>
                                                 <subviews>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gzt-C3-qzb">
-                                                        <rect key="frame" x="0.0" y="0.0" width="90.5" height="28"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="93.5" height="28"/>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                         <state key="normal" title="Rooted">
@@ -535,7 +534,7 @@ RootFS</string>
                                                         </connections>
                                                     </button>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kaF-x1-Evm">
-                                                        <rect key="frame" x="108.5" y="0.0" width="91" height="28"/>
+                                                        <rect key="frame" x="111.5" y="0.0" width="93.5" height="28"/>
                                                         <color key="backgroundColor" red="0.47843137254901957" green="0.4392156862745098" blue="0.83137254901960778" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                         <state key="normal" title="Rootless">
@@ -553,8 +552,8 @@ RootFS</string>
                                                     </button>
                                                 </subviews>
                                             </stackView>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Freya Version 1.3" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sTm-7g-Qnr">
-                                                <rect key="frame" x="82" y="6" width="128.5" height="28"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Freya Version 1.3.1" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sTm-7g-Qnr">
+                                                <rect key="frame" x="76.5" y="6" width="139.5" height="28"/>
                                                 <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -668,7 +667,7 @@ RootFS</string>
     <color key="tintColor" systemColor="tintColor"/>
     <resources>
         <image name="Button" width="288" height="57"/>
-        <image name="freyalogo" width="90" height="90"/>
+        <image name="freyaicestaff.jpg" width="933" height="1002"/>
         <image name="freyashot" width="1920" height="1080"/>
         <image name="gear-7" width="15" height="15"/>
         <image name="house-7" width="15" height="15"/>

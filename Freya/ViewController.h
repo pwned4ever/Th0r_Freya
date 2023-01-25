@@ -46,6 +46,7 @@
 
 -(void)ourprogressMeterjeez;
 - (void)xFinished;
+- (void)viewjblog;
 
 
 @end
@@ -56,11 +57,12 @@ void ourprogressMeter(void);
 void xFinishFailed(void);
 void savedoffs(void);
 void findoffs(void);
+void dowhatyawant(void);
 void dothesploit(void);
 void juswaitn(void);
 void juswaitn4pad(void);
 void waitOTAOK(char *msg);
-
+void waittoviewlogOK(bool yuppwewaiting);
 void dothepatch(void);
 void debsinstalling(void);
 void yeasnapshot(void);
@@ -79,6 +81,8 @@ extern bool newTFcheckofCyforce;
 extern bool JUSTremovecheck;
 extern int back4romset;
 extern bool pressedJBbut;
+extern int wantstoviewlog;
+extern bool manualrespring;
 
 static inline void showAlertWithCancel(NSString *title, NSString *message, Boolean wait, Boolean destructive, NSString *cancel) {
     dispatch_semaphore_t semaphore;
@@ -143,7 +147,22 @@ static inline void showThePopup(NSString *title, NSString *message, Boolean wait
     
     showAlertPopup(title, message, wait, destructive, nil);
 }
+static inline void disableFixfs()
+{
+    ViewController *controller = [ViewController sharedController];
+    [[controller fixfsswitch] setOn:false];
+    saveCustomSetting(@"fixFS", 0);
 
+   // [defaults setInteger:0 forKey:@"fixFS"];
+}
+static inline void disableSetnonce()
+{
+    ViewController *controller = [ViewController sharedController];
+    //[[controller ] setOn:false];
+    saveCustomSetting(@"SetNonce", 1);
+
+   // [defaults setInteger:0 forKey:@"fixFS"];
+}
 static inline void disableRootFS() {
     ViewController *controller = [ViewController sharedController];
     [[controller restoreFSSwitch] setOn:false];

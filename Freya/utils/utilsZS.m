@@ -199,7 +199,7 @@ bool machineNameContains(const char *string) {
     return ret;
 }
 
-NSString *getKernelBuildVersion() {
+NSString *getKernelBuildVersion(void) {
     NSString *kernelBuild = nil;
     NSString *cleanString = nil;
     char *kernelVersion = NULL;
@@ -576,7 +576,7 @@ BOOL shouldRestoreFS()
 }
 
 
-uint64_t selfproc() {
+uint64_t selfproc(void) {
     // TODO use kcall(proc_find) + ZM_FIX_ADDR
     uint64_t proc = 0;
     if (proc == 0) {
@@ -644,7 +644,7 @@ void runzec0psXS() {
 }*/
 
 
-void runMachswap() {
+void runMachswap(void) {
     
     dothesploit();
 
@@ -670,7 +670,7 @@ void runMachswap() {
     
 }
 
-void runMachswap2() {
+void runMachswap2(void) {
     printf("supports machswap2\n");
    // offsets_t *ms_offs = get_machswap_offsets();
    // machswap2_exploit(ms_offs, &tfp0, &kbase);
@@ -700,7 +700,7 @@ void runMachswap2() {
 
 //V_SWAP
 
-uint64_t find_kernel_base_sockpuppet() {
+uint64_t find_kernel_base_sockpuppet(void) {
     uint64_t hostport_addr = find_port_address_sockpuppet(mach_host_self(), MACH_MSG_TYPE_COPY_SEND);
     uint64_t realhost = ReadKernel64(hostport_addr + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_KOBJECT));
     
@@ -715,7 +715,7 @@ uint64_t find_kernel_base_sockpuppet() {
     return 0;
 }
 
-uint64_t find_kernel_base_timewaste() {
+uint64_t find_kernel_base_timewaste(void) {
     
     if (kernelbase_exportedBYTW !=0) {
         return kernelbase_exportedBYTW;
@@ -735,7 +735,7 @@ uint64_t find_kernel_base_timewaste() {
 }
 
 
-void runVoucherSwap() {
+void runVoucherSwap(void) {
     dothesploit();
 
     voucher_swap();
@@ -761,7 +761,7 @@ void runVoucherSwap() {
     }
 }
 
-void runCicuta() {
+void runCicuta(void) {
     if (cicuta_virosa() == 0) {
         if (MACH_PORT_VALID(tfp0)) {
             if (kernelbase_exportedBYTW != 0) {
@@ -784,7 +784,7 @@ void runCicuta() {
     }
     
 }
-void runSockPort() {
+void runSockPort(void) {
     ourprogressMeter();
     dothesploit();
 
@@ -885,9 +885,10 @@ void runSockPort() {
         ourprogressMeter(); }
 }
 */
-void runTIMEWaste()
+void runTIMEWaste(void)
 {
     ourprogressMeter();
+    
     struct utsname u = { 0 };
     uname(&u);
     if ((SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"12.3")) || (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"12.4.1"))) {
@@ -911,7 +912,7 @@ void runTIMEWaste()
             printf("iPod 6 -----------\n"); }
     }
     dothesploit();
-
+    util_info("Running Timewaste...");
     get_tfp0_waste();
     
     if (MACH_PORT_VALID(tfp0))
@@ -951,7 +952,7 @@ void runExploit(int expType)
             kbase = (kernel_slide + KADD_SEARCH);
             NSString *str = [NSString stringWithFormat:@"TFP0: 0x%x", tfp0];
             showMSG(str, true, false); } }
-    else if (expType == 4) { util_info("Running Timewaste..."); runTIMEWaste(); printf("TFP0: 0x%x\nTFP0 from tw: 0x%x\n", tfp0, tfp0_exportedBYTW);
+    else if (expType == 4) {  runTIMEWaste(); printf("TFP0: 0x%x\nTFP0 from tw: 0x%x\n", tfp0, tfp0_exportedBYTW);
         if (MACH_PORT_VALID(kernel_task_port)) {
             set_tfp0(kernel_task_port);
             kernel_slide_init();
@@ -1004,6 +1005,8 @@ NSString *get_debian_file(NSString *file)
 {
     //return [@"/freya/DEBS/" stringByAppendingString:file];
     return [@"/freya/DEBS/" stringByAppendingString:file];
+   // return get_path_res([@"bootstrap/DEBS/" stringByAppendingString:file]);
+
 }
 
 NSString *get_TweakInject_file(NSString *file)
@@ -1163,7 +1166,7 @@ void set_tfplatform(uint64_t proc) {
 
 
 
-void saveOffs() {
+void saveOffs(void) {
     remove("/private/var/tmp/jb");
     unlink("/private/var/tmp/jb");
     mkdir("/private/var/tmp/jb", 0777);
@@ -1227,7 +1230,7 @@ dictionary[@(name)] = ADDRSTRING(value); \
     }
 }
 
-void saveOffs_rootless() {
+void saveOffs_rootless(void) {
     
     _assert(chdir("/var/containers/Bundle/freya") == ERR_SUCCESS, @"Failed to create jailbreak directory.", true);
     
@@ -1309,7 +1312,7 @@ kptr_t swap_sandbox(kptr_t proc, kptr_t sandbox) {
 
 
 
-void getOffsets() {
+void getOffsets(void) {
     
     findoffs();
     util_info("Initializing patchfinder64...");
@@ -1485,6 +1488,115 @@ void removeFileIfExists(const char *fileToRemove)
 }
 
 extern char **environ;
+
+NSData *lastSystemOutputL=nil;
+int execCmdVL(const char *cmd, int argc, const char * const* argv, void (^unrestrict)(pid_t)) {
+    pid_t pid;
+    posix_spawn_file_actions_t *actions = NULL;
+    posix_spawn_file_actions_t actionsStruct;
+    int out_pipe[2];
+    bool valid_pipe = false;
+    posix_spawnattr_t *attr = NULL;
+    posix_spawnattr_t attrStruct;
+    
+    NSMutableString *cmdstr = [NSMutableString stringWithCString:cmd encoding:NSUTF8StringEncoding];
+    for (int i=1; i<argc; i++) {
+        [cmdstr appendFormat:@" \"%s\"", argv[i]];
+    }
+    
+    valid_pipe = pipe(out_pipe) == ERR_SUCCESS;
+    if (valid_pipe && posix_spawn_file_actions_init(&actionsStruct) == ERR_SUCCESS) {
+        actions = &actionsStruct;
+        posix_spawn_file_actions_adddup2(actions, out_pipe[1], 1);
+        posix_spawn_file_actions_adddup2(actions, out_pipe[1], 2);
+        posix_spawn_file_actions_addclose(actions, out_pipe[0]);
+        posix_spawn_file_actions_addclose(actions, out_pipe[1]);
+    }
+    
+    if (unrestrict && posix_spawnattr_init(&attrStruct) == ERR_SUCCESS) {
+        attr = &attrStruct;
+        posix_spawnattr_setflags(attr, POSIX_SPAWN_START_SUSPENDED);
+    }
+    
+    int rv = posix_spawn(&pid, cmd, actions, attr, (char *const *)argv, myenviron);
+//    int rv = posix_spawn(&pid, cmd, actions, attr, (char *const *)argv, environ);
+    printf("%s(%d) command: %s", __FUNCTION__, pid, [cmdstr UTF8String]);
+    
+    if (unrestrict) {
+        unrestrict(pid);
+        kill(pid, SIGCONT);
+    }
+    
+    if (valid_pipe) {
+        close(out_pipe[1]);
+    }
+    
+    if (rv == ERR_SUCCESS) {
+        if (valid_pipe) {
+            NSMutableData *outData = [NSMutableData new];
+            char c;
+            char s[2] = {0, 0};
+            NSMutableString *line = [NSMutableString new];
+            while (read(out_pipe[0], &c, 1) == 1) {
+                [outData appendBytes:&c length:1];
+                if (c == '\n') {
+                    printf("%s(%d): %s", __FUNCTION__, pid, [line UTF8String]);
+                    [line setString:@""];
+                } else {
+                    s[0] = c;
+                    [line appendString:@(s)];
+                }
+            }
+            if ([line length] > 0) {
+                printf("%s(%d): %s", __FUNCTION__, pid, [line UTF8String]);
+            }
+            lastSystemOutputL = [outData copy];
+        }
+        if (waitpid(pid, &rv, 0) == -1) {
+            printf("ERROR: Waitpid failed");
+        } else {
+            printf("%s(%d) completed with exit status %d", __FUNCTION__, pid, WEXITSTATUS(rv));
+        }
+        
+    } else {
+        printf("%s(%d): ERROR posix_spawn failed (%d): %s", __FUNCTION__, pid, rv, strerror(rv));
+        rv <<= 8; // Put error into WEXITSTATUS
+    }
+    if (valid_pipe) {
+        close(out_pipe[0]);
+    }
+    return rv;
+}
+
+int execCmdL(const char *cmd, ...) {
+    va_list ap, ap2;
+    int argc = 1;
+    
+    va_start(ap, cmd);
+    va_copy(ap2, ap);
+    
+    while (va_arg(ap, const char *) != NULL) {
+        argc++;
+    }
+    va_end(ap);
+    
+    const char *argv[argc+1];
+    argv[0] = cmd;
+    for (int i=1; i<argc; i++) {
+        argv[i] = va_arg(ap2, const char *);
+    }
+    va_end(ap2);
+    argv[argc] = NULL;
+    
+    int rv = execCmdVL(cmd, argc, argv, NULL);
+    return WEXITSTATUS(rv);
+}
+
+int systemCmdL(const char *cmd) {
+    const char *argv[] = {"sh", "-c", (char *)cmd, NULL};
+    return execCmdVL("/bin/sh", 3, argv, NULL);
+}
+
 NSData *lastSystemOutput=nil;
 int execCmdV(const char *cmd, int argc, const char * const* argv, void (^unrestrict)(pid_t)) {
     pid_t pid;
@@ -1549,13 +1661,13 @@ int execCmdV(const char *cmd, int argc, const char * const* argv, void (^unrestr
             lastSystemOutput = [outData copy];
         }
         if (waitpid(pid, &rv, 0) == -1) {
-            util_info("ERROR: Waitpid failed");
+            util_error("ERROR: Waitpid failed");
         } else {
             util_info("%s(%d) completed with exit status %d", __FUNCTION__, pid, WEXITSTATUS(rv));
         }
         
     } else {
-        util_info("%s(%d): ERROR posix_spawn failed (%d): %s", __FUNCTION__, pid, rv, strerror(rv));
+        util_error("%s(%d): ERROR posix_spawn failed (%d): %s", __FUNCTION__, pid, rv, strerror(rv));
         rv <<= 8; // Put error into WEXITSTATUS
     }
     if (valid_pipe) {
@@ -1593,7 +1705,7 @@ int systemCmd(const char *cmd) {
     return execCmdV("/bin/sh", 3, argv, NULL);
 }
 
-uint64_t getKernproc()
+uint64_t getKernproc(void)
 {
     uint64_t kernproc = 0x0;
     while (kernproc != 0x0)
@@ -1654,7 +1766,7 @@ char *itoa(long n) {
     return   buf;
 }
 
-bool patchtheSIGNSofCOde(){
+bool patchtheSIGNSofCOde(void){
     util_info("amfid_patch in progress...");
     posix_spawnattr_t attrp;
     posix_spawnattr_init(&attrp);
@@ -1737,7 +1849,7 @@ bool mod_plist_file(NSString *filename, void (^function)(id)) {
     return true;
 }
 
-void justrenamesnap() {
+void justrenamesnap(void) {
     
     int checkuncovermarker = (file_exists("/.installed_unc0ver"));
     int checkbash = (file_exists("/bin/bash"));
@@ -1776,6 +1888,7 @@ void justrenamesnap() {
     printf("[*] Trying snappy result = %d \n" , rvchecsnap1);
     
     disableRootFS();
+    ourprogressMeter();ourprogressMeter();ourprogressMeter();ourprogressMeter();
     spotless();
     util_info("Rebooting...");
     showMSG(NSLocalizedString(@"RootFS Restored! We are going to reboot your device.", nil), 1, 1);
@@ -1787,7 +1900,7 @@ void justrenamesnap() {
 }
 
 
-void restoreFSOLDStyle() {
+void restoreFSOLDStyle(void) {
     int checkbash = (file_exists("/bin/bash"));
     int checkuicache = (file_exists("/usr/bin/uicache"));
     int checkelectra = (file_exists("/.bootstrapped_electra"));
@@ -1838,7 +1951,7 @@ void restoreFSOLDStyle() {
         plist[@"Version4"][@"System"][@"Override"][@"Global"][@"UserHighWaterMark"] = nil;
     }), localize(@"Unable to update Jetsam plist to restore memory limit."), true);
     spotless();
-    ourprogressMeter();
+    ourprogressMeter();ourprogressMeter();ourprogressMeter();ourprogressMeter();
     util_info("Rebooting...");
     if (kCFCoreFoundationVersionNumber < 1452.23 ) {//ios 11.3 = 1452.23 if ((kCFCoreFoundationVersionNumber < 1556.00 ) && (checkelectra ==1 )) {
         showMSG(NSLocalizedString(@"Jailbreak Files manually removed. We are going to reboot your device.", nil), 1, 1);
@@ -1848,7 +1961,7 @@ void restoreFSOLDStyle() {
     int rvchecsnap1 = posix_spawn(&pd, "/freya/snappy", NULL, NULL, (char **)&(const char*[]){ "/freya/snappy", "-f", "/", "-r",  "orig-fs", "-x", NULL}, NULL);
     waitpid(pd, NULL, 0);
     printf("[*] Trying snappy result = %d \n" , rvchecsnap1);
-    
+    ourprogressMeter();ourprogressMeter();ourprogressMeter();ourprogressMeter();ourprogressMeter();ourprogressMeter();
     showMSG(NSLocalizedString(@"RootFS Restored! We are going to reboot your device.", nil), 1, 1);
     dispatch_sync( dispatch_get_main_queue(), ^{
         UIApplication *app = [UIApplication sharedApplication];
@@ -2093,7 +2206,8 @@ void restoreRootFS()
     _assert(mod_plist_file(jetsamFile, ^(id plist) {
         plist[@"Version4"][@"System"][@"Override"][@"Global"][@"UserHighWaterMark"] = nil;
     }), localize(@"Unable to update Jetsam plist to restore memory limit."), true);
-    spotless();ourprogressMeter();util_info("Rebooting...");
+    spotless();ourprogressMeter();ourprogressMeter();ourprogressMeter();ourprogressMeter();
+    ourprogressMeter();util_info("Rebooting...");
     showMSG(NSLocalizedString(@"RootFS Restored! We are going to reboot your device.", nil), 1, 1);
     dispatch_sync( dispatch_get_main_queue(), ^{
         UIApplication *app = [UIApplication sharedApplication];
@@ -2167,6 +2281,7 @@ void renameSnapshot(int rootfd, const char* rootFsMountPoint, const char **snaps
     systemSnapshot = NULL;
     util_info("Successfully renamed system snapshot.");
     close(rootfd);
+    ourprogressMeter();ourprogressMeter();ourprogressMeter();ourprogressMeter();ourprogressMeter();ourprogressMeter();ourprogressMeter();
     showMSG(NSLocalizedString(@"RootFS Renamed! We are going to reboot your device.", nil), 1, 1);
     dispatch_sync( dispatch_get_main_queue(), ^{// Reboot.
         UIApplication *app = [UIApplication sharedApplication];
@@ -2207,7 +2322,7 @@ void preMountFS(const char *thedisk, int root_fs, const char **snapshots, const 
     renameSnapshot(root_fs, rootFsMountPoint, snapshots, origfs);
 }
 
-void update_springboard_plist(){
+void update_springboard_plist(void){
     NSDictionary *springBoardPlist = [NSMutableDictionary dictionaryWithContentsOfFile:@"/var/mobile/Library/Preferences/com.apple.springboard.plist"];
     [springBoardPlist setValue:@YES forKey:@"SBShowNonDefaultSystemApps"];
     [springBoardPlist writeToFile:@"/var/mobile/Library/Preferences/com.apple.springboard.plist" atomically:YES];
@@ -2310,7 +2425,9 @@ void remountFS(bool shouldRestore) {
             showMSG(NSLocalizedString(@"Failed to remount, please remove update file if I didn't already!. Try again after rebooting.", nil), 1, 1);
             dispatch_sync( dispatch_get_main_queue(), ^{ UIApplication *app = [UIApplication sharedApplication]; [app performSelector:@selector(suspend)]; //wait 2 seconds while app is going background
                 [NSThread sleepForTimeInterval:1.0]; reboot(RB_QUICK); }); }
-        if (need_initialSSRenamed == 3) { ourprogressMeter(); util_info("Rebooting...");
+        if (need_initialSSRenamed == 3) {
+            update_springboard_plist();
+            ourprogressMeter();ourprogressMeter();ourprogressMeter();ourprogressMeter();ourprogressMeter();ourprogressMeter(); util_info("Rebooting...");
             showMSG(NSLocalizedString(@"RootFS snapshot renamed! We are going to reboot your device.", nil), 1, 1);
             dispatch_sync( dispatch_get_main_queue(), ^{ UIApplication *app = [UIApplication sharedApplication]; [app performSelector:@selector(suspend)]; [NSThread sleepForTimeInterval:1.0];
                 reboot(RB_QUICK); }); }
@@ -2320,14 +2437,18 @@ void remountFS(bool shouldRestore) {
             FILE *f = fopen("/.remount_success", "w"); fprintf(f,"Hello World!\n"); fclose(f);
             if(access("/.remount_success", F_OK) == -1) { util_info("Failed write file on rootfs.");
                 showMSG(NSLocalizedString(@"Failed write file on rootfs, We're going to restore RootFS! then reboot your device. Better luck next time", nil), 1, 1);
-                restoreRootFS(); }
+                restoreRootFS();
+                
+            }
             util_info("Successfully write file on rootfs."); unlink("/.remount_success");
             if (shouldRestore) { restoreRootFS(); } }
         else if (need_initialSSRenamed == 1) { //  Remount RootFS
             FILE *f = fopen("/.remount_success", "w"); fprintf(f,"Hello World!\n"); fclose(f);
             if(access("/.remount_success", F_OK) == -1) { util_info("Failed write file on rootfs.");
                 showMSG(NSLocalizedString(@"Failed write file on rootfs, We're going to restore RootFS! then reboot your device. Better luck next time", nil), 1, 1);
-                restoreRootFS(); }
+                restoreRootFS();
+                update_springboard_plist();
+            }
             util_info("Successfully write file on rootfs."); unlink("/.remount_success");
             int root_fs = open("/", O_RDONLY);
             _assert(root_fs > 0, @"Error Opening The Root Filesystem!", true);
@@ -2451,7 +2572,9 @@ void setNonce(const char *nonce, bool shouldSet) {
         if (execCmd("/usr/sbin/nvram", "com.apple.System.boot-nonce", NULL) != ERR_SUCCESS || strstr(lastSystemOutput.bytes, nonce) == NULL) {// Set boot-nonce.
             _assert(execCmd("/usr/sbin/nvram", [NSString stringWithFormat:@"%s=%s", "com.apple.System.boot-nonce", nonce].UTF8String, NULL) == ERR_SUCCESS, localize(@"Unable to set boot nonce."), true);
             _assert(execCmd("/usr/sbin/nvram", [NSString stringWithFormat:@"%s=%s", "IONVRAM-FORCESYNCNOW-PROPERTY", "com.apple.System.boot-nonce"].UTF8String, NULL) == ERR_SUCCESS, localize(@"Unable to synchronize boot nonce."), true); }
-        execCmd("/usr/sbin/nvram", "-p", NULL); //LockNVRAM();
+        execCmd("/usr/sbin/nvram", "-p", NULL);
+        disableSetnonce();
+        //LockNVRAM();
     }
 }
 
@@ -2461,7 +2584,7 @@ bool doesFileExist(NSString *fileName) {
     else { return false; }
 }
 
-void fixspringboardPlistAndFS() {
+void fixspringboardPlistAndFS(void) {
     util_info("[freya] Fixing Fileystem");
     //removeFileIfExists("/Library/MobileSubstrate/ServerPlugins/Unrestrict.dylib");
     if (access("/usr/bin/ldid", F_OK) != ERR_SUCCESS) {
@@ -2503,7 +2626,7 @@ void fixspringboardPlistAndFS() {
         _assert(execCmd("/usr/bin/uicache", NULL) >= 0, localize(@"Unable to refresh icon cache."), true); }
 }
 
-void startjbd() {
+void startjbd(void) {
     removeFileIfExists("/var/log/pspawn.log");
     removeFileIfExists("/freya/suckmyd.old.log");
     copyMe("/var/log/suckmyd-stderr.log", "/freya/suckmyd.old.log");
@@ -2535,7 +2658,7 @@ void startjbd() {
                     exit(1);  }); } }//reboot(RB_QUICK);
 }//
 
-bool killAMFID() {
+bool killAMFID(void) {
     amfid_pid = pidOfProcess("/usr/libexec/amfid");
     util_info("amfid pid: %d", amfid_pid);
     if (!(amfid_pid > 1)) {
@@ -2549,21 +2672,27 @@ bool killAMFID() {
     return true;
 }
 
-bool reBack() {
-    //execCmd("/usr/bin/sbreload", NULL);
-    execCmd("/usr/bin/killall", "SpringBoard", NULL);
+bool reBack(void) {
+    //execCmd("/usr/bin/killall", "SpringBoard", NULL);
+   // execCmd("/usr/bin/sbreload", NULL);
 
-    pid_t backboardd_pid = pidOfProcess("/usr/libexec/backboardd");
-    if (!(backboardd_pid > 1)) {
-        util_info("Unable to find backboardd pid.");
-        return false;
-    }
-    if (kill(backboardd_pid, SIGTERM) != ERR_SUCCESS) {
-        util_info("Unable to terminate backboardd.");
-        return false;
-    }
-    //execCmd("/usr/bin/sbreload", NULL);
-    return true;
+    
+        pid_t backboardd_pid = pidOfProcess("/usr/libexec/backboardd");
+        if (!(backboardd_pid > 1)) {
+            //util_info("Unable to find backboardd pid.");
+            return false;
+        }
+        ourprogressMeter();ourprogressMeter();ourprogressMeter();ourprogressMeter();
+        //execCmd("/usr/bin/killall", "SpringBoard", NULL);
+        if (kill(backboardd_pid, SIGTERM) != ERR_SUCCESS) {
+           // util_info("Unable to terminate backboardd.");
+            return false;
+        }
+        //execCmd("/usr/bin/sbreload", NULL);
+        
+        //execCmd("/usr/bin/sbreload", NULL);
+        return true;
+    
 }
 
 void disableStashing()
@@ -2571,13 +2700,13 @@ void disableStashing()
     if (access("/.cydia_no_stash", F_OK) != ERR_SUCCESS) {
         // Disable stashing.
         
-        util_info("Disabling stashing...");
+        //util_info("Disabling stashing...");
         ensure_file("/.cydia_no_stash", 0, 0644);
-        util_info("Successfully disabled stashing.");
+        //util_info("Successfully disabled stashing.");
     }
 }
 
-void startAMFID() {
+void startAMFID(void) {
 /*    char dict = xpc_dictionary_create(nil, nil, 0);
     xpc_dictionary_set_uint64(dict, "subsystem", 3);
     xpc_dictionary_set_uint64(dict, "handle", UInt64(HANDLE_SYSTEM));
@@ -2599,16 +2728,16 @@ void startAMFID() {
     */
 }
 
-void createWorkingDir() {
+void createWorkingDir(void) {
     unlink("/freya");
     rmdir("/freya");
     _assert(ensure_directory("/freya", 0, 0755), @"yo wtf?", true);
 }
-void createWorkingTweakDir() {
+void createWorkingTweakDir(void) {
     unlink("/usr/lib/TweakInject/"); rmdir("/usr/lib/TweakInject/");
     _assert(ensure_directory("/usr/lib/TweakInject/", 0, 0755), @"yo tweaks?", true);
 }
-void createWorkingDir_rootless() { _assert(ensure_directory("/var/containers/Bundle/freya", 0, 755), @"yo wtf", true); }
+void createWorkingDir_rootless(void) { _assert(ensure_directory("/var/containers/Bundle/freya", 0, 755), @"yo wtf", true); }
 bool runDpkg(NSArray <NSString*> *args, bool forceDeps) {
     if ([args count] < 2) {
         LOG("%s: Nothing to do", __FUNCTION__);
@@ -2751,7 +2880,7 @@ NSArray *getPackages(const char *packageFile) {
     }//We got our array.
     return array;
 }
-void createTweakinjectRepo(){
+void createTweakinjectRepo(void){
      FILE *file;
      file = fopen("/etc/apt/sources.list.d/freya.list","w"); /* write file (create a file if it does not exist and if it does treat as empty.*/
      fprintf(file,"%s","deb https://shogunpwnd.github.io/cydia/ ./\n"); //writes
@@ -2764,7 +2893,7 @@ void createTweakinjectRepo(){
       //fprintf(file,"%s","\n"); //writes
       //fclose(file);
 }
-void createLocalRepo()
+void createLocalRepo(void)
 {
     _assert(ensure_directory("/etc/apt/freya", 0, 0755), @"Failed to extract bootstrap.", true);
     clean_file("/etc/apt/sources.list.d/freya");
@@ -2797,7 +2926,227 @@ void createLocalRepo()
     ensure_symlink("/var/lib/freya/apt/./Packages", "/var/lib/apt/lists/_var_lib_freya_apt_._Packages");
 }
 
-void yesdebsinstall() {
+void docheckra1nshit(void){
+    trust_file(@"/usr/bin/dpkg");
+    trust_file(@"/usr/bin/dpkg-deb");
+    trust_file(@"/usr/bin/dpkg-split");
+    trust_file(@"/usr/bin/tar");
+    trust_file(@"/bin/tar");
+    trust_file(@"/bin/rm");
+    removeFileIfExists("/private/etc/apt/sources.list.d/freya.list");
+    removeFileIfExists("/private/etc/apt/freya");
+    removeFileIfExists("/private/etc/apt/trusted.gpg.d");
+   // installDeb([get_debian_file(@"file_5.35-2_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"openssh_8.4-2_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"base_1-5_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"system-cmds_790.30.1-2_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"cydia_1.1.36_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"signing-certificate_0.0.1_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"uikittools_1.1.21-1_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"cydia-lproj_1.1.32~b1_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"launchctl_25_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"com.bingner.plutil_0.2.1_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"substitute.deb") UTF8String], true);
+    installDeb([get_debian_file(@"tweakinject.deb") UTF8String], true);
+    installDeb([get_debian_file(@"mobilesubstrate.deb") UTF8String], true);
+    installDeb([get_debian_file(@"firmware-sbin_0-1_all.deb") UTF8String], true);
+    installDeb([get_debian_file(@"essential_0-3_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"dpkg_1.19.7-2_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"cydia_1.1.36_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"mmaintenanced-reback_1.0-1+debug_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"com.mtac.sbshownondefaultsystemapps_1.0.0_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"diffutils_3.6-1_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"readline_8.0-1_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"trustinjector_0.4~b5_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"debianutils_4.8.6-1_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"darwintools_1.1-1_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"libssl1.1.1_1.1.1i-1_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"libssl-dev_1.1.1i-1_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"npth_1.6-1_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"xz_5.2.4-4_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"sed_4.5-1_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"shell-cmds_118-8_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"lzma_4.32.7-2_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"lz4_1.7.5-1_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"bzip2_1.0.6-1_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"ncurses5-libs_5.9-1_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"libtasn1_4.13-1_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"ncurses_6.1+20181013-1_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"libassuan_2.5.1-1_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"berkeleydb_6.2.32-1_iphoneos-arm.deb") UTF8String], true);
+   // installDeb([get_debian_file(@"ca-certificates_0.0.2_all.deb") UTF8String], true);
+    installDeb([get_debian_file(@"gnutls_3.5.19-1_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"file_5.35-2_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"libplist3_2.2.1-2_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"grep_3.1-1_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"gzip_1.9-1_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"libunistring_0.9.10-1_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"coreutils_8.31-1_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"coreutils-bin_8.31-1_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"file-cmds_220.7-1_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"nettle_3.4.1-1_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"libksba_1.3.5-1_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"libidn2_6.1.2-1_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"diskdev-cmds_593.221.1-1_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"libplist++3_2.2.1-1_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"libapt-pkg5.0_1.8.2.2-1_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"libapt_1.8.2.2-1_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"apt_1.8.2.2-1_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"libgpg-error_1.32-1_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"apt-key_1.8.2.2-1_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"profile.d_0-1_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"developer-cmds_48-1_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"libstdc++_0-1_iphoneos-arm.deb") UTF8String], true);
+
+   // installDeb([get_debian_file(@"openssl_1.1.1i-1_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"p11-kit_0.23.12-1_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"ldid_2_2.1.5-1_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"libplist_2.2.1-3_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"libplist-utils_2.2.1-1_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"libplist-dev_2.2.1-1_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"libplist++3_2.2.1-1_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"libplist++-dev_2.2.1-1_iphoneos-arm.deb") UTF8String], true);
+
+    installDeb([get_debian_file(@"openssh-client_8.4-2_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"openssh-server_8.4-2_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"openssh-global-listener_8.4-2_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"openssh_8.4-2_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"libssl1.1.1_1.1.1n-1_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"libssl-dev_1.1.1n-1_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"tar_1.33-1_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_bootstrap_file(@"cydia_1.1.37_iphoneos-arm_OG.deb") UTF8String], true);
+
+    cp("/usr/bin/ldrestart", "/freya/ldrestart");
+    int ret = systemCmd("/freya/cydiafix.sh");
+    printf("did we script cydia successfully? =%d\n", ret);
+    execCmd("/freya/rm", "-rdf", "/freya/DEBS", NULL);
+    execCmd("/usr/bin/dpkg", "--configure", "-a", NULL);
+    uicaching("uicache");
+    _assert(execCmd("/usr/bin/uicache", NULL) >= 0, localize(@"Unable to refresh icon cache."), true);
+    weneedaUICACHE = 1;
+}
+void fixingFX4u(void) {
+    pid_t pd;
+     int ret = systemCmd("/freya/cydiafix.sh");
+    printf("did we script cydia successfully? =%d\n", ret);
+    NSString *deb1 = get_bootstrap_file(@"DEEZDEBS.tar.gz");//  ///DEEZDEBS.tar.gz
+    posix_spawn(&pd, "/freya/tar", NULL, NULL, (char **)&(const char*[]){ "/freya/tar", "-xf", [deb1 UTF8String], "-C", "/freya/", NULL }, NULL);
+    waitpid(pd, NULL, 0);
+    
+    trust_file(@"/usr/bin/dpkg");
+    trust_file(@"/usr/bin/dpkg-deb");
+    trust_file(@"/usr/bin/dpkg-split");
+    trust_file(@"/usr/bin/tar");
+    trust_file(@"/bin/tar");
+    trust_file(@"/bin/rm");
+    removeFileIfExists("/private/etc/apt/sources.list.d/freya.list");
+    removeFileIfExists("/private/etc/apt/freya");
+    removeFileIfExists("/private/etc/apt/trusted.gpg.d");
+    //installDeb([get_debian_file(@"file_5.35-2_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"openssh_8.4-2_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"base_1-5_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"system-cmds_790.30.1-2_iphoneos-arm.deb") UTF8String], true);
+    
+    installDeb([get_debian_file(@"cydia_1.1.36_iphoneos-arm.deb") UTF8String], true);
+
+    installDeb([get_debian_file(@"signing-certificate_0.0.1_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"uikittools_1.1.21-1_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"cydia-lproj_1.1.32~b1_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"launchctl_25_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"com.bingner.plutil_0.2.1_iphoneos-arm.deb") UTF8String], true);
+    removeFileIfExists("/Library/MobileSubstrate/DynamicLibraries");
+    removeFileIfExists("/usr/lib/TweakInject");
+    removeFileIfExists("/usr/lib/TweakInject.dylib");
+    removeFileIfExists("/usr/lib/substrate");
+    removeFileIfExists("/etc/rc.d");
+    installDeb([get_debian_file(@"substitute.deb") UTF8String], true);
+    installDeb([get_debian_file(@"tweakinject.deb") UTF8String], true);
+    installDeb([get_debian_file(@"mobilesubstrate.deb") UTF8String], true);
+    installDeb([get_debian_file(@"firmware-sbin_0-1_all.deb") UTF8String], true);
+    installDeb([get_debian_file(@"essential_0-3_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"dpkg_1.19.7-2_iphoneos-arm.deb") UTF8String], true);
+
+    //installDeb([get_bootstrap_file(@"cydia_1.1.37_iphoneos-arm_OG.deb") UTF8String], true);
+    installDeb([get_debian_file(@"cydia_1.1.36_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"mmaintenanced-reback_1.0-1+debug_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"com.mtac.sbshownondefaultsystemapps_1.0.0_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"diskdev-cmds_593.221.1-1_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"diffutils_3.6-1_iphoneos-arm.deb") UTF8String], true);
+   // installDeb([get_debian_file(@"readline_8.0-1_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"trustinjector_0.4~b5_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"debianutils_4.8.6-1_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"darwintools_1.1-1_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"libssl1.1.1_1.1.1i-1_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"libssl-dev_1.1.1i-1_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"npth_1.6-1_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"xz_5.2.4-4_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"sed_4.5-1_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"shell-cmds_118-8_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"lzma_4.32.7-2_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"lz4_1.7.5-1_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"bzip2_1.0.6-1_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"ncurses5-libs_5.9-1_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"libtasn1_4.13-1_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"ncurses_6.1+20181013-1_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"libassuan_2.5.1-1_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"berkeleydb_6.2.32-1_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"ca-certificates_0.0.2_all.deb") UTF8String], true);
+    installDeb([get_debian_file(@"gnutls_3.5.19-1_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"file_5.35-2_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"libplist3_2.2.1-2_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"grep_3.1-1_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"gzip_1.9-1_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"libunistring_0.9.10-1_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"coreutils_8.31-1_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"coreutils-bin_8.31-1_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"file-cmds_220.7-1_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"nettle_3.4.1-1_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"libksba_1.3.5-1_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"libidn2_6.1.2-1_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"diskdev-cmds_593.221.1-1_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"libplist++3_2.2.1-1_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"libapt-pkg5.0_1.8.2.2-1_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"libapt_1.8.2.2-1_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"apt_1.8.2.2-1_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"libgpg-error_1.32-1_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"apt-key_1.8.2.2-1_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"profile.d_0-1_iphoneos-arm.deb") UTF8String], true);
+    //installDeb([get_debian_file(@"developer-cmds_48-1_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"libstdc++_0-1_iphoneos-arm.deb") UTF8String], true);
+
+    installDeb([get_debian_file(@"ldid_2_2.1.5-1_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"libplist_2.2.1-3_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"libplist-utils_2.2.1-1_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"libplist-dev_2.2.1-1_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"libplist++3_2.2.1-1_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"libplist++-dev_2.2.1-1_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"openssh-client_8.4-2_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"openssh-server_8.4-2_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"openssh-global-listener_8.4-2_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"openssh_8.4-2_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"libssl1.1.1_1.1.1n-1_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"libssl-dev_1.1.1n-1_iphoneos-arm.deb") UTF8String], true);
+
+    installDeb([get_debian_file(@"openssl_1.1.1i-1_iphoneos-arm.deb") UTF8String], true);
+    installDeb([get_debian_file(@"p11-kit_0.23.12-1_iphoneos-arm.deb") UTF8String], true);
+
+    installDeb([get_debian_file(@"tar_1.33-1_iphoneos-arm.deb") UTF8String], true);
+  
+    //extractFile(get_bootstrap_file(@"rmDevice.tar"), @"/bin");
+    //cp("/freya/rm", "/bin/rm");
+    //extractFile(get_bootstrap_file(@"rmDevice.tar"), @"/freya");
+
+    execCmd("/bin/rm", "-rdf", "/freya/DEBS", NULL);
+    cp("/usr/bin/ldrestart", "/freya/ldrestart");
+    execCmd("/usr/bin/dpkg", "--configure", "-a", NULL);
+   // _assert(clean_file("/usr/lib/libjailbreak.dylib"), localize(@"Unable to clean old libjailbreak dylib."), true);
+    disableFixfs();
+
+    weneedaUICACHE = 1;
+   // systemCmd("/usr/libexec/cydia/firmware.sh");
+    
+}
+void yesdebsinstall(void) {
 
 
     debsinstalling();
@@ -2811,235 +3160,138 @@ void yesdebsinstall() {
     trust_file(@"/bin/tar");
     execCmd("/bin/rm", "-rdf", "/bin/sh", NULL);
     execCmd("/bin/ln", "/bin/bash", "/bin/sh", NULL);
-    NSString *deb1 = get_bootstrap_file(@"DEEZDEBS.tar.gz");//  ///DEEZDEBS.tar.gz
+    /*NSString *deb1 = get_bootstrap_file(@"DEEZDEBS.tar.gz");//  ///DEEZDEBS.tar.gz
     pid_t pd;
     posix_spawn(&pd, "/freya/tar", NULL, NULL, (char **)&(const char*[]){ "/freya/tar", "-xf", [deb1 UTF8String], "-C", "/freya/", NULL }, NULL);
     waitpid(pd, NULL, 0);
+    */
     //cp(to,from);
     int checkcheckRa1nmarker1 = (file_exists("/.bootstrapped"));
     extractFile(get_bootstrap_file(@"rmDevice.tar"), @"/freya/");
    // ls("/freya/");
     //cp("/freya/rm", "/bin/rm");
 
-    execCmd("/freya/rm", "-rdf", "/bin/tar", NULL);
+    //execCmd("/freya/rm", "-rdf", "/bin/tar", NULL);
     execCmd("/bin/rm", "-rdf", "/bin/tar", NULL);
 
     cp("/bin/tar", "/freya/tar");
     trust_file(@"/bin/tar");
     trust_file(@"/freya/tar");
 
-    if (checkfsfixswitch == 1) {
-        int ret = systemCmd("/freya/cydiafix.sh");
-        printf("did we script cydia successfully? =%d\n", ret);
-        posix_spawn(&pd, "/freya/tar", NULL, NULL, (char **)&(const char*[]){ "/freya/tar", "--preserve-permissions", "-xf", [deb1 UTF8String], "-C", "/freya/", NULL }, NULL);
-        waitpid(pd, NULL, 0);
+    if (checkfsfixswitch == 1) { fixingFX4u();         saveCustomSetting(@"fixFS", 0);}
+    else { if (checkcheckRa1nmarker1 == 0) {
+        trust_file(@"/usr/bin/dpkg");
+        trust_file(@"/usr/bin/dpkg-deb");
+        trust_file(@"/usr/bin/dpkg-split");
+        trust_file(@"/usr/bin/tar");
+        trust_file(@"/bin/tar");
+        trust_file(@"/bin/rm");
+        removeFileIfExists("/private/etc/apt/sources.list.d/freya.list");
+        removeFileIfExists("/private/etc/apt/freya");
+        removeFileIfExists("/private/etc/apt/trusted.gpg.d");
+        //installDeb([get_debian_file(@"file_5.35-2_iphoneos-arm.deb") UTF8String], true);
+        installDeb([get_bootstrap_fileDEBS(@"openssh_8.4-2_iphoneos-arm.deb") UTF8String], true);
+        //installDeb([get_bootstrap_fileDEBS(@"openssh_8.4-2_iphoneos-arm.deb") UTF8String], true);
+        //installDeb([get_debian_file(@"base_1-5_iphoneos-arm.deb") UTF8String], true);
+       // installDeb([get_debian_file(@"system-cmds_790.30.1-2_iphoneos-arm.deb") UTF8String], true);
+        
+        installDeb([get_bootstrap_fileDEBS(@"cydia_1.1.36_iphoneos-arm.deb") UTF8String], true);
 
-        installDeb([get_debian_file(@"substitute.deb") UTF8String], true);
-        installDeb([get_debian_file(@"tweakinject.deb") UTF8String], true);
-        installDeb([get_debian_file(@"mobilesubstrate.deb") UTF8String], true);
-    } else {
-        if (checkcheckRa1nmarker1 == 0) {
-            trust_file(@"/usr/bin/dpkg");
-            trust_file(@"/usr/bin/dpkg-deb");
-            trust_file(@"/usr/bin/dpkg-split");
-            trust_file(@"/usr/bin/tar");
-            trust_file(@"/bin/tar");
-            trust_file(@"/bin/rm");
-            removeFileIfExists("/private/etc/apt/sources.list.d/freya.list");
-            removeFileIfExists("/private/etc/apt/freya");
-            removeFileIfExists("/private/etc/apt/trusted.gpg.d");
-            installDeb([get_debian_file(@"file_5.35-2_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"openssh_8.4-2_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"base_1-5_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"system-cmds_790.30.1-2_iphoneos-arm.deb") UTF8String], true);
-            
-            installDeb([get_debian_file(@"cydia_1.1.36_iphoneos-arm.deb") UTF8String], true);
+        installDeb([get_bootstrap_fileDEBS(@"signing-certificate_0.0.1_iphoneos-arm.deb") UTF8String], true);
+        installDeb([get_bootstrap_fileDEBS(@"uikittools_1.1.21-1_iphoneos-arm.deb") UTF8String], true);
+        installDeb([get_bootstrap_fileDEBS(@"cydia-lproj_1.1.32~b1_iphoneos-arm.deb") UTF8String], true);
+        installDeb([get_bootstrap_fileDEBS(@"launchctl_25_iphoneos-arm.deb") UTF8String], true);
+        installDeb([get_bootstrap_fileDEBS(@"com.bingner.plutil_0.2.1_iphoneos-arm.deb") UTF8String], true);
+        installDeb([get_bootstrap_fileDEBS(@"substitute.deb") UTF8String], true);
+        installDeb([get_bootstrap_fileDEBS(@"tweakinject.deb") UTF8String], true);
+        installDeb([get_bootstrap_fileDEBS(@"mobilesubstrate.deb") UTF8String], true);
+        installDeb([get_bootstrap_fileDEBS(@"firmware-sbin_0-1_all.deb") UTF8String], true);
+        installDeb([get_bootstrap_fileDEBS(@"essential_0-3_iphoneos-arm.deb") UTF8String], true);
+        installDeb([get_bootstrap_fileDEBS(@"dpkg_1.19.7-2_iphoneos-arm.deb") UTF8String], true);
 
-            installDeb([get_debian_file(@"signing-certificate_0.0.1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"uikittools_1.1.21-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"cydia-lproj_1.1.32~b1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"launchctl_25_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"com.bingner.plutil_0.2.1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"substitute.deb") UTF8String], true);
-            installDeb([get_debian_file(@"tweakinject.deb") UTF8String], true);
-            installDeb([get_debian_file(@"mobilesubstrate.deb") UTF8String], true);
-            installDeb([get_debian_file(@"firmware-sbin_0-1_all.deb") UTF8String], true);
-            installDeb([get_debian_file(@"essential_0-3_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"dpkg_1.19.7-2_iphoneos-arm.deb") UTF8String], true);
-            //installDeb([get_bootstrap_file(@"cydia_1.1.37_iphoneos-arm_OG.deb") UTF8String], true);
-            installDeb([get_debian_file(@"cydia_1.1.36_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"mmaintenanced-reback_1.0-1+debug_iphoneos-arm.deb") UTF8String], true);
-            //installDeb([get_debian_file(@"com.mtac.sbshownondefaultsystemapps_1.0.0_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"diffutils_3.6-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"readline_8.0-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"trustinjector_0.4~b5_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"debianutils_4.8.6-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"darwintools_1.1-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"libssl1.1.1_1.1.1i-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"libssl-dev_1.1.1i-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"npth_1.6-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"xz_5.2.4-4_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"sed_4.5-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"shell-cmds_118-8_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"lzma_4.32.7-2_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"lz4_1.7.5-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"bzip2_1.0.6-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"ncurses5-libs_5.9-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"libtasn1_4.13-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"ncurses_6.1+20181013-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"libassuan_2.5.1-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"berkeleydb_6.2.32-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"ca-certificates_0.0.2_all.deb") UTF8String], true);
-            installDeb([get_debian_file(@"gnutls_3.5.19-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"file_5.35-2_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"libplist3_2.2.1-2_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"grep_3.1-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"gzip_1.9-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"libunistring_0.9.10-1_iphoneos-arm.deb") UTF8String], true);
-            //installDeb([get_debian_file(@"coreutils_8.31-1_iphoneos-arm.deb") UTF8String], true);
-            //installDeb([get_debian_file(@"coreutils-bin_8.31-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"file-cmds_220.7-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"nettle_3.4.1-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"libksba_1.3.5-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"libidn2_6.1.2-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"diskdev-cmds_593.221.1-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"libplist++3_2.2.1-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"libapt-pkg5.0_1.8.2.2-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"libapt_1.8.2.2-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"apt_1.8.2.2-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"libgpg-error_1.32-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"apt-key_1.8.2.2-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"profile.d_0-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"developer-cmds_48-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"libstdc++_0-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"ldid_2_2.1.5-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"openssh-client_8.4-2_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"openssh-server_8.4-2_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"openssh-global-listener_8.4-2_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"openssh_8.4-2_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"libssl1.1.1_1.1.1n-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"libssl-dev_1.1.1n-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"libplist_2.2.1-3_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"openssl_1.1.1i-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"p11-kit_0.23.12-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"libplist-utils_2.2.1-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"libplist-dev_2.2.1-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"libplist++3_2.2.1-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"libplist++-dev_2.2.1-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"tar_1.33-1_iphoneos-arm.deb") UTF8String], true);
-          
-            //extractFile(get_bootstrap_file(@"rmDevice.tar"), @"/bin");
-            //cp("/freya/rm", "/bin/rm");
-            //extractFile(get_bootstrap_file(@"rmDevice.tar"), @"/freya");
+        //installDeb([get_bootstrap_file(@"cydia_1.1.37_iphoneos-arm_OG.deb") UTF8String], true);
+        installDeb([get_bootstrap_fileDEBS(@"cydia_1.1.36_iphoneos-arm.deb") UTF8String], true);
+        installDeb([get_bootstrap_fileDEBS(@"mmaintenanced-reback_1.0-1+debug_iphoneos-arm.deb") UTF8String], true);
+       // installDeb([get_bootstrap_fileDEBS(@"com.mtac.sbshownondefaultsystemapps_1.0.0_iphoneos-arm.deb") UTF8String], true);
+        installDeb([get_bootstrap_fileDEBS(@"diskdev-cmds_593.221.1-1_iphoneos-arm.deb") UTF8String], true);
+        //installDeb([get_debian_file(@"diffutils_3.6-1_iphoneos-arm.deb") UTF8String], true);
+        //installDeb([get_debian_file(@"readline_8.0-1_iphoneos-arm.deb") UTF8String], true);
+        //installDeb([get_debian_file(@"trustinjector_0.4~b5_iphoneos-arm.deb") UTF8String], true);
+        //installDeb([get_debian_file(@"debianutils_4.8.6-1_iphoneos-arm.deb") UTF8String], true);
+       // installDeb([get_debian_file(@"darwintools_1.1-1_iphoneos-arm.deb") UTF8String], true);
+        installDeb([get_bootstrap_fileDEBS(@"libssl1.1.1_1.1.1i-1_iphoneos-arm.deb") UTF8String], true);
+        installDeb([get_bootstrap_fileDEBS(@"libssl-dev_1.1.1i-1_iphoneos-arm.deb") UTF8String], true);
+        //installDeb([get_debian_file(@"npth_1.6-1_iphoneos-arm.deb") UTF8String], true);
+        //installDeb([get_debian_file(@"xz_5.2.4-4_iphoneos-arm.deb") UTF8String], true);
+        //installDeb([get_debian_file(@"sed_4.5-1_iphoneos-arm.deb") UTF8String], true);
+        //installDeb([get_debian_file(@"shell-cmds_118-8_iphoneos-arm.deb") UTF8String], true);
+       // installDeb([get_debian_file(@"lzma_4.32.7-2_iphoneos-arm.deb") UTF8String], true);
+        //installDeb([get_debian_file(@"lz4_1.7.5-1_iphoneos-arm.deb") UTF8String], true);
+        //installDeb([get_bootstrap_fileDEBS(@"bzip2_1.0.6-1_iphoneos-arm.deb") UTF8String], true);
+        installDeb([get_bootstrap_fileDEBS(@"ncurses5-libs_5.9-1_iphoneos-arm.deb") UTF8String], true);
+        //installDeb([get_debian_file(@"libtasn1_4.13-1_iphoneos-arm.deb") UTF8String], true);
+        installDeb([get_bootstrap_fileDEBS(@"ncurses_6.1+20181013-1_iphoneos-arm.deb") UTF8String], true);
+        //installDeb([get_debian_file(@"libassuan_2.5.1-1_iphoneos-arm.deb") UTF8String], true);
+        //installDeb([get_debian_file(@"berkeleydb_6.2.32-1_iphoneos-arm.deb") UTF8String], true);
+        //installDeb([get_debian_file(@"ca-certificates_0.0.2_all.deb") UTF8String], true);
+        installDeb([get_bootstrap_fileDEBS(@"gnutls_3.5.19-1_iphoneos-arm.deb") UTF8String], true);
+        //installDeb([get_debian_file(@"file_5.35-2_iphoneos-arm.deb") UTF8String], true);
+        installDeb([get_bootstrap_fileDEBS(@"libplist3_2.2.1-2_iphoneos-arm.deb") UTF8String], true);
+        //installDeb([get_debian_file(@"grep_3.1-1_iphoneos-arm.deb") UTF8String], true);
+        //installDeb([get_debian_file(@"gzip_1.9-1_iphoneos-arm.deb") UTF8String], true);
+        //installDeb([get_debian_file(@"libunistring_0.9.10-1_iphoneos-arm.deb") UTF8String], true);
+        //installDeb([get_debian_file(@"coreutils_8.31-1_iphoneos-arm.deb") UTF8String], true);
+        //installDeb([get_debian_file(@"coreutils-bin_8.31-1_iphoneos-arm.deb") UTF8String], true);
+        //installDeb([get_debian_file(@"file-cmds_220.7-1_iphoneos-arm.deb") UTF8String], true);
+        //installDeb([get_debian_file(@"nettle_3.4.1-1_iphoneos-arm.deb") UTF8String], true);
+        //installDeb([get_debian_file(@"libksba_1.3.5-1_iphoneos-arm.deb") UTF8String], true);
+        //installDeb([get_debian_file(@"libidn2_6.1.2-1_iphoneos-arm.deb") UTF8String], true);
+        installDeb([get_bootstrap_fileDEBS(@"diskdev-cmds_593.221.1-1_iphoneos-arm.deb") UTF8String], true);
+        installDeb([get_bootstrap_fileDEBS(@"libplist++3_2.2.1-1_iphoneos-arm.deb") UTF8String], true);
+        installDeb([get_bootstrap_fileDEBS(@"libapt-pkg5.0_1.8.2.2-1_iphoneos-arm.deb") UTF8String], true);
+        installDeb([get_bootstrap_fileDEBS(@"libapt_1.8.2.2-1_iphoneos-arm.deb") UTF8String], true);
+        installDeb([get_bootstrap_fileDEBS(@"apt_1.8.2.2-1_iphoneos-arm.deb") UTF8String], true);
+        installDeb([get_bootstrap_fileDEBS(@"libgpg-error_1.32-1_iphoneos-arm.deb") UTF8String], true);
+        installDeb([get_bootstrap_fileDEBS(@"apt-key_1.8.2.2-1_iphoneos-arm.deb") UTF8String], true);
+        installDeb([get_bootstrap_fileDEBS(@"profile.d_0-1_iphoneos-arm.deb") UTF8String], true);
+       // installDeb([get_debian_file(@"developer-cmds_48-1_iphoneos-arm.deb") UTF8String], true);
+        installDeb([get_bootstrap_fileDEBS(@"libstdc++_0-1_iphoneos-arm.deb") UTF8String], true);
+        installDeb([get_bootstrap_fileDEBS(@"ldid_2_2.1.5-1_iphoneos-arm.deb") UTF8String], true);
+        installDeb([get_bootstrap_fileDEBS(@"libplist_2.2.1-3_iphoneos-arm.deb") UTF8String], true);
+        installDeb([get_bootstrap_fileDEBS(@"libplist-utils_2.2.1-1_iphoneos-arm.deb") UTF8String], true);
+        installDeb([get_bootstrap_fileDEBS(@"libplist-dev_2.2.1-1_iphoneos-arm.deb") UTF8String], true);
+        installDeb([get_bootstrap_fileDEBS(@"libplist++3_2.2.1-1_iphoneos-arm.deb") UTF8String], true);
+        installDeb([get_bootstrap_fileDEBS(@"libplist++-dev_2.2.1-1_iphoneos-arm.deb") UTF8String], true);
 
-            execCmd("/bin/rm", "-rdf", "/freya/DEBS", NULL);
-            cp("/usr/bin/ldrestart", "/freya/ldrestart");
-            execCmd("/usr/bin/dpkg", "--configure", "-a", NULL);
-           // _assert(clean_file("/usr/lib/libjailbreak.dylib"), localize(@"Unable to clean old libjailbreak dylib."), true);
-            _assert(execCmd("/usr/bin/uicache", NULL) >= 0, localize(@"Unable to refresh icon cache."), true);
-            weneedaUICACHE = 1;
-            systemCmd("/usr/libexec/cydia/firmware.sh");
-        } else {
-            trust_file(@"/usr/bin/dpkg");
-            trust_file(@"/usr/bin/dpkg-deb");
-            trust_file(@"/usr/bin/dpkg-split");
-            trust_file(@"/usr/bin/tar");
-            trust_file(@"/bin/tar");
-            trust_file(@"/bin/rm");
-            removeFileIfExists("/private/etc/apt/sources.list.d/freya.list");
-            removeFileIfExists("/private/etc/apt/freya");
-            removeFileIfExists("/private/etc/apt/trusted.gpg.d");
-            installDeb([get_debian_file(@"file_5.35-2_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"openssh_8.4-2_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"base_1-5_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"system-cmds_790.30.1-2_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"cydia_1.1.36_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"signing-certificate_0.0.1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"uikittools_1.1.21-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"cydia-lproj_1.1.32~b1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"launchctl_25_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"com.bingner.plutil_0.2.1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"substitute.deb") UTF8String], true);
-            installDeb([get_debian_file(@"tweakinject.deb") UTF8String], true);
-            installDeb([get_debian_file(@"mobilesubstrate.deb") UTF8String], true);
-            installDeb([get_debian_file(@"firmware-sbin_0-1_all.deb") UTF8String], true);
-            installDeb([get_debian_file(@"essential_0-3_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"dpkg_1.19.7-2_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"cydia_1.1.36_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"mmaintenanced-reback_1.0-1+debug_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"com.mtac.sbshownondefaultsystemapps_1.0.0_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"diffutils_3.6-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"readline_8.0-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"trustinjector_0.4~b5_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"debianutils_4.8.6-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"darwintools_1.1-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"libssl1.1.1_1.1.1i-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"libssl-dev_1.1.1i-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"npth_1.6-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"xz_5.2.4-4_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"sed_4.5-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"shell-cmds_118-8_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"lzma_4.32.7-2_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"lz4_1.7.5-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"bzip2_1.0.6-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"ncurses5-libs_5.9-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"libtasn1_4.13-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"ncurses_6.1+20181013-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"libassuan_2.5.1-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"berkeleydb_6.2.32-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"ca-certificates_0.0.2_all.deb") UTF8String], true);
-            installDeb([get_debian_file(@"gnutls_3.5.19-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"file_5.35-2_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"libplist3_2.2.1-2_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"grep_3.1-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"gzip_1.9-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"libunistring_0.9.10-1_iphoneos-arm.deb") UTF8String], true);
-            //installDeb([get_debian_file(@"coreutils_8.31-1_iphoneos-arm.deb") UTF8String], true);
-            //installDeb([get_debian_file(@"coreutils-bin_8.31-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"file-cmds_220.7-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"nettle_3.4.1-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"libksba_1.3.5-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"libidn2_6.1.2-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"diskdev-cmds_593.221.1-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"libplist++3_2.2.1-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"libapt-pkg5.0_1.8.2.2-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"libapt_1.8.2.2-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"apt_1.8.2.2-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"libgpg-error_1.32-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"apt-key_1.8.2.2-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"profile.d_0-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"developer-cmds_48-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"libstdc++_0-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"ldid_2_2.1.5-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"openssh-client_8.4-2_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"openssh-server_8.4-2_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"openssh-global-listener_8.4-2_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"openssh_8.4-2_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"libssl1.1.1_1.1.1n-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"libssl-dev_1.1.1n-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"libplist_2.2.1-3_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"openssl_1.1.1i-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"p11-kit_0.23.12-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"libplist-utils_2.2.1-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"libplist-dev_2.2.1-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"libplist++3_2.2.1-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"libplist++-dev_2.2.1-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_debian_file(@"tar_1.33-1_iphoneos-arm.deb") UTF8String], true);
-            installDeb([get_bootstrap_file(@"cydia_1.1.37_iphoneos-arm_OG.deb") UTF8String], true);
+        installDeb([get_bootstrap_fileDEBS(@"openssh-client_8.4-2_iphoneos-arm.deb") UTF8String], true);
+        installDeb([get_bootstrap_fileDEBS(@"openssh-server_8.4-2_iphoneos-arm.deb") UTF8String], true);
+        installDeb([get_bootstrap_fileDEBS(@"openssh-global-listener_8.4-2_iphoneos-arm.deb") UTF8String], true);
+        installDeb([get_bootstrap_fileDEBS(@"openssh_8.4-2_iphoneos-arm.deb") UTF8String], true);
+        installDeb([get_bootstrap_fileDEBS(@"libssl1.1.1_1.1.1n-1_iphoneos-arm.deb") UTF8String], true);
+        installDeb([get_bootstrap_fileDEBS(@"libssl-dev_1.1.1n-1_iphoneos-arm.deb") UTF8String], true);
 
-            cp("/usr/bin/ldrestart", "/freya/ldrestart");
-            int ret = systemCmd("/freya/cydiafix.sh");
-            printf("did we script cydia successfully? =%d\n", ret);
-            execCmd("/freya/rm", "-rdf", "/freya/DEBS", NULL);
-            execCmd("/usr/bin/dpkg", "--configure", "-a", NULL);
-            _assert(execCmd("/usr/bin/uicache", NULL) >= 0, localize(@"Unable to refresh icon cache."), true);
-            weneedaUICACHE = 1;
-        }
+        installDeb([get_bootstrap_fileDEBS(@"openssl_1.1.1i-1_iphoneos-arm.deb") UTF8String], true);
+        installDeb([get_bootstrap_fileDEBS(@"p11-kit_0.23.12-1_iphoneos-arm.deb") UTF8String], true);
+
+        installDeb([get_bootstrap_fileDEBS(@"tar_1.33-1_iphoneos-arm.deb") UTF8String], true);
+      
+        //extractFile(get_bootstrap_file(@"rmDevice.tar"), @"/bin");
+        //cp("/freya/rm", "/bin/rm");
+        //extractFile(get_bootstrap_file(@"rmDevice.tar"), @"/freya");
+
+        execCmd("/bin/rm", "-rdf", "/freya/DEBS", NULL);
+        cp("/usr/bin/ldrestart", "/freya/ldrestart");
+        execCmd("/usr/bin/dpkg", "--configure", "-a", NULL);
+       // _assert(clean_file("/usr/lib/libjailbreak.dylib"), localize(@"Unable to clean old libjailbreak dylib."), true);
+        weneedaUICACHE = 1;
+        systemCmd("/usr/libexec/cydia/firmware.sh");
+        
+    }
+    else { docheckra1nshit();}
         trust_file(@"/usr/lib/libapt-private.0.0.dylib");
         trust_file(@"/usr/lib/libapt-pkg.5.0.dylib");
         execCmd("/usr/bin/dpkg", "--configure", "-a", NULL);
     }
-    
     [[NSFileManager defaultManager] removeItemAtPath:@"/freya/DEBS" error:nil];
     [[NSFileManager defaultManager] removeItemAtPath:@"/freya/Deezdebs" error:nil];
     removeFileIfExists("/freya/DEBS_4_ios12_updates");
@@ -3047,7 +3299,7 @@ void yesdebsinstall() {
     weneedaUICACHE = 1;
 }
 
-void xpcFucker() {
+void xpcFucker(void) {
     util_info("Patching XPCPROXY...");
     const char *patchedExec = "/usr/libexec/xpcproxy.sliced";
     //Always update xpcproxy
@@ -3140,18 +3392,27 @@ void kickMe()
                 execCmd("/usr/bin/uicache", "-a", NULL); } }
         kickcheck = 1;
     }
+    update_springboard_plist();
+
+    if (weneedaUICACHE == 1) {
+        uicaching("uicache");
+        trust_file(@"/usr/bin/uicache");
+        execCmd("/usr/bin/plutil","-key", "SBShowNonDefaultSystemApps", "-value", "YES", "/var/mobile/Library/Preferences/com.apple.springboard.plist", NULL);
+
+        _assert(execCmd("/usr/bin/uicache", NULL) >= 0, localize(@"Unable to refresh icon cache."), true);
+        weneedaUICACHE = 0;
+
+    }
     if (checkforceuicacheswitch == 1) {
         uicaching("uicache");
         trust_file(@"/usr/bin/uicache");
         _assert(execCmd("/usr/bin/uicache", NULL) >= 0, localize(@"Unable to refresh icon cache."), true);
         execCmd("/usr/bin/uicache", "-a", NULL);
     }
-    update_springboard_plist();
-
     
 }
 
-void updatePayloads() {
+void updatePayloads(void) {
 
     extractamfidjbdstuff("extracting base tools waiting");
 
@@ -3165,6 +3426,7 @@ void updatePayloads() {
         unlocknvram();
         setNonce(genToSet(), TRUE);
         locknvram(); }
+
     
     if (doweneedamfidPatch == 1) {
         util_info("Amfid done fucked up already!");
@@ -3208,7 +3470,7 @@ void updatePayloads() {
        // execCmd("/bin/ls", "-la",  "/usr/lib/TweakInject/", NULL);
         removeFileIfExists("/usr/lib/TweakInject.bak");
     }
-    
+
     kickMe();
 }
 
@@ -3221,7 +3483,7 @@ void addToArray(NSString *package, NSMutableArray *array)
     [array addObject:strToAdd];
 }
 
-int ios15getrootXina() {
+int ios15getrootXina(void) {
     uint64_t self_ucred = ReadKernel64(our_procStruct_addr_exported + off_p_ucred);
     //my_ucred=self_ucred;
     uint64_t cr_posix_p = self_ucred +0x18;
@@ -3254,13 +3516,16 @@ void installCydia(bool post) {
         
         if (ourtoolsextracted == 0) {
             
+            //extractFile(get_bootstrap_file(@"aJBDofSorts.tar.gz"), @"/");
             extractFile(get_bootstrap_file(@"aJBDofSorts.tar.gz"), @"/var/freya/");
             NSString *newout = get_bootstrap_file(@"aJBDofSorts.tar.gz");
             pid_t pd;
 
             posix_spawn(&pd, "/var/freya/freya/tar", NULL, NULL, (char **)&(const char*[]){ "/var/freya/freya/tar", "--preserve-permissions", "-xvpf", [newout UTF8String], "-C", "/", NULL }, NULL);
             waitpid(pd, NULL, 0);
+            
             cp("/freya/tar", "/var/freya/freya/tar");
+            execCmd("/freya/tar", NULL);
             if (!file_exists("/freya/tar")) {
                     util_info("Failed write file on rootfs.");
                     showMSG(NSLocalizedString(@"Failed write file on rootfs, We're going to restore RootFS! then reboot your device. Better luck next time", nil), 1, 1);
@@ -3296,28 +3561,30 @@ void installCydia(bool post) {
         updatePayloads();
         thelabelbtnchange("bootstrap extracting....");
 
-        NSString *ourdir = get_bootstrap_file(@"freyastrap.tar.gz");//freyastrapSlim.tar.gz//zeusstrap
+        //NSString *ourdir = get_bootstrap_file(@"freya.tar.gz");//zeusstrap
+        NSString *ourdir = get_bootstrap_file(@"freyatarred.tar.gz");//zeusstrap
         pid_t pd;
         posix_spawn(&pd, "/freya/tar", NULL, NULL, (char **)&(const char*[]){ "/freya/tar", "--preserve-permissions", "-xvpf", [ourdir UTF8String], "-C", "/", NULL}, NULL);
         waitpid(pd, NULL, 0);
         fixspringboardPlistAndFS();
         yesdebsinstall();
 
-        //execCmd("/usr/bin/plutil","-key", "SBShowNonDefaultSystemApps", "-value", "YES", "/var/mobile/Library/Preferences/com.apple.springboard.plist", NULL);
+        execCmd("/usr/bin/plutil","-key", "SBShowNonDefaultSystemApps", "-value", "YES", "/var/mobile/Library/Preferences/com.apple.springboard.plist", NULL);
         createLocalRepo();
         //runApt(@[@"update"]);
         //runApt([@[@"-y", @"--allow-unauthenticated", @"--allow-downgrades", @"install"] arrayByAddingObjectsFromArray:@[@"--reinstall", @"cydia"]]);
         ensure_file("/.freya_installed", 0, 0644);
     }
     
+    
 }
 
-void uninstallRJB() {
+void uninstallRJB(void) {
     removeFileIfExists("/var/containers/Bundle/freya");
     showMSG(NSLocalizedString(@"freya Rootless Has Been Uninstalled! We are going to reboot your device.", nil), 1, 1);
     reboot(RB_QUICK);
 }
-void dothera1n() {
+void dothera1n(void) {
     createWorkingTweakDir();
     removeFileIfExists("/usr/lib/TweakInject");
     copyMe("/Library/MobileSubstrate/DynamicLibraries", "/usr/lib/TweakInject");//worked
@@ -3332,11 +3599,15 @@ bool checkforceuicacheswitch;
 
 void initInstall(int packagerType)
 {   //0 = Cydia //1 = Zebra
-    int f = open("/.freya_installed", O_RDONLY);
-    int fcheckra1n = (file_exists("/.bootstrapped")); //int fcheckra1n = open("/.bootstrapped", O_RDONLY);
+    //int f = open("/.freya_installed", O_RDONLY);
+    int f = file_exists("/.freya_installed");
+    int cydiaexists = file_exists("/Applications/Cydia.app/Cydia");
+    int fcheckra1n = file_exists("/.bootstrapped");//open("/.bootstrapped", O_RDONLY);
+//int fcheckra1n = open("/.bootstrapped", O_RDONLY);
+    printf("checkfixfsSwitch on:%d?", checkfsfixswitch);
     if (checkfsfixswitch == 0) {
         if (fcheckra1n == 0) {
-            if (f == -1) {
+            if ((f == 0 && cydiaexists == 0) || (f == 1 && cydiaexists == 0) || (f == 0 && cydiaexists == 1) ) {
                 installCydia(false); ourprogressMeter();
                 char *targettype = sysctlWithName("hw.targettype");
                 _assert(targettype != NULL, localize(@"Unable to get hardware targettype."), true);
@@ -3349,7 +3620,7 @@ void initInstall(int packagerType)
                 ensure_file("/.freya_installed", 0, 0644);
                 ourprogressMeter();
                 updatePayloads(); ourprogressMeter();
-            } else { //checkra1in installed
+            } else { //freya installed - enable time
                     fixspringboardPlistAndFS();
                     ourprogressMeter(); updatePayloads(); ourprogressMeter();
             }
@@ -3394,19 +3665,13 @@ void initInstall(int packagerType)
 
 void finish(bool shouldLoadTweaks)
 {
+    while((wantstoviewlog == 1 || wantstoviewlog == 2)){
     //TODO: Daemons, etc...
-    util_info("Finishing up...");
-    
-    respringing("respringing");
+    //util_info("Finishing up...");
     disableStashing();
-    removeFileIfExists("/bin/launchctl");
-    //Set Permissions
-//    copyMe("/freya/inject_criticald", "/bin/inject_criticald");
-  //  copyMe("/freya/jtool", "/usr/local/bin/jtool");
     removeFileIfExists("/freya/jtool");
     removeFileIfExists("/freya/tar");
     removeFileIfExists("/freya/inject_criticald");
-    copyMe("/freya/launchctl", "/bin/launchctl");
     removeFileIfExists("/freya/launchctl");
     removeFileIfExists("/freya/signcert.p12");
     removeFileIfExists("/freya/default.ent");
@@ -3425,42 +3690,45 @@ void finish(bool shouldLoadTweaks)
 
     createFile("/tmp/.jailbroken_freya", 0, 0644);
     //killAMFID();
-   // execCmd("/usr/bin/plutil","-key", "SBShowNonDefaultSystemApps", "-value", "YES", "/var/mobile/Library/Preferences/com.apple.springboard.plist", NULL);
-
-    if (shouldLoadTweaks)
-    {
-        util_info("LOADING TWEAKS...");
+    execCmdL("/usr/bin/plutil","-key", "SBShowNonDefaultSystemApps", "-value", "YES", "/var/mobile/Library/Preferences/com.apple.springboard.plist", NULL);
+    //uicaching("uicache");
+    //_assert(execCmd("/usr/bin/uicache", NULL) >= 0, localize(@"Unable to refresh icon cache."), true);
+    wantstoviewlog = 0;
+    if (shouldLoadTweaks) { //util_info("LOADING TWEAKS...");
         clean_file("/var/tmp/.pspawn_disable_loader");
         chown("/Library/LaunchDaemons/com.saurik.Cydia.Startup.plist", 0, 0);
         chmod("/Library/LaunchDaemons/com.saurik.Cydia.Startup.plist", 0644);
-        
-        systemCmd("echo 'really jailbroken';"
+        systemCmdL("echo 'really jailbroken';"
                   "shopt -s nullglob;"
                   "for a in /Library/LaunchDaemons/*.plist;"
                   "do echo loading $a;"
                   "launchctl load \"$a\" ;"
                   "done; ");
-        systemCmd("for file in /etc/rc.d/*; do "
+        systemCmdL("for file in /etc/rc.d/*; do "
                   "if [[ -x \"$file\" && \"$file\" != \"/etc/rc.d/substrate\" ]]; then "
                   "\"$file\";"
                   "fi;"
                   "done");
-        systemCmd("nohup bash -c \""
+        systemCmdL("nohup bash -c \""
                   "launchctl stop com.apple.mDNSResponder ;"
                   "launchctl stop com.apple.backboardd"
                   "\" >/dev/null 2>&1 &");
     } else {
-        util_info("NOT LOADING TWEAKS...");
+        //util_info("NOT LOADING TWEAKS...");
         ensure_file("/var/tmp/.pspawn_disable_loader", 0, 0644);
-        systemCmd("nohup bash -c \""
+        systemCmdL("nohup bash -c \""
                   "launchctl stop com.apple.mDNSResponder ;"
                   "launchctl stop com.apple.backboardd"
                   "\" >/dev/null 2>&1 &");
     }
 
-    util_info("You're welcome.");
-    
+    //util_info("You're welcome.");
+    ourprogressMeter();ourprogressMeter();
+    //respringing("respringing");
+
     reBack(); //Enable this to respring your device safely.
+    }
+    
 }
 
 static void util_vprintf(const char *fmt, va_list ap);

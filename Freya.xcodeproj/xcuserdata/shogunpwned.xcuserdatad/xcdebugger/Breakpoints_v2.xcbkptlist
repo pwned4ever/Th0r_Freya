@@ -14,8 +14,8 @@
             filePath = "Freya/utils/utilsZS.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1721"
-            endingLineNumber = "1721"
+            startingLineNumber = "1833"
+            endingLineNumber = "1833"
             landmarkName = "mod_plist_file(filename)"
             landmarkType = "9">
          </BreakpointContent>
@@ -30,41 +30,9 @@
             filePath = "Freya/utils/utilsZS.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1725"
-            endingLineNumber = "1725"
+            startingLineNumber = "1837"
+            endingLineNumber = "1837"
             landmarkName = "mod_plist_file(filename)"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "8F80E49D-82A8-4728-BA1E-00349F3FB8FF"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Freya/utils/utilsZS.m"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "3266"
-            endingLineNumber = "3266"
-            landmarkName = "installCydia(post)"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "C09A7A13-B0D3-48CE-89F2-59B42575A451"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Freya/utils/utilsZS.m"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "3270"
-            endingLineNumber = "3270"
-            landmarkName = "installCydia(post)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -103,38 +71,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "A231B0DF-67F6-4614-AFC1-4E02F1E4BC74"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Freya/utils/utilsZS.m"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "3264"
-            endingLineNumber = "3264"
-            landmarkName = "installCydia(post)"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "80C27560-1AC9-4D3A-8EA5-D82600DB971C"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Freya/utils/utilsZS.m"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2318"
-            endingLineNumber = "2318"
-            landmarkName = "remountFS(shouldRestore)"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "90F7E52B-E5D2-4A80-A4B9-F90D4DD62441"
             shouldBeEnabled = "No"
             ignoreCount = "0"
@@ -158,8 +94,8 @@
             filePath = "Freya/ViewController.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "333"
-            endingLineNumber = "333"
+            startingLineNumber = "334"
+            endingLineNumber = "334"
             landmarkName = "-wannaplaymusic"
             landmarkType = "7">
          </BreakpointContent>
@@ -215,22 +151,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "84748EFA-CBD1-45A6-9ACC-56417E8D337B"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Freya/ViewController.m"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "863"
-            endingLineNumber = "863"
-            landmarkName = "wannaSliceOfMe()"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "E2582A23-5665-40A7-872D-041A514B7CF0"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
@@ -238,8 +158,8 @@
             filePath = "Freya/SettingsViewController.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1805"
-            endingLineNumber = "1805"
+            startingLineNumber = "1806"
+            endingLineNumber = "1806"
             landmarkName = "-Restore_FS_Switch_Action:"
             landmarkType = "7">
          </BreakpointContent>
@@ -254,8 +174,8 @@
             filePath = "Freya/SettingsViewController.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1948"
-            endingLineNumber = "1948"
+            startingLineNumber = "1949"
+            endingLineNumber = "1949"
             landmarkName = "-Restore_FS_Switch_Action:"
             landmarkType = "7">
          </BreakpointContent>
@@ -270,8 +190,8 @@
             filePath = "Freya/SettingsViewController.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1911"
-            endingLineNumber = "1911"
+            startingLineNumber = "1912"
+            endingLineNumber = "1912"
             landmarkName = "-Restore_FS_Switch_Action:"
             landmarkType = "7">
          </BreakpointContent>
@@ -350,8 +270,8 @@
             filePath = "Freya/lib/amfi/amfi.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1224"
-            endingLineNumber = "1224"
+            startingLineNumber = "1237"
+            endingLineNumber = "1237"
             landmarkName = "AMFIDExceptionHandler(arg)"
             landmarkType = "9">
          </BreakpointContent>
@@ -366,8 +286,8 @@
             filePath = "Freya/lib/amfi/amfi.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1173"
-            endingLineNumber = "1173"
+            startingLineNumber = "1180"
+            endingLineNumber = "1180"
             landmarkName = "AMFIDExceptionHandler(arg)"
             landmarkType = "9">
          </BreakpointContent>
@@ -382,8 +302,8 @@
             filePath = "Freya/lib/amfi/amfi.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1182"
-            endingLineNumber = "1182"
+            startingLineNumber = "1189"
+            endingLineNumber = "1189"
             landmarkName = "AMFIDExceptionHandler(arg)"
             landmarkType = "9">
          </BreakpointContent>
@@ -414,8 +334,8 @@
             filePath = "Freya/lib/amfi/amfi.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1178"
-            endingLineNumber = "1178"
+            startingLineNumber = "1185"
+            endingLineNumber = "1185"
             landmarkName = "AMFIDExceptionHandler(arg)"
             landmarkType = "9">
          </BreakpointContent>
@@ -446,8 +366,8 @@
             filePath = "Freya/lib/amfi/amfi.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1208"
-            endingLineNumber = "1208"
+            startingLineNumber = "1218"
+            endingLineNumber = "1218"
             landmarkName = "AMFIDExceptionHandler(arg)"
             landmarkType = "9">
          </BreakpointContent>
@@ -510,8 +430,8 @@
             filePath = "Freya/SettingsViewController.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1643"
-            endingLineNumber = "1643"
+            startingLineNumber = "1644"
+            endingLineNumber = "1644"
             landmarkName = "-fix_fs_switch_action:"
             landmarkType = "7">
          </BreakpointContent>
@@ -615,22 +535,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "6EAD5483-CE02-4F4A-85A5-F31ADCEAAE0D"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Freya/utils/utilsZS.m"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "3278"
-            endingLineNumber = "3278"
-            landmarkName = "installCydia(post)"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "E521F314-0976-45A7-91A3-713218FD8DD7"
             shouldBeEnabled = "No"
             ignoreCount = "0"
@@ -670,25 +574,9 @@
             filePath = "Freya/utils/utilsZS.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1742"
-            endingLineNumber = "1742"
+            startingLineNumber = "1854"
+            endingLineNumber = "1854"
             landmarkName = "justrenamesnap()"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "D3CE355A-7753-4DFD-A5AE-5F9B4EFD9D56"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Freya/lib/remount/remount.m"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "137"
-            endingLineNumber = "137"
-            landmarkName = "remount(launchd_proc)"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -702,8 +590,8 @@
             filePath = "Freya/utils/utilsZS.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1773"
-            endingLineNumber = "1773"
+            startingLineNumber = "1885"
+            endingLineNumber = "1885"
             landmarkName = "justrenamesnap()"
             landmarkType = "9">
          </BreakpointContent>
@@ -718,8 +606,8 @@
             filePath = "Freya/utils/utilsZS.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1774"
-            endingLineNumber = "1774"
+            startingLineNumber = "1886"
+            endingLineNumber = "1886"
             landmarkName = "justrenamesnap()"
             landmarkType = "9">
          </BreakpointContent>
@@ -734,8 +622,8 @@
             filePath = "Freya/utils/utilsZS.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1765"
-            endingLineNumber = "1765"
+            startingLineNumber = "1877"
+            endingLineNumber = "1877"
             landmarkName = "justrenamesnap()"
             landmarkType = "9">
          </BreakpointContent>
@@ -750,8 +638,8 @@
             filePath = "Freya/utils/utilsZS.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2207"
-            endingLineNumber = "2207"
+            startingLineNumber = "2322"
+            endingLineNumber = "2322"
             landmarkName = "preMountFS(thedisk, root_fs, snapshots, origfs)"
             landmarkType = "9">
          </BreakpointContent>
@@ -766,8 +654,8 @@
             filePath = "Freya/utils/utilsZS.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1802"
-            endingLineNumber = "1802"
+            startingLineNumber = "1915"
+            endingLineNumber = "1915"
             landmarkName = "restoreFSOLDStyle()"
             landmarkType = "9">
          </BreakpointContent>
@@ -782,8 +670,8 @@
             filePath = "Freya/utils/utilsZS.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1805"
-            endingLineNumber = "1805"
+            startingLineNumber = "1918"
+            endingLineNumber = "1918"
             landmarkName = "restoreFSOLDStyle()"
             landmarkType = "9">
          </BreakpointContent>
@@ -798,8 +686,8 @@
             filePath = "Freya/utils/utilsZS.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2138"
-            endingLineNumber = "2138"
+            startingLineNumber = "2252"
+            endingLineNumber = "2252"
             landmarkName = "renameSnapshot(rootfd, rootFsMountPoint, snapshots, origfs)"
             landmarkType = "9">
          </BreakpointContent>
@@ -814,8 +702,8 @@
             filePath = "Freya/utils/utilsZS.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2196"
-            endingLineNumber = "2196"
+            startingLineNumber = "2311"
+            endingLineNumber = "2311"
             landmarkName = "preMountFS(thedisk, root_fs, snapshots, origfs)"
             landmarkType = "9">
             <Locations>
@@ -892,8 +780,8 @@
             filePath = "Freya/utils/utilsZS.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2401"
-            endingLineNumber = "2401"
+            startingLineNumber = "2522"
+            endingLineNumber = "2522"
             landmarkName = "remountFS(shouldRestore)"
             landmarkType = "9">
          </BreakpointContent>
@@ -908,8 +796,8 @@
             filePath = "Freya/utils/utilsZS.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1813"
-            endingLineNumber = "1813"
+            startingLineNumber = "1926"
+            endingLineNumber = "1926"
             landmarkName = "restoreFSOLDStyle()"
             landmarkType = "9">
          </BreakpointContent>
@@ -924,8 +812,8 @@
             filePath = "Freya/utils/utilsZS.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1800"
-            endingLineNumber = "1800"
+            startingLineNumber = "1913"
+            endingLineNumber = "1913"
             landmarkName = "restoreFSOLDStyle()"
             landmarkType = "9">
          </BreakpointContent>
@@ -940,42 +828,10 @@
             filePath = "Freya/utils/utilsZS.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1841"
-            endingLineNumber = "1841"
+            startingLineNumber = "1954"
+            endingLineNumber = "1954"
             landmarkName = "restoreFSOLDStyle()"
             landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "74197761-761D-434E-B264-E0D90408870B"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Freya/ViewController.m"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "535"
-            endingLineNumber = "535"
-            landmarkName = "-viewDidLoad"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "16DCC85F-2805-43A6-BF4B-A5732CEAB105"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Freya/SettingsViewController.m"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "592"
-            endingLineNumber = "592"
-            landmarkName = "-viewDidLoad"
-            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -992,6 +848,501 @@
             endingLineNumber = "1616"
             landmarkName = "removingFreyaiOS()"
             landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "D31DCE94-C2EC-4099-98B8-9E815CC355FB"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Freya/utils/utilsZS.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "2299"
+            endingLineNumber = "2299"
+            landmarkName = "preMountFS(thedisk, root_fs, snapshots, origfs)"
+            landmarkType = "9">
+            <Locations>
+               <Location
+                  uuid = "D31DCE94-C2EC-4099-98B8-9E815CC355FB - 5c2ce88f625fd03a"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "preMountFS"
+                  moduleName = "freya"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/shogunpwned/Downloads/GitHub/ricklantistherickestofricks/Th0r_Freya/Freya/utils/utilsZS.m"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "2299"
+                  endingLineNumber = "2299"
+                  offsetFromSymbolStart = "60">
+               </Location>
+               <Location
+                  uuid = "D31DCE94-C2EC-4099-98B8-9E815CC355FB - 5c2ce88f625fd03a"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "preMountFS"
+                  moduleName = "freya"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/shogunpwned/Downloads/GitHub/ricklantistherickestofricks/Th0r_Freya/Freya/utils/utilsZS.m"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "2299"
+                  endingLineNumber = "2299"
+                  offsetFromSymbolStart = "84">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "948C797E-366F-4DCE-B3D3-CE44BF6A3EFE"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Freya/utils/utilsZS.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "2399"
+            endingLineNumber = "2399"
+            landmarkName = "remountFS(shouldRestore)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "7AC10B7D-3494-49B2-8025-C7AA3BAE0B10"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Freya/ViewController.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "636"
+            endingLineNumber = "636"
+            landmarkName = "-viewDidLoad"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "0B90C467-BA15-4268-B395-ABE28F5C34A9"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Freya/ViewController.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "638"
+            endingLineNumber = "638"
+            landmarkName = "-viewDidLoad"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "737EDE34-C37D-4439-8CE9-A11C703FF6CB"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Freya/ViewController.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "640"
+            endingLineNumber = "640"
+            landmarkName = "-viewDidLoad"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "737EDE34-C37D-4439-8CE9-A11C703FF6CB - 444346b96a3cafd3"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[ViewController viewDidLoad]"
+                  moduleName = "freya"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/shogunpwned/Downloads/GitHub/ricklantistherickestofricks/Th0r_Freya/Freya/ViewController.m"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "640"
+                  endingLineNumber = "640"
+                  offsetFromSymbolStart = "5792">
+               </Location>
+               <Location
+                  uuid = "737EDE34-C37D-4439-8CE9-A11C703FF6CB - 6c83ad44f3be6698"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__29-[ViewController viewDidLoad]_block_invoke_18"
+                  moduleName = "freya"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/shogunpwned/Downloads/GitHub/ricklantistherickestofricks/Th0r_Freya/Freya/ViewController.m"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "641"
+                  endingLineNumber = "641"
+                  offsetFromSymbolStart = "32">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "09118C0F-BCED-41EB-85F1-88EE154DCBF9"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Freya/utils/utilsZS.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "3143"
+            endingLineNumber = "3143"
+            landmarkName = "fixingFX4u()"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "3786DAE8-D215-4287-9C56-C378663BCA8E"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Freya/ViewController.h"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "154"
+            endingLineNumber = "154"
+            landmarkName = "disableFixfs()"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "26EADD2A-C02F-46D7-8308-6A9CD620FB49"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Freya/ViewController.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "521"
+            endingLineNumber = "521"
+            landmarkName = "-viewDidLoad"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "A525363F-542F-40A5-A0C2-E210E1259BB8"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Freya/ViewController.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "721"
+            endingLineNumber = "721"
+            landmarkName = "-viewDidLoad"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "A525363F-542F-40A5-A0C2-E210E1259BB8 - 444346b96a3ca562"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[ViewController viewDidLoad]"
+                  moduleName = "freya"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/shogunpwned/Downloads/GitHub/ricklantistherickestofricks/Th0r_Freya/Freya/ViewController.m"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "721"
+                  endingLineNumber = "721"
+                  offsetFromSymbolStart = "7188">
+               </Location>
+               <Location
+                  uuid = "A525363F-542F-40A5-A0C2-E210E1259BB8 - 6c83ad44f5a66deb"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__29-[ViewController viewDidLoad]_block_invoke_23"
+                  moduleName = "freya"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/shogunpwned/Downloads/GitHub/ricklantistherickestofricks/Th0r_Freya/Freya/ViewController.m"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "722"
+                  endingLineNumber = "722"
+                  offsetFromSymbolStart = "32">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "6DFA8901-F19D-4254-AEC9-D60FB0C93618"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Freya/utils/utilsZS.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "3657"
+            endingLineNumber = "3657"
+            landmarkName = "initInstall(packagerType)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "3A020CD0-72AF-4ADB-A3BB-1CAE89E06386"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Freya/utils/utilsZS.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "3058"
+            endingLineNumber = "3058"
+            landmarkName = "fixingFX4u()"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "C13CAF45-6B72-438C-9479-12E8C0D4A593"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Freya/utils/utilsZS.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1927"
+            endingLineNumber = "1927"
+            landmarkName = "restoreFSOLDStyle()"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "94FF9CC4-7A18-4F35-8A28-8A142E9E7B7D"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Freya/utils/utilsZS.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "3046"
+            endingLineNumber = "3046"
+            landmarkName = "fixingFX4u()"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "4F91C455-D9DF-41FD-A03C-98D9453EE399"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Freya/ViewController.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1129"
+            endingLineNumber = "1129"
+            landmarkName = "-showwaittoviewlogOKA"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "09E3015D-7D5D-419F-8797-6F92C2C2185F"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Freya/utils/utilsZS.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "2445"
+            endingLineNumber = "2445"
+            landmarkName = "remountFS(shouldRestore)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "FE807F7D-6C35-44EB-8DFB-F42FDDD0B351"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Freya/utils/utilsZS.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "2446"
+            endingLineNumber = "2446"
+            landmarkName = "remountFS(shouldRestore)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "62F00C72-91E3-4EE5-B705-08CC0409039C"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Freya/utils/utilsZS.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "2430"
+            endingLineNumber = "2430"
+            landmarkName = "remountFS(shouldRestore)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "E672997B-66E6-45C4-870B-6B8E96287659"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Freya/utils/utilsZS.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "2429"
+            endingLineNumber = "2429"
+            landmarkName = "remountFS(shouldRestore)"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "BA55BC9C-EF57-4CDD-9A61-CB31F85E668F"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Freya/utils/utilsZS.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "2432"
+            endingLineNumber = "2432"
+            landmarkName = "remountFS(shouldRestore)"
+            landmarkType = "9">
+            <Locations>
+               <Location
+                  uuid = "BA55BC9C-EF57-4CDD-9A61-CB31F85E668F - a7a5a9664f91c6b0"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "remountFS"
+                  moduleName = "freya"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/shogunpwned/Downloads/GitHub/ricklantistherickestofricks/Th0r_Freya/Freya/utils/utilsZS.m"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "2432"
+                  endingLineNumber = "2432"
+                  offsetFromSymbolStart = "1584">
+               </Location>
+               <Location
+                  uuid = "BA55BC9C-EF57-4CDD-9A61-CB31F85E668F - b3d2c3da066817e"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__remountFS_block_invoke_3"
+                  moduleName = "freya"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/shogunpwned/Downloads/GitHub/ricklantistherickestofricks/Th0r_Freya/Freya/utils/utilsZS.m"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "2432"
+                  endingLineNumber = "2432"
+                  offsetFromSymbolStart = "28">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "8F17632F-6F69-4F95-A0AE-E8F2F164968E"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Freya/utils/utilsZS.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "2433"
+            endingLineNumber = "2433"
+            landmarkName = "remountFS(shouldRestore)"
+            landmarkType = "9">
+            <Locations>
+               <Location
+                  uuid = "8F17632F-6F69-4F95-A0AE-E8F2F164968E - a7a5a9664f91c691"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "remountFS"
+                  moduleName = "freya"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/shogunpwned/Downloads/GitHub/ricklantistherickestofricks/Th0r_Freya/Freya/utils/utilsZS.m"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "2433"
+                  endingLineNumber = "2433"
+                  offsetFromSymbolStart = "1616">
+               </Location>
+               <Location
+                  uuid = "8F17632F-6F69-4F95-A0AE-E8F2F164968E - b3d2c3da066815f"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__remountFS_block_invoke_3"
+                  moduleName = "freya"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/shogunpwned/Downloads/GitHub/ricklantistherickestofricks/Th0r_Freya/Freya/utils/utilsZS.m"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "2433"
+                  endingLineNumber = "2433"
+                  offsetFromSymbolStart = "100">
+               </Location>
+               <Location
+                  uuid = "8F17632F-6F69-4F95-A0AE-E8F2F164968E - b3d2c3da066815f"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__remountFS_block_invoke_3"
+                  moduleName = "freya"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/shogunpwned/Downloads/GitHub/ricklantistherickestofricks/Th0r_Freya/Freya/utils/utilsZS.m"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "2433"
+                  endingLineNumber = "2433"
+                  offsetFromSymbolStart = "112">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
