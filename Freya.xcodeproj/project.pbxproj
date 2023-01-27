@@ -8,7 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		4F14C7B42834082700D03B72 /* post_exploit.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F14C7B32834082700D03B72 /* post_exploit.m */; };
-		601EE13129720FE4002A475C /* Zeus.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 601EE13029720FE3002A475C /* Zeus.mp3 */; };
+		60ABE93E29848F8B003DE302 /* Trust.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 60ABE93D29848F8B003DE302 /* Trust.mp3 */; };
+		60ABE94029848F97003DE302 /* Premonition.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 60ABE93F29848F97003DE302 /* Premonition.mp3 */; };
 		60FA76B92974BA6200841606 /* kapi_memory.c in Sources */ = {isa = PBXBuildFile; fileRef = 60FA76B22974BA6200841606 /* kapi_memory.c */; };
 		60FA76BA2974BA6200841606 /* IOSurface_lib.c in Sources */ = {isa = PBXBuildFile; fileRef = 60FA76B32974BA6200841606 /* IOSurface_lib.c */; };
 		60FA76BC2974BA6200841606 /* sys_darwin.c in Sources */ = {isa = PBXBuildFile; fileRef = 60FA76B52974BA6200841606 /* sys_darwin.c */; };
@@ -96,7 +97,8 @@
 
 /* Begin PBXFileReference section */
 		4F14C7B32834082700D03B72 /* post_exploit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = post_exploit.m; sourceTree = "<group>"; };
-		601EE13029720FE3002A475C /* Zeus.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = Zeus.mp3; sourceTree = "<group>"; };
+		60ABE93D29848F8B003DE302 /* Trust.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = Trust.mp3; sourceTree = "<group>"; };
+		60ABE93F29848F97003DE302 /* Premonition.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = Premonition.mp3; sourceTree = "<group>"; };
 		60FA76AD2974BA6200841606 /* kapi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kapi.h; sourceTree = "<group>"; };
 		60FA76AE2974BA6200841606 /* user_kernel_alloc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = user_kernel_alloc.h; sourceTree = "<group>"; };
 		60FA76AF2974BA6200841606 /* k_offsets.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = k_offsets.h; sourceTree = "<group>"; };
@@ -385,6 +387,8 @@
 			isa = PBXGroup;
 			children = (
 				B89BAA1A22826AA000964B6F /* Assets.xcassets */,
+				60ABE93F29848F97003DE302 /* Premonition.mp3 */,
+				60ABE93D29848F8B003DE302 /* Trust.mp3 */,
 				60FA76AB2974BA6200841606 /* mylib */,
 				B8268668228760C90062035C /* bootstrap */,
 				B8C0B7FB22837D6E0030AE1E /* exploits */,
@@ -403,7 +407,6 @@
 				F784120327E4724F00D1A7CC /* TH0R12icon.jpg */,
 				B89BAA1422826A9F00964B6F /* ViewController.h */,
 				B89BAA1522826A9F00964B6F /* ViewController.m */,
-				601EE13029720FE3002A475C /* Zeus.mp3 */,
 			);
 			path = Freya;
 			sourceTree = "<group>";
@@ -460,26 +463,26 @@
 		B8C0B806228385C80030AE1E /* utils */ = {
 			isa = PBXGroup;
 			children = (
-				B8C0B807228385CE0030AE1E /* holders */,
-				B8B3F9932283B36E000E8427 /* KernelUtils.c */,
-				B8B3F9942283B36E000E8427 /* KernelUtils.h */,
-				B8E8A9B822891CE00049F87D /* insert_dylib.c */,
-				B8E8A9B922891CE00049F87D /* insert_dylib.h */,
-				B8D6CFEE22D8DCC800437880 /* shenanigans.m */,
-				B8D6CFEF22D8DCC800437880 /* shenanigans.h */,
+				60FA76F0297B248C00841606 /* chimeraRemove.h */,
+				60FA76EE297B248200841606 /* chimeraRemove.m */,
 				B8722968230A2D2000440993 /* cpBootHash.c */,
 				B8722969230A2D2000440993 /* cpBootHash.h */,
+				60FA76EA297B243E00841606 /* electraRemove.h */,
+				60FA76E8297B243100841606 /* electraRemove.m */,
+				60FA76ED297B246800841606 /* FreyaRemove.h */,
+				60FA76EB297B245700841606 /* FreyaRemove.m */,
+				B8C0B807228385CE0030AE1E /* holders */,
+				B8E8A9B822891CE00049F87D /* insert_dylib.c */,
+				B8E8A9B922891CE00049F87D /* insert_dylib.h */,
+				B8B3F9932283B36E000E8427 /* KernelUtils.c */,
+				B8B3F9942283B36E000E8427 /* KernelUtils.h */,
+				4F14C7B32834082700D03B72 /* post_exploit.m */,
+				B8D6CFEF22D8DCC800437880 /* shenanigans.h */,
+				B8D6CFEE22D8DCC800437880 /* shenanigans.m */,
+				60FA76E7297B241000841606 /* undecimusRemove.h */,
+				60FA76E5297B23F800841606 /* undecimusRemove.m */,
 				F785C78D27E3B9C800BBC4D0 /* utilsZS.h */,
 				F785C78C27E3B9C800BBC4D0 /* utilsZS.m */,
-				4F14C7B32834082700D03B72 /* post_exploit.m */,
-				60FA76E5297B23F800841606 /* undecimusRemove.m */,
-				60FA76E7297B241000841606 /* undecimusRemove.h */,
-				60FA76EE297B248200841606 /* chimeraRemove.m */,
-				60FA76F0297B248C00841606 /* chimeraRemove.h */,
-				60FA76EB297B245700841606 /* FreyaRemove.m */,
-				60FA76ED297B246800841606 /* FreyaRemove.h */,
-				60FA76E8297B243100841606 /* electraRemove.m */,
-				60FA76EA297B243E00841606 /* electraRemove.h */,
 			);
 			path = utils;
 			sourceTree = "<group>";
@@ -787,11 +790,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				B89BAA1B22826AA000964B6F /* Assets.xcassets in Resources */,
+				60ABE94029848F97003DE302 /* Premonition.mp3 in Resources */,
 				B89BAA1922826A9F00964B6F /* Main.storyboard in Resources */,
 				8850DDEA229AF1E000D18B83 /* LaunchScreen.storyboard in Resources */,
 				F7B0BCFA27FD32FA00E3625A /* freyaicestaff.jpg in Resources */,
-				601EE13129720FE4002A475C /* Zeus.mp3 in Resources */,
 				B8268669228760C90062035C /* bootstrap in Resources */,
+				60ABE93E29848F8B003DE302 /* Trust.mp3 in Resources */,
 				F784120427E4724F00D1A7CC /* TH0R12icon.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1023,7 +1027,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1.3.1;
+				CURRENT_PROJECT_VERSION = 1.3.2;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Freya/Info.plist;
@@ -1038,7 +1042,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Freya/headers",
 				);
-				MARKETING_VERSION = 1.3.1;
+				MARKETING_VERSION = 1.3.2;
 				OTHER_LDFLAGS = (
 					"-framework",
 					IOKit,
@@ -1060,7 +1064,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1.3.1;
+				CURRENT_PROJECT_VERSION = 1.3.2;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Freya/Info.plist;
@@ -1075,7 +1079,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Freya/headers",
 				);
-				MARKETING_VERSION = 1.3.1;
+				MARKETING_VERSION = 1.3.2;
 				OTHER_LDFLAGS = (
 					"-framework",
 					IOKit,

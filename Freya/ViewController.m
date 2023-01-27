@@ -186,13 +186,13 @@ double uptime(void){
 }
 
 - (IBAction)stopbtnMusic:(id)sender {
-    NSString *music=[[NSBundle mainBundle]pathForResource:@"Zeus" ofType:@"mp3"];
+    NSString *music=[[NSBundle mainBundle]pathForResource:@"Premonition" ofType:@"mp3"];
     audioPlayer1=[[AVAudioPlayer alloc]initWithContentsOfURL:[NSURL fileURLWithPath:music]error:NULL];
     audioPlayer1.delegate=self;
     [audioPlayer1 stop];
 }
 - (IBAction)startmusic:(id)sender {
-    NSString *music=[[NSBundle mainBundle]pathForResource:@"Zeus" ofType:@"mp3"];
+    NSString *music=[[NSBundle mainBundle]pathForResource:@"Trust" ofType:@"mp3"];
     audioPlayer1=[[AVAudioPlayer alloc]initWithContentsOfURL:[NSURL fileURLWithPath:music]error:NULL];
     audioPlayer1.delegate=self;
     audioPlayer1.volume=1;
@@ -201,10 +201,10 @@ double uptime(void){
 }
 
 
-NSString *freyaversion = @"1.3.1⚡️";
-char *freyaversionnew = "1.3.1⚡️";
+NSString *freyaversion = @"1.3.2⚡️";
+char *freyaversionnew = "1.3.2⚡️";
 
-char *freyaupdateDate = "2:00PM 1/25/23";
+char *freyaupdateDate = "6:00PM 1/27/23";
 char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/tree/main/Releases/Freya.ipa";//github.com/pwned4ever/Th0r_Freya/blob/main/Releases/Freya.ipa";// "mega.nz/file/BhNxBSgJ#gNcngNQBtXS0Ipa5ivX09-jtIr7BckUhrA7YMkSFaNM"//
 
 - (void)u0alertreboot {
@@ -273,11 +273,18 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/tree/main/Releases/Fr
     NSString *device = [NSString stringWithUTF8String: get_current_deviceModel()];
     //NSString *version = [NSString stringWithUTF8String: get_current_deviceversion()];
     dispatch_async(dispatch_get_main_queue(), ^{
+        //self->_thebuttonsJBbackground.backgroundColor = [UIColor redColor];
+        //self thebuttonsJBbackground:CGRectMake(10, 100, self.
+        //self.thebuttonsJBbackground.backgroundColor;
+        
+//        self->_thebuttonsJBbackground.backgroundColor = [UIColor redColor]; CGRectMake(10, 100, self->_thebuttonsJBbackground.view.frame.size.width-20, 30);
+
         [self.devicelabel setText: [NSString stringWithFormat:localize(@"%@ - %@" ), device, [[UIDevice currentDevice] systemVersion]]];
         if (therealups == 1) {
             [self.uptimelabel setText:[NSString stringWithFormat:localize(@"uptime: %d day" ), therealups]];
         }else {
             [self.uptimelabel setText:[NSString stringWithFormat:localize(@"uptime: %d days" ), therealups]]; }
+
     });
     //(*devicemodel)];
 //    u.sysname;  /* [XSI] Name of OS */
@@ -319,7 +326,7 @@ bool wantsmusic;
         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Play Music", nil) message:NSLocalizedString(@"Would you like music to play while you wait?", nil) preferredStyle:UIAlertControllerStyleAlert];UIAlertAction *OK = [UIAlertAction actionWithTitle:NSLocalizedString(@"Yes", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
            // wantsmusic = true;
            // if (wantsmusic == true ) {//|| setplaymusic == 0
-                NSString *music=[[NSBundle mainBundle]pathForResource:@"Zeus" ofType:@"mp3"];
+                NSString *music=[[NSBundle mainBundle]pathForResource:@"Premonition" ofType:@"mp3"];
                 audioPlayer1=[[AVAudioPlayer alloc]initWithContentsOfURL:[NSURL fileURLWithPath:music]error:NULL];
                 audioPlayer1.delegate=self;
                 audioPlayer1.volume=1;
@@ -391,21 +398,44 @@ bool wantsmusic;
     currentViewController = self;
     sharedController = self;
     initSettingsIfNotExist();
+    // Pass the frame where you want to display progress bar
+    //[self setJailbreakButtonBackground:UIView.appearance = UIImageView.areAnimationsEnabled.true];
+    //:[CGRectMake(10, 100, self.view.frame.size.width-20, 30)];
+
+    // Apply colors
+    //[self setProgressBgColor:[UIColor redColor]];
+    //[self setProgressBarColor:[UIColor greenColor]];
+    //self.thebuttonsJBbackground.backgroundColor = [UIColor redColor];
+    //[self thebuttonsJBbackground:CGRectMake(10, 100, self.view.frame.size.width-20, 30)];
+
+    //CGRectMake(10, 100, self->_thebuttonsJBbackground.frame.size.width-20, 30);
+   // self->_thebuttonsJBbackground.backgroundColor.setFill;  self->_thebuttonsJBbackground.frame.size.width-20, 30;
+
+    
     dispatch_async(dispatch_get_main_queue(), ^{
         self.textView.layer.borderColor = UIColor.greenColor.CGColor;
         self.textView.text = @"";
-        //[self.textView.textColor initWithHue:10.0 saturation:100.0 brightness:100.0 alpha:1.0];
+        [self->_textView setAlpha:0.75];
+        //[self->_textView.backgroundColor initWithHue:30 saturation:40 brightness:50 alpha:1.0] ;
+
+         //backgroundColor initWithHue:30.0 saturation:70.0 brightness:50.0 alpha:0.30];
+        //self->_thebuttonsJBbackground.backgroundColor = [UIColor blackColor]; //CGRectMake(10, 100, self.view.frame.size.width-20, 30);
+        //[self->_buttontext setTitleColor:[UIColor blackColor] forState: (normal)];
+
+        //[self.textView.textColor initWithHue:10.0 saturation:20.0 brightness:50.0 alpha:1.0];
         self.textView.textContainer.lineBreakMode = NSLineBreakByCharWrapping; });
     log_UI = log_toView;
     CAGradientLayer *gradient = [CAGradientLayer layer];
     gradient.frame = self.backGroundView.bounds;
     gradient.colors = @[(id)[[UIColor colorWithRed:0.56 green:0.02 blue:0.54 alpha:1.0] CGColor],
                         (id)[[UIColor colorWithRed:0.09 green:0.45 blue:0.42 alpha:1.0] CGColor]];
+
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.progressMeterUIVIEW.layer insertSublayer: gradient atIndex:1];
+       // [self.progressMeterUIVIEW.layer insertSublayer: gradient atIndex:1];
         [self.backGroundView.layer insertSublayer:gradient atIndex:0];
         [self.thorbackgroundjpeg setHidden:NO];
         [self.thorbackgroundjpeg setAlpha: 0.4];
+        
          //@property(nonatomic) CGFloat alpha;
          //alpha set:1];
           // 1.0];
@@ -760,6 +790,55 @@ err:
 + (ViewController *)sharedController {
     return sharedController;
 }
+#pragma mark - Progress methods
+
+- (void)addProgressViewyes:(CGRect)progressFrame {
+//addProgressView:CGRectMake(10, 100, self.view.frame.size.width-20, 30)];
+
+// Apply colors
+//[self setProgressBgColor
+ 
+    UIView *addProgressView = [[UIView alloc] initWithFrame:progressFrame];
+
+    //Progress background view
+    addProgressView = [[UIView alloc] initWithFrame:CGRectMake(5, 5, addProgressView.frame.size.width-10, addProgressView.frame.size.height-10)];
+    addProgressView.backgroundColor = [UIColor redColor];
+    addProgressView.layer.cornerRadius = 4.0;
+
+    //Progress animation view
+    addProgressView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, addProgressView.frame.size.height)];
+    addProgressView.backgroundColor = [UIColor greenColor];
+    addProgressView.layer.cornerRadius = 4.0;
+
+   [addProgressView addSubview:addProgressView];
+   [addProgressView addSubview:addProgressView];
+   [self.view addSubview:addProgressView];
+}
+
+- (void)setPercentage:(int)percentage {
+
+    [UIView animateWithDuration:1.0 animations:^{
+
+        [self.jailbreakButtonBackground setFrame:CGRectMake(0,0,(self->_jailbreakButtonBackground.frame.size.width*percentage)/100,self->_jailbreakButtonBackground.frame.size.height)];
+
+    } completion:^(BOOL finished) {
+    }];
+}
+
+ - (void)setProgressBgColor:(UIColor *)color {
+     [self->_buttontext setBackgroundColor:[UIColor blueColor]];
+
+     self->_jailbreakButtonBackground.backgroundColor = [UIColor blackColor];
+ }
+
+ - (void)setProgressBarColor:(UIColor *)color {
+         [self setProgressBarColor:[UIColor redColor]];
+         self->_progressMeterUIVIEW.progressTintColor = [UIColor yellowColor];
+                    
+     //self->_jailbreakButtonBackground.backgroundColor = [UIColor greenColor];
+ }
+
+
 - (IBAction)sliceTwitterHandle:(id)sender {
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://twitter.com/sliceteam1"] options:@{} completionHandler:nil];
 }
@@ -893,8 +972,11 @@ void wannaSliceOfMe(void) { //Run The Exploit
         runOnMainQueueWithoutDeadlocking(^{
             logSlice("Jailbreaking");});
         //0 = MachSwap //1 = MachSwap2 //2 = Voucher_Swap //3 = SockPuppet //4 = timewaste
+        // Pass progress percent value here
+        
         runExploit(getExploitType());
         dothepatch();
+       // progressMeterUIVIEW
         ourprogressMeter();
         offs_init();
         getOffsets();
@@ -912,11 +994,16 @@ void wannaSliceOfMe(void) { //Run The Exploit
         term_kexecute();
         ourprogressMeter();
         //int exploit
+        loadinglaunchds("loading the ds");
+
         while(wantstoviewlog == 0){
-   // switch(wantstoviewlog) {
+   // switch(wantxstoviewlog) {
      //   case 1: { finish(loadTweaks); continue;}
        // case 0: {
             if (wantstoviewlog == 1 ){
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [ViewController.sharedController.buttontext setTitle:@"Respringing" forState: normal];
+                    respringing("yup");});
                 finish(loadTweaks);
             } else {waittoviewlogOK("hello log");
                 break;}
@@ -926,6 +1013,10 @@ void wannaSliceOfMe(void) { //Run The Exploit
         
 
         if (wantstoviewlog == 1 ){
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [ViewController.sharedController.buttontext setTitle:@"Respringing" forState: normal];
+                respringing("yup");});
+
             finish(loadTweaks);
         }
     }
@@ -974,12 +1065,25 @@ end:
 
 -(void)findingoffsoutput{
     dispatch_async(dispatch_get_main_queue(), ^{
+        self->_thebuttonsJBbackground.backgroundColor = [UIColor blackColor];
+        [self->_buttontext setTitleColor:[UIColor whiteColor] forState: (normal)];
+        self.progressMeterUIVIEW.progressTintColor = [UIColor yellowColor];
+
+        
+         //(UI_APPEARANCE_SELECTOR UIColor *):@"Finding Offsets" forState: normal]; });
         [self->_buttontext setTitle:@"Finding Offsets" forState: normal]; });
 }
 
 -(void)savedoffsoutput{
     dispatch_async(dispatch_get_main_queue(), ^{
+    self->_thebuttonsJBbackground.backgroundColor = [UIColor blackColor];
+        self.progressMeterUIVIEW.progressTintColor = [UIColor greenColor];
+
+    [self->_buttontext setTitleColor:[UIColor greenColor] forState: (normal)];
         [self->_buttontext setTitle:@"Saved Offsets" forState: normal]; });
+
+    //CGRectMake(10, 100, self.view.frame.size.width-20, 30);
+
 }
 
 -(void)wait4pad {
@@ -1033,48 +1137,115 @@ end:
 
 -(void)sploitn{
     dispatch_async(dispatch_get_main_queue(), ^{
+        //CGRectMake(10, 100, self.view.frame.size.width-20, 30);
+        //[self->_buttontext setBackgroundColor:[UIColor redColor]];
+        self->_thebuttonsJBbackground.backgroundColor = [UIColor blackColor];
+        [self->_buttontext setTitleColor:[UIColor blueColor] forState: (normal)];
+        self.progressMeterUIVIEW.progressTintColor = [UIColor blueColor];
+
         [self->_buttontext setTitle:@"exploiting" forState: normal]; });
 }
+-(void)sploitnfailed{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        //CGRectMake(10, 100, self.view.frame.size.width-20, 30);
+        //[self->_buttontext setBackgroundColor:[UIColor redColor]];
+        self->_thebuttonsJBbackground.backgroundColor = [UIColor blackColor];
+        [self->_buttontext setTitleColor:[UIColor redColor] forState: (normal)];
+         //(UIColor blackColor) forState:normal]; //WithColor:[UIColor blackColor]];
+        self.progressMeterUIVIEW.progressTintColor = [UIColor redColor];
+
+        [self->_buttontext setTitle:@"sploit failed" forState: normal]; });
+}
+
 -(void)patchnshit{
     dispatch_async(dispatch_get_main_queue(), ^{
+        self->_thebuttonsJBbackground.backgroundColor = [UIColor blueColor]; //CGRectMake(10, 100, self.view.frame.size.width-20, 30);
+        [self->_buttontext setTitleColor:[UIColor whiteColor] forState: (normal)];
+        self.progressMeterUIVIEW.progressTintColor = [UIColor redColor];
+
         [self->_buttontext setTitle:@"patching" forState: normal]; });
 }
 -(void)remountsnap{
     dispatch_async(dispatch_get_main_queue(), ^{
+        self->_thebuttonsJBbackground.backgroundColor = [UIColor blackColor]; //CGRectMake(10, 100, self.view.frame.size.width-20, 30);
+        self.progressMeterUIVIEW.progressTintColor = [UIColor redColor];
+
+        [self->_buttontext setTitleColor:[UIColor redColor] forState: (normal)];
+
         [self->_buttontext setTitle:@"remounting" forState: normal]; });
 }
 -(void)amfidjbdextract{
     runOnMainQueueWithoutDeadlocking(^{
+        self->_thebuttonsJBbackground.backgroundColor = [UIColor blackColor]; //CGRectMake(10, 100, self.view.frame.size.width-20, 30);
+        [self->_buttontext setTitleColor:[UIColor whiteColor] forState: (normal)];
+        self.progressMeterUIVIEW.progressTintColor = [UIColor yellowColor];
+
         [self.buttontext setTitle:[NSString stringWithFormat:@"Amfid patch"] forState:UIControlStateNormal]; });
 }
 -(void)updatingthejbbuttonlabel{
     runOnMainQueueWithoutDeadlocking(^{
+        self->_thebuttonsJBbackground.backgroundColor = [UIColor blackColor]; //CGRectMake(10, 100, self.view.frame.size.width-20, 30);
+        [self->_buttontext setTitleColor:[UIColor blueColor] forState: (normal)];
+        self.progressMeterUIVIEW.progressTintColor = [UIColor blueColor];
+
         [self.buttontext setTitle:[NSString stringWithFormat:@"extracting strap"] forState:UIControlStateNormal]; });
 }
 -(void)cydiafinish{
     dispatch_async(dispatch_get_main_queue(), ^{
+        self->_thebuttonsJBbackground.backgroundColor = [UIColor blackColor]; //CGRectMake(10, 100, self.view.frame.size.width-20, 30);
+        [self->_buttontext setTitleColor:[UIColor greenColor] forState: (normal)];
+        self.progressMeterUIVIEW.progressTintColor = [UIColor yellowColor];
+
         [self->_buttontext setTitle:@"cydia done" forState: normal]; });
 }
 -(void)installingDs{
     runOnMainQueueWithoutDeadlocking(^{
+        self->_thebuttonsJBbackground.backgroundColor = [UIColor blueColor]; //CGRectMake(10, 100, self.view.frame.size.width-20, 30);
+        [self->_buttontext setTitleColor:[UIColor whiteColor] forState: (normal)];
+        self.progressMeterUIVIEW.progressTintColor = [UIColor greenColor];
+
         [self.buttontext setTitle:[NSString stringWithFormat:@"installing debs"] forState:UIControlStateNormal]; });
 }
 -(void)respring{
     runOnMainQueueWithoutDeadlocking(^{
+        self->_thebuttonsJBbackground.backgroundColor = [UIColor greenColor]; //CGRectMake(10, 100, self.view.frame.size.width-20, 30);
+        [self->_buttontext setTitleColor:[UIColor blueColor] forState: (normal)];
+        self.progressMeterUIVIEW.progressTintColor = [UIColor blueColor];
+
         [self.buttontext setTitle:[NSString stringWithFormat:@"respringing"] forState:UIControlStateNormal]; });
 }
 -(void)thecacheofcaching{
     runOnMainQueueWithoutDeadlocking(^{
+        self->_thebuttonsJBbackground.backgroundColor = [UIColor blueColor]; //CGRectMake(10, 100, self.view.frame.size.width-20, 30);
+        [self->_buttontext setTitleColor:[UIColor greenColor] forState: (normal)];
+        self.progressMeterUIVIEW.progressTintColor = [UIColor greenColor];
+
         [self.buttontext setTitle:[NSString stringWithFormat:@"uicache"] forState:UIControlStateNormal]; });
+}
+-(void)launchdsareloading{
+    runOnMainQueueWithoutDeadlocking(^{
+        self->_thebuttonsJBbackground.backgroundColor = [UIColor blackColor]; //CGRectMake(10, 100, self.view.frame.size.width-20, 30);
+        [self->_buttontext setTitleColor:[UIColor redColor] forState: (normal)];
+        self.progressMeterUIVIEW.progressTintColor = [UIColor redColor];
+
+        [self.buttontext setTitle:[NSString stringWithFormat:@"loading daemons"] forState:UIControlStateNormal]; });
 }
 
 -(void)RunningTheD{
     dispatch_async(dispatch_get_main_queue(), ^{
+        self->_thebuttonsJBbackground.backgroundColor = [UIColor blueColor]; //CGRectMake(10, 100, self.view.frame.size.width-20, 30);
+        [self->_buttontext setTitleColor:[UIColor whiteColor] forState: (normal)];
+        self.progressMeterUIVIEW.progressTintColor = [UIColor orangeColor];
+
         [self->_buttontext setTitle:@"jbd waiting..." forState: normal]; });
 }
 
 -(void)spotlessclean{
     dispatch_async(dispatch_get_main_queue(), ^{
+        self->_thebuttonsJBbackground.backgroundColor = [UIColor blackColor]; //CGRectMake(10, 100, self.view.frame.size.width-20, 30);
+        [self->_buttontext setTitleColor:[UIColor yellowColor] forState: (normal)];
+        self.progressMeterUIVIEW.progressTintColor = [UIColor greenColor];
+
         [self->_buttontext setTitle:@"spotless..." forState: normal]; });
 }
 
@@ -1112,8 +1283,10 @@ end:
                 [self.buttontext setEnabled:NO];
                 [self.buttontext setHidden:NO];
                 //[self->_buttontext setTitle:@"Respringing..." forState: normal];
+                respringing("yup");
             });
             wantstoviewlog = 1;
+
             finish(loadTweaks);
 
         }];
@@ -1149,15 +1322,25 @@ end:
 }
 -(void)jbremoving{
     dispatch_async(dispatch_get_main_queue(), ^{
+        self->_thebuttonsJBbackground.backgroundColor = [UIColor blackColor]; //CGRectMake(10, 100, self.view.frame.size.width-20, 30);
+        [self->_buttontext setTitleColor:[UIColor blueColor] forState: (normal)];
+        self.progressMeterUIVIEW.progressTintColor = [UIColor greenColor];
+
         [self->_buttontext setTitle:@"Cleaning files..." forState: normal]; });
 }
 -(void)TheDstarted{
     dispatch_async(dispatch_get_main_queue(), ^{
+        self->_thebuttonsJBbackground.backgroundColor = [UIColor blackColor]; //CGRectMake(10, 100, self.view.frame.size.width-20, 30);
+        [self->_buttontext setTitleColor:[UIColor greenColor] forState: (normal)];
+        self.progressMeterUIVIEW.progressTintColor = [UIColor purpleColor];
         [self->_buttontext setTitle:@"jbd started..." forState: normal]; });
 }
 bool pressedJBbut;
 - (IBAction)jailbreak:(id)sender {
     if (wantstoviewlog >=1) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [ViewController.sharedController.buttontext setTitle:@"Respringing" forState: normal];
+            respringing("yup");});
         finish(loadTweaks);
         wantstoviewlog = 0;
     } else {
@@ -1183,6 +1366,9 @@ end:
 }
 - (IBAction)fixfsswitch:(id)sender { }
 - (IBAction)forceuisswizitch:(id)sender { }
+
+
+
 @end
 void log_toView(const char *text) {
     dispatch_sync( dispatch_get_main_queue(), ^{
@@ -1201,10 +1387,12 @@ void waittoviewlogOK(bool yuppwewaiting) { [[ViewController currentViewControlle
 void jbdfinished(char *msg){ [[ViewController currentViewController] TheDstarted]; }
 void uicaching(char *msg){ [[ViewController currentViewController] thecacheofcaching]; }
 void respringing(char *msg){ [[ViewController currentViewController] respring]; }
+void loadinglaunchds(char *msg){ [[ViewController currentViewController] launchdsareloading]; }
 void ourprogressMeter(void){ [[ViewController currentViewController] ourprogressMeterjeez]; }
 void savedoffs() { [[ViewController currentViewController] savedoffsoutput]; }
 void findoffs() { [[ViewController currentViewController] findingoffsoutput]; }
 void dothesploit() { [[ViewController currentViewController] sploitn]; }
+void failedsploit() { [[ViewController currentViewController] sploitnfailed]; }
 void juswaitn() { [[ViewController currentViewController] wait4fun]; }
 
 void juswaitn4pad() { [[ViewController currentViewController] wait4pad]; }
