@@ -78,7 +78,7 @@
                                 <rect key="frame" x="0.0" y="450" width="320" height="69"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" showsTouchWhenHighlighted="YES" lineBreakMode="tailTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Wcc-Qz-izh">
-                                        <rect key="frame" x="113" y="43.5" width="47" height="34"/>
+                                        <rect key="frame" x="1" y="43.5" width="47" height="34"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" title="🎧"/>
                                         <connections>
@@ -118,13 +118,13 @@
                                         </connections>
                                     </button>
                                     <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ZN4-X6-cIq">
-                                        <rect key="frame" x="161" y="45" width="113" height="4"/>
+                                        <rect key="frame" x="106" y="45" width="113" height="4"/>
                                         <color key="backgroundColor" systemColor="systemBlueColor"/>
                                         <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <color key="progressTintColor" red="0.11372549019607843" green="0.019607843137254902" blue="0.086274509803921567" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     </progressView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=" " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bz0-lI-Wh5">
-                                        <rect key="frame" x="115" y="50" width="205" height="19"/>
+                                        <rect key="frame" x="58" y="50" width="205" height="19"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="19" id="JJJ-xW-NRZ"/>
                                         </constraints>
@@ -135,12 +135,12 @@
                                 </subviews>
                                 <constraints>
                                     <constraint firstItem="vND-PC-IT4" firstAttribute="centerY" secondItem="mkS-6V-QDe" secondAttribute="centerY" constant="25.5" id="0cN-f7-NIj"/>
-                                    <constraint firstItem="ZN4-X6-cIq" firstAttribute="leading" secondItem="Wcc-Qz-izh" secondAttribute="trailing" constant="1" id="0ss-bG-Ikh"/>
-                                    <constraint firstItem="ZN4-X6-cIq" firstAttribute="trailing" secondItem="Vx9-qz-bUV" secondAttribute="trailing" id="7BZ-J4-uPP"/>
-                                    <constraint firstItem="bz0-lI-Wh5" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="vND-PC-IT4" secondAttribute="trailing" id="EkA-ZG-x6N"/>
-                                    <constraint firstItem="ZN4-X6-cIq" firstAttribute="centerX" secondItem="bz0-lI-Wh5" secondAttribute="centerX" id="GLQ-Lx-Z94"/>
+                                    <constraint firstItem="ZN4-X6-cIq" firstAttribute="leading" secondItem="Wcc-Qz-izh" secondAttribute="trailing" constant="58" id="0ss-bG-Ikh"/>
+                                    <constraint firstItem="ZN4-X6-cIq" firstAttribute="trailing" secondItem="Vx9-qz-bUV" secondAttribute="trailing" constant="-55" id="7BZ-J4-uPP"/>
+                                    <constraint firstItem="bz0-lI-Wh5" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="vND-PC-IT4" secondAttribute="trailing" constant="-57" id="EkA-ZG-x6N"/>
+                                    <constraint firstItem="ZN4-X6-cIq" firstAttribute="centerX" secondItem="bz0-lI-Wh5" secondAttribute="centerX" constant="2" id="GLQ-Lx-Z94"/>
                                     <constraint firstItem="bz0-lI-Wh5" firstAttribute="top" secondItem="ZN4-X6-cIq" secondAttribute="bottom" constant="1" id="Hjl-k7-dQs"/>
-                                    <constraint firstItem="ZN4-X6-cIq" firstAttribute="leading" secondItem="Vx9-qz-bUV" secondAttribute="centerX" id="Kj3-xU-iFX"/>
+                                    <constraint firstItem="ZN4-X6-cIq" firstAttribute="leading" secondItem="Vx9-qz-bUV" secondAttribute="centerX" constant="-55" id="Kj3-xU-iFX"/>
                                     <constraint firstAttribute="trailing" secondItem="vND-PC-IT4" secondAttribute="trailing" id="RrW-e8-tHs"/>
                                     <constraint firstAttribute="bottom" secondItem="bz0-lI-Wh5" secondAttribute="bottom" id="VbU-h7-AJv"/>
                                     <constraint firstItem="vND-PC-IT4" firstAttribute="centerY" secondItem="Wcc-Qz-izh" secondAttribute="centerY" constant="-0.5" id="ZRh-fF-OES"/>
