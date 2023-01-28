@@ -77,22 +77,23 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mkS-6V-QDe" userLabel="Bottom container">
                                 <rect key="frame" x="0.0" y="450" width="320" height="69"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" showsTouchWhenHighlighted="YES" lineBreakMode="tailTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Wcc-Qz-izh">
-                                        <rect key="frame" x="1" y="43.5" width="47" height="34"/>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" showsTouchWhenHighlighted="YES" lineBreakMode="tailTruncation" id="Wcc-Qz-izh">
+                                        <rect key="frame" x="0.0" y="27" width="42" height="29"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="🎧"/>
+                                        <buttonConfiguration key="configuration" style="plain" title="🎧" buttonSize="mini"/>
                                         <connections>
                                             <action selector="stopbtnMusic:" destination="ZWx-d3-ACN" eventType="touchUpInside" id="nHo-aC-209"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" buttonType="system" reversesTitleShadowWhenHighlighted="YES" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vND-PC-IT4">
-                                        <rect key="frame" x="274" y="48" width="46" height="24"/>
+                                        <rect key="frame" x="275" y="27" width="42" height="29"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" secondItem="vND-PC-IT4" secondAttribute="height" multiplier="47:34" constant="12.82352941176471" id="jV0-pg-kG0"/>
-                                            <constraint firstAttribute="height" constant="24" id="sXl-Ac-74O"/>
+                                            <constraint firstAttribute="width" secondItem="vND-PC-IT4" secondAttribute="height" multiplier="47:34" constant="1.911764705882355" id="jV0-pg-kG0"/>
+                                            <constraint firstAttribute="height" constant="29" id="sXl-Ac-74O"/>
                                         </constraints>
                                         <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="🔊"/>
+                                        <buttonConfiguration key="configuration" style="plain" title="🔊" buttonSize="mini"/>
                                         <connections>
                                             <action selector="startmusic:" destination="ZWx-d3-ACN" eventType="touchUpInside" id="pa6-j8-nP1"/>
                                         </connections>
@@ -124,7 +125,7 @@
                                         <color key="progressTintColor" red="0.11372549019607843" green="0.019607843137254902" blue="0.086274509803921567" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     </progressView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=" " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bz0-lI-Wh5">
-                                        <rect key="frame" x="58" y="50" width="205" height="19"/>
+                                        <rect key="frame" x="61" y="50" width="199" height="19"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="19" id="JJJ-xW-NRZ"/>
                                         </constraints>
@@ -134,21 +135,21 @@
                                     </label>
                                 </subviews>
                                 <constraints>
-                                    <constraint firstItem="vND-PC-IT4" firstAttribute="centerY" secondItem="mkS-6V-QDe" secondAttribute="centerY" constant="25.5" id="0cN-f7-NIj"/>
-                                    <constraint firstItem="ZN4-X6-cIq" firstAttribute="leading" secondItem="Wcc-Qz-izh" secondAttribute="trailing" constant="58" id="0ss-bG-Ikh"/>
+                                    <constraint firstItem="vND-PC-IT4" firstAttribute="centerY" secondItem="mkS-6V-QDe" secondAttribute="centerY" constant="7" id="0cN-f7-NIj"/>
+                                    <constraint firstItem="ZN4-X6-cIq" firstAttribute="leading" secondItem="Wcc-Qz-izh" secondAttribute="trailing" constant="64" id="0ss-bG-Ikh"/>
                                     <constraint firstItem="ZN4-X6-cIq" firstAttribute="trailing" secondItem="Vx9-qz-bUV" secondAttribute="trailing" constant="-55" id="7BZ-J4-uPP"/>
                                     <constraint firstItem="bz0-lI-Wh5" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="vND-PC-IT4" secondAttribute="trailing" constant="-57" id="EkA-ZG-x6N"/>
                                     <constraint firstItem="ZN4-X6-cIq" firstAttribute="centerX" secondItem="bz0-lI-Wh5" secondAttribute="centerX" constant="2" id="GLQ-Lx-Z94"/>
                                     <constraint firstItem="bz0-lI-Wh5" firstAttribute="top" secondItem="ZN4-X6-cIq" secondAttribute="bottom" constant="1" id="Hjl-k7-dQs"/>
                                     <constraint firstItem="ZN4-X6-cIq" firstAttribute="leading" secondItem="Vx9-qz-bUV" secondAttribute="centerX" constant="-55" id="Kj3-xU-iFX"/>
-                                    <constraint firstAttribute="trailing" secondItem="vND-PC-IT4" secondAttribute="trailing" id="RrW-e8-tHs"/>
+                                    <constraint firstAttribute="trailing" secondItem="vND-PC-IT4" secondAttribute="trailing" constant="3" id="RrW-e8-tHs"/>
                                     <constraint firstAttribute="bottom" secondItem="bz0-lI-Wh5" secondAttribute="bottom" id="VbU-h7-AJv"/>
-                                    <constraint firstItem="vND-PC-IT4" firstAttribute="centerY" secondItem="Wcc-Qz-izh" secondAttribute="centerY" constant="-0.5" id="ZRh-fF-OES"/>
+                                    <constraint firstItem="vND-PC-IT4" firstAttribute="centerY" secondItem="Wcc-Qz-izh" secondAttribute="centerY" id="ZRh-fF-OES"/>
                                     <constraint firstItem="Vx9-qz-bUV" firstAttribute="centerY" secondItem="mkS-6V-QDe" secondAttribute="centerY" constant="-13" id="ZXf-X7-FDd"/>
                                     <constraint firstItem="Vx9-qz-bUV" firstAttribute="top" secondItem="mkS-6V-QDe" secondAttribute="top" id="iD1-km-aCj"/>
                                     <constraint firstItem="vND-PC-IT4" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Wcc-Qz-izh" secondAttribute="trailing" constant="8" symbolic="YES" id="nP9-D6-JpO"/>
                                     <constraint firstItem="Vx9-qz-bUV" firstAttribute="centerX" secondItem="mkS-6V-QDe" secondAttribute="centerX" constant="1" id="nd5-4k-n2Z"/>
-                                    <constraint firstItem="Wcc-Qz-izh" firstAttribute="baseline" secondItem="vND-PC-IT4" secondAttribute="baseline" constant="0.5" id="oT4-Mx-lUF"/>
+                                    <constraint firstItem="Wcc-Qz-izh" firstAttribute="baseline" secondItem="vND-PC-IT4" secondAttribute="baseline" id="oT4-Mx-lUF"/>
                                     <constraint firstItem="bz0-lI-Wh5" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Wcc-Qz-izh" secondAttribute="leading" id="u0N-vy-Yq2"/>
                                 </constraints>
                             </view>
