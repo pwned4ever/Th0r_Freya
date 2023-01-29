@@ -2305,8 +2305,10 @@ void removingFreyaiOS() {
             removeFileIfExistsFREYA("/private/var/spool");
             removeFileIfExistsFREYA("/private/var/tmp/cydia.log");
             removeFileIfExistsFREYA("/private/var/tweak");
+            removeFileIfExistsFREYA("/Library/dpkg");
+            removeFileIfExistsFREYA("/Library/LaunchDaemons");
             removeFileIfExistsFREYA("/private/var/unlimapps_tweak_resources");
-
+        
         }
         else {
             printf("FAILED TO REMOVE WITH RM FREYA\n");

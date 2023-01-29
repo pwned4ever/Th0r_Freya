@@ -1186,9 +1186,9 @@ void* AMFIDExceptionHandler(void* arg) {
                         if (ret != KERN_SUCCESS){ printf("[amfid][-] Error getting thread state: %s\n", mach_error_string(ret)); continue; } //printf("[amfid][+] Got thread state!\n");//create a copy of the thread state
                         _STRUCT_ARM_THREAD_STATE64 new_state;
                         memcpy(&new_state, &old_state, sizeof(_STRUCT_ARM_THREAD_STATE64));
-                        char* filename = (char*)amfidRead(new_state.__x[23], 1024);//ios // try 26
+                        char* filename = (char*)amfidRead(new_state.__x[25], 1024);//ios // try 26
                         if(!filename) { printf("[amfid][-] No file name?"); continue; }
-                        uint8_t *orig_cdhash = (uint8_t*)amfidRead(new_state.__x[23], CS_CDHASH_LEN);
+                        uint8_t *orig_cdhash = (uint8_t*)amfidRead(new_state.__x[25], CS_CDHASH_LEN);
                         printf("[amfid][+] Got request for: %s\n", filename);
                         //printf("[amfid][*] Original cdhash: %s \n\t", orig_cdhash);
                         for (int i = 0; i < CS_CDHASH_LEN; i++) {

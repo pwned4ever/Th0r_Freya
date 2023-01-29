@@ -45,7 +45,7 @@ int back4romset;
 
 bool newTFcheckofCyforce;
 bool JUSTremovecheck;
-
+long timespentelapsed;
 extern void (*log_UI)(const char *text);
 void log_toView(const char *text);
 
@@ -201,10 +201,10 @@ double uptime(void){
 }
 
 
-NSString *freyaversion = @"1.3.2⚡️";
-char *freyaversionnew = "1.3.2⚡️";
+NSString *freyaversion = @"1.3.3⚡️";
+char *freyaversionnew = "1.3.3⚡️";
 
-char *freyaupdateDate = "6:00PM 1/27/23";
+char *freyaupdateDate = "4:45AM 1/29/23";
 char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/tree/main/Releases/Freya.ipa";//github.com/pwned4ever/Th0r_Freya/blob/main/Releases/Freya.ipa";// "mega.nz/file/BhNxBSgJ#gNcngNQBtXS0Ipa5ivX09-jtIr7BckUhrA7YMkSFaNM"//
 
 - (void)u0alertreboot {
@@ -317,6 +317,8 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/tree/main/Releases/Fr
 }
 int wantstoviewlog;
 bool wantsmusic;
+int justinstalledcydia = 0;
+
 
 - (void)wannaplaymusic {
     //dispatch_async(dispatch_get_main_queue(), ^{ });
@@ -327,12 +329,12 @@ bool wantsmusic;
            // wantsmusic = true;
            // if (wantsmusic == true ) {//|| setplaymusic == 0
                 NSString *music=[[NSBundle mainBundle]pathForResource:@"Premonition" ofType:@"mp3"];
-                audioPlayer1=[[AVAudioPlayer alloc]initWithContentsOfURL:[NSURL fileURLWithPath:music]error:NULL];
-                audioPlayer1.delegate=self;
-                audioPlayer1.volume=1;
-                audioPlayer1.numberOfLoops=-1;
+            self->audioPlayer1=[[AVAudioPlayer alloc]initWithContentsOfURL:[NSURL fileURLWithPath:music]error:NULL];
+            self->audioPlayer1.delegate=self;
+            self->audioPlayer1.volume=1;
+            self->audioPlayer1.numberOfLoops=-1;
                 setplaymusic = 1;
-                [audioPlayer1 play];
+                [self->audioPlayer1 play];
            // }
         }];
         UIAlertAction *Cancel = [UIAlertAction actionWithTitle:NSLocalizedString(@"No, quiet please", nil) style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
@@ -348,81 +350,33 @@ bool wantsmusic;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+
+    
     uint32_t flags;
-    int resultofflag = csops(getpid(), CS_OPS_STATUS, (void *)&flags, 0);
+    csops(getpid(), CS_OPS_STATUS, (void *)&flags, 0);
     int checkuncovermarker = (file_exists("/.installed_unc0ver"));
     int checkcheckRa1nmarker = (file_exists("/.bootstrapped"));
     int checkelectra = (file_exists("/.bootstrapped_electra"));
     int checkth0rmarkerFinal = (file_exists("/.freya_installed"));
     int checkchimeramarker = (file_exists("/.procursus_strapped"));
-    int checkJBRemoverMarker = (file_exists("/var/mobile/Media/.bootstrapped_Th0r_remover"));
     int checkjbdTmpRun = (file_exists("/var/tmp/suckmyd.pid"));
     int checku0slide = (file_exists("/var/tmp/slide.txt"));
     int checkcylog = (file_exists("/var/tmp/cydia.log"));
-    int checkrcd = (file_exists("/etc/rc.d/substrate"));
-    int checksuckmydrRun = (file_exists("/var/run/suckmyd.pid"));
     int checkjbdRun = (file_exists("/var/run/jailbreakd.pid"));
     int cydiaexists = file_exists("/Applications/Cydia.app/Cydia");
-
-    printf("jbd Run marker exists?: %d\n", checkjbdRun);
-    printf("cydiaexists marker exists?: %d\n", cydiaexists);
-
+   
     int checkpspawnhook = (file_exists("/var/run/pspawn_hook.ts"));
     uint32_t whatisflags = CS_PLATFORM_BINARY; // 67108864 nonjb  // jb stat 67108864
-    int permaflag = &flags;// 1869694292 jb state 1866810708  // non jb state 1873429876 / 1864992116
     int permaflagplat = flags & CS_PLATFORM_BINARY;// 0  905981956 jb state 905981956 // non jb state 1864992116
     bool boopermaflagplat = (void *)&flags; //1 statejb true //& CS_PLATFORM_BINARY;// 905981956 jb state  // non jb state 1864992116
-    printf("JUSTremovecheck exists?: %d\n",JUSTremovecheck);
-    printf("permaflagplat: %d\n", permaflagplat);
-    printf("checku0slide: %d\n", checku0slide);
-    
-    printf("resultofflag: %d\n", resultofflag);
-    printf("boopermaflagplat: %d\n", boopermaflagplat);
-    printf("whatisflags: %d\n", whatisflags);
-    printf("permaflag: %d\n", permaflag);
-    printf("Uncover marker exists?: %d\n", checkuncovermarker);
-    printf("checkcylog marker exists?: %d\n", checkcylog);
-    printf("checkrcd marker exists?: %d\n", checkrcd);
-
-    printf("checkRa1n marker exists?: %d\n", checkcheckRa1nmarker);
-    printf("pspawnhook marker exists?: %d\n", checkpspawnhook);
-    printf("JBRemover marker exists?: %d\n", checkJBRemoverMarker);
-    printf("Th0r Final marker exists?: %d\n", checkth0rmarkerFinal);
-    printf("Chimera marker exists?: %d\n", checkchimeramarker);
-    printf("electra marker exists?: %d\n", checkelectra);
-    
-    printf("jbdTmpRun marker exists?: %d\n", checkjbdTmpRun);
-    
-    printf("suckmyd Run marker exists?: %d\n", checksuckmydrRun);
     [[NSUserDefaults standardUserDefaults] setValue:@(NO) forKey:@"_UIConstraintBasedLayoutLogUnsatisfiable"];
     currentViewController = self;
     sharedController = self;
     initSettingsIfNotExist();
-    // Pass the frame where you want to display progress bar
-    //[self setJailbreakButtonBackground:UIView.appearance = UIImageView.areAnimationsEnabled.true];
-    //:[CGRectMake(10, 100, self.view.frame.size.width-20, 30)];
-
-    // Apply colors
-    //[self setProgressBgColor:[UIColor redColor]];
-    //[self setProgressBarColor:[UIColor greenColor]];
-    //self.thebuttonsJBbackground.backgroundColor = [UIColor redColor];
-    //[self thebuttonsJBbackground:CGRectMake(10, 100, self.view.frame.size.width-20, 30)];
-
-    //CGRectMake(10, 100, self->_thebuttonsJBbackground.frame.size.width-20, 30);
-   // self->_thebuttonsJBbackground.backgroundColor.setFill;  self->_thebuttonsJBbackground.frame.size.width-20, 30;
-
-    
     dispatch_async(dispatch_get_main_queue(), ^{
         self.textView.layer.borderColor = UIColor.greenColor.CGColor;
         self.textView.text = @"";
         [self->_textView setAlpha:0.75];
-        //[self->_textView.backgroundColor initWithHue:30 saturation:40 brightness:50 alpha:1.0] ;
-
-         //backgroundColor initWithHue:30.0 saturation:70.0 brightness:50.0 alpha:0.30];
-        //self->_thebuttonsJBbackground.backgroundColor = [UIColor blackColor]; //CGRectMake(10, 100, self.view.frame.size.width-20, 30);
-        //[self->_buttontext setTitleColor:[UIColor blackColor] forState: (normal)];
-
-        //[self.textView.textColor initWithHue:10.0 saturation:20.0 brightness:50.0 alpha:1.0];
         self.textView.textContainer.lineBreakMode = NSLineBreakByCharWrapping; });
     log_UI = log_toView;
     CAGradientLayer *gradient = [CAGradientLayer layer];
@@ -431,15 +385,9 @@ bool wantsmusic;
                         (id)[[UIColor colorWithRed:0.09 green:0.45 blue:0.42 alpha:1.0] CGColor]];
 
     dispatch_async(dispatch_get_main_queue(), ^{
-       // [self.progressMeterUIVIEW.layer insertSublayer: gradient atIndex:1];
         [self.backGroundView.layer insertSublayer:gradient atIndex:0];
         [self.thorbackgroundjpeg setHidden:NO];
         [self.thorbackgroundjpeg setAlpha: 0.4];
-        
-         //@property(nonatomic) CGFloat alpha;
-         //alpha set:1];
-          // 1.0];
-
     });
     if ([[NSFileManager defaultManager] fileExistsAtPath:@"/tmp/.jailbroken_freya"]) {
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -458,13 +406,8 @@ bool wantsmusic;
         [self.appverlabel setText: [NSString stringWithUTF8String:freyaversionnew]]; });
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setInteger:1 forKey:@"SetNonce"];
-    
     initSettingsIfNotExist();
-
     if (shouldLoadTweaks()) { loadTweaks = true; } else { loadTweaks = false; }
-
-    
-    
     if ((checkjbdTmpRun == 1) && (checkpspawnhook == 1) && (checkth0rmarkerFinal == 1) && (checkuncovermarker == 0) && (checkelectra == 0) && (checkchimeramarker == 0)){
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.buttontext setHidden:NO];
@@ -494,7 +437,6 @@ bool wantsmusic;
             [self.settings_buttun_bg setUserInteractionEnabled:NO];
             [self.settingsButton setEnabled:NO];
             [self.textView setHidden:YES];
-
             [self.buttontext setTitle:localize(@"𝓢Ⓗ⒜𝕽ᴱ F𝕽ᴱy⒜") forState:UIControlStateNormal];
             [self.uptimelabel setHidden:NO];
             [self.devicelabel setHidden:NO];
@@ -502,7 +444,7 @@ bool wantsmusic;
             [self.progressMeterUIVIEW setHidden:YES];
             [self.thorbackgroundjpeg setHidden:NO];
             [self.thorbackgroundjpeg setAlpha: 1.0];
-;
+
         });
         [self shareTh0r];
     } else if (checkth0rmarkerFinal ==1 && (!file_exists("/Applications/Cydia.app/Cydia"))) {
@@ -778,6 +720,7 @@ bool wantsmusic;
         newTFcheckofCyforce = FALSE;
         newTFcheckMyRemover4me = TRUE;
     }
+ 
     end:
 err:
     if (back4romset == 1) {
@@ -972,8 +915,12 @@ void wannaSliceOfMe(void) { //Run The Exploit
         runOnMainQueueWithoutDeadlocking(^{
             logSlice("Jailbreaking");});
         //0 = MachSwap //1 = MachSwap2 //2 = Voucher_Swap //3 = SockPuppet //4 = timewaste
-        // Pass progress percent value here
-        
+       
+        struct timeval begin, end;
+        long whattimeisit = gettimeofday(&begin, 0);
+        long seconds = end.tv_sec - begin.tv_sec;
+        //printf("Time measured: %.2ld.\n", whattimeisit);
+        //printf("Time measured sec: %.2ld.\n", seconds);
         runExploit(getExploitType());
         dothepatch();
        // progressMeterUIVIEW
@@ -995,6 +942,13 @@ void wannaSliceOfMe(void) { //Run The Exploit
         ourprogressMeter();
         //int exploit
         loadinglaunchds("loading the ds");
+        // Stop measuring time and calculate the elapsed time
+        gettimeofday(&end, 0);
+        seconds = end.tv_sec - begin.tv_sec;
+        double elapsed = seconds ;//+ microseconds*1e-6;
+        timespentelapsed = seconds;//elapsed;
+        printf("Time in seconds: %.2ld \n", seconds);
+        printf("Time elapsed seconds: %.2f \n", elapsed);
 
         while(wantstoviewlog == 0){
    // switch(wantxstoviewlog) {
@@ -1006,6 +960,7 @@ void wannaSliceOfMe(void) { //Run The Exploit
                     respringing("yup");});
                 finish(loadTweaks);
             } else {waittoviewlogOK("hello log");
+                
                 break;}
             //}
     //}
@@ -1274,8 +1229,17 @@ end:
 
 -(void)showwaittoviewlogOKA {
     dispatch_sync( dispatch_get_main_queue(), ^{
-        
-        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Freya Jailbreak donzo", nil) message:NSLocalizedString(@"respring NOW or view log", nil) preferredStyle:UIAlertControllerStyleAlert];
+        NSString *msg1;
+        //timespentelapsed
+       // NSString stringWithFormat:localize(@"I'm using Freya %@, to jailbreak my %@ iOS %@.\nUpdated %s. By:@%@ 🍻.\nDownload @ %s" ), freyaversion;
+        if ( justinstalledcydia == 0) {
+            msg1 = [NSString stringWithFormat:localize(@"Enabled jailbreak in %2ld seconds.\nWould you like to respring now or view the log window?"), timespentelapsed];
+        } else {
+            msg1 = [NSString stringWithFormat:localize(@"Jailbreak successfully installed cydia and completed in %2ld seconds.\nWould you like to respring now or view the log window?"), timespentelapsed];
+        }
+        //showMSG(msg1, 1, 1 );
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Freya Jailbreak", nil) message:msg1 preferredStyle:UIAlertControllerStyleAlert];
+       // UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Freya Jailbreak donzo", nil) message:NSLocalizedString(@"respring NOW or view log", nil) preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction *OK = [UIAlertAction actionWithTitle:NSLocalizedString(@"Respring", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [ViewController.sharedController.buttontext setTitle:@"Respringing" forState: normal];
@@ -1286,7 +1250,6 @@ end:
                 respringing("yup");
             });
             wantstoviewlog = 1;
-
             finish(loadTweaks);
 
         }];

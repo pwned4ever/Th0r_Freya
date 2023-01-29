@@ -363,7 +363,7 @@ ool_ports_spray_size_with_gc(mach_port_t *holding_ports, size_t *holding_port_co
             if (sprayed >= next_gc_step) {
                 next_gc_step += gc_step;
                 pthread_yield_np();
-                usleep(10000);
+                usleep(1000);
                 LOG(".");
             }
             // Send a message.

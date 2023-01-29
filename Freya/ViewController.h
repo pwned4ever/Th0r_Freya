@@ -47,8 +47,6 @@
 
 -(void)ourprogressMeterjeez;
 - (void)xFinished;
-- (void)viewjblog;
-
 
 @end
 //extern bool newTFcheckMyRemover4me;
@@ -85,8 +83,9 @@ extern bool JUSTremovecheck;
 extern int back4romset;
 extern bool pressedJBbut;
 extern int wantstoviewlog;
+extern int justinstalledcydia;
 extern bool manualrespring;
-
+extern long timespentelapsed;
 static inline void showAlertWithCancel(NSString *title, NSString *message, Boolean wait, Boolean destructive, NSString *cancel) {
     dispatch_semaphore_t semaphore;
     if (wait)
@@ -160,8 +159,6 @@ static inline void disableFixfs()
 }
 static inline void disableSetnonce()
 {
-    ViewController *controller = [ViewController sharedController];
-    //[[controller ] setOn:false];
     saveCustomSetting(@"SetNonce", 1);
 
    // [defaults setInteger:0 forKey:@"fixFS"];
