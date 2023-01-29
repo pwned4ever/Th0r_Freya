@@ -376,7 +376,7 @@ int justinstalledcydia = 0;
     dispatch_async(dispatch_get_main_queue(), ^{
         self.textView.layer.borderColor = UIColor.greenColor.CGColor;
         self.textView.text = @"";
-        [self->_textView setAlpha:0.75];
+        [self->_textView setAlpha:0.55];
         self.textView.textContainer.lineBreakMode = NSLineBreakByCharWrapping; });
     log_UI = log_toView;
     CAGradientLayer *gradient = [CAGradientLayer layer];

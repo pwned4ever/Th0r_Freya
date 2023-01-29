@@ -49,8 +49,8 @@
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="442"/>
                                 <subviews>
                                     <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="3TE-Kb-1Sa" userLabel="TextViewoutput">
-                                        <rect key="frame" x="8" y="23" width="304" height="411"/>
-                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <rect key="frame" x="8" y="245" width="304" height="200"/>
+                                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <color key="textColor" red="0.0" green="1" blue="0.70320278349376864" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
@@ -67,8 +67,9 @@
                                 </subviews>
                                 <constraints>
                                     <constraint firstItem="Mon-ks-vZq" firstAttribute="top" secondItem="1hV-NU-wdO" secondAttribute="top" constant="47" id="158-i9-YrY"/>
-                                    <constraint firstItem="3TE-Kb-1Sa" firstAttribute="bottom" secondItem="1hV-NU-wdO" secondAttribute="bottomMargin" id="2o0-NJ-JL1"/>
-                                    <constraint firstItem="3TE-Kb-1Sa" firstAttribute="top" secondItem="1hV-NU-wdO" secondAttribute="top" constant="23" id="cN4-nM-nhY"/>
+                                    <constraint firstItem="3TE-Kb-1Sa" firstAttribute="bottom" secondItem="1hV-NU-wdO" secondAttribute="bottomMargin" constant="11" id="2o0-NJ-JL1"/>
+                                    <constraint firstItem="3TE-Kb-1Sa" firstAttribute="centerY" secondItem="1hV-NU-wdO" secondAttribute="centerY" constant="124" id="XRO-6V-zSZ"/>
+                                    <constraint firstItem="3TE-Kb-1Sa" firstAttribute="top" secondItem="1hV-NU-wdO" secondAttribute="top" constant="245" id="cN4-nM-nhY"/>
                                     <constraint firstItem="3TE-Kb-1Sa" firstAttribute="leading" secondItem="1hV-NU-wdO" secondAttribute="leadingMargin" id="fPb-Kf-haX"/>
                                     <constraint firstItem="3TE-Kb-1Sa" firstAttribute="centerX" secondItem="Mon-ks-vZq" secondAttribute="centerX" id="pXA-1O-hNs"/>
                                     <constraint firstItem="Mon-ks-vZq" firstAttribute="centerX" secondItem="1hV-NU-wdO" secondAttribute="centerX" id="xep-p2-1ZQ"/>
