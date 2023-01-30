@@ -55,7 +55,6 @@ void init_Kernel_Execute(void) {
     
     uint64_t IOSurfaceRootUserClient_vtab = ReadKernel64(IOSurfaceRootUserClient_Addr); // vtables in C++ are at *object
     //
-    //printf("Found vtab: 0x%llx\n", IOSurfaceRootUserClient_vtab);
     
     // The aim is to create a fake client, with a fake vtable, and overwrite the existing client with the fake one
     // Once we do that, we can use IOConnectTrap6 to call functions in the kernel as the kernel

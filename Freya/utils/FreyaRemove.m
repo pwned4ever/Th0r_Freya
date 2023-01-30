@@ -2305,9 +2305,23 @@ void removingFreyaiOS() {
             removeFileIfExistsFREYA("/private/var/spool");
             removeFileIfExistsFREYA("/private/var/tmp/cydia.log");
             removeFileIfExistsFREYA("/private/var/tweak");
+            removeFileIfExistsFREYA("/private/var/jb");
+            removeFileIfExistsFREYA("/var/jb");
             removeFileIfExistsFREYA("/Library/dpkg");
             removeFileIfExistsFREYA("/Library/LaunchDaemons");
             removeFileIfExistsFREYA("/private/var/unlimapps_tweak_resources");
+     //   chdir("/");
+        /*int rvchecdothidden1 = execCmdFreya("/usr/bin/find", ".", "-name", "._*", "-type", "f", "-delete", NULL);
+        
+        printf("[*] Trying find . with ._* delete result = %d \n" , rvchecdothidden1);
+       */
+        // chdir("/var/");
+       /* int rvchecdothidden2 = execCmdFreya("/usr/bin/find", ".", "-name", "._*", "-type", "f", "-delete", NULL);
+        
+        printf("[*] Trying find in var  . with ._* delete result = %d \n" , rvchecdothidden2);
+*/
+        printf("[*] Removing Jailbreak with custom remover...\n");
+        
         
         }
         else {

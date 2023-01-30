@@ -79,7 +79,7 @@ bool init_kexecute()
     // Once we do that, we can use IOConnectTrap6 to call functions in the kernel as the kernel
     
     // Create the vtable in the kernel memory, then copy the existing vtable into there
-    sched_yield();
+    //sched_yield();
     fake_vtable = kmem_alloc(fake_kalloc_size);
     if (!ISADDR(fake_vtable)) return false;
     

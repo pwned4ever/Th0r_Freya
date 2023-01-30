@@ -201,10 +201,10 @@ double uptime(void){
 }
 
 
-NSString *freyaversion = @"1.3.3⚡️";
-char *freyaversionnew = "1.3.3⚡️";
+NSString *freyaversion = @"1.3.4⚡️";
+char *freyaversionnew = "1.3.4⚡️";
 
-char *freyaupdateDate = "4:45AM 1/29/23";
+char *freyaupdateDate = "5:00PM 1/29/23";
 char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/tree/main/Releases/Freya.ipa";//github.com/pwned4ever/Th0r_Freya/blob/main/Releases/Freya.ipa";// "mega.nz/file/BhNxBSgJ#gNcngNQBtXS0Ipa5ivX09-jtIr7BckUhrA7YMkSFaNM"//
 
 - (void)u0alertreboot {
@@ -273,11 +273,11 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/tree/main/Releases/Fr
     NSString *device = [NSString stringWithUTF8String: get_current_deviceModel()];
     //NSString *version = [NSString stringWithUTF8String: get_current_deviceversion()];
     dispatch_async(dispatch_get_main_queue(), ^{
-        //self->_thebuttonsJBbackground.backgroundColor = [UIColor redColor];
+        ////self->_thebuttonsJBbackground.backgroundColor = [UIColor redColor];
         //self thebuttonsJBbackground:CGRectMake(10, 100, self.
         //self.thebuttonsJBbackground.backgroundColor;
         
-//        self->_thebuttonsJBbackground.backgroundColor = [UIColor redColor]; CGRectMake(10, 100, self->_thebuttonsJBbackground.view.frame.size.width-20, 30);
+//        //self->_thebuttonsJBbackground.backgroundColor = [UIColor redColor]; CGRectMake(10, 100, //self->_thebuttonsJBbackground.view.frame.size.width-20, 30);
 
         [self.devicelabel setText: [NSString stringWithFormat:localize(@"%@ - %@" ), device, [[UIDevice currentDevice] systemVersion]]];
         if (therealups == 1) {
@@ -379,13 +379,13 @@ int justinstalledcydia = 0;
         [self->_textView setAlpha:0.55];
         self.textView.textContainer.lineBreakMode = NSLineBreakByCharWrapping; });
     log_UI = log_toView;
-    CAGradientLayer *gradient = [CAGradientLayer layer];
-    gradient.frame = self.backGroundView.bounds;
-    gradient.colors = @[(id)[[UIColor colorWithRed:0.56 green:0.02 blue:0.54 alpha:1.0] CGColor],
-                        (id)[[UIColor colorWithRed:0.09 green:0.45 blue:0.42 alpha:1.0] CGColor]];
+    //CAGradientLayer *gradient = [CAGradientLayer layer];
+   // gradient.frame = self.backGroundView.bounds;
+   // gradient.colors = @[(id)[[UIColor colorWithRed:0.56 green:0.02 blue:0.14 alpha:1.0] CGColor],
+    //                    (id)[[UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:1.0] CGColor]];
 
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.backGroundView.layer insertSublayer:gradient atIndex:0];
+       // [self.backGroundView.layer insertSublayer:gradient atIndex:0];
         [self.thorbackgroundjpeg setHidden:NO];
         [self.thorbackgroundjpeg setAlpha: 0.4];
     });
@@ -1020,7 +1020,7 @@ end:
 
 -(void)findingoffsoutput{
     dispatch_async(dispatch_get_main_queue(), ^{
-        self->_thebuttonsJBbackground.backgroundColor = [UIColor blackColor];
+        //self->_thebuttonsJBbackground.backgroundColor = [UIColor blackColor];
         [self->_buttontext setTitleColor:[UIColor whiteColor] forState: (normal)];
         self.progressMeterUIVIEW.progressTintColor = [UIColor yellowColor];
 
@@ -1031,7 +1031,7 @@ end:
 
 -(void)savedoffsoutput{
     dispatch_async(dispatch_get_main_queue(), ^{
-    self->_thebuttonsJBbackground.backgroundColor = [UIColor blackColor];
+    //self->_thebuttonsJBbackground.backgroundColor = [UIColor blackColor];
         self.progressMeterUIVIEW.progressTintColor = [UIColor greenColor];
 
     [self->_buttontext setTitleColor:[UIColor greenColor] forState: (normal)];
@@ -1094,7 +1094,7 @@ end:
     dispatch_async(dispatch_get_main_queue(), ^{
         //CGRectMake(10, 100, self.view.frame.size.width-20, 30);
         //[self->_buttontext setBackgroundColor:[UIColor redColor]];
-        self->_thebuttonsJBbackground.backgroundColor = [UIColor blackColor];
+        //self->_thebuttonsJBbackground.backgroundColor = [UIColor blackColor];
         [self->_buttontext setTitleColor:[UIColor blueColor] forState: (normal)];
         self.progressMeterUIVIEW.progressTintColor = [UIColor blueColor];
 
@@ -1104,7 +1104,7 @@ end:
     dispatch_async(dispatch_get_main_queue(), ^{
         //CGRectMake(10, 100, self.view.frame.size.width-20, 30);
         //[self->_buttontext setBackgroundColor:[UIColor redColor]];
-        self->_thebuttonsJBbackground.backgroundColor = [UIColor blackColor];
+        //self->_thebuttonsJBbackground.backgroundColor = [UIColor blackColor];
         [self->_buttontext setTitleColor:[UIColor redColor] forState: (normal)];
          //(UIColor blackColor) forState:normal]; //WithColor:[UIColor blackColor]];
         self.progressMeterUIVIEW.progressTintColor = [UIColor redColor];
@@ -1114,7 +1114,7 @@ end:
 
 -(void)patchnshit{
     dispatch_async(dispatch_get_main_queue(), ^{
-        self->_thebuttonsJBbackground.backgroundColor = [UIColor blueColor]; //CGRectMake(10, 100, self.view.frame.size.width-20, 30);
+        //self->_thebuttonsJBbackground.backgroundColor = [UIColor blueColor]; //CGRectMake(10, 100, self.view.frame.size.width-20, 30);
         [self->_buttontext setTitleColor:[UIColor whiteColor] forState: (normal)];
         self.progressMeterUIVIEW.progressTintColor = [UIColor redColor];
 
@@ -1122,7 +1122,7 @@ end:
 }
 -(void)remountsnap{
     dispatch_async(dispatch_get_main_queue(), ^{
-        self->_thebuttonsJBbackground.backgroundColor = [UIColor blackColor]; //CGRectMake(10, 100, self.view.frame.size.width-20, 30);
+        //self->_thebuttonsJBbackground.backgroundColor = [UIColor blackColor]; //CGRectMake(10, 100, self.view.frame.size.width-20, 30);
         self.progressMeterUIVIEW.progressTintColor = [UIColor redColor];
 
         [self->_buttontext setTitleColor:[UIColor redColor] forState: (normal)];
@@ -1131,7 +1131,7 @@ end:
 }
 -(void)amfidjbdextract{
     runOnMainQueueWithoutDeadlocking(^{
-        self->_thebuttonsJBbackground.backgroundColor = [UIColor blackColor]; //CGRectMake(10, 100, self.view.frame.size.width-20, 30);
+        //self->_thebuttonsJBbackground.backgroundColor = [UIColor blackColor]; //CGRectMake(10, 100, self.view.frame.size.width-20, 30);
         [self->_buttontext setTitleColor:[UIColor whiteColor] forState: (normal)];
         self.progressMeterUIVIEW.progressTintColor = [UIColor yellowColor];
 
@@ -1139,7 +1139,7 @@ end:
 }
 -(void)updatingthejbbuttonlabel{
     runOnMainQueueWithoutDeadlocking(^{
-        self->_thebuttonsJBbackground.backgroundColor = [UIColor blackColor]; //CGRectMake(10, 100, self.view.frame.size.width-20, 30);
+        //self->_thebuttonsJBbackground.backgroundColor = [UIColor blackColor]; //CGRectMake(10, 100, self.view.frame.size.width-20, 30);
         [self->_buttontext setTitleColor:[UIColor blueColor] forState: (normal)];
         self.progressMeterUIVIEW.progressTintColor = [UIColor blueColor];
 
@@ -1147,7 +1147,7 @@ end:
 }
 -(void)cydiafinish{
     dispatch_async(dispatch_get_main_queue(), ^{
-        self->_thebuttonsJBbackground.backgroundColor = [UIColor blackColor]; //CGRectMake(10, 100, self.view.frame.size.width-20, 30);
+        //self->_thebuttonsJBbackground.backgroundColor = [UIColor blackColor]; //CGRectMake(10, 100, self.view.frame.size.width-20, 30);
         [self->_buttontext setTitleColor:[UIColor greenColor] forState: (normal)];
         self.progressMeterUIVIEW.progressTintColor = [UIColor yellowColor];
 
@@ -1155,7 +1155,7 @@ end:
 }
 -(void)installingDs{
     runOnMainQueueWithoutDeadlocking(^{
-        self->_thebuttonsJBbackground.backgroundColor = [UIColor blueColor]; //CGRectMake(10, 100, self.view.frame.size.width-20, 30);
+        //self->_thebuttonsJBbackground.backgroundColor = [UIColor blueColor]; //CGRectMake(10, 100, self.view.frame.size.width-20, 30);
         [self->_buttontext setTitleColor:[UIColor whiteColor] forState: (normal)];
         self.progressMeterUIVIEW.progressTintColor = [UIColor greenColor];
 
@@ -1163,7 +1163,7 @@ end:
 }
 -(void)respring{
     runOnMainQueueWithoutDeadlocking(^{
-        self->_thebuttonsJBbackground.backgroundColor = [UIColor greenColor]; //CGRectMake(10, 100, self.view.frame.size.width-20, 30);
+        //self->_thebuttonsJBbackground.backgroundColor = [UIColor greenColor]; //CGRectMake(10, 100, self.view.frame.size.width-20, 30);
         [self->_buttontext setTitleColor:[UIColor blueColor] forState: (normal)];
         self.progressMeterUIVIEW.progressTintColor = [UIColor blueColor];
 
@@ -1171,7 +1171,7 @@ end:
 }
 -(void)thecacheofcaching{
     runOnMainQueueWithoutDeadlocking(^{
-        self->_thebuttonsJBbackground.backgroundColor = [UIColor blueColor]; //CGRectMake(10, 100, self.view.frame.size.width-20, 30);
+        //self->_thebuttonsJBbackground.backgroundColor = [UIColor blueColor]; //CGRectMake(10, 100, self.view.frame.size.width-20, 30);
         [self->_buttontext setTitleColor:[UIColor greenColor] forState: (normal)];
         self.progressMeterUIVIEW.progressTintColor = [UIColor greenColor];
 
@@ -1179,7 +1179,7 @@ end:
 }
 -(void)launchdsareloading{
     runOnMainQueueWithoutDeadlocking(^{
-        self->_thebuttonsJBbackground.backgroundColor = [UIColor blackColor]; //CGRectMake(10, 100, self.view.frame.size.width-20, 30);
+        //self->_thebuttonsJBbackground.backgroundColor = [UIColor blackColor]; //CGRectMake(10, 100, self.view.frame.size.width-20, 30);
         [self->_buttontext setTitleColor:[UIColor redColor] forState: (normal)];
         self.progressMeterUIVIEW.progressTintColor = [UIColor redColor];
 
@@ -1188,7 +1188,7 @@ end:
 
 -(void)RunningTheD{
     dispatch_async(dispatch_get_main_queue(), ^{
-        self->_thebuttonsJBbackground.backgroundColor = [UIColor blueColor]; //CGRectMake(10, 100, self.view.frame.size.width-20, 30);
+        //self->_thebuttonsJBbackground.backgroundColor = [UIColor blueColor]; //CGRectMake(10, 100, self.view.frame.size.width-20, 30);
         [self->_buttontext setTitleColor:[UIColor whiteColor] forState: (normal)];
         self.progressMeterUIVIEW.progressTintColor = [UIColor orangeColor];
 
@@ -1197,7 +1197,7 @@ end:
 
 -(void)spotlessclean{
     dispatch_async(dispatch_get_main_queue(), ^{
-        self->_thebuttonsJBbackground.backgroundColor = [UIColor blackColor]; //CGRectMake(10, 100, self.view.frame.size.width-20, 30);
+        //self->_thebuttonsJBbackground.backgroundColor = [UIColor blackColor]; //CGRectMake(10, 100, self.view.frame.size.width-20, 30);
         [self->_buttontext setTitleColor:[UIColor yellowColor] forState: (normal)];
         self.progressMeterUIVIEW.progressTintColor = [UIColor greenColor];
 
@@ -1285,7 +1285,7 @@ end:
 }
 -(void)jbremoving{
     dispatch_async(dispatch_get_main_queue(), ^{
-        self->_thebuttonsJBbackground.backgroundColor = [UIColor blackColor]; //CGRectMake(10, 100, self.view.frame.size.width-20, 30);
+        //self->_thebuttonsJBbackground.backgroundColor = [UIColor blackColor]; //CGRectMake(10, 100, self.view.frame.size.width-20, 30);
         [self->_buttontext setTitleColor:[UIColor blueColor] forState: (normal)];
         self.progressMeterUIVIEW.progressTintColor = [UIColor greenColor];
 
@@ -1293,7 +1293,7 @@ end:
 }
 -(void)TheDstarted{
     dispatch_async(dispatch_get_main_queue(), ^{
-        self->_thebuttonsJBbackground.backgroundColor = [UIColor blackColor]; //CGRectMake(10, 100, self.view.frame.size.width-20, 30);
+        //self->_thebuttonsJBbackground.backgroundColor = [UIColor blackColor]; //CGRectMake(10, 100, self.view.frame.size.width-20, 30);
         [self->_buttontext setTitleColor:[UIColor greenColor] forState: (normal)];
         self.progressMeterUIVIEW.progressTintColor = [UIColor purpleColor];
         [self->_buttontext setTitle:@"jbd started..." forState: normal]; });
