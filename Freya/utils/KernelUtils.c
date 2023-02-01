@@ -25,7 +25,7 @@ uint64_t kernelbase_exportedBYTW = 0;
 uint64_t our_kernel_procStruct_exportAstylez = 0;
 uint64_t our_kernel_taskStruct_exportAstylez = 0;
 mach_port_t tfp0_exportedBYTW = MACH_PORT_NULL;
-
+uint64_t MYadd_x0_x0_0x40_ret;
 bool found_offs = false;
 
 uint64_t task_self_addr()

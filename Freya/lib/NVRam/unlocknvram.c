@@ -106,13 +106,10 @@ int unlocknvram(void) {
         return 1;
     }
     orig_vtable = ReadKernel64(obj);
-    sched_yield();
     uint64_t vtable_xpac = kernel_xpacd(orig_vtable);
     
     uint64_t *buf = calloc(1, max_vtable_size);
     kreadOwO(vtable_xpac, buf, max_vtable_size);
-    sched_yield();
-
     // alter it
     buf[getOFVariablePerm / sizeof(uint64_t)] = \
     kernel_xpaci(buf[searchNVRAMProperty / sizeof(uint64_t)]);
@@ -138,8 +135,6 @@ int unlocknvram(void) {
 #endif // __arm64e__*/
         
     }
-    sched_yield();
-
     // and copy it back
     kwriteOwO(fake_vtable_xpac, buf, count*sizeof(*buf));
 #if __arm64e__

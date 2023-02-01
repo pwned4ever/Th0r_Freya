@@ -622,7 +622,7 @@ void removingFreyaiOS() {
         removeFileIfExistsFREYA("/.bootstrapped_Th0r");
         
         
-        execCmdFreya("/freya/rm", "-rf", "/Library/test_inject_springboard.cy");
+        execCmdFreya("/bin/rm", "-rf", "/Library/test_inject_springboard.cy");
         removeFileIfExistsFREYA("/usr/lib/SBInject.dylib");
         ////usr/local files and folders cleanup
         removeFileIfExistsFREYA("/usr/local/lib");
@@ -2307,6 +2307,8 @@ void removingFreyaiOS() {
             removeFileIfExistsFREYA("/private/var/tweak");
             removeFileIfExistsFREYA("/private/var/jb");
             removeFileIfExistsFREYA("/var/jb");
+            execCmdFreya("/bin/rm", "-rdvf", "/private/var/jb", NULL);
+            execCmdFreya("/bin/rm", "-rdvf", "/var/jb", NULL);
             removeFileIfExistsFREYA("/Library/dpkg");
             removeFileIfExistsFREYA("/Library/LaunchDaemons");
             removeFileIfExistsFREYA("/private/var/unlimapps_tweak_resources");
@@ -2320,9 +2322,7 @@ void removingFreyaiOS() {
         
         printf("[*] Trying find in var  . with ._* delete result = %d \n" , rvchecdothidden2);
 */
-        printf("[*] Removing Jailbreak with custom remover...\n");
-        
-        
+            printf("[*] Removing Jailbreak with custom remover...\n");
         }
         else {
             printf("FAILED TO REMOVE WITH RM FREYA\n");

@@ -674,14 +674,11 @@ bool machineNameContainsSet(const char *string) {
     else {
         [_loadTweaksSwitch setOn:false]; }
     if (checkth0rmarkerFinal == 1) {
-
         if (checkfsfixswitch == 1) {
             [self.fixfsswitch setOn:TRUE];
             [self.fixfsswitch setHidden:NO];
             [self.fixfsswitch setEnabled:YES];
-            [self.fixfsswitch setUserInteractionEnabled:YES];
-            
-        }
+            [self.fixfsswitch setUserInteractionEnabled:YES]; }
         else {
             [self.fixfsswitch setOn:FALSE];
             [self.fixfsswitch setHidden:NO];
@@ -1010,9 +1007,7 @@ bool machineNameContainsSet(const char *string) {
         [self.setnoncebtn setUserInteractionEnabled:NO];
         //    goto end;
     } else if ((checkth0rmarkerFinal == 1) && (checkuncovermarker == 0) && (checkchimeramarker == 0)) {
-        if (shouldRestoreFS())
-        {
-            JUSTremovecheck = true;
+        if (shouldRestoreFS()) { JUSTremovecheck = true;
             dispatch_async(dispatch_get_main_queue(), ^{
                 [ViewController.sharedController.buttontext setTitle:localize(@"Remove Freya?") forState:UIControlStateNormal];
                 [self.fixfsswitch setOn:FALSE];
@@ -1025,17 +1020,9 @@ bool machineNameContainsSet(const char *string) {
                 [self.restoreFSSwitch setUserInteractionEnabled:YES];
                 [self.setnoncebtn setEnabled:FALSE];
                 [self.setnoncebtn setHidden:TRUE];
-               // [self.loadTweaksSwitch setEnabled:NO];
-               // [self.loadTweaksSwitch setOn:FALSE];
                 [self.LoadTweakslabel setHidden:YES];
-               // [self.loadTweaksSwitch setEnabled:FALSE];
-                [self.loadTweaksSwitch setHidden:TRUE];
-                //[self.loadTweaksSwitch setUserInteractionEnabled:NO];
-
-            });
-        } else {
-            
-            JUSTremovecheck = false;
+                [self.loadTweaksSwitch setHidden:TRUE]; });}
+        else { JUSTremovecheck = false;
             if (checkfsfixswitch == 1) {
                  dispatch_async(dispatch_get_main_queue(), ^{
                          [ViewController.sharedController.buttontext setTitle:localize(@"Fix FS?") forState:UIControlStateNormal];
@@ -1096,18 +1083,20 @@ bool machineNameContainsSet(const char *string) {
                     });
                 }
             }
-        }
-    }else {
-            if (shouldRestoreFS())
-            {
-                JUSTremovecheck = true;
-                [_restoreFSSwitch setOn:true];
-                
-            } else {
-                JUSTremovecheck = false;
-                [_restoreFSSwitch setOn:false];
-            }
-        }
+        } }
+    else {
+        [self.setnoncebtn setHidden:TRUE];
+        [self.fixfsswitch setHidden:TRUE];
+        [self.ReinstallcydiaLabel setHidden:TRUE];
+        [self.forceuicacheswitch setHidden:TRUE];
+        [self.ForceuicacheLabel setHidden:TRUE];
+        if (shouldRestoreFS()) {
+            JUSTremovecheck = true;
+            [_restoreFSSwitch setOn:true]; }
+         else {
+            JUSTremovecheck = false;
+            [_restoreFSSwitch setOn:false]; }
+    }
         
     if (isRootless())
     {
@@ -1989,7 +1978,7 @@ static ViewController *currentViewController;
 
             
         } else {
-            [_setnoncebtn setHidden:NO];
+            [_setnoncebtn setHidden:TRUE];
             [_setnoncebtn setEnabled:NO];
 
             [ViewController.sharedController.buttontext setTitle:localize(@"Jailbreak") forState:UIControlStateNormal];

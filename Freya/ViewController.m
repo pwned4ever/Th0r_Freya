@@ -201,10 +201,10 @@ double uptime(void){
 }
 
 
-NSString *freyaversion = @"1.3.4⚡️";
-char *freyaversionnew = "1.3.4⚡️";
+NSString *freyaversion = @"1.3.5⚡️";
+char *freyaversionnew = "1.3.5⚡️";
 
-char *freyaupdateDate = "5:00PM 1/29/23";
+char *freyaupdateDate = "2:00AM 2/1/23";
 char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/tree/main/Releases/Freya.ipa";//github.com/pwned4ever/Th0r_Freya/blob/main/Releases/Freya.ipa";// "mega.nz/file/BhNxBSgJ#gNcngNQBtXS0Ipa5ivX09-jtIr7BckUhrA7YMkSFaNM"//
 
 - (void)u0alertreboot {
@@ -286,25 +286,29 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/tree/main/Releases/Fr
             [self.uptimelabel setText:[NSString stringWithFormat:localize(@"uptime: %d days" ), therealups]]; }
 
     });
-    //(*devicemodel)];
-//    u.sysname;  /* [XSI] Name of OS */
-  //  u.nodename; /* [XSI] Name of this network node */
-   // u.release;  /* [XSI] Release level */
-   // u.version;  /* [XSI] Version level */
-   // u.machine;
     [NSString stringWithUTF8String:u.machine];//𝓢Ⓗ⒜𝕽ᴱ F𝕽ᴱy⒜
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0ul), ^{
-        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Share Freya Jailbreak", nil) message:NSLocalizedString(@"𝓢hare Freya", nil) preferredStyle:UIAlertControllerStyleAlert];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            UIActivityViewController *activityViewController = [[UIActivityViewController alloc] initWithActivityItems:@[[NSString stringWithFormat:localize(@"I'm using Freya %@, to jailbreak my %@ iOS %@.\nUpdated %s. By:@%@ 🍻.\nDownload @ %s" ), freyaversion, [NSString stringWithUTF8String: get_current_deviceModel()], [[UIDevice currentDevice] systemVersion], freyaupdateDate, @pwned4ever_TEAM_TWITTER_HANDLE, freyaurlDownload]] applicationActivities:nil];
+            activityViewController.excludedActivityTypes = @[UIActivityTypePrint, UIActivityTypeCopyToPasteboard, UIActivityTypeAssignToContact, UIActivityTypeSaveToCameraRoll, UIActivityTypeAirDrop, UIActivityTypeOpenInIBooks, UIActivityTypeMarkupAsPDF];
+            if ([activityViewController respondsToSelector:@selector(popoverPresentationController)] ) {
+                activityViewController.popoverPresentationController.sourceView = self.buttontext; }
+            [self presentViewController:activityViewController animated:YES completion:nil];
+            [self.buttontext setEnabled:YES];
+            [self.buttontext setHidden:NO]; });
+       /* UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Share Freya Jailbreak", nil) message:NSLocalizedString(@"𝓢hare Freya", nil) preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction *OK = [UIAlertAction actionWithTitle:NSLocalizedString(@"Yes", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            dispatch_async(dispatch_get_main_queue(), ^{
+        */
+            /*dispatch_async(dispatch_get_main_queue(), ^{
                 UIActivityViewController *activityViewController = [[UIActivityViewController alloc] initWithActivityItems:@[[NSString stringWithFormat:localize(@"I'm using Freya %@, to jailbreak my %@ iOS %@.\nUpdated %s. By:@%@ 🍻.\nDownload @ %s" ), freyaversion, [NSString stringWithUTF8String: get_current_deviceModel()], [[UIDevice currentDevice] systemVersion], freyaupdateDate, @pwned4ever_TEAM_TWITTER_HANDLE, freyaurlDownload]] applicationActivities:nil];
                 activityViewController.excludedActivityTypes = @[UIActivityTypePrint, UIActivityTypeCopyToPasteboard, UIActivityTypeAssignToContact, UIActivityTypeSaveToCameraRoll, UIActivityTypeAirDrop, UIActivityTypeOpenInIBooks, UIActivityTypeMarkupAsPDF];
                 if ([activityViewController respondsToSelector:@selector(popoverPresentationController)] ) {
                     activityViewController.popoverPresentationController.sourceView = self.buttontext; }
                 [self presentViewController:activityViewController animated:YES completion:nil];
                 [self.buttontext setEnabled:YES];
-                [self.buttontext setHidden:NO]; });
-        }];
+                [self.buttontext setHidden:NO]; });*/
+        // }];
+        /*
         UIAlertAction *Cancel = [UIAlertAction actionWithTitle:NSLocalizedString(@"No thanks, maybe another time.", nil) style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.buttontext setEnabled:YES];
@@ -313,6 +317,7 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/tree/main/Releases/Fr
         [alertController addAction:Cancel];
         [alertController setPreferredAction:Cancel];
         [self presentViewController:alertController animated:YES completion:nil];
+        */
     });
 }
 int wantstoviewlog;
@@ -387,7 +392,7 @@ int justinstalledcydia = 0;
     dispatch_async(dispatch_get_main_queue(), ^{
        // [self.backGroundView.layer insertSublayer:gradient atIndex:0];
         [self.thorbackgroundjpeg setHidden:NO];
-        [self.thorbackgroundjpeg setAlpha: 0.4];
+        [self.thorbackgroundjpeg setAlpha: 1];
     });
     if ([[NSFileManager defaultManager] fileExistsAtPath:@"/tmp/.jailbroken_freya"]) {
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -428,7 +433,7 @@ int justinstalledcydia = 0;
         
         [UITabBarController setAccessibilityElementsHidden:(TRUE)];
         
-        [self shareTh0r];
+        //[self shareTh0r];
     } else if ((checkjbdTmpRun == 1) && (checkth0rmarkerFinal == 1) && (checkuncovermarker == 0) && (checkelectra == 0) && (checkchimeramarker == 0)) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.buttontext setEnabled:YES];
@@ -446,7 +451,7 @@ int justinstalledcydia = 0;
             [self.thorbackgroundjpeg setAlpha: 1.0];
 
         });
-        [self shareTh0r];
+        //[self shareTh0r];
     } else if (checkth0rmarkerFinal ==1 && (!file_exists("/Applications/Cydia.app/Cydia"))) {
         newTFcheckMyRemover4me = FALSE;
         saveCustomSetting(@"RestoreFS", 1);
@@ -633,17 +638,12 @@ int justinstalledcydia = 0;
                         [self.loadTweakSwitch setOn:TRUE];
                     if (shouldLoadTweaks()) {
                         loadTweaks = true; }
-                    else { loadTweaks = false; }
-
-                    
-                });
-                
-                goto end;
-            } else {
+                    else { loadTweaks = false; } });
+                goto end; }
+            else {
                 newTFcheckMyRemover4me = FALSE;
                 saveCustomSetting(@"RestoreFS", 1);
                 JUSTremovecheck = false;
-                
                 if (checkcheckRa1nmarker == 1) {
                     [self.buttontext setEnabled:YES];
                     [self.buttontext setTitle:localize(@"checkra1n/freya") forState:UIControlStateNormal];
@@ -722,6 +722,7 @@ int justinstalledcydia = 0;
     }
  
     end:
+    
 err:
     if (back4romset == 1) {
         back4romset = 2; }
@@ -926,10 +927,10 @@ void wannaSliceOfMe(void) { //Run The Exploit
        // progressMeterUIVIEW
         ourprogressMeter();
         offs_init();
-        getOffsets();
-        init_kexecute();
         yeasnapshot();
         remountFS(restore_fs);
+        getOffsets();
+        init_kexecute();
         ourprogressMeter();
         createWorkingDir();
         saveOffs();
@@ -1291,6 +1292,14 @@ end:
 
         [self->_buttontext setTitle:@"Cleaning files..." forState: normal]; });
 }
+-(void)okwesetnonce{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        //self->_thebuttonsJBbackground.backgroundColor = [UIColor blackColor]; //CGRectMake(10, 100, self.view.frame.size.width-20, 30);
+        [self->_buttontext setTitleColor:[UIColor blueColor] forState: (normal)];
+        self.progressMeterUIVIEW.progressTintColor = [UIColor greenColor];
+
+        [self->_buttontext setTitle:@"setting nonce" forState: normal]; });
+}
 -(void)TheDstarted{
     dispatch_async(dispatch_get_main_queue(), ^{
         //self->_thebuttonsJBbackground.backgroundColor = [UIColor blackColor]; //CGRectMake(10, 100, self.view.frame.size.width-20, 30);
@@ -1363,5 +1372,7 @@ void yeasnapshot() { [[ViewController currentViewController] remountsnap]; }
 void dothepatch() { [[ViewController currentViewController] patchnshit]; }
 void debsinstalling() { [[ViewController currentViewController] installingDs]; }
 void removethejb() { [[ViewController currentViewController] jbremoving]; }
+void settingthenonce() { [[ViewController currentViewController] okwesetnonce]; }
+
 void spotless() { [[ViewController currentViewController] spotlessclean]; }
 void youknowtryagain() { [[ViewController currentViewController] ohsnapnofail]; }

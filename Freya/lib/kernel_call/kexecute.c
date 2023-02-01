@@ -93,12 +93,16 @@ void init_Kernel_Execute(void) {
     // Now the userclient port we have will look into our fake user client rather than the old one
     
     // Replace IOUserClient::getExternalTrapForIndex with our ROP gadget (add x0, x0, #0x40; ret;)
+    printf("about to kexecute\n");
+    
     WriteKernel64(FakeVtable+8*0xB7, find_add_x0_x0_0x40_ret());
     
     //
     //printf("Wrote the `add x0, x0, #0x40; ret;` gadget over getExternalTrapForIndex");
     
     pthread_mutex_init(&kexecuteLock, NULL);
+    printf("done with init kexecute\n");
+
 }
 
 void term_Kernel_Execute(void) {

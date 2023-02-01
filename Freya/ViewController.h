@@ -69,6 +69,7 @@ void loadinglaunchds(char *msg);
 void yeasnapshot(void);
 void spotless(void);
 void removethejb(void);
+void settingthenonce(void);
 void youknowtryagain(void);
 void extractamfidjbdstuff(char *msg);
 void thelabelbtnchange(char *msg);

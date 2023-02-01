@@ -114,7 +114,7 @@ bool init_kexecute()
     return true;
 }
 
-void term_kexecute()
+void term_kexecute(void)
 {
 #if __arm64e__
     kernel_call_deinit();
