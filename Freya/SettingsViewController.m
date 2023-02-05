@@ -7,7 +7,7 @@
 #import "utils/utilsZS.h"
 #include "cs_blob.h"
 #include "file_utils.h"
-#include "offsets.h"
+#include "OffsetHolder.h"
 #include <sys/sysctl.h>
 
 #define localize(key) NSLocalizedString(key, @"")
@@ -160,12 +160,12 @@ bool machineNameContainsSet(const char *string) {
      NSString *minKernelBuildVersion = nil;
      NSString *maxKernelBuildVersion = nil;
 
-    
+    UIColor *white = [UIColor colorWithRed:1.00 green:1.00 blue:1.00 alpha:1.0];;
     UIColor *grey = [UIColor colorWithRed:0.30 green:0.00 blue:0.30 alpha:0.5];;
     double whatsmykoreNUMBER = kCFCoreFoundationVersionNumber;
     printf("whatsmykoreNUMBER: %f\n", whatsmykoreNUMBER);
     self.SPuppet_Outlet.hidden =true;
-    if (kCFCoreFoundationVersionNumber > 1675.17) { // > 14
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1675.17) { // > 14
         
         self.MS1_OUTLET.hidden = YES;
         _MS1_OUTLET.userInteractionEnabled = FALSE;
@@ -193,9 +193,14 @@ bool machineNameContainsSet(const char *string) {
         _SPuppet_Outlet.backgroundColor = grey;
         self.SPuppet_Outlet.hidden = YES;
 */
+        self.CicutaOutlet.hidden = NO;
+
         _CicutaOutlet.userInteractionEnabled = TRUE;
         _CicutaOutlet.enabled = true;
-        _CicutaOutlet.backgroundColor = grey;
+        [_CicutaOutlet setSelected:true];
+        _CicutaOutlet.backgroundColor = white;
+        
+        
     } else if (kCFCoreFoundationVersionNumber > 1575.17) { // > 12.4 //1556.00 12.0
         
         self.MS1_OUTLET.hidden = YES;
@@ -1014,6 +1019,14 @@ bool machineNameContainsSet(const char *string) {
                 [self.fixfsswitch setHidden:YES];
                 [self.fixfsswitch setEnabled:NO];
                 [self.fixfsswitch setUserInteractionEnabled:NO];
+                [self.ReinstallcydiaLabel setHidden:YES];
+
+                [self.forceuicacheswitch setOn:FALSE];
+                [self.forceuicacheswitch setHidden:YES];
+                [self.forceuicacheswitch setEnabled:NO];
+                [self.forceuicacheswitch setUserInteractionEnabled:NO];
+                [self.ForceuicacheLabel setHidden:YES];
+
                 [self.restoreFSSwitch setHidden:NO];
                 [self.restoreFSSwitch setEnabled:YES];
                 [self.restoreFSSwitch setOn:TRUE];
@@ -1266,7 +1279,7 @@ end1:
     [self.MS1_OUTLET setTitleColor:white forState:UIControlStateNormal];
     [self.MS2_Outlet setTitleColor:white forState:UIControlStateNormal];
     [self.SP_Outlet setTitleColor:white forState:UIControlStateNormal];
-    [self.CicutaOutlet setTitleColor:black forState:UIControlStateNormal];
+    [self.CicutaOutlet setTitleColor:white forState:UIControlStateNormal];
     
     //self.SPuppet_Outlet.backgroundColor = purple;
     //[self.SPuppet_Outlet setTitleColor:white forState:UIControlStateNormal];
@@ -1524,6 +1537,12 @@ static ViewController *currentViewController;
                 [self.restoreFSSwitch setEnabled:YES];
                 [self.restoreFSSwitch setOn:TRUE];
                 [self.restoreFSSwitch setUserInteractionEnabled:YES];
+                [self.forceuicacheswitch setOn:FALSE];
+                [self.forceuicacheswitch setHidden:YES];
+                [self.forceuicacheswitch setEnabled:NO];
+                [self.forceuicacheswitch setUserInteractionEnabled:NO];
+                [self.ForceuicacheLabel setHidden:YES];
+                [self.ReinstallcydiaLabel setHidden:YES];
 
             } else if ((checkuncovermarker == 1) && (checkth0rmarkerFinal == 0) && (checkchimeramarker == 0)) {
                 [ViewController.sharedController.buttontext setTitle:localize(@"Remove u0?") forState:UIControlStateNormal];

@@ -45,7 +45,7 @@ extern uint64_t current_task;
  * 	Read data from kernel memory.
  */
 bool kernel_read(uint64_t address, void *data, size_t size);
-size_t kread(uint64_t where, void *p, size_t size);
+size_t kreadKM(uint64_t where, void *p, size_t size);
 
 /*
  * kernel_write

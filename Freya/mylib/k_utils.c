@@ -246,13 +246,13 @@ extern uint32_t IOSurface_worker_id;
 
 static struct kOSDict *fake_ents;
 
-/*void prepare_fake_entitlements(void)
+void prepare_fake_entitlements(void)
 {
     kptr_t surfRoot = port_name_to_kobject(IOSurface_worker_uc);
-    kptr_t surfClients = kapi_read_kptr(surfRoot + OFFSET(IOSurfaceRootUserClient, surfaceClients));
+    kptr_t surfClients = kapi_read_kptr(surfRoot + OFFSET(IOSurfaceRootUserClient, surfaceClientsPF));
     kptr_t surfClient = kapi_read_kptr(surfClients + sizeof(kptr_t) * IOSurface_worker_id);
-    kptr_t surface = kapi_read_kptr(surfClient + OFFSET(IOSurfaceClient, surface));
-    kptr_t values = kapi_read_kptr(surface + OFFSET(IOSurface, values));
+    kptr_t surface = kapi_read_kptr(surfClient + OFFSET(IOSurfaceClient, surfacePF));
+    kptr_t values = kapi_read_kptr(surface + OFFSET(IOSurface, valuesPF));
 
     struct kOSDict *dict = kernel_fetch_dict(values);
     // [0] CreationProperties
@@ -265,7 +265,7 @@ static struct kOSDict *fake_ents;
     }
     fail_if(fake_ents == NULL, "no prepared entitlements?");
     free(dict);
-}*/
+}
 
 struct kDictEntry *borrow_fake_entitlement(const char *name)
 {

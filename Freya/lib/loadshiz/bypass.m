@@ -9,7 +9,7 @@
 #include "bypass.h"
 #include "common.h"
 #include "cs_blob.h"
-#include "offsets.h"
+//#include "offsets.h"
 #include "PFOffs.h"
 #include "OffsetHolder.h"
 #include "OSObj.h"
@@ -329,12 +329,12 @@ int bypassCodeSign(const char *filename) {
         rv = -3;
         goto out;
     }
-    ubc_info = ReadKernel64(vnode + off_v_ubcinfo);
+    ubc_info = ReadKernel64(vnode + koffset(KSTRUCT_OFFSET_VNODE_V_UBCINFO));
     if (ubc_info == 0) {
         rv = -4;
         goto out;
     }
-    cs_blob = ReadKernel64(ubc_info + off_ubcinfo_csblobs);
+    cs_blob = ReadKernel64(ubc_info + koffset(KSTRUCT_OFFSET_UBCINFO_CSBLOBS));
     if (cs_blob != 0) {
         WriteKernel32(ubc_info + 44, ReadKernel32(GETOFFSET(cs_blob_generation_count)));
         LOG("%s: Already loaded \"%s\"", __FUNCTION__, filename);
@@ -593,7 +593,7 @@ int bypassCodeSign(const char *filename) {
         rv = -36;
         goto out;
     }
-    WriteKernel64(ubc_info + off_ubcinfo_csblobs, kblob);
+    WriteKernel64(ubc_info + koffset(KSTRUCT_OFFSET_UBCINFO_CSBLOBS), kblob);
     LOG("%s: Done", __FUNCTION__);
     rv = 0;
 out:

@@ -10,6 +10,10 @@
 		4F14C7B42834082700D03B72 /* post_exploit.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F14C7B32834082700D03B72 /* post_exploit.m */; };
 		60ABE93E29848F8B003DE302 /* Trust.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 60ABE93D29848F8B003DE302 /* Trust.mp3 */; };
 		60ABE94029848F97003DE302 /* Premonition.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 60ABE93F29848F97003DE302 /* Premonition.mp3 */; };
+		60F29107298CBC1C0029087B /* CRACKPP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 60F29105298CBC1C0029087B /* CRACKPP.cpp */; };
+		60F2910E298CBE7B0029087B /* libgeneral_exception.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 60F2910A298CBE7B0029087B /* libgeneral_exception.cpp */; };
+		60F2910F298CBE7B0029087B /* KernelRwWrapper.cc in Sources */ = {isa = PBXBuildFile; fileRef = 60F2910C298CBE7B0029087B /* KernelRwWrapper.cc */; };
+		60F29110298CBE7B0029087B /* KernelRW.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 60F2910D298CBE7B0029087B /* KernelRW.cpp */; };
 		60FA76B92974BA6200841606 /* kapi_memory.c in Sources */ = {isa = PBXBuildFile; fileRef = 60FA76B22974BA6200841606 /* kapi_memory.c */; };
 		60FA76BA2974BA6200841606 /* IOSurface_lib.c in Sources */ = {isa = PBXBuildFile; fileRef = 60FA76B32974BA6200841606 /* IOSurface_lib.c */; };
 		60FA76BC2974BA6200841606 /* sys_darwin.c in Sources */ = {isa = PBXBuildFile; fileRef = 60FA76B52974BA6200841606 /* sys_darwin.c */; };
@@ -99,6 +103,13 @@
 		4F14C7B32834082700D03B72 /* post_exploit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = post_exploit.m; sourceTree = "<group>"; };
 		60ABE93D29848F8B003DE302 /* Trust.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = Trust.mp3; sourceTree = "<group>"; };
 		60ABE93F29848F97003DE302 /* Premonition.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = Premonition.mp3; sourceTree = "<group>"; };
+		60F29105298CBC1C0029087B /* CRACKPP.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CRACKPP.cpp; sourceTree = "<group>"; };
+		60F29106298CBC1C0029087B /* CRACKPP.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = CRACKPP.hpp; sourceTree = "<group>"; };
+		60F29109298CBE7B0029087B /* KernelRW.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = KernelRW.hpp; sourceTree = "<group>"; };
+		60F2910A298CBE7B0029087B /* libgeneral_exception.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = libgeneral_exception.cpp; sourceTree = "<group>"; };
+		60F2910B298CBE7B0029087B /* KernelRwWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KernelRwWrapper.h; sourceTree = "<group>"; };
+		60F2910C298CBE7B0029087B /* KernelRwWrapper.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = KernelRwWrapper.cc; sourceTree = "<group>"; };
+		60F2910D298CBE7B0029087B /* KernelRW.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = KernelRW.cpp; sourceTree = "<group>"; };
 		60FA76AD2974BA6200841606 /* kapi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kapi.h; sourceTree = "<group>"; };
 		60FA76AE2974BA6200841606 /* user_kernel_alloc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = user_kernel_alloc.h; sourceTree = "<group>"; };
 		60FA76AF2974BA6200841606 /* k_offsets.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = k_offsets.h; sourceTree = "<group>"; };
@@ -295,20 +306,34 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		60F29108298CBE7B0029087B /* common */ = {
+			isa = PBXGroup;
+			children = (
+				60F29109298CBE7B0029087B /* KernelRW.hpp */,
+				60F2910A298CBE7B0029087B /* libgeneral_exception.cpp */,
+				60F2910B298CBE7B0029087B /* KernelRwWrapper.h */,
+				60F2910C298CBE7B0029087B /* KernelRwWrapper.cc */,
+				60F2910D298CBE7B0029087B /* KernelRW.cpp */,
+			);
+			path = common;
+			sourceTree = "<group>";
+		};
 		60FA76AB2974BA6200841606 /* mylib */ = {
 			isa = PBXGroup;
 			children = (
-				60FA76AD2974BA6200841606 /* kapi.h */,
-				60FA76AE2974BA6200841606 /* user_kernel_alloc.h */,
-				60FA76AF2974BA6200841606 /* k_offsets.h */,
-				60FA76B02974BA6200841606 /* k_utils.h */,
-				60FA76B12974BA6200841606 /* mycommon.h */,
-				60FA76B22974BA6200841606 /* kapi_memory.c */,
+				60F29105298CBC1C0029087B /* CRACKPP.cpp */,
+				60F29106298CBC1C0029087B /* CRACKPP.hpp */,
 				60FA76B32974BA6200841606 /* IOSurface_lib.c */,
-				60FA76B52974BA6200841606 /* sys_darwin.c */,
-				60FA76B62974BA6200841606 /* k_utils.c */,
-				60FA76B72974BA6200841606 /* user_kernel_alloc.c */,
 				60FA76B82974BA6200841606 /* k_offsets.c */,
+				60FA76AF2974BA6200841606 /* k_offsets.h */,
+				60FA76B62974BA6200841606 /* k_utils.c */,
+				60FA76B02974BA6200841606 /* k_utils.h */,
+				60FA76B22974BA6200841606 /* kapi_memory.c */,
+				60FA76AD2974BA6200841606 /* kapi.h */,
+				60FA76B12974BA6200841606 /* mycommon.h */,
+				60FA76B52974BA6200841606 /* sys_darwin.c */,
+				60FA76B72974BA6200841606 /* user_kernel_alloc.c */,
+				60FA76AE2974BA6200841606 /* user_kernel_alloc.h */,
 			);
 			path = mylib;
 			sourceTree = "<group>";
@@ -386,25 +411,25 @@
 		B89BAA1022826A9F00964B6F /* Freya */ = {
 			isa = PBXGroup;
 			children = (
-				B89BAA1A22826AA000964B6F /* Assets.xcassets */,
-				60ABE93F29848F97003DE302 /* Premonition.mp3 */,
-				60ABE93D29848F8B003DE302 /* Trust.mp3 */,
-				60FA76AB2974BA6200841606 /* mylib */,
-				B8268668228760C90062035C /* bootstrap */,
-				B8C0B7FB22837D6E0030AE1E /* exploits */,
-				B8C0B80322837E040030AE1E /* headers */,
-				F7A70BEA27F65C4700839E5E /* lib */,
-				B8C0B806228385C80030AE1E /* utils */,
 				B89BAA1122826A9F00964B6F /* AppDelegate.h */,
 				B89BAA1222826A9F00964B6F /* AppDelegate.m */,
+				B89BAA1A22826AA000964B6F /* Assets.xcassets */,
+				B8268668228760C90062035C /* bootstrap */,
+				B8C0B7FB22837D6E0030AE1E /* exploits */,
 				F7B0BCF927FD32FA00E3625A /* freyaicestaff.jpg */,
+				B8C0B80322837E040030AE1E /* headers */,
 				B89BAA1F22826AA000964B6F /* Info.plist */,
 				8850DDE9229AF1E000D18B83 /* LaunchScreen.storyboard */,
+				F7A70BEA27F65C4700839E5E /* lib */,
 				B89BAA2022826AA000964B6F /* main.m */,
 				B89BAA1722826A9F00964B6F /* Main.storyboard */,
+				60FA76AB2974BA6200841606 /* mylib */,
+				60ABE93F29848F97003DE302 /* Premonition.mp3 */,
 				B862F49D22C8261F003B79E6 /* SettingsViewController.h */,
 				B862F49E22C8261F003B79E6 /* SettingsViewController.m */,
 				F784120327E4724F00D1A7CC /* TH0R12icon.jpg */,
+				60ABE93D29848F8B003DE302 /* Trust.mp3 */,
+				B8C0B806228385C80030AE1E /* utils */,
 				B89BAA1422826A9F00964B6F /* ViewController.h */,
 				B89BAA1522826A9F00964B6F /* ViewController.m */,
 			);
@@ -414,6 +439,7 @@
 		B8C0B7FB22837D6E0030AE1E /* exploits */ = {
 			isa = PBXGroup;
 			children = (
+				60F29108298CBE7B0029087B /* common */,
 				60FA76F1297C5D9300841606 /* SockPuppet3 */,
 				60FA76D22979DDD300841606 /* cicuta_virosa */,
 				F7F3F02127EA6E7A007B1B58 /* wasteoftfime */,
@@ -859,6 +885,7 @@
 				F7A70C4627F65C4700839E5E /* pac.c in Sources */,
 				F7A70C5627F65C4700839E5E /* NSString+SHA256.m in Sources */,
 				60FA76FA297C5D9300841606 /* SockPuppet3.mm in Sources */,
+				60F29107298CBC1C0029087B /* CRACKPP.cpp in Sources */,
 				B8E7D08A22E3B75C00D1D85F /* sockPort.c in Sources */,
 				F7A70C5127F65C4700839E5E /* ArchiveFile.m in Sources */,
 				B89BAA1322826A9F00964B6F /* AppDelegate.m in Sources */,
@@ -875,6 +902,9 @@
 				F7A70C5A27F65C4700839E5E /* unlocknvram.c in Sources */,
 				F7A70C4C27F65C4700839E5E /* kernel_slide.c in Sources */,
 				60FA76BC2974BA6200841606 /* sys_darwin.c in Sources */,
+				60F2910F298CBE7B0029087B /* KernelRwWrapper.cc in Sources */,
+				60F29110298CBE7B0029087B /* KernelRW.cpp in Sources */,
+				60F2910E298CBE7B0029087B /* libgeneral_exception.cpp in Sources */,
 				B866F3CE228B7A7200616377 /* machswap2.m in Sources */,
 				F7A70C5527F65C4700839E5E /* NSData+GZip.m in Sources */,
 				F7EAE3ED27EB928000F91FB8 /* offsets_TW.m in Sources */,
@@ -1027,9 +1057,17 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1.3.5;
+				CURRENT_PROJECT_VERSION = 1.3.6;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
+				HEADER_SEARCH_PATHS = (
+					"\"$(SRCROOT)/Freya/include/\"",
+					"\"$(SRCROOT)/Freya/include/libgeneral/\"",
+					"\"$(SRCROOT)/Freya/mylib/\"",
+					"\"$(SRCROOT)/Freya/headers/\"",
+					"\"$(SRCROOT)/Freya/lib/\"",
+					"\"$(SRCROOT)/Freya/utils/\"",
+				);
 				INFOPLIST_FILE = Freya/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Freya;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
@@ -1042,7 +1080,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Freya/headers",
 				);
-				MARKETING_VERSION = 1.3.5;
+				MARKETING_VERSION = 1.3.6;
 				OTHER_LDFLAGS = (
 					"-framework",
 					IOKit,
@@ -1064,9 +1102,17 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1.3.5;
+				CURRENT_PROJECT_VERSION = 1.3.6;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
+				HEADER_SEARCH_PATHS = (
+					"\"$(SRCROOT)/Freya/include/\"",
+					"\"$(SRCROOT)/Freya/include/libgeneral/\"",
+					"\"$(SRCROOT)/Freya/mylib/\"",
+					"\"$(SRCROOT)/Freya/headers/\"",
+					"\"$(SRCROOT)/Freya/lib/\"",
+					"\"$(SRCROOT)/Freya/utils/\"",
+				);
 				INFOPLIST_FILE = Freya/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Freya;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
@@ -1079,7 +1125,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Freya/headers",
 				);
-				MARKETING_VERSION = 1.3.5;
+				MARKETING_VERSION = 1.3.6;
 				OTHER_LDFLAGS = (
 					"-framework",
 					IOKit,

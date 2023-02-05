@@ -2,7 +2,7 @@
 //  FreyaRemove.h
 //  Freya
 //
-//  Created by Marcel Cianchino on 2023-01-20.
+//  Created by Marcel C on 2023-01-20.
 //  Copyright © 2023 Th0r Team. All rights reserved.
 //
 

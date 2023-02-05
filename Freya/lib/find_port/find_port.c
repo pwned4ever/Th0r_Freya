@@ -78,7 +78,7 @@ static void fill_events(int n_events)
 
 int kqueues_allocated = 0;
 
-static void prepare_kqueue()
+static void prepare_kqueue(void)
 {
     // ensure there are a large number of events so that kevent_proc_copy_uptrs
     // always returns a large number

@@ -44,12 +44,12 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    extern void swiftDebug(const char *format, ...);
+    //extern void swiftDebug(const char *format, ...);
 #ifdef __cplusplus
 }
 #endif
-
-#define debug swiftDebug
+#define debug(x, ...)
+//#define debug swiftDebug
 #else
 #define debug(x, ...)
 #endif

@@ -16,6 +16,8 @@
 #include "patchfinder64.h"
 #include "PFOffs.h"
 #include "proc_info.h"
+#include "KernelRwWrapper.h"
+
 int need_initialSSRenamed = 0;
 uint64_t cached_task_self_addr = 0;
 uint64_t our_port_addr_exportedBYTW = 0;
@@ -27,8 +29,13 @@ uint64_t our_kernel_taskStruct_exportAstylez = 0;
 mach_port_t tfp0_exportedBYTW = MACH_PORT_NULL;
 uint64_t MYadd_x0_x0_0x40_ret;
 bool found_offs = false;
+//uint64_t our_proc_kAddr;
 
-uint64_t task_self_addr()
+//uint64_t any_proc;
+
+
+
+uint64_t task_self_addr(void)
 {
     if (cached_task_self_addr == 0) {
         cached_task_self_addr = have_kmem_read() && found_offs ? get_address_of_port(getpid(), mach_task_self()) : find_port_address(mach_task_self(), MACH_MSG_TYPE_COPY_SEND);
@@ -190,7 +197,7 @@ void kmemcpy(uint64_t dest, uint64_t src, uint32_t length)
     }
 }
 
-bool have_kmem_read()
+bool have_kmem_read(void)
 {
     return (tfp0 != MACH_PORT_NULL);
 }
@@ -335,8 +342,25 @@ int kstrcmp_utw(uint64_t string1, char *string2) {
     
     return ret;
 }
+ 
+
+uint64_t find_portCV(mach_port_name_t port) {
+    
+    uint64_t task_addr = rk64(our_task_addr_exportedBYTW + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_KOBJECT));
+    uint64_t itk_space = rk64(task_addr + koffset(KSTRUCT_OFFSET_TASK_ITK_SPACE));
+    uint64_t is_table = rk64(itk_space + koffset(KSTRUCT_OFFSET_IPC_SPACE_IS_TABLE));
+    
+    uint32_t port_index = port >> 8;
+    const int sizeof_ipc_entry_t = 0x18;
+    
+    uint64_t port_addr = rk64(is_table + (port_index * sizeof_ipc_entry_t));
+    
+    return port_addr;
+}
+
 
 uint64_t find_porttw(mach_port_name_t port) {
+    
     uint64_t task_addr = rk64tw(task_selftw + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_KOBJECT));
     uint64_t itk_space = rk64tw(task_addr + koffset(KSTRUCT_OFFSET_TASK_ITK_SPACE));
     uint64_t is_table = rk64tw(itk_space + koffset(KSTRUCT_OFFSET_IPC_SPACE_IS_TABLE));
@@ -350,7 +374,7 @@ uint64_t find_porttw(mach_port_name_t port) {
 }
 
 uint64_t find_portSP(mach_port_name_t port) {
-    uint64_t task_addr = our_task_addr_exportedBYTW;//ReadKernel64(our_port_addr_exportedBYTW + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_KOBJECT));
+    uint64_t task_addr = our_task_addr_exportedBYTW;
     uint64_t itk_space = ReadKernel64(task_addr + koffset(KSTRUCT_OFFSET_TASK_ITK_SPACE));
     uint64_t is_table = ReadKernel64(itk_space + koffset(KSTRUCT_OFFSET_IPC_SPACE_IS_TABLE));
     

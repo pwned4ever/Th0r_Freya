@@ -28,6 +28,11 @@
 #import "offsets.h"
 //#import "log.h"
 #include "ViewController.h"
+
+
+#include "KernelRwWrapper.h"
+
+
 #define SYSTEM_VERSION_EQUAL_TO(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedSame)
 #define SYSTEM_VERSION_GREATER_THAN(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedDescending)
 #define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
@@ -158,20 +163,20 @@ uint64_t findRootVnode(uint64_t launchd_proc) {
     //  https://github.com/apple/darwin-xnu/blob/xnu-7195.60.75/bsd/sys/proc_internal.h#L193
     //  https://github.com/apple/darwin-xnu/blob/xnu-7195.60.75/bsd/sys/vnode_internal.h#L127
     
-    uint64_t textvp = ReadKernel64(launchd_proc + off_p_textvp);
-    uint64_t nameptr = ReadKernel64(textvp + off_v_name);
+    uint64_t textvp = ReadKernel64(launchd_proc + koffset(KSTRUCT_OFFSET_P_TEXTVP));// off_p_textvp);
+    uint64_t nameptr = ReadKernel64(textvp + koffset(KSTRUCT_OFFSET_VNODE_V_NAME));// off_v_name);
     char name[20];
     kreadOwO(nameptr, &name, 20);  //  <- launchd;
     
-    uint64_t sbin = ReadKernel64(textvp + off_v_parent);
-    nameptr = ReadKernel64(sbin + off_v_name);
+    uint64_t sbin = ReadKernel64(textvp + koffset(KSTRUCT_OFFSET_VNODE_V_PARENT));//off_v_parent);
+    nameptr = ReadKernel64(sbin + koffset(KSTRUCT_OFFSET_VNODE_V_NAME));// off_v_name);
     kreadOwO(nameptr, &name, 20);  //  <- sbin
     
-    uint64_t rootvnode = ReadKernel64(sbin + off_v_parent);
-    nameptr = ReadKernel64(sbin + off_v_name);
+    uint64_t rootvnode = ReadKernel64(sbin + koffset(KSTRUCT_OFFSET_VNODE_V_PARENT));//off_v_parent);
+    nameptr = ReadKernel64(sbin + koffset(KSTRUCT_OFFSET_VNODE_V_NAME));//off_v_name);
     kreadOwO(nameptr, &name, 20);  //  <- / (ROOT)
     
-    uint32_t flags = ReadKernel32(rootvnode + off_v_flags);
+    uint32_t flags = ReadKernel32(rootvnode + koffset(KSTRUCT_OFFSET_VNODE_V_FLAG));//off_v_flags);
     util_info("rootvnode flags: 0x%x", flags);
     
     return rootvnode;
@@ -239,15 +244,15 @@ int mountRealRootfs(uint64_t rootvnode) {
     //  https://github.com/apple/darwin-xnu/blob/main/bsd/sys/mount_internal.h#L107
     //  https://github.com/apple/darwin-xnu/blob/main/bsd/miscfs/specfs/specdev.h#L77
     uint64_t vmount = ReadKernel64(rootvnode + koffset(KSTRUCT_OFFSET_VNODE_V_MOUNT));
-    uint64_t dev = ReadKernel64(vmount + off_mnt_devvp);
-    uint64_t nameptr = ReadKernel64(dev + off_v_name);
+    uint64_t dev = ReadKernel64(vmount + koffset(KSTRUCT_OFFSET_MOUNT_MNT_DEVVP));//off_mnt_devvp);
+    uint64_t nameptr = ReadKernel64(dev + koffset(KSTRUCT_OFFSET_VNODE_V_NAME));//off_v_name);
     char name[20];
     kreadOwO(nameptr, &name, 20);   //  <- disk0s1s1
     util_info("Found dev vnode name: %s", name);
     uint64_t specinfo = ReadKernel64(dev + koffset(KSTRUCT_OFFSET_VNODE_VU_SPECINFO));
-    uint32_t flags = ReadKernel32(specinfo + off_specflags);
+    uint32_t flags = ReadKernel32(specinfo + koffset(KSTRUCT_SPECFLAGS));//off_specflags);
     util_info("Found dev flags: 0x%x", flags);
-    WriteKernel32(specinfo + off_specflags, 0);
+    WriteKernel32(specinfo + koffset(KSTRUCT_SPECFLAGS), 0);
     char* fspec = strdup("/dev/disk0s1s1");
     struct hfs_mount_args mntargs;
     mntargs.fspec = fspec;
@@ -263,37 +268,37 @@ int mountRealRootfs(uint64_t rootvnode) {
 
 uint64_t findNewMount(uint64_t rootvnode) {
     uint64_t vmount = ReadKernel64(rootvnode + koffset(KSTRUCT_OFFSET_VNODE_V_MOUNT));
-    vmount = ReadKernel64(vmount + off_mnt_next);
+    vmount = ReadKernel64(vmount + koffset(KSTRUCT_OFFSET_MOUNT_NEXT));//off_mnt_next);
     while (vmount != 0) {
-        uint64_t dev = ReadKernel64(vmount + off_mnt_devvp);
+        uint64_t dev = ReadKernel64(vmount + koffset(KSTRUCT_OFFSET_MOUNT_MNT_DEVVP));//off_mnt_devvp);
         if(dev != 0) {
-            uint64_t nameptr = ReadKernel64(dev + off_v_name);
+            uint64_t nameptr = ReadKernel64(dev + koffset(KSTRUCT_OFFSET_VNODE_V_NAME));//off_v_name);
             char name[20];
             kreadOwO(nameptr, &name, 20);
             char* devName = name;
             util_info("Found dev vnode name: %s", devName);
             if(strcmp(devName, "disk0s1s1") == 0) {
                 return vmount; } }
-        vmount = ReadKernel64(vmount + off_mnt_next); }
+        vmount = ReadKernel64(vmount + koffset(KSTRUCT_OFFSET_MOUNT_NEXT)); }
     return 0;
 }
 
 bool unsetSnapshotFlag(uint64_t newmnt) {
     //  https://github.com/apple/darwin-xnu/blob/main/bsd/sys/mount_internal.h#L107
-    uint64_t dev = ReadKernel64(newmnt + off_mnt_devvp);
-    uint64_t nameptr = ReadKernel64(dev + off_v_name);
+    uint64_t dev = ReadKernel64(newmnt + koffset(KSTRUCT_OFFSET_MOUNT_MNT_DEVVP));//off_mnt_devvp);
+    uint64_t nameptr = ReadKernel64(dev + koffset(KSTRUCT_OFFSET_VNODE_V_NAME));//off_v_name);
     char name[20];
     kreadOwO(nameptr, &name, 20);
     util_info("Found dev vnode name: %s", name);
     
-    uint64_t specinfo = ReadKernel64(dev + off_v_specinfo);
-    uint64_t flags = ReadKernel32(specinfo + off_specflags);
+    uint64_t specinfo = ReadKernel64(dev + koffset(KSTRUCT_OFFSET_VNODE_VU_SPECINFO));//off_v_specinfo);
+    uint64_t flags = ReadKernel32(specinfo + koffset(KSTRUCT_SPECFLAGS));//off_specflags);
     util_info("Found dev flags: 0x%llx", flags);
     
-    uint64_t vnodelist = ReadKernel64(newmnt + off_mnt_vnodelist);
+    uint64_t vnodelist = ReadKernel64(newmnt + koffset(KSTRUCK_OFFSET_MOUNT_VNODELIST));//off_mnt_vnodelist);
     while (vnodelist != 0) {
         util_info("vnodelist: 0x%llx", vnodelist);
-        uint64_t nameptr = ReadKernel64(vnodelist + off_v_name);
+        uint64_t nameptr = ReadKernel64(vnodelist + koffset(KSTRUCT_OFFSET_VNODE_V_NAME));//off_v_name);
         unsigned long len = kstrlen(nameptr);
         char name[len];
         kreadOwO(nameptr, &name, len);
@@ -303,12 +308,12 @@ bool unsetSnapshotFlag(uint64_t newmnt) {
         
         if(strstr(vnodeName, "com.apple.os.update-") != NULL) {
             uint64_t vdata = ReadKernel64(vnodelist + koffset(KSTRUCT_OFFSET_VNODE_V_DATA));
-            uint32_t flag = ReadKernel32(vdata + off_apfs_data_flag);
+            uint32_t flag = ReadKernel32(vdata + koffset(KSTRUCT_APFS_DATA_FLAG));//off_apfs_data_flag);
             util_info("Found APFS flag: 0x%x", flag);
             
             if ((flag & 0x40) != 0) {
                 util_info("would unset the flag here to: 0x%x", flag & ~0x40);
-                WriteKernel32(vdata + off_apfs_data_flag, flag & ~0x40);
+                WriteKernel32(vdata + koffset(KSTRUCT_APFS_DATA_FLAG), flag & ~0x40);
                 return true;
             }
         }
@@ -316,6 +321,7 @@ bool unsetSnapshotFlag(uint64_t newmnt) {
     }
     return false;
 }
+
 
 unsigned long kstrlen(uint64_t string) {
     if (!string) return 0;

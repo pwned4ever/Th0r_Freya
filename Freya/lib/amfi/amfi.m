@@ -7,7 +7,7 @@
 #include "../../lib/remap_tfp_set_hsp/remap_tfp_set_hsp.h"
 #include "OSObj.h"
 #include "cs_blob.h"
-#include "../kernel_call/offsets.h"
+//#include "../kernel_call/offsets.h"
 #include "../../utils/shenanigans.h"
 #include <spawn.h>
 #include <signal.h>
@@ -417,10 +417,10 @@ bool grabEntitlements(uint64_t selfProc) {
     uint64_t selfCreds = ReadKernel64(selfProc + koffset(KSTRUCT_OFFSET_PROC_UCRED));
     uint64_t sysdiagnoseCreds = ReadKernel64(sysdiagnose_proc + koffset(KSTRUCT_OFFSET_PROC_UCRED));
     
-    selfEnts = ReadKernel64(ReadKernel64(selfCreds + koffset(KSTRUCT_OFFSET_UCRED_CR_LABEL)) + off_amfi_slot);
-    sysdiagnoseEnts = ReadKernel64(ReadKernel64(sysdiagnoseCreds + koffset(KSTRUCT_OFFSET_UCRED_CR_LABEL)) + off_amfi_slot);
+    selfEnts = ReadKernel64(ReadKernel64(selfCreds + koffset(KSTRUCT_OFFSET_UCRED_CR_LABEL)) + koffset(KSTRUCT_AMFI_SLOT));
+    sysdiagnoseEnts = ReadKernel64(ReadKernel64(sysdiagnoseCreds + koffset(KSTRUCT_OFFSET_UCRED_CR_LABEL)) + koffset(KSTRUCT_AMFI_SLOT));
     
-    WriteKernel64(ReadKernel64(selfCreds + koffset(KSTRUCT_OFFSET_UCRED_CR_LABEL)) + off_amfi_slot, sysdiagnoseEnts);
+    WriteKernel64(ReadKernel64(selfCreds + koffset(KSTRUCT_OFFSET_UCRED_CR_LABEL)) + koffset(KSTRUCT_AMFI_SLOT), sysdiagnoseEnts);
     
     has_entitlements = true;
     return true;
@@ -432,7 +432,7 @@ void resetEntitlements(uint64_t selfProc) {
     
     has_entitlements = false;
     uint64_t selfCreds = ReadKernel64(selfProc + koffset(KSTRUCT_OFFSET_PROC_UCRED));
-    WriteKernel64(ReadKernel64(selfCreds + koffset(KSTRUCT_OFFSET_UCRED_CR_LABEL)) + off_amfi_slot, selfEnts);
+    WriteKernel64(ReadKernel64(selfCreds + koffset(KSTRUCT_OFFSET_UCRED_CR_LABEL)) + koffset(KSTRUCT_AMFI_SLOT), selfEnts);
     kill(sysdiagnose_pid, SIGKILL);
 }
 
@@ -906,10 +906,10 @@ bool grabEntitlementsForRootFS(uint64_t selfProc) {
     uint64_t selfCreds = ReadKernel64(selfProc + koffset(KSTRUCT_OFFSET_PROC_UCRED));
     uint64_t fsckapfsCreds = ReadKernel64(fsck_apfs_proc + koffset(KSTRUCT_OFFSET_PROC_UCRED));
     
-    selfEnts = ReadKernel64(ReadKernel64(selfCreds + koffset(KSTRUCT_OFFSET_UCRED_CR_LABEL)) + off_amfi_slot);
-    fsckapfsEnts = ReadKernel64(ReadKernel64(fsckapfsCreds + koffset(KSTRUCT_OFFSET_UCRED_CR_LABEL)) + off_amfi_slot);
+    selfEnts = ReadKernel64(ReadKernel64(selfCreds + koffset(KSTRUCT_OFFSET_UCRED_CR_LABEL)) + koffset(KSTRUCT_AMFI_SLOT));
+    fsckapfsEnts = ReadKernel64(ReadKernel64(fsckapfsCreds + koffset(KSTRUCT_OFFSET_UCRED_CR_LABEL)) + koffset(KSTRUCT_AMFI_SLOT));
     
-    WriteKernel64(ReadKernel64(selfCreds +koffset(KSTRUCT_OFFSET_UCRED_CR_LABEL)) + off_amfi_slot, fsckapfsEnts);
+    WriteKernel64(ReadKernel64(selfCreds +koffset(KSTRUCT_OFFSET_UCRED_CR_LABEL)) + koffset(KSTRUCT_AMFI_SLOT), fsckapfsEnts);
     
     has_entitlements_rootfs = true;
     return true;
@@ -922,6 +922,6 @@ void resetEntitlementsForRootFS(uint64_t selfProc) {
     has_entitlements_rootfs = false;
     uint64_t selfCreds = ReadKernel64(selfProc + koffset(KSTRUCT_OFFSET_PROC_UCRED));//KSTRUCT_OFFSET_PROC_UCRED);
     
-    WriteKernel64(ReadKernel64(selfCreds + koffset(KSTRUCT_OFFSET_UCRED_CR_LABEL)) + off_amfi_slot, selfEnts);
+    WriteKernel64(ReadKernel64(selfCreds + koffset(KSTRUCT_OFFSET_UCRED_CR_LABEL)) + koffset(KSTRUCT_AMFI_SLOT), selfEnts);
     kill(fsck_apfs_pid, SIGKILL);
 }

@@ -2,6 +2,7 @@
 
 #include "remap_tfp_set_hsp.h"
 #include "KernelUtils.h"
+#include "KernelRwWrapper.h"
 #include "kernel_slide.h"
 #include "PFOffs.h"
 #include <stdlib.h>
@@ -23,9 +24,13 @@
 
 #include "ImportantHolders.h"
 
-uint64_t ipc_space_kernel()
+uint64_t ipc_space_kernel(void)
 {
-    return ReadKernel64(task_self_addr() + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_RECEIVER));
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {
+        return rk64(task_self_addr() + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_RECEIVER));
+    } else {
+        return ReadKernel64(task_self_addr() + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_RECEIVER));
+    }
 }
 
 uint64_t make_fake_task(uint64_t vm_map) {
@@ -47,15 +52,26 @@ bool iterate_proc_list(void (^handler)(kptr_t, pid_t, bool *)) {
     bool ret = false;
     bool iterate = true;
     kptr_t proc = get_kernel_proc_struct_addr();
+    
     while (KERN_POINTER_VALID(proc) && iterate) {
-        pid_t const pid = ReadKernel32(proc + koffset(KSTRUCT_OFFSET_PROC_PID));
-        handler(proc, pid, &iterate);
-        if (!iterate) break;
-        proc = ReadKernel64(proc + koffset(KSTRUCT_OFFSET_PROC_P_LIST) + sizeof(kptr_t));
+        if (kCFCoreFoundationVersionNumber >= 1751.108) {
+            pid_t const pid = rk32(proc + koffset(KSTRUCT_OFFSET_PROC_PID));
+            handler(proc, pid, &iterate);
+            if (!iterate) break;
+            proc = rk64(proc + koffset(KSTRUCT_OFFSET_PROC_P_LIST) + sizeof(kptr_t));
+
+        } else {
+            pid_t const pid = ReadKernel32(proc + koffset(KSTRUCT_OFFSET_PROC_PID));
+            handler(proc, pid, &iterate);
+            if (!iterate) break;
+            proc = ReadKernel64(proc + koffset(KSTRUCT_OFFSET_PROC_P_LIST) + sizeof(kptr_t));
+        }
     }
     ret = true;
 out:;
     return ret;
+    
+    
 }
 
 kptr_t get_proc_struct_for_pid_ff(pid_t pid)
@@ -74,12 +90,17 @@ out:;
 
 uint64_t get_proc_struct_for_pid(pid_t pid)
 {
-    if (get_selfproc() != 0 && pid == getpid())
+   // uint64_t whatgetselfproc = get_selfproc();
+   // printf("whatgetselfproc: 0x%llx\n", whatgetselfproc );
+   // int whatppidis = getpid();
+    if (get_selfproc() != 0 && pid == getpid())//whatppidis)//
     {
         return get_selfproc();
+        
     } else {
         return get_proc_struct_for_pid_ff(pid);
     }
+    
     return 0;
 }
 
@@ -91,13 +112,25 @@ uint32_t IKOT_TASK = 2;
 uint64_t get_address_of_port(pid_t pid, mach_port_t port)
 {
     uint64_t proc_struct_addr = get_proc_struct_for_pid(pid);
-    uint64_t task_addr = ReadKernel64(proc_struct_addr + koffset(KSTRUCT_OFFSET_PROC_TASK));
-    uint64_t itk_space = ReadKernel64(task_addr + koffset(KSTRUCT_OFFSET_TASK_ITK_SPACE));
-    uint64_t is_table = ReadKernel64(itk_space + koffset(KSTRUCT_OFFSET_IPC_SPACE_IS_TABLE));
-    uint32_t port_index = port >> 8;
-    const int sizeof_ipc_entry_t = 0x18;
-    uint64_t port_addr = ReadKernel64(is_table + (port_index * sizeof_ipc_entry_t));
-    return port_addr;
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {
+        uint64_t task_addr = rk64(proc_struct_addr + koffset(KSTRUCT_OFFSET_PROC_TASK));
+        uint64_t itk_space = rk64(task_addr + koffset(KSTRUCT_OFFSET_TASK_ITK_SPACE));
+        uint64_t is_table = rk64(itk_space + koffset(KSTRUCT_OFFSET_IPC_SPACE_IS_TABLE));
+        uint32_t port_index = port >> 8;
+        const int sizeof_ipc_entry_t = 0x18;
+        uint64_t port_addr = rk64(is_table + (port_index * sizeof_ipc_entry_t));
+        return port_addr;
+
+    } else {
+        uint64_t task_addr = ReadKernel64(proc_struct_addr + koffset(KSTRUCT_OFFSET_PROC_TASK));
+        uint64_t itk_space = ReadKernel64(task_addr + koffset(KSTRUCT_OFFSET_TASK_ITK_SPACE));
+        uint64_t is_table = ReadKernel64(itk_space + koffset(KSTRUCT_OFFSET_IPC_SPACE_IS_TABLE));
+        uint32_t port_index = port >> 8;
+        const int sizeof_ipc_entry_t = 0x18;
+        uint64_t port_addr = ReadKernel64(is_table + (port_index * sizeof_ipc_entry_t));
+        return port_addr;
+    }
+
 }
 
 
@@ -105,30 +138,56 @@ uint64_t get_address_of_port(pid_t pid, mach_port_t port)
 void convert_port_to_task_port(mach_port_t port, uint64_t space, uint64_t task_kaddr) {
     // now make the changes to the port object to make it a task port:
     uint64_t port_kaddr = get_address_of_port(getpid(), port);
-    
-    WriteKernel32(port_kaddr + koffset(KSTRUCT_OFFSET_IPC_PORT_IO_BITS), IO_BITS_ACTIVE | IKOT_TASK);
-    WriteKernel32(port_kaddr + koffset(KSTRUCT_OFFSET_IPC_PORT_IO_REFERENCES), 0xf00d);
-    WriteKernel32(port_kaddr + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_SRIGHTS), 0xf00d);
-    WriteKernel64(port_kaddr + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_RECEIVER), space);
-    WriteKernel64(port_kaddr + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_KOBJECT),  task_kaddr);
-    
-    // swap our receive right for a send right:
-    uint64_t task_port_addr = task_self_addr();
-    uint64_t task_addr = ReadKernel64(task_port_addr + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_KOBJECT));
-    uint64_t itk_space = ReadKernel64(task_addr + koffset(KSTRUCT_OFFSET_TASK_ITK_SPACE));
-    uint64_t is_table = ReadKernel64(itk_space + koffset(KSTRUCT_OFFSET_IPC_SPACE_IS_TABLE));
-    
-    uint32_t port_index = port >> 8;
-    const int sizeof_ipc_entry_t = 0x18;
-    uint32_t bits = ReadKernel32(is_table + (port_index * sizeof_ipc_entry_t) + 8); // 8 = offset of ie_bits in struct ipc_entry
-    
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {
+        wk32(port_kaddr + koffset(KSTRUCT_OFFSET_IPC_PORT_IO_BITS), IO_BITS_ACTIVE | IKOT_TASK);
+        wk32(port_kaddr + koffset(KSTRUCT_OFFSET_IPC_PORT_IO_REFERENCES), 0xf00d);
+        wk32(port_kaddr + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_SRIGHTS), 0xf00d);
+        wk64(port_kaddr + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_RECEIVER), space);
+        wk64(port_kaddr + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_KOBJECT),  task_kaddr);
+        
+        // swap our receive right for a send right:
+        uint64_t task_port_addr = task_self_addr();
+        uint64_t task_addr = rk64(task_port_addr + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_KOBJECT));
+        uint64_t itk_space = rk64(task_addr + koffset(KSTRUCT_OFFSET_TASK_ITK_SPACE));
+        uint64_t is_table = rk64(itk_space + koffset(KSTRUCT_OFFSET_IPC_SPACE_IS_TABLE));
+        
+        uint32_t port_index = port >> 8;
+        const int sizeof_ipc_entry_t = 0x18;
+        uint32_t bits = rk32(is_table + (port_index * sizeof_ipc_entry_t) + 8); // 8 = offset of ie_bits in struct ipc_entry
+        
 #define IE_BITS_SEND (1<<16)
 #define IE_BITS_RECEIVE (1<<17)
-    
-    bits &= (~IE_BITS_RECEIVE);
-    bits |= IE_BITS_SEND;
-    
-    WriteKernel32(is_table + (port_index * sizeof_ipc_entry_t) + 8, bits);
+        
+        bits &= (~IE_BITS_RECEIVE);
+        bits |= IE_BITS_SEND;
+        
+        wk32(is_table + (port_index * sizeof_ipc_entry_t) + 8, bits);
+
+    } else {
+        WriteKernel32(port_kaddr + koffset(KSTRUCT_OFFSET_IPC_PORT_IO_BITS), IO_BITS_ACTIVE | IKOT_TASK);
+        WriteKernel32(port_kaddr + koffset(KSTRUCT_OFFSET_IPC_PORT_IO_REFERENCES), 0xf00d);
+        WriteKernel32(port_kaddr + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_SRIGHTS), 0xf00d);
+        WriteKernel64(port_kaddr + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_RECEIVER), space);
+        WriteKernel64(port_kaddr + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_KOBJECT),  task_kaddr);
+        
+        // swap our receive right for a send right:
+        uint64_t task_port_addr = task_self_addr();
+        uint64_t task_addr = ReadKernel64(task_port_addr + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_KOBJECT));
+        uint64_t itk_space = ReadKernel64(task_addr + koffset(KSTRUCT_OFFSET_TASK_ITK_SPACE));
+        uint64_t is_table = ReadKernel64(itk_space + koffset(KSTRUCT_OFFSET_IPC_SPACE_IS_TABLE));
+        
+        uint32_t port_index = port >> 8;
+        const int sizeof_ipc_entry_t = 0x18;
+        uint32_t bits = ReadKernel32(is_table + (port_index * sizeof_ipc_entry_t) + 8); // 8 = offset of ie_bits in struct ipc_entry
+        
+#define IE_BITS_SEND (1<<16)
+#define IE_BITS_RECEIVE (1<<17)
+        
+        bits &= (~IE_BITS_RECEIVE);
+        bits |= IE_BITS_SEND;
+        
+        WriteKernel32(is_table + (port_index * sizeof_ipc_entry_t) + 8, bits);
+    }
 }
 
 void make_port_fake_task_port(mach_port_t port, uint64_t task_kaddr) {
@@ -173,15 +232,26 @@ void PatchHostPriv(mach_port_t host) {
     
     // locate port in kernel
     uint64_t host_kaddr = get_address_of_port(getpid(), host);
-    
-    // change port host type
-    uint32_t old = ReadKernel32(host_kaddr + 0x0);
-    printf("[-] Old host type: 0x%x\n", old);
-    
-    WriteKernel64(host_kaddr + 0x0, IO_ACTIVE | IKOT_HOST_PRIV);
-    
-    uint32_t new = ReadKernel32(host_kaddr);
-    printf("[-] New host type: 0x%x\n", new);
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {
+        // change port host type
+        uint32_t old = rk32(host_kaddr + 0x0);
+        printf("[-] Old host type: 0x%x\n", old);
+        
+        wk64(host_kaddr + 0x0, IO_ACTIVE | IKOT_HOST_PRIV);
+        
+        uint32_t new = rk32(host_kaddr);
+        printf("[-] New host type: 0x%x\n", new);
+
+    } else {
+        // change port host type
+        uint32_t old = ReadKernel32(host_kaddr + 0x0);
+        printf("[-] Old host type: 0x%x\n", old);
+        
+        WriteKernel64(host_kaddr + 0x0, IO_ACTIVE | IKOT_HOST_PRIV);
+        
+        uint32_t new = ReadKernel32(host_kaddr);
+        printf("[-] New host type: 0x%x\n", new);
+    }
 }
 
 
@@ -191,40 +261,74 @@ void PatchHostPriv(mach_port_t host) {
 mach_port_t FakeHostPriv_port = MACH_PORT_NULL;
 
 // build a fake host priv port
-mach_port_t FakeHostPriv() {
+mach_port_t FakeHostPriv(void) {
     if (FakeHostPriv_port != MACH_PORT_NULL) {
         return FakeHostPriv_port;
     }
-    // get the address of realhost:
-    uint64_t hostport_addr = get_address_of_port(getpid(), mach_host_self());
-    uint64_t realhost = ReadKernel64(hostport_addr + koffset(KSTRUCT_OFFSET_PROC_TASK));
-    
-    // allocate a port
-    mach_port_t port = MACH_PORT_NULL;
-    kern_return_t err;
-    err = mach_port_allocate(mach_task_self(), MACH_PORT_RIGHT_RECEIVE, &port);
-    if (err != KERN_SUCCESS) {
-        printf("[-] failed to allocate port\n");
-        return MACH_PORT_NULL;
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {
+        // get the address of realhost:
+        uint64_t hostport_addr = get_address_of_port(getpid(), mach_host_self());
+        uint64_t realhost = rk64(hostport_addr + koffset(KSTRUCT_OFFSET_PROC_TASK));
+        
+        // allocate a port
+        mach_port_t port = MACH_PORT_NULL;
+        kern_return_t err;
+        err = mach_port_allocate(mach_task_self(), MACH_PORT_RIGHT_RECEIVE, &port);
+        if (err != KERN_SUCCESS) {
+            printf("[-] failed to allocate port\n");
+            return MACH_PORT_NULL;
+        }
+        // get a send right
+        mach_port_insert_right(mach_task_self(), port, port, MACH_MSG_TYPE_MAKE_SEND);
+        
+        // make sure port type has IKOT_HOST_PRIV
+        PatchHostPriv(port);
+        
+        // locate the port
+        uint64_t port_addr = get_address_of_port(getpid(), port);
+        
+        // change the space of the port
+        wk64(port_addr + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_RECEIVER), ipc_space_kernel());
+        
+        // set the kobject
+        wk64(port_addr +koffset(KSTRUCT_OFFSET_PROC_TASK), realhost);
+        
+        FakeHostPriv_port = port;
+        
+        return port;
+        
+    } else {
+        // get the address of realhost:
+        uint64_t hostport_addr = get_address_of_port(getpid(), mach_host_self());
+        uint64_t realhost = ReadKernel64(hostport_addr + koffset(KSTRUCT_OFFSET_PROC_TASK));
+        
+        // allocate a port
+        mach_port_t port = MACH_PORT_NULL;
+        kern_return_t err;
+        err = mach_port_allocate(mach_task_self(), MACH_PORT_RIGHT_RECEIVE, &port);
+        if (err != KERN_SUCCESS) {
+            printf("[-] failed to allocate port\n");
+            return MACH_PORT_NULL;
+        }
+        // get a send right
+        mach_port_insert_right(mach_task_self(), port, port, MACH_MSG_TYPE_MAKE_SEND);
+        
+        // make sure port type has IKOT_HOST_PRIV
+        PatchHostPriv(port);
+        
+        // locate the port
+        uint64_t port_addr = get_address_of_port(getpid(), port);
+        
+        // change the space of the port
+        WriteKernel64(port_addr + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_RECEIVER), ipc_space_kernel());
+        
+        // set the kobject
+        WriteKernel64(port_addr +koffset(KSTRUCT_OFFSET_PROC_TASK), realhost);
+        
+        FakeHostPriv_port = port;
+        
+        return port;
     }
-    // get a send right
-    mach_port_insert_right(mach_task_self(), port, port, MACH_MSG_TYPE_MAKE_SEND);
-    
-    // make sure port type has IKOT_HOST_PRIV
-    PatchHostPriv(port);
-    
-    // locate the port
-    uint64_t port_addr = get_address_of_port(getpid(), port);
-    
-    // change the space of the port
-    WriteKernel64(port_addr + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_RECEIVER), ipc_space_kernel());
-    
-    // set the kobject
-    WriteKernel64(port_addr +koffset(KSTRUCT_OFFSET_PROC_TASK), realhost);
-    
-    FakeHostPriv_port = port;
-    
-    return port;
 }
 
 
@@ -275,7 +379,12 @@ int setHSP4() {
          kernel_task_kaddr = our_kernel_taskStruct_exportAstylez;//
 
     } else {
-         kernel_task_kaddr = ReadKernel64(GETOFFSET(kernel_task));//our_kernel_taskStruct_exportAstylez;//
+        if (kCFCoreFoundationVersionNumber >= 1751.108) {
+            kernel_task_kaddr = rk64(GETOFFSET(kernel_task));//our_kernel_taskStruct_exportAstylez;//
+
+        }else {
+            kernel_task_kaddr = ReadKernel64(GETOFFSET(kernel_task));//our_kernel_taskStruct_exportAstylez;//
+        }
     }
     
     mach_port_t zm_fake_task_port = MACH_PORT_NULL;
@@ -289,12 +398,21 @@ int setHSP4() {
     
     // strref \"Nothing being freed to the zone_map. start = end = %p\\n\"
     // or traditional \"zone_init: kmem_suballoc failed\"
+    
     uint64_t zone_map_kptr = GETOFFSET(zone_map_ref);
-    uint64_t zone_map = ReadKernel64(zone_map_kptr);
-    
-    // kernel_task->vm_map == kernel_map
-    uint64_t kernel_map = ReadKernel64(kernel_task_kaddr + koffset(KSTRUCT_OFFSET_TASK_VM_MAP));
-    
+    uint64_t zone_map;
+    uint64_t kernel_map;
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {
+        zone_map = rk64(zone_map_kptr);
+        
+        // kernel_task->vm_map == kernel_map
+        kernel_map = rk64(kernel_task_kaddr + koffset(KSTRUCT_OFFSET_TASK_VM_MAP));
+    }else {
+        zone_map = ReadKernel64(zone_map_kptr);
+        
+        // kernel_task->vm_map == kernel_map
+        kernel_map = ReadKernel64(kernel_task_kaddr + koffset(KSTRUCT_OFFSET_TASK_VM_MAP));
+    }
     uint64_t zm_fake_task_kptr = make_fake_task(zone_map);
     uint64_t km_fake_task_kptr = make_fake_task(kernel_map);
     
@@ -339,17 +457,29 @@ int setHSP4() {
     printf("[remap_kernel_task] port kaddr: 0x%llx\n", port_kaddr);
     
     make_port_fake_task_port(*port, remapped_task_addr);
-    
-    if (ReadKernel64(port_kaddr + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_KOBJECT)) != remapped_task_addr) {
-        printf("[remap_kernel_task] read back tfpzero kobject didnt match!\n");
-        return 1;
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {
+        if (rk64(port_kaddr + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_KOBJECT)) != remapped_task_addr) {
+            printf("[remap_kernel_task] read back tfpzero kobject didnt match!\n");
+            return 1;
+        }
+        
+        // lck_mtx -- arm: 8  arm64: 16
+        const int off_host_special = 0x10;
+        uint64_t host_priv_kaddr = get_address_of_port(getpid(), mach_host_self());
+        uint64_t realhost_kaddr = rk64(host_priv_kaddr + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_KOBJECT));
+        wk64(realhost_kaddr + off_host_special + 4 * sizeof(void*), port_kaddr);
+
+    } else {
+        if (ReadKernel64(port_kaddr + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_KOBJECT)) != remapped_task_addr) {
+            printf("[remap_kernel_task] read back tfpzero kobject didnt match!\n");
+            return 1;
+        }
+        
+        // lck_mtx -- arm: 8  arm64: 16
+        const int off_host_special = 0x10;
+        uint64_t host_priv_kaddr = get_address_of_port(getpid(), mach_host_self());
+        uint64_t realhost_kaddr = ReadKernel64(host_priv_kaddr + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_KOBJECT));
+        WriteKernel64(realhost_kaddr + off_host_special + 4 * sizeof(void*), port_kaddr);
     }
-    
-    // lck_mtx -- arm: 8  arm64: 16
-    const int off_host_special = 0x10;
-    uint64_t host_priv_kaddr = get_address_of_port(getpid(), mach_host_self());
-    uint64_t realhost_kaddr = ReadKernel64(host_priv_kaddr + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_KOBJECT));
-    WriteKernel64(realhost_kaddr + off_host_special + 4 * sizeof(void*), port_kaddr);
-    
     return 0;
 }

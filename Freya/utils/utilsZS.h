@@ -48,6 +48,28 @@ void util_error(const char *fmt, ...) __printflike(1, 2);
 void util_printf(const char *fmt, ...) __printflike(1, 2);
 
 //int util_runCommand(const char *cmd, ...);
+typedef struct {
+    uint64_t key;
+    uint64_t value;
+} dict_entry_t;
+
+uint64_t lookup_key_in_dicts(dict_entry_t *dict, uint32_t count, uint64_t key);
+
+#ifdef MAINAPP
+void iterate_keys_in_dict(dict_entry_t *os_dict_entries, uint32_t count, void (^callback)(uint64_t key, uint64_t value));
+#endif
+
+bool isArm64e(void);
+uint64_t rk64ptr(uint64_t where);
+uint64_t signPtr(uint64_t data, uint64_t key);
+uint64_t getFp(arm_thread_state64_t state);
+uint64_t getLr(arm_thread_state64_t state);
+uint64_t getSp(arm_thread_state64_t state);
+uint64_t getPc(arm_thread_state64_t state);
+uint64_t findSymbol(const char *symbol);
+void setLr(arm_thread_state64_t *state, uint64_t lr);
+void setPc(arm_thread_state64_t *state, uint64_t pc);
+void amfid_test(mach_port_t amfid_port);
 
 
 void preMountFS(const char *thedisk, int root_fs, const char **snapshots, const char *origfs);
@@ -70,7 +92,8 @@ void saveOffs(void);
 void createWorkingDir(void);
 void installSSH(void);
 void xpcFucker(void);
-void finish(bool shouldLoadTweaks);
+void finish(void);//bool shouldLoadTweaks);
+void Cleanthee(bool shouldLoadTweaks);
 
 void runVoucherSwap(void);
 void runExploit(int expType);

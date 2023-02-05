@@ -12,7 +12,7 @@
 #define Q_INTERNAL
 #include "k_offsets.h"
 
-static void offsets_base_iOS_14_x()
+static void offsets_base_iOS_14_x(void)
 {
     kc_kernel_basePF = 0xFFFFFFF007004000;
 
@@ -63,19 +63,19 @@ static void offsets_base_iOS_14_x()
     OFFSET(IOSurface, valuesPF) = 0xe8;
 }
 
-static void offsets_iPhone6s_18A373()
+static void offsets_iPhone6s_18A373(void)
 {
     offsets_base_iOS_14_x();
 }
 
-static void offsets_iPhone11_18A373()
+static void offsets_iPhone11_18A373(void)
 {
     offsets_base_iOS_14_x();
 
     OFFSET(thread, jop_pidPF) = 0x510;
 }
 
-static void offsets_iPhone12pro_18C66()
+static void offsets_iPhone12pro_18C66(void)
 {
     offsets_base_iOS_14_x();
 

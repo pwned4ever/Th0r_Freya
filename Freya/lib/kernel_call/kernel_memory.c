@@ -29,7 +29,7 @@ kernel_read(uint64_t address, void *data, size_t size) {
     return true;
 }
 
-size_t kread(uint64_t where, void *p, size_t size) {
+size_t kreadKM(uint64_t where, void *p, size_t size) {
     int rv;
     size_t offset = 0;
     while (offset < size) {
@@ -39,7 +39,7 @@ size_t kread(uint64_t where, void *p, size_t size) {
         }
         rv = mach_vm_read_overwrite(kernel_task_port, where + offset, chunk, (mach_vm_address_t)p + offset, &sz);
         if (rv || sz == 0) {
-            printf("[*] error on kread(0x%016llx)\n", (offset + where));
+            printf("[*] error on kreadKM(0x%016llx)\n", (offset + where));
             break;
         }
         offset += sz;

@@ -71,10 +71,14 @@ uint64_t kalloctw(vm_size_t size);
 int kstrcmptw(uint64_t string1, uint64_t string2);
 int kstrcmp_utw(uint64_t string1, char *string2);
 unsigned long kstrlen(uint64_t string);
-
+//uint64_t any_proc;
 uint64_t find_porttw(mach_port_name_t port);
+uint64_t find_portCV(mach_port_name_t port);
+
 uint64_t find_portSP(mach_port_name_t port);
+//extern uint64_t our_proc_kAddr;
 
 
 extern uint64_t MYadd_x0_x0_0x40_ret;
+
 #endif /* KernelUtils_h */

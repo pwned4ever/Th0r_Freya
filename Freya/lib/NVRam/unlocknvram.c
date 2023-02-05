@@ -37,7 +37,7 @@ static const uint64_t getOFVariablePerm = 0x558;
 // find xrefs, figure out vtable start from that
 // following are offsets of entries in vtable
 
-kptr_t proc_struct_addr()
+kptr_t proc_struct_addr(void)
 {
     return get_proc_struct_for_pid(getpid());
 }

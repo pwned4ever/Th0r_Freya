@@ -127,6 +127,23 @@ _Bool offs_init() {
         off_itk_space = 0x300;
         off_csb_platform_binary = 0xA8;
         off_csb_platform_path = 0xAC;
+    } else if (SYSTEM_VERSION_BETWEEN_OR_EQUAL_TO(@"14.0", @"15.0") && !SYSTEM_VERSION_EQUAL_TO(@"15.0")) {
+        off_p_pid = 0x68;
+        off_task = 0x10;
+        off_p_uid = 0x28;
+        off_p_gid = 0x2C;
+        off_p_ruid = 0x30;
+        off_p_rgid = 0x34;
+        off_p_ucred = 0xF8;
+        off_p_csflags = 0x290;
+        off_p_comm = 0x250;
+        off_p_textvp = 0x230;
+        off_p_textoff = 0x238;
+        off_p_cputype = 0x2A8;
+        off_p_cpu_subtype = 0x2AC;
+        off_itk_space = 0x300;
+        off_csb_platform_binary = 0xA8;
+        off_csb_platform_path = 0xAC;
     } else {
         ERROR("iOS version unsupported.");
         return false;

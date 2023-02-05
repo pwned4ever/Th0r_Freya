@@ -14,9 +14,10 @@ int A12 = 0;
 uint64_t task_self_addr_cache;
 uint64_t selfproc_ffs = 0;
 
-uint64_t get_selfproc()
+uint64_t get_selfproc(void)
 {
     if (our_procStruct_addr_exported != 0) {
+        
         return our_procStruct_addr_exported;
     }
     return selfproc_ffs;

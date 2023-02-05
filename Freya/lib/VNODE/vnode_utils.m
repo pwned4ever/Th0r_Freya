@@ -7,7 +7,7 @@
 //
 
 #import "patchfinder64.h"
-#import "offsets.h"
+//#import "offsets.h"
 #import <stdlib.h>
 #include "kernel_call.h"
 #import <stdio.h>

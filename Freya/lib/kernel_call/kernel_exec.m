@@ -16,7 +16,7 @@
 //#include "IOKitLib.h"
 
 #if !__arm64e__
-static mach_port_t prepare_user_client()
+static mach_port_t prepare_user_client(void)
 {
     kern_return_t err;
     mach_port_t user_client;
@@ -45,7 +45,7 @@ static const int fake_kalloc_size = 0x1000;
 #endif
 static pthread_mutex_t kexecute_lock;
 
-bool init_kexecute()
+bool init_kexecute(void)
 {
 #if __arm64e__
     if (!parameters_init()) return false;

@@ -220,7 +220,7 @@ static char *copyBootHash(void)
     return manifestHash;
 }
 
-char *copySystemSnapshot()
+char *copySystemSnapshot(void)
 {
     char *hash = copyBootHash();
     if (hash == NULL) {

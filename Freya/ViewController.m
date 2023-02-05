@@ -8,7 +8,7 @@
 #import "SettingsViewController.h"
 #import "utils/utilsZS.h"
 #include "utils/holders/ImportantHolders.h"
-#include "offsets.h"
+#include "OffsetHolder.h"
 #include "remap_tfp_set_hsp.h"
 #include "kernel_slide.h"
 #include "kernel_exec.h"
@@ -201,10 +201,10 @@ double uptime(void){
 }
 
 
-NSString *freyaversion = @"1.3.5⚡️";
-char *freyaversionnew = "1.3.5⚡️";
+NSString *freyaversion = @"1.3.6⚡️";
+char *freyaversionnew = "1.3.6⚡️";
 
-char *freyaupdateDate = "2:00AM 2/1/23";
+char *freyaupdateDate = "2:30PM 2/5/23";
 char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/tree/main/Releases/Freya.ipa";//github.com/pwned4ever/Th0r_Freya/blob/main/Releases/Freya.ipa";// "mega.nz/file/BhNxBSgJ#gNcngNQBtXS0Ipa5ivX09-jtIr7BckUhrA7YMkSFaNM"//
 
 - (void)u0alertreboot {
@@ -474,10 +474,13 @@ int justinstalledcydia = 0;
                 [self.buttontext setTitle:localize(@"Remove Freya?") forState:UIControlStateNormal];
                 [self.fixfsswitch setOn:FALSE];
                 [self.fixfsswitch setEnabled:NO];
+                
                 [self.restoreFSSwitch setEnabled:YES];
                 [self.restoreFSSwitch setOn:true];
                 [self.loadTweakSwitch setEnabled:YES];
-                [self.loadTweakSwitch setOn:TRUE]; });
+                [self.loadTweakSwitch setOn:TRUE];
+                
+            });
         } else {
             JUSTremovecheck = false;
          if (checkcheckRa1nmarker == 0) {
@@ -926,7 +929,7 @@ void wannaSliceOfMe(void) { //Run The Exploit
         dothepatch();
        // progressMeterUIVIEW
         ourprogressMeter();
-        offs_init();
+        //offs_init();
         yeasnapshot();
         remountFS(restore_fs);
         getOffsets();
@@ -943,6 +946,9 @@ void wannaSliceOfMe(void) { //Run The Exploit
         ourprogressMeter();
         //int exploit
         loadinglaunchds("loading the ds");
+        Cleanthee(loadTweaks);
+//        [ViewController.sharedController.buttontext setTitle:@"Respringing" forState: normal];
+        respringing("yup a respring is coming");
         // Stop measuring time and calculate the elapsed time
         gettimeofday(&end, 0);
         seconds = end.tv_sec - begin.tv_sec;
@@ -959,7 +965,7 @@ void wannaSliceOfMe(void) { //Run The Exploit
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [ViewController.sharedController.buttontext setTitle:@"Respringing" forState: normal];
                     respringing("yup");});
-                finish(loadTweaks);
+                finish();//loadTweaks);
             } else {waittoviewlogOK("hello log");
                 
                 break;}
@@ -973,7 +979,7 @@ void wannaSliceOfMe(void) { //Run The Exploit
                 [ViewController.sharedController.buttontext setTitle:@"Respringing" forState: normal];
                 respringing("yup");});
 
-            finish(loadTweaks);
+            finish();//loadTweaks);
         }
     }
 end:
@@ -1251,7 +1257,7 @@ end:
                 respringing("yup");
             });
             wantstoviewlog = 1;
-            finish(loadTweaks);
+            finish();//loadTweaks);
 
         }];
         UIAlertAction *Cancel = [UIAlertAction actionWithTitle:NSLocalizedString(@"View log", nil) style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
@@ -1313,7 +1319,7 @@ bool pressedJBbut;
         dispatch_async(dispatch_get_main_queue(), ^{
             [ViewController.sharedController.buttontext setTitle:@"Respringing" forState: normal];
             respringing("yup");});
-        finish(loadTweaks);
+        finish();//loadTweaks);
         wantstoviewlog = 0;
     } else {
         pressedJBbut = true;

@@ -150,7 +150,7 @@ static inline void showThePopup(NSString *title, NSString *message, Boolean wait
     
     showAlertPopup(title, message, wait, destructive, nil);
 }
-static inline void disableFixfs()
+static inline void disableFixfs(void)
 {
     ViewController *controller = [ViewController sharedController];
     [[controller fixfsswitch] setOn:false];
@@ -158,13 +158,13 @@ static inline void disableFixfs()
 
    // [defaults setInteger:0 forKey:@"fixFS"];
 }
-static inline void disableSetnonce()
+static inline void disableSetnonce(void)
 {
     saveCustomSetting(@"SetNonce", 1);
 
    // [defaults setInteger:0 forKey:@"fixFS"];
 }
-static inline void disableRootFS() {
+static inline void disableRootFS(void) {
     ViewController *controller = [ViewController sharedController];
     [[controller restoreFSSwitch] setOn:false];
     saveCustomSetting(@"RestoreFS", 1);
