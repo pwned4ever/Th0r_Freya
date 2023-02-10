@@ -20,11 +20,16 @@
 #include "amfi_utils.h"
 #include <mach-o/fat.h>
 #include "KernelUtils.h"
+#include "KernelRwWrapper.h"
 
 uint64_t ubc_cs_blob_allocate(vm_size_t size) {
     uint64_t size_p = kmem_alloc(sizeof(vm_size_t));
     if (!size_p) return 0;
-    kwriteOwO(size_p, &size, sizeof(vm_size_t));
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+        kwrite(size_p, &size, sizeof(vm_size_t));
+    } else {
+        kwriteOwO(size_p, &size, sizeof(vm_size_t));
+    }
     uint64_t alloced = kexecute2(GETOFFSET(kalloc_canblock), size_p, 1, GETOFFSET(ubc_cs_blob_allocate_site), 0, 0, 0, 0);
     kmem_free(size_p, sizeof(vm_size_t));
     if (alloced) alloced = zm_fix_addr(alloced);
@@ -223,9 +228,13 @@ int cs_validate_csblob(const uint8_t *addr, size_t length, CS_CodeDirectory **rc
     uint64_t entptr = kmem_alloc(8);
     
     int ret = (int)kexecute2(GETOFFSET(cs_validate_csblob), (uint64_t)addr, length, rcdptr, entptr, 0, 0, 0);
-    *rcd = (CS_CodeDirectory *)ReadKernel64(rcdptr);
-    *rentitlements = (CS_GenericBlob *)ReadKernel64(entptr);
-    
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+        *rcd = (CS_CodeDirectory *)rk64(rcdptr);
+        *rentitlements = (CS_GenericBlob *)rk64(entptr);
+    } else {
+        *rcd = (CS_CodeDirectory *)ReadKernel64(rcdptr);
+        *rentitlements = (CS_GenericBlob *)ReadKernel64(entptr);
+    }
     kmem_free(rcdptr, 8);
     kmem_free(entptr, 8);
     
@@ -251,7 +260,12 @@ void getSHA256inplace(const uint8_t* code_dir, uint8_t *out) {
 }
 
 const struct cs_hash *cs_find_md(uint8_t type) {
-    return (struct cs_hash *)ReadKernel64(GETOFFSET(cs_find_md) + ((type - 1) * 8));
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+        return (struct cs_hash *)rk64(GETOFFSET(cs_find_md) + ((type - 1) * 8));
+    } else {
+        return (struct cs_hash *)ReadKernel64(GETOFFSET(cs_find_md) + ((type - 1) * 8));
+
+    }
 }
 
 
@@ -329,17 +343,33 @@ int bypassCodeSign(const char *filename) {
         rv = -3;
         goto out;
     }
-    ubc_info = ReadKernel64(vnode + koffset(KSTRUCT_OFFSET_VNODE_V_UBCINFO));
-    if (ubc_info == 0) {
-        rv = -4;
-        goto out;
-    }
-    cs_blob = ReadKernel64(ubc_info + koffset(KSTRUCT_OFFSET_UBCINFO_CSBLOBS));
-    if (cs_blob != 0) {
-        WriteKernel32(ubc_info + 44, ReadKernel32(GETOFFSET(cs_blob_generation_count)));
-        LOG("%s: Already loaded \"%s\"", __FUNCTION__, filename);
-        rv = 0;
-        goto out;
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+        ubc_info = rk64(vnode + koffset(KSTRUCT_OFFSET_VNODE_V_UBCINFO));
+        if (ubc_info == 0) {
+            rv = -4;
+            goto out;
+        }
+        cs_blob = rk64(ubc_info + koffset(KSTRUCT_OFFSET_UBCINFO_CSBLOBS));
+        if (cs_blob != 0) {
+            wk32(ubc_info + 44, rk32(GETOFFSET(cs_blob_generation_count)));
+            LOG("%s: Already loaded \"%s\"", __FUNCTION__, filename);
+            rv = 0;
+            goto out;
+        }
+    } else {
+        ubc_info = ReadKernel64(vnode + koffset(KSTRUCT_OFFSET_VNODE_V_UBCINFO));
+        if (ubc_info == 0) {
+            rv = -4;
+            goto out;
+        }
+        cs_blob = ReadKernel64(ubc_info + koffset(KSTRUCT_OFFSET_UBCINFO_CSBLOBS));
+        if (cs_blob != 0) {
+            WriteKernel32(ubc_info + 44, ReadKernel32(GETOFFSET(cs_blob_generation_count)));
+            LOG("%s: Already loaded \"%s\"", __FUNCTION__, filename);
+            rv = 0;
+            goto out;
+        }
+
     }
     lc_cmd = getCodeSignatureLC(file, &mach_off);
     if (lc_cmd == 0 || mach_off < 0) {
@@ -390,9 +420,16 @@ int bypassCodeSign(const char *filename) {
     }
     cd = (uint64_t)rcd;
     rcd = malloc(sizeof(CS_CodeDirectory));
-    if (!rkbuffer(cd, (void *)rcd, sizeof(CS_CodeDirectory))) {
-        rv = -12;
-        goto out;
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+        if (!rkbufferCV(cd, (void *)rcd, sizeof(CS_CodeDirectory))) {
+            rv = -12;
+            goto out;
+        }
+    } else {
+        if (!rkbuffer(cd, (void *)rcd, sizeof(CS_CodeDirectory))) {
+            rv = -12;
+            goto out;
+        }
     }
     if (rentitlements != NULL) {
         entitlements = (uint64_t)rentitlements;
@@ -401,18 +438,33 @@ int bypassCodeSign(const char *filename) {
             rv = -13;
             goto out;
         }
-        if (!rkbuffer(entitlements, rentitlements, sizeof(CS_GenericBlob))) {
-            rv = -14;
-            goto out;
+        if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+            if (!rkbufferCV(entitlements, rentitlements, sizeof(CS_GenericBlob))) {
+                rv = -14;
+                goto out;
+            }
+        } else {
+            if (!rkbuffer(entitlements, rentitlements, sizeof(CS_GenericBlob))) {
+                rv = -14;
+                goto out;
+            }
         }
     }
     blob->csb_cd = (const CS_CodeDirectory *)cd;
     blob->csb_entitlements_blob = (const CS_GenericBlob *)entitlements;
     blob->csb_hashtype = cs_find_md(rcd->hashType);
-    if (blob->csb_hashtype == NULL || ReadKernel64((uint64_t)blob->csb_hashtype + offsetof(struct cs_hash, cs_digest_size)) > sizeof(hash)) {
-        rv = -15;
-        goto out;
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+        if (blob->csb_hashtype == NULL || rk64((uint64_t)blob->csb_hashtype + offsetof(struct cs_hash, cs_digest_size)) > sizeof(hash)) {
+            rv = -15;
+            goto out;
+        }
+    } else {
+        if (blob->csb_hashtype == NULL || ReadKernel64((uint64_t)blob->csb_hashtype + offsetof(struct cs_hash, cs_digest_size)) > sizeof(hash)) {
+            rv = -15;
+            goto out;
+        }
     }
+
     blob->csb_hash_pageshift = rcd->pageSize;
     blob->csb_hash_pagesize = (1U << rcd->pageSize);
     blob->csb_hash_pagemask = blob->csb_hash_pagesize - 1;
@@ -436,13 +488,20 @@ int bypassCodeSign(const char *filename) {
     blob->csb_flags = 0x24000005;
     blob->csb_platform_binary = 1;
     old_cd = blob->csb_cd;
-    new_cdsize = htonl(ReadKernel32((uint64_t)old_cd + offsetof(CS_CodeDirectory, length)));
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+        new_cdsize = htonl(rk32((uint64_t)old_cd + offsetof(CS_CodeDirectory, length)));
+    } else {
+        new_cdsize = htonl(ReadKernel32((uint64_t)old_cd + offsetof(CS_CodeDirectory, length)));
+    }
     new_blob_size = sizeof(CS_SuperBlob);
     new_blob_size += sizeof(CS_BlobIndex);
     new_blob_size += new_cdsize;
     if (blob->csb_entitlements_blob) {
         new_blob_size += sizeof(CS_BlobIndex);
-        new_blob_size += ntohl(ReadKernel32((uint64_t)blob->csb_entitlements_blob + offsetof(CS_GenericBlob, length)));
+        if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+            new_blob_size += ntohl(rk32((uint64_t)blob->csb_entitlements_blob + offsetof(CS_GenericBlob, length)));
+        }else {
+            new_blob_size += ntohl(ReadKernel32((uint64_t)blob->csb_entitlements_blob + offsetof(CS_GenericBlob, length))); }
     }
     new_blob_addr = ubc_cs_blob_allocate(new_blob_size);
     if (new_blob_addr == 0) {
@@ -450,32 +509,63 @@ int bypassCodeSign(const char *filename) {
         goto out;
     }
     new_superblob = (CS_SuperBlob *)new_blob_addr;
-    WriteKernel32((uint64_t)new_superblob + offsetof(CS_SuperBlob, magic), htonl(CSMAGIC_EMBEDDED_SIGNATURE));
-    WriteKernel32((uint64_t)new_superblob + offsetof(CS_SuperBlob, length), htonl((uint32_t)new_blob_size));
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+        wk32((uint64_t)new_superblob + offsetof(CS_SuperBlob, magic), htonl(CSMAGIC_EMBEDDED_SIGNATURE));
+        wk32((uint64_t)new_superblob + offsetof(CS_SuperBlob, length), htonl((uint32_t)new_blob_size));
+    } else {
+        WriteKernel32((uint64_t)new_superblob + offsetof(CS_SuperBlob, magic), htonl(CSMAGIC_EMBEDDED_SIGNATURE));
+        WriteKernel32((uint64_t)new_superblob + offsetof(CS_SuperBlob, length), htonl((uint32_t)new_blob_size));
+    }
     if (blob->csb_entitlements_blob != NULL) {
         vm_size_t cd_offset = sizeof(CS_SuperBlob) + 2 * sizeof(CS_BlobIndex);
         vm_size_t ent_offset = cd_offset +  new_cdsize;
-        WriteKernel32((uint64_t)new_superblob + offsetof(CS_SuperBlob, count), htonl(2));
-        WriteKernel32((uint64_t)new_superblob + offsetof(CS_SuperBlob, index[0].type), htonl(CSSLOT_CODEDIRECTORY));
-        WriteKernel32((uint64_t)new_superblob + offsetof(CS_SuperBlob, index[0].offset), htonl((uint32_t)cd_offset));
-        WriteKernel32((uint64_t)new_superblob + offsetof(CS_SuperBlob, index[1].type), htonl(CSSLOT_ENTITLEMENTS));
-        WriteKernel32((uint64_t)new_superblob + offsetof(CS_SuperBlob, index[1].offset), htonl((uint32_t)ent_offset));
-        void *buf = malloc(ntohl(ReadKernel32((uint64_t)blob->csb_entitlements_blob + offsetof(CS_GenericBlob, length))));
-        if (buf == NULL) {
-            rv = -17;
-            goto out;
+        if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+            wk32((uint64_t)new_superblob + offsetof(CS_SuperBlob, count), htonl(2));
+            wk32((uint64_t)new_superblob + offsetof(CS_SuperBlob, index[0].type), htonl(CSSLOT_CODEDIRECTORY));
+            wk32((uint64_t)new_superblob + offsetof(CS_SuperBlob, index[0].offset), htonl((uint32_t)cd_offset));
+            wk32((uint64_t)new_superblob + offsetof(CS_SuperBlob, index[1].type), htonl(CSSLOT_ENTITLEMENTS));
+            wk32((uint64_t)new_superblob + offsetof(CS_SuperBlob, index[1].offset), htonl((uint32_t)ent_offset));
+            void *buf = malloc(ntohl(rk32((uint64_t)blob->csb_entitlements_blob + offsetof(CS_GenericBlob, length))));
+            if (buf == NULL) {
+                rv = -17;
+                goto out;
+            }
+            if (!rkbufferCV((uint64_t)blob->csb_entitlements_blob, buf, ntohl(rk32((uint64_t)blob->csb_entitlements_blob + offsetof(CS_GenericBlob, length))))) {
+                rv = -18;
+                goto out;
+            }
+            if (!wkbufferCV((uint64_t)(new_blob_addr + ent_offset), buf, ntohl(rk32((uint64_t)blob->csb_entitlements_blob + offsetof(CS_GenericBlob, length))))) {
+                rv = -19;
+                goto out;
+            }
+            free(buf);
+            buf = NULL;
+            new_cd = (CS_CodeDirectory *)(new_blob_addr + cd_offset);
+            
+        } else {
+            
+            WriteKernel32((uint64_t)new_superblob + offsetof(CS_SuperBlob, count), htonl(2));
+            WriteKernel32((uint64_t)new_superblob + offsetof(CS_SuperBlob, index[0].type), htonl(CSSLOT_CODEDIRECTORY));
+            WriteKernel32((uint64_t)new_superblob + offsetof(CS_SuperBlob, index[0].offset), htonl((uint32_t)cd_offset));
+            WriteKernel32((uint64_t)new_superblob + offsetof(CS_SuperBlob, index[1].type), htonl(CSSLOT_ENTITLEMENTS));
+            WriteKernel32((uint64_t)new_superblob + offsetof(CS_SuperBlob, index[1].offset), htonl((uint32_t)ent_offset));
+            void *buf = malloc(ntohl(ReadKernel32((uint64_t)blob->csb_entitlements_blob + offsetof(CS_GenericBlob, length))));
+            if (buf == NULL) {
+                rv = -17;
+                goto out;
+            }
+            if (!rkbuffer((uint64_t)blob->csb_entitlements_blob, buf, ntohl(ReadKernel32((uint64_t)blob->csb_entitlements_blob + offsetof(CS_GenericBlob, length))))) {
+                rv = -18;
+                goto out;
+            }
+            if (!wkbuffer((uint64_t)(new_blob_addr + ent_offset), buf, ntohl(ReadKernel32((uint64_t)blob->csb_entitlements_blob + offsetof(CS_GenericBlob, length))))) {
+                rv = -19;
+                goto out;
+            }
+            free(buf);
+            buf = NULL;
+            new_cd = (CS_CodeDirectory *)(new_blob_addr + cd_offset);
         }
-        if (!rkbuffer((uint64_t)blob->csb_entitlements_blob, buf, ntohl(ReadKernel32((uint64_t)blob->csb_entitlements_blob + offsetof(CS_GenericBlob, length))))) {
-            rv = -18;
-            goto out;
-        }
-        if (!wkbuffer((uint64_t)(new_blob_addr + ent_offset), buf, ntohl(ReadKernel32((uint64_t)blob->csb_entitlements_blob + offsetof(CS_GenericBlob, length))))) {
-            rv = -19;
-            goto out;
-        }
-        free(buf);
-        buf = NULL;
-        new_cd = (CS_CodeDirectory *)(new_blob_addr + cd_offset);
     } else {
         new_cd = (CS_CodeDirectory *)new_blob_addr;
     }
@@ -484,14 +574,27 @@ int bypassCodeSign(const char *filename) {
         rv = -20;
         goto out;
     }
-    if (!rkbuffer((uint64_t)old_cd, buf, new_cdsize)) {
-        rv = -21;
-        goto out;
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+        if (!rkbufferCV((uint64_t)old_cd, buf, new_cdsize)) {
+            rv = -21;
+            goto out;
+        }
+        if (!wkbufferCV((uint64_t)new_cd, buf, new_cdsize)) {
+            rv = -22;
+            goto out;
+        }
+        
+    } else {
+        if (!rkbuffer((uint64_t)old_cd, buf, new_cdsize)) {
+            rv = -21;
+            goto out;
+        }
+        if (!wkbuffer((uint64_t)new_cd, buf, new_cdsize)) {
+            rv = -22;
+            goto out;
+        }
     }
-    if (!wkbuffer((uint64_t)new_cd, buf, new_cdsize)) {
-        rv = -22;
-        goto out;
-    }
+
     free(buf);
     buf = NULL;
     len = new_blob_size;
@@ -534,10 +637,19 @@ int bypassCodeSign(const char *filename) {
             rv = -25;
             goto out;
         }
-        if (!wkbuffer((uint64_t)new_entitlements, newBlob, sizeof(CS_GenericBlob) + strlen(newEntitlements) + 1)) {
-            rv = -26;
-            goto out;
+        if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+            if (!wkbufferCV((uint64_t)new_entitlements, newBlob, sizeof(CS_GenericBlob) + strlen(newEntitlements) + 1)) {
+                rv = -26;
+                goto out;
+            }
+            
+        } else {
+            if (!wkbuffer((uint64_t)new_entitlements, newBlob, sizeof(CS_GenericBlob) + strlen(newEntitlements) + 1)) {
+                rv = -26;
+                goto out;
+            }
         }
+
     }
     blob->csb_entitlements_blob = new_entitlements;
     ents = kexecute2(GETOFFSET(osunserializexml), (uint64_t)new_entitlements + offsetof(CS_GenericBlob, data), 0, 0, 0, 0, 0, 0);
@@ -547,7 +659,12 @@ int bypassCodeSign(const char *filename) {
     }
     ents = zm_fix_addr(ents);
     blob->csb_entitlements = (void *)ents;
-    uint64_t OSBoolTrue = ReadKernel64(GETOFFSET(OSBoolean_True));
+    uint64_t OSBoolTrue;
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+        OSBoolTrue = rk64(GETOFFSET(OSBoolean_True));
+    } else {
+        OSBoolTrue = ReadKernel64(GETOFFSET(OSBoolean_True));
+    }
     if (OSBoolTrue == 0) {
         rv = -28;
         goto out;
@@ -571,29 +688,57 @@ int bypassCodeSign(const char *filename) {
         rv = -32;
         goto out;
     }
-    uint64_t ui_control = ReadKernel64(ubc_info + 8);
-    if (ui_control == 0) {
-        rv = -33;
-        goto out;
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+        uint64_t ui_control = rk64(ubc_info + 8);
+        if (ui_control == 0) {
+            rv = -33;
+            goto out;
+        }
+        uint64_t moc_object = rk64(ui_control + 8);
+        if (moc_object == 0) {
+            rv = -34;
+            goto out;
+        }
+        wk32(moc_object + 168, (rk32(moc_object + 168) & 0xFFFFFEFF) | (1 << 8));
+        wk32(ubc_info + 44, rk32(GETOFFSET(cs_blob_generation_count)));
+        blob->csb_next = 0;
+        kblob = ubc_cs_blob_allocate(sizeof(struct cs_blob));
+        if (kblob == 0) {
+            rv = -35;
+            goto out;
+        }
+        if (!wkbufferCV(kblob, blob, sizeof(struct cs_blob))) {
+            rv = -36;
+            goto out;
+        }
+        wk64(ubc_info + koffset(KSTRUCT_OFFSET_UBCINFO_CSBLOBS), kblob);
+        
+    } else {
+        uint64_t ui_control = ReadKernel64(ubc_info + 8);
+        if (ui_control == 0) {
+            rv = -33;
+            goto out;
+        }
+        uint64_t moc_object = ReadKernel64(ui_control + 8);
+        if (moc_object == 0) {
+            rv = -34;
+            goto out;
+        }
+        WriteKernel32(moc_object + 168, (ReadKernel32(moc_object + 168) & 0xFFFFFEFF) | (1 << 8));
+        WriteKernel32(ubc_info + 44, ReadKernel32(GETOFFSET(cs_blob_generation_count)));
+        blob->csb_next = 0;
+        kblob = ubc_cs_blob_allocate(sizeof(struct cs_blob));
+        if (kblob == 0) {
+            rv = -35;
+            goto out;
+        }
+        if (!wkbuffer(kblob, blob, sizeof(struct cs_blob))) {
+            rv = -36;
+            goto out;
+        }
+        WriteKernel64(ubc_info + koffset(KSTRUCT_OFFSET_UBCINFO_CSBLOBS), kblob);
     }
-    uint64_t moc_object = ReadKernel64(ui_control + 8);
-    if (moc_object == 0) {
-        rv = -34;
-        goto out;
-    }
-    WriteKernel32(moc_object + 168, (ReadKernel32(moc_object + 168) & 0xFFFFFEFF) | (1 << 8));
-    WriteKernel32(ubc_info + 44, ReadKernel32(GETOFFSET(cs_blob_generation_count)));
-    blob->csb_next = 0;
-    kblob = ubc_cs_blob_allocate(sizeof(struct cs_blob));
-    if (kblob == 0) {
-        rv = -35;
-        goto out;
-    }
-    if (!wkbuffer(kblob, blob, sizeof(struct cs_blob))) {
-        rv = -36;
-        goto out;
-    }
-    WriteKernel64(ubc_info + koffset(KSTRUCT_OFFSET_UBCINFO_CSBLOBS), kblob);
+
     LOG("%s: Done", __FUNCTION__);
     rv = 0;
 out:

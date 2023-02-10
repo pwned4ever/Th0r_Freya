@@ -18,6 +18,7 @@
 #include "kernel_memory.h"
 #include "unlocknvram.h"
 #include "OffsetHolder.h"
+#include "KernelRwWrapper.h"
 
 // thx Siguza
 typedef struct {
@@ -33,21 +34,40 @@ uint64_t zm_fix_addr(uint64_t addr) {
         // xxx ReadKernel64(0) ?!
         // uint64_t zone_map_ref = find_zone_map_ref();
         LOG("zone_map_ref: 0x%llx ", GETOFFSET(zone_map_ref));
-        uint64_t zone_map = ReadKernel64(GETOFFSET(zone_map_ref));
-        LOG("zone_map: 0x%llx ", zone_map);
-        // hdr is at offset 0x10, mutexes at start
-        size_t r = kreadOwO(zone_map + 0x10, &zm_hdr, sizeof(zm_hdr));
-        LOG("zm_range: 0x%llx - 0x%llx (read 0x%zx, exp 0x%zx)", zm_hdr.start, zm_hdr.end, r, sizeof(zm_hdr));
-        
-        if (r != sizeof(zm_hdr) || zm_hdr.start == 0 || zm_hdr.end == 0) {
-            LOG("kread of zone_map failed!");
-            exit(EXIT_FAILURE);
+        if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+            uint64_t zone_map = rk64(GETOFFSET(zone_map_ref));
+            LOG("zone_map: 0x%llx ", zone_map);
+            // hdr is at offset 0x10, mutexes at start
+            size_t r = kread(zone_map + 0x10, &zm_hdr, sizeof(zm_hdr));
+            LOG("zm_range: 0x%llx - 0x%llx (read 0x%zx, exp 0x%zx)", zm_hdr.start, zm_hdr.end, r, sizeof(zm_hdr));
+            if (r != sizeof(zm_hdr) || zm_hdr.start == 0 || zm_hdr.end == 0) {
+                LOG("kread of zone_map failed!");
+                exit(EXIT_FAILURE);
+            }
+            
+            if (zm_hdr.end - zm_hdr.start > 0x100000000) {
+                LOG("zone_map is too big, sorry.");
+                exit(EXIT_FAILURE);
+            }
+            
+        } else {
+            uint64_t zone_map = ReadKernel64(GETOFFSET(zone_map_ref));
+            LOG("zone_map: 0x%llx ", zone_map);
+            // hdr is at offset 0x10, mutexes at start
+            size_t r = kreadOwO(zone_map + 0x10, &zm_hdr, sizeof(zm_hdr));
+            LOG("zm_range: 0x%llx - 0x%llx (read 0x%zx, exp 0x%zx)", zm_hdr.start, zm_hdr.end, r, sizeof(zm_hdr));
+            if (r != sizeof(zm_hdr) || zm_hdr.start == 0 || zm_hdr.end == 0) {
+                LOG("kread of zone_map failed!");
+                exit(EXIT_FAILURE);
+            }
+            
+            if (zm_hdr.end - zm_hdr.start > 0x100000000) {
+                LOG("zone_map is too big, sorry.");
+                exit(EXIT_FAILURE);
+            }
         }
         
-        if (zm_hdr.end - zm_hdr.start > 0x100000000) {
-            LOG("zone_map is too big, sorry.");
-            exit(EXIT_FAILURE);
-        }
+
     }
     
     uint64_t zm_tmp = (zm_hdr.start & 0xffffffff00000000) | ((addr) & 0xffffffff);
@@ -56,7 +76,7 @@ uint64_t zm_fix_addr(uint64_t addr) {
 }
 
 
-uint64_t _vfs_context() {
+uint64_t _vfs_context(void) {
     static uint64_t vfs_context = 0;
     if (vfs_context == 0) {
         vfs_context = kexecute2(GETOFFSET(vfs_context_current), 1, 0, 0, 0, 0, 0, 0);
@@ -69,12 +89,23 @@ int _vnode_lookup(const char *path, int flags, uint64_t *vpp, uint64_t vfs_conte
     size_t len = strlen(path) + 1;
     uint64_t vnode = kmem_alloc(sizeof(uint64_t));
     uint64_t ks = kmem_alloc(len);
-    kwriteOwO(ks, path, len);
-    int ret = (int)kexecute2(GETOFFSET(vnode_lookup), ks, 0, vnode, vfs_context, 0, 0, 0);
-    if (ret != ERR_SUCCESS) {
-        return -1;
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+
+        kwrite(ks, path, len);
+        int ret = (int)kexecute2(GETOFFSET(vnode_lookup), ks, 0, vnode, vfs_context, 0, 0, 0);
+        if (ret != ERR_SUCCESS) {
+            return -1;
+        }
+        *vpp = rk64(vnode);
+    } else {
+        kwriteOwO(ks, path, len);
+        int ret = (int)kexecute2(GETOFFSET(vnode_lookup), ks, 0, vnode, vfs_context, 0, 0, 0);
+        if (ret != ERR_SUCCESS) {
+            return -1;
+        }
+        *vpp = ReadKernel64(vnode);
+
     }
-    *vpp = ReadKernel64(vnode);
     kmem_free(ks, len);
     kmem_free(vnode, sizeof(uint64_t));
     return 0;
@@ -138,34 +169,54 @@ kptr_t vnodeForSnapshot(int fd, char *name) {
     kptr_t const vfs_context = _vfs_context();
      LOG("vfs_context = " ADDR, vfs_context);
     _assert(kexecute2(GETOFFSET(vnode_get_snapshot), fd, rvpp_ptr, sdvpp_ptr, (kptr_t)name, ndp_buf, 2, vfs_context) == 0);
-    sdvpp = ReadKernel64(sdvpp_ptr);
-     LOG("sdvpp_ptr = " ADDR, sdvpp_ptr);
-    kptr_t const sdvpp_v_mount = ReadKernel64(sdvpp + koffset(KSTRUCT_OFFSET_VNODE_V_MOUNT));
-     LOG("sdvpp_v_mount = " ADDR, sdvpp_v_mount);
-    kptr_t const sdvpp_v_mount_mnt_data = ReadKernel64(sdvpp_v_mount + koffset(KSTRUCT_OFFSET_MOUNT_MNT_DATA));
-     LOG("sdvpp_v_mnt_data = " ADDR, sdvpp_v_mount_mnt_data);
-    snap_meta_ptr = IOMalloc(snap_meta_ptr_size);
-     LOG("snap_meta_ptr = " ADDR, snap_meta_ptr);
-    old_name_ptr = IOMalloc(old_name_ptr_size);
-     LOG("old_name_ptr = " ADDR, old_name_ptr);
-    ndp_old_name = ReadKernel64(ndp_buf + 336 + 40);
-     LOG("ndp_old_name = " ADDR, ndp_old_name);
-    kptr_t const ndp_old_name_len = ReadKernel32(ndp_buf + 336 + 48);
-     LOG("ndp_old_name_len = " ADDR, ndp_old_name_len);
-    _assert(kexecute2(GETOFFSET(fs_lookup_snapshot_metadata_by_name_and_return_name), sdvpp_v_mount_mnt_data, ndp_old_name, ndp_old_name_len, snap_meta_ptr, old_name_ptr, 0, 0) == 0);
-    kptr_t const snap_meta = ReadKernel64(snap_meta_ptr);
-     LOG("snap_meta = " ADDR, snap_meta);
-    snap_vnode = kexecute2(GETOFFSET(apfs_jhash_getvnode), sdvpp_v_mount_mnt_data, ReadKernel32(sdvpp_v_mount_mnt_data + 440), ReadKernel64(snap_meta + 8), 1, 0, 0, 0);
-    LOG("snap_vnode = " ADDR, snap_vnode);
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+
+        sdvpp = rk64(sdvpp_ptr);
+         LOG("sdvpp_ptr = " ADDR, sdvpp_ptr);
+        kptr_t const sdvpp_v_mount = rk64(sdvpp + koffset(KSTRUCT_OFFSET_VNODE_V_MOUNT));
+         LOG("sdvpp_v_mount = " ADDR, sdvpp_v_mount);
+        kptr_t const sdvpp_v_mount_mnt_data = rk64(sdvpp_v_mount + koffset(KSTRUCT_OFFSET_MOUNT_MNT_DATA));
+         LOG("sdvpp_v_mnt_data = " ADDR, sdvpp_v_mount_mnt_data);
+        snap_meta_ptr = IOMalloc(snap_meta_ptr_size);
+         LOG("snap_meta_ptr = " ADDR, snap_meta_ptr);
+        old_name_ptr = IOMalloc(old_name_ptr_size);
+         LOG("old_name_ptr = " ADDR, old_name_ptr);
+        ndp_old_name = rk64(ndp_buf + 336 + 40);
+         LOG("ndp_old_name = " ADDR, ndp_old_name);
+        kptr_t const ndp_old_name_len = rk32(ndp_buf + 336 + 48);
+         LOG("ndp_old_name_len = " ADDR, ndp_old_name_len);
+        _assert(kexecute2(GETOFFSET(fs_lookup_snapshot_metadata_by_name_and_return_name), sdvpp_v_mount_mnt_data, ndp_old_name, ndp_old_name_len, snap_meta_ptr, old_name_ptr, 0, 0) == 0);
+        kptr_t const snap_meta = rk64(snap_meta_ptr);
+         LOG("snap_meta = " ADDR, snap_meta);
+        snap_vnode = kexecute2(GETOFFSET(apfs_jhash_getvnode), sdvpp_v_mount_mnt_data, rk32(sdvpp_v_mount_mnt_data + 440), rk64(snap_meta + 8), 1, 0, 0, 0);
+        LOG("snap_vnode = " ADDR, snap_vnode);
+    } else {
+
+        sdvpp = ReadKernel64(sdvpp_ptr);
+         LOG("sdvpp_ptr = " ADDR, sdvpp_ptr);
+        kptr_t const sdvpp_v_mount = ReadKernel64(sdvpp + koffset(KSTRUCT_OFFSET_VNODE_V_MOUNT));
+         LOG("sdvpp_v_mount = " ADDR, sdvpp_v_mount);
+        kptr_t const sdvpp_v_mount_mnt_data = ReadKernel64(sdvpp_v_mount + koffset(KSTRUCT_OFFSET_MOUNT_MNT_DATA));
+         LOG("sdvpp_v_mnt_data = " ADDR, sdvpp_v_mount_mnt_data);
+        snap_meta_ptr = IOMalloc(snap_meta_ptr_size);
+         LOG("snap_meta_ptr = " ADDR, snap_meta_ptr);
+        old_name_ptr = IOMalloc(old_name_ptr_size);
+         LOG("old_name_ptr = " ADDR, old_name_ptr);
+        ndp_old_name = ReadKernel64(ndp_buf + 336 + 40);
+         LOG("ndp_old_name = " ADDR, ndp_old_name);
+        kptr_t const ndp_old_name_len = ReadKernel32(ndp_buf + 336 + 48);
+         LOG("ndp_old_name_len = " ADDR, ndp_old_name_len);
+        _assert(kexecute2(GETOFFSET(fs_lookup_snapshot_metadata_by_name_and_return_name), sdvpp_v_mount_mnt_data, ndp_old_name, ndp_old_name_len, snap_meta_ptr, old_name_ptr, 0, 0) == 0);
+        kptr_t const snap_meta = ReadKernel64(snap_meta_ptr);
+         LOG("snap_meta = " ADDR, snap_meta);
+        snap_vnode = kexecute2(GETOFFSET(apfs_jhash_getvnode), sdvpp_v_mount_mnt_data, ReadKernel32(sdvpp_v_mount_mnt_data + 440), ReadKernel64(snap_meta + 8), 1, 0, 0, 0);
+        LOG("snap_vnode = " ADDR, snap_vnode);
+    }
     if (snap_vnode != KPTR_NULL) snap_vnode = zm_fix_addr(snap_vnode);
     _assert(KERN_POINTER_VALID(snap_vnode));
     ret = snap_vnode;
     out:
     if (KERN_POINTER_VALID(sdvpp)) _vnode_put(sdvpp); sdvpp = KPTR_NULL;
-    
-    
-    
-    
     SafeIOFreeNULL(sdvpp_ptr, sdvpp_ptr_size);
     SafeIOFreeNULL(ndp_buf, ndp_buf_size);
     SafeIOFreeNULL(snap_meta_ptr, snap_meta_ptr_size);

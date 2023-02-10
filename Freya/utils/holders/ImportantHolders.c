@@ -7,6 +7,8 @@
 //
 #include <mach/port.h>
 #include "KernelUtils.h"
+#include "KernelRwWrapper.h"
+
 mach_port_t tfp0 = MACH_PORT_NULL;
 uint64_t kbase;
 uint64_t ktask;

@@ -20,6 +20,7 @@
 #include <mach/task.h>
 #include <mach/thread_act.h>
 #include "reboot.h"
+#include "offsets.h"
 #include "machswap.h"
 #include "cs_blob.h"
 #include "file_utils.h"
@@ -201,10 +202,10 @@ double uptime(void){
 }
 
 
-NSString *freyaversion = @"1.3.6⚡️";
-char *freyaversionnew = "1.3.6⚡️";
+NSString *freyaversion = @"1.3.7⚡️";
+char *freyaversionnew = "1.3.7⚡️";
 
-char *freyaupdateDate = "2:30PM 2/5/23";
+char *freyaupdateDate = "1:00PM 2/10/23";
 char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/tree/main/Releases/Freya.ipa";//github.com/pwned4ever/Th0r_Freya/blob/main/Releases/Freya.ipa";// "mega.nz/file/BhNxBSgJ#gNcngNQBtXS0Ipa5ivX09-jtIr7BckUhrA7YMkSFaNM"//
 
 - (void)u0alertreboot {
@@ -272,24 +273,16 @@ char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/tree/main/Releases/Fr
     int therealups = ((theups / 60) / 60) / 24;
     NSString *device = [NSString stringWithUTF8String: get_current_deviceModel()];
     //NSString *version = [NSString stringWithUTF8String: get_current_deviceversion()];
-    dispatch_async(dispatch_get_main_queue(), ^{
-        ////self->_thebuttonsJBbackground.backgroundColor = [UIColor redColor];
-        //self thebuttonsJBbackground:CGRectMake(10, 100, self.
-        //self.thebuttonsJBbackground.backgroundColor;
-        
-//        //self->_thebuttonsJBbackground.backgroundColor = [UIColor redColor]; CGRectMake(10, 100, //self->_thebuttonsJBbackground.view.frame.size.width-20, 30);
 
-        [self.devicelabel setText: [NSString stringWithFormat:localize(@"%@ - %@" ), device, [[UIDevice currentDevice] systemVersion]]];
-        if (therealups == 1) {
-            [self.uptimelabel setText:[NSString stringWithFormat:localize(@"uptime: %d day" ), therealups]];
-        }else {
-            [self.uptimelabel setText:[NSString stringWithFormat:localize(@"uptime: %d days" ), therealups]]; }
-
-    });
     [NSString stringWithUTF8String:u.machine];//𝓢Ⓗ⒜𝕽ᴱ F𝕽ᴱy⒜
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0ul), ^{
         dispatch_async(dispatch_get_main_queue(), ^{
-            UIActivityViewController *activityViewController = [[UIActivityViewController alloc] initWithActivityItems:@[[NSString stringWithFormat:localize(@"I'm using Freya %@, to jailbreak my %@ iOS %@.\nUpdated %s. By:@%@ 🍻.\nDownload @ %s" ), freyaversion, [NSString stringWithUTF8String: get_current_deviceModel()], [[UIDevice currentDevice] systemVersion], freyaupdateDate, @pwned4ever_TEAM_TWITTER_HANDLE, freyaurlDownload]] applicationActivities:nil];
+            UIActivityViewController *activityViewController;
+            if (therealups == 1) {
+                activityViewController = [[UIActivityViewController alloc] initWithActivityItems:@[[NSString stringWithFormat:localize(@"I'm using Freya %@, to jailbreak my %@ iOS %@, uptime:%d day.\nUpdated %s. By:@%@ 🍻.\nDownload @ %s" ), freyaversion, [NSString stringWithUTF8String: get_current_deviceModel()], [[UIDevice currentDevice] systemVersion], therealups, freyaupdateDate, @pwned4ever_TEAM_TWITTER_HANDLE, freyaurlDownload]] applicationActivities:nil];
+            } else {
+                activityViewController = [[UIActivityViewController alloc] initWithActivityItems:@[[NSString stringWithFormat:localize(@"I'm using Freya %@, to jailbreak my %@ iOS %@, uptime:%d days.\nUpdated %s. By:@%@ 🍻.\nDownload @ %s" ), freyaversion, [NSString stringWithUTF8String: get_current_deviceModel()], [[UIDevice currentDevice] systemVersion], therealups, freyaupdateDate, @pwned4ever_TEAM_TWITTER_HANDLE, freyaurlDownload]] applicationActivities:nil];
+            }
             activityViewController.excludedActivityTypes = @[UIActivityTypePrint, UIActivityTypeCopyToPasteboard, UIActivityTypeAssignToContact, UIActivityTypeSaveToCameraRoll, UIActivityTypeAirDrop, UIActivityTypeOpenInIBooks, UIActivityTypeMarkupAsPDF];
             if ([activityViewController respondsToSelector:@selector(popoverPresentationController)] ) {
                 activityViewController.popoverPresentationController.sourceView = self.buttontext; }
@@ -355,6 +348,8 @@ int justinstalledcydia = 0;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    struct utsname u = { 0 };
+    uname(&u);
 
     
     uint32_t flags;
@@ -399,15 +394,17 @@ int justinstalledcydia = 0;
             [[self buttontext] setEnabled:false]; }); }
 
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.uptimelabel setHidden:YES];
+        //[self.uptimelabel setHidden:YES];
         [self.devicelabel setHidden:NO]; });
-    struct utsname u = { 0 };
-    uname(&u);
     [[UIDevice currentDevice] systemVersion];
     NSString *device = [NSString stringWithUTF8String: get_current_deviceModel()];
     NSString *version = [NSString stringWithUTF8String: get_current_deviceversion()];
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.devicelabel setText: [NSString stringWithFormat:localize(@"%@ - %@" ), device, [[UIDevice currentDevice] systemVersion]]];
+        
+        NSString *device = [NSString stringWithUTF8String: get_current_deviceModel()];
+        
+        [self.uptimelabel setText:[NSString stringWithFormat:localize(@"Freya %@" ), freyaversion]];
         [self.appverlabel setText: [NSString stringWithUTF8String:freyaversionnew]]; });
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setInteger:1 forKey:@"SetNonce"];
@@ -430,7 +427,18 @@ int justinstalledcydia = 0;
             [self.thorbackgroundjpeg setAlpha: 1.0];
 
         });
-        
+        struct utsname u = { 0 };
+        uname(&u);
+        int theups = uptime();
+        int therealups = ((theups / 60) / 60) / 24;
+        NSString *device = [NSString stringWithUTF8String: get_current_deviceModel()];
+        //NSString *version = [NSString stringWithUTF8String: get_current_deviceversion()];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.devicelabel setText: [NSString stringWithFormat:localize(@"%@ - %@" ), device, [[UIDevice currentDevice] systemVersion]]];
+            if (therealups == 1) {
+                [self.uptimelabel setText:[NSString stringWithFormat:localize(@"uptime: %d day" ), therealups]];
+            }else {
+                [self.uptimelabel setText:[NSString stringWithFormat:localize(@"uptime: %d days" ), therealups]]; } });
         [UITabBarController setAccessibilityElementsHidden:(TRUE)];
         
         //[self shareTh0r];
@@ -451,6 +459,18 @@ int justinstalledcydia = 0;
             [self.thorbackgroundjpeg setAlpha: 1.0];
 
         });
+        struct utsname u = { 0 };
+        uname(&u);
+        int theups = uptime();
+        int therealups = ((theups / 60) / 60) / 24;
+        NSString *device = [NSString stringWithUTF8String: get_current_deviceModel()];
+        //NSString *version = [NSString stringWithUTF8String: get_current_deviceversion()];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.devicelabel setText: [NSString stringWithFormat:localize(@"%@ - %@" ), device, [[UIDevice currentDevice] systemVersion]]];
+            if (therealups == 1) {
+                [self.uptimelabel setText:[NSString stringWithFormat:localize(@"uptime: %d day" ), therealups]];
+            }else {
+                [self.uptimelabel setText:[NSString stringWithFormat:localize(@"uptime: %d days" ), therealups]]; } });
         //[self shareTh0r];
     } else if (checkth0rmarkerFinal ==1 && (!file_exists("/Applications/Cydia.app/Cydia"))) {
         newTFcheckMyRemover4me = FALSE;
@@ -921,18 +941,18 @@ void wannaSliceOfMe(void) { //Run The Exploit
         //0 = MachSwap //1 = MachSwap2 //2 = Voucher_Swap //3 = SockPuppet //4 = timewaste
        
         struct timeval begin, end;
-        long whattimeisit = gettimeofday(&begin, 0);
+        gettimeofday(&begin, 0);
         long seconds = end.tv_sec - begin.tv_sec;
         //printf("Time measured: %.2ld.\n", whattimeisit);
         //printf("Time measured sec: %.2ld.\n", seconds);
         runExploit(getExploitType());
         dothepatch();
-       // progressMeterUIVIEW
         ourprogressMeter();
-        //offs_init();
+        offs_init();
         yeasnapshot();
         remountFS(restore_fs);
         getOffsets();
+        //getOffsets();
         init_kexecute();
         ourprogressMeter();
         createWorkingDir();

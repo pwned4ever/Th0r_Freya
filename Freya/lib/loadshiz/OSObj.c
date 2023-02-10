@@ -1,5 +1,7 @@
 #include <stdlib.h>
 #include "KernelUtils.h"
+#include "KernelRwWrapper.h"
+
 #include "kernel_exec.h"
 #include "OSObj.h"
 #include "PFOffs.h"
@@ -35,9 +37,15 @@ uint64_t zm_fix_addr2(uint64_t addr) {
     
     if (zm_hdr.start == 0) {
         // xxx rk64(0) ?!
-        uint64_t zone_map = ReadKernel64(GETOFFSET(zone_map_ref));
-        // hdr is at offset 0x10, mutexes at start
-        size_t r = kreadOwO(zone_map + 0x10, &zm_hdr, sizeof(zm_hdr));
+        uint64_t zone_map;
+        size_t r ;
+        if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+            zone_map = rk64(GETOFFSET(zone_map_ref));
+            r = kread(zone_map + 0x10, &zm_hdr, sizeof(zm_hdr));
+        } else {
+            zone_map = ReadKernel64(GETOFFSET(zone_map_ref));
+            r = kreadOwO(zone_map + 0x10, &zm_hdr, sizeof(zm_hdr));
+        }
         printf("zm_range: 0x%llx - 0x%llx (read 0x%zx, exp 0x%zx)\n", zm_hdr.start, zm_hdr.end, r, sizeof(zm_hdr));
         
         if (r != sizeof(zm_hdr) || zm_hdr.start == 0 || zm_hdr.end == 0) {
@@ -59,21 +67,21 @@ uint64_t zm_fix_addr2(uint64_t addr) {
 
 
 
-
-
-
 // 1 on success, 0 on error
 int OSDictionary_SetItem(uint64_t dict, const char *key, uint64_t val) {
     size_t len = strlen(key) + 1;
-    
     uint64_t ks = kmem_alloc(len);
-    kwriteOwO(ks, key, len);
-    
-    uint64_t vtab = ReadKernel64(dict);
-    uint64_t f = ReadKernel64(vtab + off_OSDictionary_SetObjectWithCharP);
-    
+    uint64_t f;
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+        kwriteOwO(ks, key, len);
+        uint64_t vtab = rk64(dict);
+        f = rk64(vtab + off_OSDictionary_SetObjectWithCharP);
+    } else {
+        kwriteOwO(ks, key, len);
+        uint64_t vtab = ReadKernel64(dict);
+        f = ReadKernel64(vtab + off_OSDictionary_SetObjectWithCharP);
+    }
     int rv = (int) kexecute2(f, dict, ks, val, 0, 0, 0, 0);
-    
     kmem_free(ks, len);
     
     return rv;
@@ -88,11 +96,16 @@ uint64_t _OSDictionary_GetItem(uint64_t dict, const char *key) {
     size_t len = strlen(key) + 1;
     
     uint64_t ks = kmem_alloc(len);
-    kwriteOwO(ks, key, len);
-    
-    uint64_t vtab = ReadKernel64(dict);
-    uint64_t f = ReadKernel64(vtab + off_OSDictionary_GetObjectWithCharP);
-    
+    uint64_t f;
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+        kwrite(ks, key, len);
+        uint64_t vtab = rk64(dict);
+        f = rk64(vtab + off_OSDictionary_GetObjectWithCharP);
+    } else {
+        kwriteOwO(ks, key, len);
+        uint64_t vtab = ReadKernel64(dict);
+        f = ReadKernel64(vtab + off_OSDictionary_GetObjectWithCharP);
+    }
     int rv = (int) kexecute2(f, dict, ks, 0, 0, 0, 0, 0);
     
     kmem_free(ks, len);
@@ -113,24 +126,40 @@ uint64_t OSDictionary_GetItem(uint64_t dict, const char *key) {
 
 // 1 on success, 0 on error
 int OSDictionary_Merge(uint64_t dict, uint64_t aDict) {
-    uint64_t vtab = ReadKernel64(dict);
-    uint64_t f = ReadKernel64(vtab + off_OSDictionary_Merge);
-    
+    uint64_t f;
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+        uint64_t vtab = rk64(dict);
+        f = rk64(vtab + off_OSDictionary_Merge);
+    } else {
+        uint64_t vtab = ReadKernel64(dict);
+        f = ReadKernel64(vtab + off_OSDictionary_Merge);
+    }
     return (int) kexecute2(f, dict, aDict, 0, 0, 0, 0, 0);
 }
 
 // 1 on success, 0 on error
 int OSArray_Merge(uint64_t array, uint64_t aArray) {
-    uint64_t vtab = ReadKernel64(array);
-    uint64_t f = ReadKernel64(vtab + off_OSArray_Merge);
-    
+    uint64_t f;
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+        uint64_t vtab = rk64(array);
+        f = rk64(vtab + off_OSArray_Merge);
+
+    } else {
+        uint64_t vtab = ReadKernel64(array);
+        f = ReadKernel64(vtab + off_OSArray_Merge);
+    }
     return (int) kexecute2(f, array, aArray, 0, 0, 0, 0, 0);
 }
 
 uint64_t _OSArray_GetObject(uint64_t array, unsigned int idx){
-    uint64_t vtab = ReadKernel64(array);
-    uint64_t f = ReadKernel64(vtab + off_OSArray_GetObject);
-    
+    uint64_t f;
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+        uint64_t vtab = rk64(array);
+        f = rk64(vtab + off_OSArray_GetObject);
+    } else {
+        uint64_t vtab = ReadKernel64(array);
+        f = ReadKernel64(vtab + off_OSArray_GetObject);
+    }
     return kexecute2(f, array, idx, 0, 0, 0, 0, 0);
 }
 
@@ -145,9 +174,14 @@ uint64_t OSArray_GetObject(uint64_t array, unsigned int idx){
 }
 
 void OSArray_RemoveObject(uint64_t array, unsigned int idx){
-    uint64_t vtab = ReadKernel64(array);
-    uint64_t f = ReadKernel64(vtab + off_OSArray_RemoveObject);
-    
+    uint64_t f;
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+        uint64_t vtab = rk64(array);
+        f = rk64(vtab + off_OSArray_RemoveObject);
+    } else {
+        uint64_t vtab = ReadKernel64(array);
+        f = ReadKernel64(vtab + off_OSArray_RemoveObject);
+    }
     (void)kexecute2(f, array, idx, 0, 0, 0, 0, 0);
 }
 
@@ -156,13 +190,14 @@ uint64_t _OSUnserializeXML(const char* buffer) {
     size_t len = strlen(buffer) + 1;
     
     uint64_t ks = kmem_alloc(len);
-    kwriteOwO(ks, buffer, len);
-    
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+        kwrite(ks, buffer, len);
+    } else {
+        kwriteOwO(ks, buffer, len);
+    }
     uint64_t errorptr = 0;
-    
     uint64_t rv = kexecute2(GETOFFSET(osunserializexml), ks, errorptr, 0, 0, 0, 0, 0);
     kmem_free(ks, len);
-    
     return rv;
 }
 
@@ -178,26 +213,53 @@ uint64_t OSUnserializeXML(const char* buffer) {
 }
 
 void OSObject_Release(uint64_t osobject) {
-    uint64_t vtab = ReadKernel64(osobject);
-    uint64_t f = ReadKernel64(vtab + off_OSObject_Release);
+    uint64_t f;
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+        uint64_t vtab = rk64(osobject);
+        f = rk64(vtab + off_OSObject_Release);
+    } else {
+        uint64_t vtab = ReadKernel64(osobject);
+        f = ReadKernel64(vtab + off_OSObject_Release);
+
+    }
+    
     (void) kexecute2(f, osobject, 0, 0, 0, 0, 0, 0);
 }
 
 void OSObject_Retain(uint64_t osobject) {
-    uint64_t vtab = ReadKernel64(osobject);
-    uint64_t f = ReadKernel64(vtab + off_OSObject_Release);
+    uint64_t f;
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+        uint64_t vtab = rk64(osobject);
+        f = rk64(vtab + off_OSObject_Release);
+    } else {
+        uint64_t vtab = ReadKernel64(osobject);
+        f = ReadKernel64(vtab + off_OSObject_Release);
+    }
     (void) kexecute2(f, osobject, 0, 0, 0, 0, 0, 0);
 }
 
 uint32_t OSObject_GetRetainCount(uint64_t osobject) {
-    uint64_t vtab = ReadKernel64(osobject);
-    uint64_t f = ReadKernel64(vtab + off_OSObject_Release);
+    uint64_t f;
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+        uint64_t vtab = rk64(osobject);
+        f = rk64(vtab + off_OSObject_Release);
+    } else {
+        uint64_t vtab = ReadKernel64(osobject);
+        f = ReadKernel64(vtab + off_OSObject_Release);
+
+    }
     return (uint32_t) kexecute2(f, osobject, 0, 0, 0, 0, 0, 0);
 }
 
 unsigned int OSString_GetLength(uint64_t osstring){
-    uint64_t vtab = ReadKernel64(osstring);
-    uint64_t f = ReadKernel64(vtab + off_OSString_GetLength);
+    uint64_t f;
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+        uint64_t vtab = rk64(osstring);
+        f = rk64(vtab + off_OSString_GetLength);
+    } else {
+        uint64_t vtab = ReadKernel64(osstring);
+        f = ReadKernel64(vtab + off_OSString_GetLength);
+    }
     return (unsigned int)kexecute2(f, osstring, 0, 0, 0, 0, 0, 0);
 }
 
@@ -205,7 +267,11 @@ char *OSString_CopyString(uint64_t osstring){
     unsigned int length = OSString_GetLength(osstring);
     char *str = malloc(length + 1);
     str[length] = 0;
-    
-    kreadOwO(OSString_CStringPtr(osstring), str, length);
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+        kread(OSString_CStringPtr(osstring), str, length);
+    } else {
+        kreadOwO(OSString_CStringPtr(osstring), str, length);
+
+    }
     return str;
 }

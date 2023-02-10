@@ -4,6 +4,7 @@
 #include "CSCommon.h"
 #include "common.h"
 #include "KernelUtils.h"
+#include "KernelRwWrapper.h"
 
 OSStatus SecStaticCodeCreateWithPathAndAttributes(CFURLRef path, SecCSFlags flags, CFDictionaryRef attributes, SecStaticCodeRef  _Nullable *staticCode);
 OSStatus SecCodeCopySigningInformation(SecStaticCodeRef code, SecCSFlags flags, CFDictionaryRef  _Nullable *information);
@@ -105,12 +106,22 @@ NSArray *filteredHashes(uint64_t trust_chain, NSDictionary *hashes) {
         struct trust_mem search;
         search.next = trust_chain;
         while (search.next != 0) {
+            size_t data_size;
+            char *data;
             uint64_t searchAddr = search.next;
-            kreadOwO(searchAddr, &search, sizeof(struct trust_mem));
-            //INJECT_LOG("Checking %d entries at 0x%llx", search.count, searchAddr);
-            char *data = malloc(search.count * TRUST_CDHASH_LEN);
-            kreadOwO(searchAddr + sizeof(struct trust_mem), data, search.count * TRUST_CDHASH_LEN);
-            size_t data_size = search.count * TRUST_CDHASH_LEN;
+            if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+                kread(searchAddr, &search, sizeof(struct trust_mem));
+                //INJECT_LOG("Checking %d entries at 0x%llx", search.count, searchAddr);
+                data = malloc(search.count * TRUST_CDHASH_LEN);
+                kread(searchAddr + sizeof(struct trust_mem), data, search.count * TRUST_CDHASH_LEN);
+                data_size = search.count * TRUST_CDHASH_LEN;
+            } else {
+                kreadOwO(searchAddr, &search, sizeof(struct trust_mem));
+                //INJECT_LOG("Checking %d entries at 0x%llx", search.count, searchAddr);
+                data = malloc(search.count * TRUST_CDHASH_LEN);
+                kreadOwO(searchAddr + sizeof(struct trust_mem), data, search.count * TRUST_CDHASH_LEN);
+                data_size = search.count * TRUST_CDHASH_LEN;
+            }
             
             for (char *dataref = data; dataref <= data + data_size - TRUST_CDHASH_LEN; dataref += TRUST_CDHASH_LEN) {
                 NSData *cdhash = [NSData dataWithBytesNoCopy:dataref length:TRUST_CDHASH_LEN freeWhenDone:NO];
@@ -141,73 +152,62 @@ int injectTrustCache(NSArray <NSString*> *files, uint64_t trust_chain, int (*pma
     @autoreleasepool {
         struct trust_mem mem;
         uint64_t kernel_trust = 0;
-        
-        mem.next = ReadKernel64(trust_chain);
+        if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+            mem.next = rk64(trust_chain); }
+        else {
+            mem.next = ReadKernel64(trust_chain); }
         mem.count = 0;
         uuid_generate(mem.uuid);
-        
         NSMutableDictionary *hashes = [NSMutableDictionary new];
         int errors=0;
-        
         for (NSString *file in files) {
             NSString *cdhash = cdhashFor(file);
             if (cdhash == nil) {
                 errors++;
-                continue;
-            }
-            
-            if (hashes[cdhash] == nil) {
-                //LOG("%s: OK", file.UTF8String);
-                hashes[cdhash] = file;
-            } else {
-                //LOG("%s: same as %s (ignoring)", file.UTF8String, [hashes[cdhash] UTF8String]);
-            }
+                continue;}
+            if (hashes[cdhash] == nil) {//LOG("%s: OK", file.UTF8String);
+                hashes[cdhash] = file; }
+            else {//LOG("%s: same as %s (ignoring)", file.UTF8String, [hashes[cdhash] UTF8String]);
+                }
         }
         unsigned numHashes = (unsigned)[hashes count];
-        
         if (numHashes < 1) {
             LOG("Found no hashes to inject");
-            return errors;
-        }
-        
-        
+            return errors;}
         NSArray *filtered = filteredHashes(mem.next, hashes);
-        unsigned hashesToInject = (unsigned)[filtered count];
-        //LOG("%u new hashes to inject", hashesToInject);
-        if (hashesToInject < 1) {
-            return errors;
-        }
-        
+        unsigned hashesToInject = (unsigned)[filtered count];//LOG("%u new hashes to inject", hashesToInject);
+        if (hashesToInject < 1) { return errors; }
         size_t length = (32 + hashesToInject * TRUST_CDHASH_LEN + 0x3FFF) & ~0x3FFF;
         char *buffer = malloc(hashesToInject * TRUST_CDHASH_LEN);
-        if (buffer == NULL) {
-            LOG("Unable to allocate memory for cdhashes: %s", strerror(errno));
-            return -3;
-        }
+        if (buffer == NULL) { LOG("Unable to allocate memory for cdhashes: %s", strerror(errno));
+            return -3; }
         char *curbuf = buffer;
         for (NSData *hash in filtered) {
             memcpy(curbuf, [hash bytes], TRUST_CDHASH_LEN);
-            curbuf += TRUST_CDHASH_LEN;
-        }
+            curbuf += TRUST_CDHASH_LEN; }
         kernel_trust = kmem_alloc(length);
-        
         mem.count = hashesToInject;
-        kwriteOwO(kernel_trust, &mem, sizeof(mem));
-        kwriteOwO(kernel_trust + sizeof(mem), buffer, mem.count * TRUST_CDHASH_LEN);
+        if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+            kwrite(kernel_trust, &mem, sizeof(mem));
+            kwrite(kernel_trust + sizeof(mem), buffer, mem.count * TRUST_CDHASH_LEN); }
+        else {
+            kwriteOwO(kernel_trust, &mem, sizeof(mem));
+            kwriteOwO(kernel_trust + sizeof(mem), buffer, mem.count * TRUST_CDHASH_LEN); }
         if (pmap_load_trust_cache != NULL) {
             if (pmap_load_trust_cache(kernel_trust, length) != ERR_SUCCESS) {
-                return -4;
-            }
-        } else {
-            WriteKernel64(trust_chain, kernel_trust);
+                return -4; } }
+        else {
+            if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+                wk64(trust_chain, kernel_trust); }
+            else {
+                WriteKernel64(trust_chain, kernel_trust); }
         }
-        
         return (int)errors;
     }
 }
 
 __attribute__((constructor))
-void ctor() {
+void ctor(void) {
     void *lib = dlopen("/System/Library/Frameworks/Security.framework/Security", RTLD_LAZY);
     if (lib != NULL) {
         _SecCopyErrorMessageString = dlsym(lib, "SecCopyErrorMessageString");

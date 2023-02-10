@@ -1614,9 +1614,6 @@ void removingFreyaiOS() {
     //////////////////////////////finally added the check for changing remvoving files without needing two separate apps
     
     else if (/* iOS 11.3 and higher can use lucky snapshot */ kCFCoreFoundationVersionNumber > 1451.51){ printf("[*] Removing Jailbreak for devices greater or equal to ios 11.3....\n");
-            removeFileIfExistsFREYA("/private/etc/apt");
-        
-            removeFileIfExistsFREYA("/private/etc/apt");
             removeFileIfExistsFREYA("/var/mobile/testremover.txt");
             removeFileIfExistsFREYA("/private/etc/pam.d");
             removeFileIfExistsFREYA("/private/etc/apt");
@@ -2308,7 +2305,9 @@ void removingFreyaiOS() {
             removeFileIfExistsFREYA("/private/var/jb");
             removeFileIfExistsFREYA("/var/jb");
             execCmdFreya("/bin/rm", "-rdvf", "/private/var/jb", NULL);
-            execCmdFreya("/bin/rm", "-rdvf", "/var/jb", NULL);
+            removeFileIfExistsFREYA("/etc/apt");
+            execCmdFreya("/bin/rm", "-rdvf", "/private/etc/apt", NULL);
+            execCmdFreya("/bin/rm", "-rdvf", "/etc/apt", NULL);
             removeFileIfExistsFREYA("/Library/dpkg");
             removeFileIfExistsFREYA("/Library/LaunchDaemons");
             removeFileIfExistsFREYA("/private/var/unlimapps_tweak_resources");

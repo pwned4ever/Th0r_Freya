@@ -13,6 +13,7 @@
 #include "mac_policy.h"
 #include <sys/syscall.h>
 #include "patchfinder64.h"
+#include "KernelRwWrapper.h"
 
 bool auth_ptrs = false;
 typedef unsigned long long addr_t;
@@ -431,7 +432,9 @@ int
 init_kernel(size_t (*kread)(uint64_t, void *, size_t), addr_t kernel_base, const char *filename)
 {
     size_t rv;
+   
     uint8_t buf[0x4000];
+   // uint64_t buf[4096];
     unsigned i, j;
     const struct mach_header *hdr = (struct mach_header *)buf;
     FHANDLE fd = INVALID_HANDLE;
@@ -453,7 +456,7 @@ init_kernel(size_t (*kread)(uint64_t, void *, size_t), addr_t kernel_base, const
         if (fd == INVALID_HANDLE) {
             return -1;
         }
-        rv = READ(fd, buf, sizeof(buf));
+        rv = READ(fd, buf, sizeof(buf));//131072 , 16384//(((rv=32768 --- what works on 12.4 kernel )
         if (rv != sizeof(buf) || !MACHO(buf)) {
             CLOSE(fd);
             return -1;

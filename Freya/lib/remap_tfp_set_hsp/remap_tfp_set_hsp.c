@@ -201,7 +201,11 @@ void set_all_image_info_addr(uint64_t kernel_task_kaddr, uint64_t all_image_info
     LOG("Will set all_image_info_addr to: " ADDR, all_image_info_addr);
     if (dyld_info.all_image_info_addr != all_image_info_addr) {
         LOG("Setting all_image_info_addr...");
-        WriteKernel64(kernel_task_kaddr + koffset(KSTRUCT_OFFSET_TASK_ALL_IMAGE_INFO_ADDR), all_image_info_addr);
+        if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+            wk64(kernel_task_kaddr + koffset(KSTRUCT_OFFSET_TASK_ALL_IMAGE_INFO_ADDR), all_image_info_addr);
+        } else {
+            WriteKernel64(kernel_task_kaddr + koffset(KSTRUCT_OFFSET_TASK_ALL_IMAGE_INFO_ADDR), all_image_info_addr);
+        }
         _assert(task_info(tfp0, TASK_DYLD_INFO, (task_info_t)&dyld_info, &count) == KERN_SUCCESS, message, true);
         _assert(dyld_info.all_image_info_addr == all_image_info_addr, message, true);
     } else {
@@ -216,7 +220,11 @@ void set_all_image_info_size(uint64_t kernel_task_kaddr, uint64_t all_image_info
     LOG("Will set all_image_info_size to: " ADDR, all_image_info_size);
     if (dyld_info.all_image_info_size != all_image_info_size) {
         LOG("Setting all_image_info_size...");
-        WriteKernel64(kernel_task_kaddr + koffset(KSTRUCT_OFFSET_TASK_ALL_IMAGE_INFO_SIZE), all_image_info_size);
+        if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+            wk64(kernel_task_kaddr + koffset(KSTRUCT_OFFSET_TASK_ALL_IMAGE_INFO_SIZE), all_image_info_size);
+        } else {
+            WriteKernel64(kernel_task_kaddr + koffset(KSTRUCT_OFFSET_TASK_ALL_IMAGE_INFO_SIZE), all_image_info_size);
+        }
         _assert(task_info(tfp0, TASK_DYLD_INFO, (task_info_t)&dyld_info, &count) == KERN_SUCCESS, message, true);
         _assert(dyld_info.all_image_info_size == all_image_info_size, message, true);
     } else {

@@ -1,0 +1,40 @@
+
+ NOTES FOR SEARCHING FOR KEXTs
+
+
+ Quick note for my stupidity:
+
+    char *where_from = (__DATA__CONST_const_off ? kernelcache : kext_bundle_header);
+
+ means:
+    
+    if (__DATA__CONST_const_off)
+        where_from = kernelcache;
+    else
+        where_from = kext_bundle_header
+
+
+ == joker.c functions to reference for working with kexts
+
+    char *identifyKextNew (char *KextBundleHeader,  int Size, char *KernelCache)
+
+
+ Kernel Extensions are stored in the __DATA.__data segment/section. There
+ are a group of `com.apple.*` strings which identify a KEXT:
+
+    01 00 00 00 FF FF FF FF   63 6F 6D 2E 61 70 70 6C   ........com.appl
+    65 2E 64 72 69 76 65 72   2E 41 70 70 6C 65 53 50   e.driver.AppleSP
+    4D 49 50 4D 55 00 00 00   00 00 00 00 00 00 00 00   MIPMU...........
+    00 00 00 00 00 00 00 00   00 00 00 00 00 00 00 00   ................
+    00 00 00 00 00 00 00 00   31 2E 30 2E 30 00 00 00   ........1.0.0...
+    00 00 00 00 00 00 00 00   00 00 00 00 00 00 00 00   ................
+
+ I'm trying to figure out if there is a struct i can create from this, but
+ gaps between the KEXT string and its version number appears to vary.
+
+
+ joker uses memmem () to search the __DATA__data section for a com.apple. 
+    string.
+
+
+    

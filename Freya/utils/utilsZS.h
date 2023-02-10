@@ -104,7 +104,7 @@ struct tfp0;
 //SETTINGS
 BOOL shouldLoadTweaks(void);
 BOOL shoulduicache(void);
-
+uint32_t find_pid_of_procCV(const char *proc_name);
 int getExploitType(void);
 int getPackagerType(void);
 void initSettingsIfNotExist(void);

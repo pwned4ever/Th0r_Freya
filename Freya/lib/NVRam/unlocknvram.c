@@ -23,6 +23,7 @@
 #include "vnode_utils.h"
 #include "OSObj.h"
 #include <pthread.h>
+#include "KernelRwWrapper.h"
 
 static const size_t max_vtable_size = 0x1000;
 static const size_t kernel_buffer_size = 0x4000;
@@ -42,13 +43,21 @@ kptr_t proc_struct_addr(void)
     return get_proc_struct_for_pid(getpid());
 }
 
-uint64_t get_address_of_port_OWO(uint64_t proc, mach_port_t port)
-{
-    uint64_t const task_addr = ReadKernel64(proc + koffset(KSTRUCT_OFFSET_PROC_TASK));
-    uint64_t const itk_space = ReadKernel64(task_addr + koffset(KSTRUCT_OFFSET_TASK_ITK_SPACE));
-    uint64_t const is_table = ReadKernel64(itk_space + koffset(KSTRUCT_OFFSET_IPC_SPACE_IS_TABLE));
-    uint64_t const port_addr = ReadKernel64(is_table + (MACH_PORT_INDEX(port) * koffset(KSTRUCT_SIZE_IPC_ENTRY)));
-    return port_addr;
+uint64_t get_address_of_port_OWO(uint64_t proc, mach_port_t port) {
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+        uint64_t const task_addr = rk64(proc + koffset(KSTRUCT_OFFSET_PROC_TASK));
+        uint64_t const itk_space = rk64(task_addr + koffset(KSTRUCT_OFFSET_TASK_ITK_SPACE));
+        uint64_t const is_table = rk64(itk_space + koffset(KSTRUCT_OFFSET_IPC_SPACE_IS_TABLE));
+        uint64_t const port_addr = rk64(is_table + (MACH_PORT_INDEX(port) * koffset(KSTRUCT_SIZE_IPC_ENTRY)));
+        return port_addr;
+    } else {
+        uint64_t const task_addr = ReadKernel64(proc + koffset(KSTRUCT_OFFSET_PROC_TASK));
+        uint64_t const itk_space = ReadKernel64(task_addr + koffset(KSTRUCT_OFFSET_TASK_ITK_SPACE));
+        uint64_t const is_table = ReadKernel64(itk_space + koffset(KSTRUCT_OFFSET_IPC_SPACE_IS_TABLE));
+        uint64_t const port_addr = ReadKernel64(is_table + (MACH_PORT_INDEX(port) * koffset(KSTRUCT_SIZE_IPC_ENTRY)));
+        return port_addr;
+
+    }
 }
 
 kptr_t IOMalloc(vm_size_t size) {
@@ -86,7 +95,12 @@ uint64_t get_iodtnvram_obj(void) {
         sched_yield();
         uint64_t nvram_up = get_address_of_port_OWO(proc_struct_addr(), IODTNVRAMSrv);
         sched_yield();
-        IODTNVRAMObj = ReadKernel64(nvram_up + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_KOBJECT));
+        if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+            IODTNVRAMObj = rk64(nvram_up + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_KOBJECT));
+        } else {
+            IODTNVRAMObj = ReadKernel64(nvram_up + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_KOBJECT));
+
+        }
         sched_yield();
 
         util_info("IODTNVRAM obj at 0x%llx", IODTNVRAMObj);
@@ -105,52 +119,88 @@ int unlocknvram(void) {
         util_error("get_iodtnvram_obj failed!");
         return 1;
     }
-    orig_vtable = ReadKernel64(obj);
-    uint64_t vtable_xpac = kernel_xpacd(orig_vtable);
-    
-    uint64_t *buf = calloc(1, max_vtable_size);
-    kreadOwO(vtable_xpac, buf, max_vtable_size);
-    // alter it
-    buf[getOFVariablePerm / sizeof(uint64_t)] = \
-    kernel_xpaci(buf[searchNVRAMProperty / sizeof(uint64_t)]);
-    sched_yield();
-
-    // allocate buffer in kernel
-    fake_vtable_xpac = IOMalloc(kernel_buffer_size);
-    sched_yield();
-
-    // Forge the pacia pointers to the virtual methods.
-    size_t count = 0;
-    for (; count < max_vtable_size / sizeof(*buf); count++) {
-        uint64_t vmethod = buf[count];
-        if (vmethod == 0) {
-            break;
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+        orig_vtable = rk64(obj);
+        uint64_t vtable_xpac = kernel_xpacd(orig_vtable);
+        uint64_t *buf = calloc(1, max_vtable_size);
+        kread(vtable_xpac, buf, max_vtable_size);
+        buf[getOFVariablePerm / sizeof(uint64_t)] = \
+        kernel_xpaci(buf[searchNVRAMProperty / sizeof(uint64_t)]);
+        sched_yield();
+        fake_vtable_xpac = IOMalloc(kernel_buffer_size);
+        sched_yield();
+        size_t count = 0;
+        for (; count < max_vtable_size / sizeof(*buf); count++) {
+            uint64_t vmethod = buf[count];
+            if (vmethod == 0) {
+                break;
+            }
+    /*#if __arm64e__
+            assert(count < VTABLE_PAC_CODES(IODTNVRAM).count);
+            vmethod = kernel_xpaci(vmethod);
+            uint64_t vmethod_address = fake_vtable_xpac + count * sizeof(*buf);
+            buf[count] = kernel_forge_pacia_with_type(vmethod, vmethod_address,
+                                                      VTABLE_PAC_CODES(IODTNVRAM).codes[count]);
+    #endif // __arm64e__*/
         }
-/*#if __arm64e__
-        assert(count < VTABLE_PAC_CODES(IODTNVRAM).count);
-        vmethod = kernel_xpaci(vmethod);
-        uint64_t vmethod_address = fake_vtable_xpac + count * sizeof(*buf);
-        buf[count] = kernel_forge_pacia_with_type(vmethod, vmethod_address,
-                                                  VTABLE_PAC_CODES(IODTNVRAM).codes[count]);
-#endif // __arm64e__*/
+        kwrite(fake_vtable_xpac, buf, count*sizeof(*buf));
+    #if __arm64e__
+        fake_vtable = kernel_forge_pacda(fake_vtable_xpac, 0);
+    #else
+        fake_vtable = fake_vtable_xpac;
+    #endif
+        usleep(20000);
+        sched_yield();
+        wk64(obj, fake_vtable);
+        sched_yield();
+        free(buf);
+        buf = NULL;
+    } else {
+        orig_vtable = ReadKernel64(obj);
+        uint64_t vtable_xpac = kernel_xpacd(orig_vtable);
         
+        uint64_t *buf = calloc(1, max_vtable_size);
+        kreadOwO(vtable_xpac, buf, max_vtable_size);
+        // alter it
+        buf[getOFVariablePerm / sizeof(uint64_t)] = \
+        kernel_xpaci(buf[searchNVRAMProperty / sizeof(uint64_t)]);
+        sched_yield();
+
+        // allocate buffer in kernel
+        fake_vtable_xpac = IOMalloc(kernel_buffer_size);
+        sched_yield();
+
+        // Forge the pacia pointers to the virtual methods.
+        size_t count = 0;
+        for (; count < max_vtable_size / sizeof(*buf); count++) {
+            uint64_t vmethod = buf[count];
+            if (vmethod == 0) {
+                break;
+            }
+    /*#if __arm64e__
+            assert(count < VTABLE_PAC_CODES(IODTNVRAM).count);
+            vmethod = kernel_xpaci(vmethod);
+            uint64_t vmethod_address = fake_vtable_xpac + count * sizeof(*buf);
+            buf[count] = kernel_forge_pacia_with_type(vmethod, vmethod_address,
+                                                      VTABLE_PAC_CODES(IODTNVRAM).codes[count]);
+    #endif // __arm64e__*/
+        }
+        // and copy it back
+        kwriteOwO(fake_vtable_xpac, buf, count*sizeof(*buf));
+    #if __arm64e__
+        fake_vtable = kernel_forge_pacda(fake_vtable_xpac, 0);
+    #else
+        fake_vtable = fake_vtable_xpac;
+    #endif
+        usleep(20000);
+        sched_yield();
+        // replace vtable on IODTNVRAM object
+        WriteKernel64(obj, fake_vtable);
+        sched_yield();
+        free(buf);
+        buf = NULL;
     }
-    // and copy it back
-    kwriteOwO(fake_vtable_xpac, buf, count*sizeof(*buf));
-#if __arm64e__
-    fake_vtable = kernel_forge_pacda(fake_vtable_xpac, 0);
-#else
-    fake_vtable = fake_vtable_xpac;
-#endif
-    usleep(20000);
-    sched_yield();
 
-    // replace vtable on IODTNVRAM object
-    WriteKernel64(obj, fake_vtable);
-    sched_yield();
-
-    free(buf);
-    buf = NULL;
     util_info("Unlocked nvram");
     return 0;
 }
@@ -168,7 +218,11 @@ int locknvram(void) {
         return 1;
     }
     
-    WriteKernel64(obj, orig_vtable);
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+        wk64(obj, orig_vtable);
+    } else {
+        WriteKernel64(obj, orig_vtable);
+    }
     SafeIOFreeNULL(fake_vtable_xpac, kernel_buffer_size);
     
     util_info("Locked nvram");

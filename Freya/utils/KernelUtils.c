@@ -101,12 +101,26 @@ bool wkbuffer(uint64_t kaddr, void* buffer, size_t length)
     return (kwriteOwO(kaddr, buffer, length) == length);
 }
 
+bool wkbufferCV(uint64_t kaddr, void* buffer, size_t length)
+{
+    if (our_kernel_taskStruct_exportAstylez == MACH_PORT_NULL) {
+        LOG("attempt to write to kernel memory before any kernel memory write primitives available");
+        return false;
+    }
+    
+    return (kwrite(kaddr, buffer, length) == length);
+}
 
 bool rkbuffer(uint64_t kaddr, void* buffer, size_t length)
 {
     return (kreadOwO(kaddr, buffer, length) == length);
 }
+//if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
 
+bool rkbufferCV(uint64_t kaddr, void* buffer, size_t length) {
+    return (kread(kaddr, buffer, length) == length);
+
+}
 
 
 uint64_t rk64_via_tfp0(uint64_t kaddr)

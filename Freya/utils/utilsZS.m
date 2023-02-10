@@ -13,7 +13,7 @@
 #include <mach-o/nlist.h>
 #include <mach-o/getsect.h>
 #include "kernel_memory.h"
-#include "lzssdec.h"
+#include "lzssdecOG.h"
 #import <UIKit/UIView.h>
 #include "find_port.h"
 #include "kernel_slide.h"
@@ -32,7 +32,6 @@
 #include "PFOffs.h"
 #include "ImportantHolders.h"
 #include "kernel_memory.h"
-#include "KernelUtils.h"
 #include "KernelRwWrapper.h"
 #include "OffsetHolder.h"
 #include "k_utils.h"
@@ -72,9 +71,11 @@
 #include "user_kernel_alloc.h"
 #include <ptrauth.h>
 #include <dlfcn.h>
+//#include "asn1.h"
+/*#include "img4.h"
+#include "libhelper-lzfse/lzfse_fse.h"
+#include "libhelper-lzfse/lzfse.h"
 
-//#include "jelbrekLib.h"
-/*
  
  kCFCoreFoundationVersionNumber =
  2.0      478.23
@@ -913,7 +914,7 @@ static void read_pipe()
     fail_info(__FUNCTION__);
 }
 
-static void write_pipe()
+static void write_pipe(void)
 {
     size_t write_size = pipe_buffer_size - 1;
     ssize_t count = write(pipefds[1], pipe_buffer, write_size);
@@ -960,7 +961,7 @@ void runCicuta(void) {
                 // runShenPatchOWO = true;
             }
             
-         // runShenPatchOWO = true;
+          runShenPatchOWO = false;
         //}
         if (our_kernel_taskStruct_exportAstylez == 0) { util_info("ERROR our_kernel_taskStruct_exportAstylez!");
             failedsploit();
@@ -1280,10 +1281,20 @@ static inline bool clean_file(const char *file) {
 uint32_t find_macho_header(FILE *file) {
     uint32_t off = 0;
     uint32_t *magic = load_bytes2(file, off, sizeof(uint32_t));
-    while ((*magic & ~1) != 0xFEEDFACE) {
-        off++;
-        magic = load_bytes2(file, off, sizeof(uint32_t));
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1751.108=14.0
+        while ((*magic & ~1) != 0xfeedface) {
+            off++;
+            magic = load_bytes2(file, off, sizeof(uint32_t));
+        }
+        
+    } else {
+        while ((*magic & ~1) != 0xFEEDFACE) {
+            off++;
+            magic = load_bytes2(file, off, sizeof(uint32_t));
+        }
     }
+
+    
     return off - 1;
 }
 
@@ -1477,15 +1488,25 @@ dictionary[@(name)] = ADDRSTRING(value); \
 
 
 kptr_t swap_sandbox(kptr_t proc, kptr_t sandbox) {
-    kptr_t ret = KPTR_NULL;
-    kptr_t const ucred = ReadKernel64(proc + koffset(KSTRUCT_OFFSET_PROC_UCRED));
-    kptr_t const cr_label = ReadKernel64(ucred + koffset(KSTRUCT_OFFSET_UCRED_CR_LABEL));
-    kptr_t const sandbox_addr = cr_label + 0x8 + 0x8;
-    kptr_t const current_sandbox = ReadKernel64(sandbox_addr);
-    WriteKernel64(sandbox_addr, sandbox);
-    ret = current_sandbox;
-    out:;
-    return ret;
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+        kptr_t ret = KPTR_NULL;
+        kptr_t const ucred = rk64(proc + koffset(KSTRUCT_OFFSET_PROC_UCRED));
+        kptr_t const cr_label = rk64(ucred + koffset(KSTRUCT_OFFSET_UCRED_CR_LABEL));
+        kptr_t const sandbox_addr = cr_label + 0x8 + 0x8;
+        kptr_t const current_sandbox = rk64(sandbox_addr);
+        wk64(sandbox_addr, sandbox);
+        ret = current_sandbox;
+        return ret;
+    } else {
+        kptr_t ret = KPTR_NULL;
+        kptr_t const ucred = ReadKernel64(proc + koffset(KSTRUCT_OFFSET_PROC_UCRED));
+        kptr_t const cr_label = ReadKernel64(ucred + koffset(KSTRUCT_OFFSET_UCRED_CR_LABEL));
+        kptr_t const sandbox_addr = cr_label + 0x8 + 0x8;
+        kptr_t const current_sandbox = ReadKernel64(sandbox_addr);
+        WriteKernel64(sandbox_addr, sandbox);
+        ret = current_sandbox;
+        return ret;
+    }
 }
 
 
@@ -1497,15 +1518,52 @@ kptr_t swap_sandbox(kptr_t proc, kptr_t sandbox) {
 
 
 
-
-void getOffsets(void) {
+/*char *findmeakernelc(char *pathofkcache){
+    //NSString *actibootk = @"/private/preboot/active";
+ //   NSString *rootSystemVersionPlist = [@(actibootk) stringByAppendingPathComponent:""];
+    //(char *)[NSString stringWithFormat:@"0x%x", macho_header_offset].UTF8String,
+    //printf("Searching for running kernel...");
+    //char *active = "/private/preboot/active";
+    //printf("Unable to get active preboot");
+        ///return nil;
+    //printf("Found active preboot: \(active)");
+    //char *kernelPath = "/private/preboot/active/System/Library/Caches/com.apple.kernelcaches/kernelcache";
+    //FILE *f, *ft; //以二进制文件读取 xina
+    char encode_buf[1024];
+    FILE *fd = fopen ("private/preboot/active", "rb");
+    //523C40656652BA1643449F87521A47CEF4DE26D6EEC654605E8A588C0BE93BF79046F737AB4968ECC7BC7D911C629F9C
+    int count;
+    bzero (encode_buf, 1024);
+    while (!feof (fd)){
+        count = fread (encode_buf, sizeof (char), 1024, fd);
+        int n = feof (fd);
+      printf("%d,%d\n", count, n);
+    }
+    fclose(fd);
+    //NSString *kernelcachepath = [[NSString alloc] initWithUTF8String:@"private/preboot/"];
+    NSString *encrypted = [[NSString alloc] initWithUTF8String:(const char*)encode_buf];
+    NSString *kernelcachepath1 = [NSString stringWithFormat:@"private/preboot/%@/System/Library/Caches/com.apple.kernelcaches/kernelcache",encrypted];
+    printf("[*]kernelcachepath %s\n",[kernelcachepath1 UTF8String]);
+                    
+    f = fopen([kernelcachepath1 UTF8String],"rb");
     
-    findoffs();
-    util_info("Initializing patchfinder64...");
+    ft = fopen([newPath UTF8String], "wb");
+    char temp = fgetc(f);
+    while (!(feof(f)))
+    {
+        fputc(temp,ft);
+        temp = fgetc(f);
+    }
     
-    const char *original_kernel_cache_path = "/System/Library/Caches/com.apple.kernelcaches/kernelcache";
     
-    if (!canRead(original_kernel_cache_path))
+    const char *original_kernel_cache_path;
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1751.108=14.0
+        original_kernel_cache_path = kernelcachepath1.UTF8String;// "/System/Library/Caches/com.apple.kernelcaches/kernelcache";
+    } else {
+        original_kernel_cache_path = "/System/Library/Caches/com.apple.kernelcaches/kernelcache";
+    }
+    
+    if (!canRead(original_kernel_cache_path))//kernelcachepath1.UTF8String))
     {
         swap_sandbox(get_selfproc(), KPTR_NULL);
     }
@@ -1531,6 +1589,94 @@ void getOffsets(void) {
         _assert(clean_file(decompressed_kernel_cache_path), @"Failed to initialize patchfinder64.", true);
         _assert(false, @"Failed to initialize patchfinder64.", true);
     }
+    
+    //img4helper解压kernelcache
+    printf("[*]利用img4helper解压kernelcache\n");
+    if (fileExists((char *)[[newPath stringByAppendingString:@"dec"] UTF8String]))
+    {
+        removeFile((char *)[[newPath stringByAppendingString:@"dec"] UTF8String]);
+    }
+     
+    //img4_extract_im4p((char *)[newPath UTF8String],(char *)[[newPath stringByAppendingString:@"dec"] UTF8String],NULL,0);
+    
+
+    return kernelcachepath1.UTF8String;
+}
+*/
+#include "img4.h"
+void getOffsets(void) {
+    
+    findoffs();
+    util_info("Initializing patchfinder64...");
+    
+    char *original_kernel_cache_path;
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1751.108=14.0
+        
+        char encode_buf[1024];
+        FILE *fd = fopen("/private/preboot/active", "rb");
+        if (fd == NULL){
+            swap_sandbox(get_selfproc(), KPTR_NULL);
+            fd = fopen("/private/preboot/active", "rb");
+            if (fd == NULL){printf("can't read /private/preboot/active");} }
+        int count;bzero (encode_buf, 1024);
+        while (!feof(fd)){
+            count = fread(encode_buf, sizeof (char), 1024, fd);
+            int n = feof(fd);
+            printf("%d,%d\n", count, n); }
+        fclose(fd);
+        NSString *encrypted = [[NSString alloc] initWithUTF8String:(const char*)encode_buf];
+        NSString *kernelcachepath1 = [NSString stringWithFormat:@"/private/preboot/%@/System/Library/Caches/com.apple.kernelcaches/kernelcache",encrypted];
+        printf("[*]kernelcachepath %s\n",[kernelcachepath1 UTF8String]);
+        /*f = fopen([kernelcachepath1 UTF8String],"rb");ft = fopen([newPath UTF8String], "wb");
+         char temp = fgetc(f);while (!(feof(f))){fputc(temp,ft);temp = fgetc(f);}*/
+        original_kernel_cache_path = kernelcachepath1.UTF8String;
+        if (!canRead(original_kernel_cache_path)){
+            swap_sandbox(get_selfproc(), KPTR_NULL);}
+        NSString *decompressed_kernel_cache_path1 = [NSString stringWithFormat:@"/tmp/kernelcache.dec"];
+        char *decompressed_kernel_cache_path = decompressed_kernel_cache_path1.UTF8String;
+        if (!canRead(decompressed_kernel_cache_path)) {
+            FILE *original_kernel_cache = fopen(original_kernel_cache_path, "rb");
+            _assert(original_kernel_cache != NULL, @"Failed to initialize patchfinder64.", true);
+             //newpathtmp = im4p_extract_silent(original_kernel_cache_path);
+            //void img4_extract_im4p (char *infile, char *outfile, char *ivkey, int dont_decomp);
+            getIM4PFromIMG4(original_kernel_cache_path);
+            //getElementsFromIMG4(original_kernel_cache_path);
+            asn1Len(original_kernel_cache_path);// printIMG4];
+            img4_extract_im4p(original_kernel_cache_path, decompressed_kernel_cache_path,NULL,0);
+            util_info("DECOMPRESSED KERNEL CACHE AT: %s", decompressed_kernel_cache_path);
+
+            fclose(original_kernel_cache); }
+        struct utsname u = { 0 };
+        _assert(uname(&u) == ERR_SUCCESS, @"Failed to initialize patchfinder64.", true);
+        if (init_kernel(NULL, 0, decompressed_kernel_cache_path) != ERR_SUCCESS || find_strref(u.version, 1, string_base_const, true, false) == 0) {
+            _assert(clean_file(decompressed_kernel_cache_path), @"Failed to initialize patchfinder64.", true);
+            _assert(false, @"Failed to initialize patchfinder64.", true);
+        }
+    } else {
+        original_kernel_cache_path = "/System/Library/Caches/com.apple.kernelcaches/kernelcache";
+        if (!canRead(original_kernel_cache_path)) { swap_sandbox(get_selfproc(), KPTR_NULL); }
+        NSString *homeDirectory = NSHomeDirectory();
+        const char *decompressed_kernel_cache_path = [homeDirectory stringByAppendingPathComponent:@"Documents/kernelcache.dec"].UTF8String;
+        if (!canRead(decompressed_kernel_cache_path)) {
+            FILE *original_kernel_cache = fopen(original_kernel_cache_path, "rb");
+            _assert(original_kernel_cache != NULL, @"Failed to initialize patchfinder64.", true);
+            uint32_t macho_header_offset = find_macho_header(original_kernel_cache);
+             _assert(macho_header_offset != 0, @"Failed to initialize patchfinder64.", true);
+             char *args[5] = { "lzssdec", "-o", (char *)[NSString stringWithFormat:@"0x%x", macho_header_offset].UTF8String, (char *)original_kernel_cache_path, (char *)decompressed_kernel_cache_path};
+             _assert(lzssdec(5, args) == ERR_SUCCESS, @"Failed to initialize patchfinder64.", true);
+             util_info("DECOMPRESSED KERNEL CACHE AT: %s", decompressed_kernel_cache_path);
+            fclose(original_kernel_cache); }
+        struct utsname u = { 0 };
+        _assert(uname(&u) == ERR_SUCCESS, @"Failed to initialize patchfinder64.", true);
+        if (init_kernel(NULL, 0, decompressed_kernel_cache_path) != ERR_SUCCESS || find_strref(u.version, 1, string_base_const, true, false) == 0) {
+            _assert(clean_file(decompressed_kernel_cache_path), @"Failed to initialize patchfinder64.", true);
+            _assert(false, @"Failed to initialize patchfinder64.", true);
+        }
+    }
+    
+
+
+    
     if (auth_ptrs) {
         printf("Detected A12 Device.\n");
         pmap_load_trust_cache = _pmap_load_trust_cache;
@@ -1962,7 +2108,7 @@ bool mod_plist_file(NSString *filename, void (^function)(id)) {
             return false;
         }
     }
-    util_info("%s: Success", __FUNCTION__);
+    printf("%s: Success\n", __FUNCTION__);
     return true;
 }
 
@@ -2872,6 +3018,7 @@ void preMountFS(const char *thedisk, int root_fs, const char **snapshots, const 
 }
 
 void update_springboard_plist(void){
+    
     NSDictionary *springBoardPlist = [NSMutableDictionary dictionaryWithContentsOfFile:@"/var/mobile/Library/Preferences/com.apple.springboard.plist"];
     [springBoardPlist setValue:@YES forKey:@"SBShowNonDefaultSystemApps"];
     [springBoardPlist writeToFile:@"/var/mobile/Library/Preferences/com.apple.springboard.plist" atomically:YES];
@@ -2944,29 +3091,11 @@ void remountFS(bool shouldRestore) {
 
     uint64_t islaunchdProcstruct = get_proc_struct_for_pid(1);
     printf("launchd procStruct: 0x%llx\n", islaunchdProcstruct);
-    if(isOTAMounted()) {
-        waitOTAOK("deleting OTA...");
-        util_info("OTA update already mounted, removing now please wait.........");
-        [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithUTF8String:otamntpath] error:nil];
-        [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithUTF8String:otamntpathpriv] error:nil];
-        [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithUTF8String:otamntpathREMOVE] error:nil];
-        unlink(otamntpath);
-        remove(otamntpath);
-        unlink(otamntpathpriv);
-        remove(otamntpathpriv);
-        unlink(otamntpathREMOVE);
-        remove(otamntpathREMOVE);
-        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"12.5.6")) {
-            [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithUTF8String:otamntpath] error:nil];
-            [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithUTF8String:otamntpathREMOVE] error:nil];
-            unlink(otamntpathREMOVE);
-            remove(otamntpathREMOVE); }
-        need_initialSSRenamed = 0;//
-        showMSG(NSLocalizedString(@"Failed to remount, please remove update file if I didn't already!. Try again after rebooting.", nil), 1, 1);
-        dispatch_sync( dispatch_get_main_queue(), ^{ UIApplication *app = [UIApplication sharedApplication]; [app performSelector:@selector(suspend)]; //wait 2 seconds while app is going background
-            [NSThread sleepForTimeInterval:1.0]; reboot(RB_QUICK); });
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+    } else {
+        
     }
-    
+        
     if (kCFCoreFoundationVersionNumber >= 1556.00) {// ios 12           1452.23) {// <- ios 11.3  .............->  1556.00) {// ios 12
         
         bool resultofMountattempt = remount(islaunchdProcstruct);
@@ -2974,9 +3103,11 @@ void remountFS(bool shouldRestore) {
         if ( resultofMountattempt == 0 ) { printf("failed to remount, please remove update file if I didn't already, rebooting.... try again after reboot\n");
             showMSG(NSLocalizedString(@"Failed to remount, please remove update file if I didn't already!. Try again after rebooting.", nil), 1, 1);
             dispatch_sync( dispatch_get_main_queue(), ^{ UIApplication *app = [UIApplication sharedApplication]; [app performSelector:@selector(suspend)]; //wait 2 seconds while app is going background
-                [NSThread sleepForTimeInterval:1.0]; reboot(RB_QUICK); }); }
+                [NSThread sleepForTimeInterval:1.0]; reboot(RB_QUICK); exit(1);}); }
         if (need_initialSSRenamed == 3) {
-            update_springboard_plist();
+//            update_springboard_plist();
+            _assert(mod_plist_file(@"/var/mobile/Library/Preferences/com.apple.springboard.plist", ^(id plist) { plist[@"SBShowNonDefaultSystemApps"] = @YES;}), localize(@"Unable to update SpringBoard preferences."), true);
+
             ourprogressMeter();ourprogressMeter();ourprogressMeter();ourprogressMeter();ourprogressMeter();ourprogressMeter(); util_info("Rebooting...");
             showMSG(NSLocalizedString(@"RootFS snapshot renamed! We are going to reboot your device.", nil), 1, 1);
             dispatch_sync( dispatch_get_main_queue(), ^{ UIApplication *app = [UIApplication sharedApplication]; [app performSelector:@selector(suspend)]; [NSThread sleepForTimeInterval:1.0];
@@ -2999,7 +3130,7 @@ void remountFS(bool shouldRestore) {
             if(access("/.remount_success", F_OK) == -1) { util_info("Failed write file on rootfs.");
                 showMSG(NSLocalizedString(@"Failed write file on rootfs, We're going to restore RootFS! then reboot your device. Better luck next time", nil), 1, 1);
                 restoreRootFS();
-                update_springboard_plist();
+                //update_springboard_plist();
             }
             util_info("Successfully write file on rootfs."); unlink("/.remount_success");
             int root_fs = open("/", O_RDONLY);
@@ -3150,7 +3281,7 @@ void fixspringboardPlistAndFS(void) {
     if (weneedaUICACHE == 1) {
         uicaching("uicache");
         trust_file(@"/usr/bin/uicache");
-        execCmd("/usr/bin/plutil","-key", "SBShowNonDefaultSystemApps", "-value", "YES", "/var/mobile/Library/Preferences/com.apple.springboard.plist", NULL);
+       // execCmd("/usr/bin/plutil","-key", "SBShowNonDefaultSystemApps", "-value", "YES", "/var/mobile/Library/Preferences/com.apple.springboard.plist", NULL);
         _assert(execCmd("/usr/bin/uicache", NULL) >= 0, localize(@"Unable to refresh icon cache."), true); }
     util_info("[freya] Finished Fixing Filesystem!");
 }
@@ -3503,27 +3634,10 @@ void yesdebsinstall(void) {
         removeFileIfExists("/private/etc/apt/freya");
         
        // execCmd("/usr/bin/apt-get", "-y", "--allow-unauthenticated", "--allow-remove-essential", "purge", "mobilesubstrate", NULL);
-
         installDeb([get_bootstrap_fileDEBS(@"cydia_1.1.36_iphoneos-arm.deb") UTF8String], true);
-        //installDeb([get_bootstrap_fileDEBS(@"com.saurik.substrate.safemode_0.9.6005_iphoneos-arm.deb") UTF8String], true);
-       // installDeb([get_bootstrap_fileDEBS(@"com.saurik.substrate.safemode_0.9.6001.1_iphoneos-arm.deb") UTF8String], true);
-
         installDeb([get_bootstrap_fileDEBS(@"mobilesubstrate.deb") UTF8String], true);
         installDeb([get_bootstrap_fileDEBS(@"mobilesubstrate_0.9.7113_iphoneos-arm.deb") UTF8String], true);
-        //        installDeb([get_bootstrap_fileDEBS(@"mobilesubstrate_0.9.7111_iphoneos-arm.deb") UTF8String], true);
-       // systemCmd("launchctl stop /usr/libexec/substrate");
-        //systemCmd("launchctl stop /usr/libexec/substrated");
-        //execCmdL("/bin/launchctl", "stop", "/etc/rc.d/substrate", NULL);
-        //execCmdL("/bin/launchctl", "stop", "/usr/libexec/substrate", NULL);
-        //execCmdL("/bin/launchctl", "stop", "/usr/libexec/substrated", NULL);
-       // execCmdL("/bin/launchctl", "unload", "/usr/libexec/substrate", NULL);
-
-        //installDeb([get_bootstrap_fileDEBS(@"mobilesubstrate_0.9.7020_iphoneos-arm.deb") UTF8String], true);
-        
-        
-        //
-        
-        //installDeb([get_bootstrap_fileDEBS(@"cydia_1.1.36_iphoneos-arm.deb") UTF8String], true);
+        installDeb([get_bootstrap_fileDEBS(@"com.mtac.sbshownondefaultsystemapps_1.0.0_iphoneos-arm.deb") UTF8String], true);
         installDeb([get_bootstrap_fileDEBS(@"firmware-sbin_0-1_all.deb") UTF8String], true); }
     else { docheckra1nshit();} }
     execCmd("/usr/bin/dpkg", "--configure", "-a", NULL);
@@ -3583,6 +3697,21 @@ char *itoasss(long n) {
     snprintf(buf, len+1, "%ld", n);
     return   buf;
 }
+uint32_t find_pid_of_procCV(const char *proc_name) {
+    uint64_t proc = rk64(GETOFFSET(allproc));
+    while (proc) {
+        uint32_t pid = (uint32_t)rk32(proc + koffset(KSTRUCT_OFFSET_PROC_PID));
+        char name[40] = {0};
+        kread(proc+0x268, name, 20);
+        if (strstr(name, proc_name)){
+            return pid;
+        }
+        proc = rk64(proc);
+    }
+    return 0;
+}
+
+
 uint32_t find_pid_of_proc(const char *proc_name) {
     uint64_t proc = ReadKernel64(GETOFFSET(allproc));
     while (proc) {
@@ -3624,7 +3753,7 @@ void kickMe(void)
     if (weneedaUICACHE == 1) {
         uicaching("uicache");
         trust_file(@"/usr/bin/uicache");
-        execCmd("/usr/bin/plutil","-key", "SBShowNonDefaultSystemApps", "-value", "YES", "/var/mobile/Library/Preferences/com.apple.springboard.plist", NULL);
+        //execCmd("/usr/bin/plutil","-key", "SBShowNonDefaultSystemApps", "-value", "YES", "/var/mobile/Library/Preferences/com.apple.springboard.plist", NULL);
 
         _assert(execCmd("/usr/bin/uicache", NULL) >= 0, localize(@"Unable to refresh icon cache."), true);
         weneedaUICACHE = 0;
@@ -3816,6 +3945,10 @@ void initInstall(int packagerType)
                 NSString *const jetsamFile = [NSString stringWithFormat:@"/System/Library/LaunchDaemons/com.apple.jetsamproperties.%s.plist", targettype];
                 free(targettype);
                 targettype = NULL;
+                 //_assert(mod_plist_file(@"/var/mobile/Library/Preferences/com.apple.springboard.plist", ^(id plist) { plist[@"SBShowNonDefaultSystemApps"] = @YES;}), localize(@"Unable to update SpringBoard preferences."), true);
+                // allow SpringBoard to show non-default system apps.
+     
+
                 _assert(mod_plist_file(jetsamFile, ^(id plist) {
                     plist[@"Version4"][@"System"][@"Override"][@"Global"][@"UserHighWaterMark"] = [NSNumber numberWithInteger:[plist[@"Version4"][@"PListDevice"][@"MemoryCapacity"] integerValue]];
                 }), localize(@"Unable to update Jetsam plist to increase memory limit."), true);

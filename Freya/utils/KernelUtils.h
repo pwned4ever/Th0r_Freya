@@ -18,8 +18,11 @@
 //Check to see if we init patchfinder64 (got offsets) This should never be false by the time we use it.
 extern bool found_offs;
 bool wkbuffer(uint64_t kaddr, void* buffer, size_t length);
+bool wkbufferCV(uint64_t kaddr, void* buffer, size_t length);
+
 size_t kreadOwO(uint64_t where, void* p, size_t size);
 size_t kwriteOwO(uint64_t where, const void* p, size_t size);
+bool rkbufferCV(uint64_t kaddr, void* buffer, size_t length);
 bool rkbuffer(uint64_t kaddr, void* buffer, size_t length);
 uint64_t ReadKernel64(uint64_t kaddr);
 void WriteKernel64(uint64_t kaddr, uint64_t val);

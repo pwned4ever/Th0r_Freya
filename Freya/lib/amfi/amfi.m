@@ -3,6 +3,7 @@
 
 #include "amfi.h"
 #include "KernelUtils.h"
+#include "KernelRwWrapper.h"
 #include "../kernel_call/OffsetHolder.h"
 #include "../../lib/remap_tfp_set_hsp/remap_tfp_set_hsp.h"
 #include "OSObj.h"
@@ -23,6 +24,7 @@
 #include <mach-o/getsect.h>
 #include <mach-o/fat.h>
 #include <stdbool.h>
+#include "utilsZS.h"
 //#import <xpc/xpc.h>
 //Applications/Xcode11.3.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/xpc
 #include <CommonCrypto/CommonCrypto.h>
@@ -222,11 +224,19 @@ uint32_t OFFSET_bsd_info_p_ucred = 0xf8;//KSTRUCT_OFFSET_PROC_UCRED
 uint32_t tfp0_port = 0;
 
 void patch_install_tfp0(uint64_t target_task, uint64_t safe_tfp0){
-    WriteKernel64(target_task + OFFSET_task_itk_task_access, safe_tfp0);
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+        wk64(target_task + OFFSET_task_itk_task_access, safe_tfp0);
+    } else {
+        WriteKernel64(target_task + OFFSET_task_itk_task_access, safe_tfp0);
+    }
 }
 
 void patch_remove_tfp0(uint64_t target_task){
-    WriteKernel64(target_task + OFFSET_task_itk_task_access, 0);
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+        wk64(target_task + OFFSET_task_itk_task_access, 0);
+    } else {
+        WriteKernel64(target_task + OFFSET_task_itk_task_access, 0);
+    }
 }
 
 
@@ -236,18 +246,31 @@ mach_port_t patch_retrieve_tfp0(void){
     return tfp0_port;
 }
 
-void patch_TF_PLATFORM(kptr_t task)
-{
-    uint32_t t_flags = ReadKernel32(task + koffset(KSTRUCT_OFFSET_TASK_TFLAGS));
-    //off_t_flags);//koffset(KSTRUCT_OFFSET_TASK_TFLAGS));
-    util_info("old t_flags %#x", t_flags);
+void patch_TF_PLATFORM(kptr_t task) {
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+        uint32_t t_flags = rk32(task + koffset(KSTRUCT_OFFSET_TASK_TFLAGS));
+        //off_t_flags);//koffset(KSTRUCT_OFFSET_TASK_TFLAGS));
+        util_info("old t_flags %#x", t_flags);
 
-    t_flags |= 0x00000400; // TF_PLATFORM
-    WriteKernel32(task + koffset(KSTRUCT_OFFSET_TASK_TFLAGS), t_flags);
-    t_flags = ReadKernel32(task + koffset(KSTRUCT_OFFSET_TASK_TFLAGS));
-    util_info("new t_flags %#x", t_flags);
-    patch_install_tfp0(task, tfp0_exportedBYTW);
-    // used in kernel func: csproc_get_platform_binary
+        t_flags |= 0x00000400; // TF_PLATFORM
+        wk32(task + koffset(KSTRUCT_OFFSET_TASK_TFLAGS), t_flags);
+        t_flags = rk32(task + koffset(KSTRUCT_OFFSET_TASK_TFLAGS));
+        util_info("new t_flags %#x", t_flags);
+        patch_install_tfp0(task, tfp0_exportedBYTW);
+        // used in kernel func: csproc_get_platform_binary
+
+    } else {
+        uint32_t t_flags = ReadKernel32(task + koffset(KSTRUCT_OFFSET_TASK_TFLAGS));
+        //off_t_flags);//koffset(KSTRUCT_OFFSET_TASK_TFLAGS));
+        util_info("old t_flags %#x", t_flags);
+
+        t_flags |= 0x00000400; // TF_PLATFORM
+        WriteKernel32(task + koffset(KSTRUCT_OFFSET_TASK_TFLAGS), t_flags);
+        t_flags = ReadKernel32(task + koffset(KSTRUCT_OFFSET_TASK_TFLAGS));
+        util_info("new t_flags %#x", t_flags);
+        patch_install_tfp0(task, tfp0_exportedBYTW);
+        // used in kernel func: csproc_get_platform_binary
+    }
 }
 
 
@@ -260,30 +283,48 @@ pid_t containermanagerd_pid = 0;
 uint64_t containermanagerd_proc_cred = 0;
 
 void safepatch_swap_containermanagerd_cred(uint64_t target_proc){
-    
-    if(containermanagerd_proc_cred == 0){
-        containermanagerd_pid = 0;
-        if(!(containermanagerd_pid = pidOfProcess("containermanagerd"))){
-            // containermanagerd should always be runnning
-           
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+        if(containermanagerd_proc_cred == 0){
+            containermanagerd_pid = 0;
+            if(!(containermanagerd_pid = pidOfProcess("containermanagerd"))){ }
+            uint64_t containermanagerd_proc = get_proc_struct_for_pid(containermanagerd_pid);
+            util_info("containermanagerd_proc: 0x%llx\n",containermanagerd_proc);
+            containermanagerd_proc_cred = rk64(containermanagerd_proc + koffset(KSTRUCT_OFFSET_PROC_UCRED));
+            util_info("containermanagerd_proc_cred: 0x%llx\n", containermanagerd_proc_cred);
+            uint64_t target_task = rk64(target_proc + koffset(KSTRUCT_OFFSET_PROC_TASK));// OFFSET_bsd_info_task);
+            util_info("target_task: 0x%llx\n", target_task);
+            patch_TF_PLATFORM(target_task);
+            // this is a must-patch in order to get task-mani api to work
         }
-        uint64_t containermanagerd_proc = get_proc_struct_for_pid(containermanagerd_pid);
-        util_info("containermanagerd_proc: 0x%llx\n",containermanagerd_proc);
-        containermanagerd_proc_cred = ReadKernel64(containermanagerd_proc + koffset(KSTRUCT_OFFSET_PROC_UCRED));
-        util_info("containermanagerd_proc_cred: 0x%llx\n", containermanagerd_proc_cred);
-        uint64_t target_task = ReadKernel64(target_proc + koffset(KSTRUCT_OFFSET_PROC_TASK));// OFFSET_bsd_info_task);
-        util_info("target_task: 0x%llx\n", target_task);
-        patch_TF_PLATFORM(target_task);
-        // this is a must-patch in order to get task-mani api to work
+        myold_cred3 = rk64(target_proc + koffset(KSTRUCT_OFFSET_PROC_UCRED));
+        util_info("myold_cred3: 0x%llx\n", myold_cred3);
+        wk64(target_proc + koffset(KSTRUCT_OFFSET_PROC_UCRED), containermanagerd_proc_cred);
+    } else {
+        if(containermanagerd_proc_cred == 0){
+            containermanagerd_pid = 0;
+            if(!(containermanagerd_pid = pidOfProcess("containermanagerd"))){ }
+            uint64_t containermanagerd_proc = get_proc_struct_for_pid(containermanagerd_pid);
+            util_info("containermanagerd_proc: 0x%llx\n",containermanagerd_proc);
+            containermanagerd_proc_cred = ReadKernel64(containermanagerd_proc + koffset(KSTRUCT_OFFSET_PROC_UCRED));
+            util_info("containermanagerd_proc_cred: 0x%llx\n", containermanagerd_proc_cred);
+            uint64_t target_task = ReadKernel64(target_proc + koffset(KSTRUCT_OFFSET_PROC_TASK));// OFFSET_bsd_info_task);
+            util_info("target_task: 0x%llx\n", target_task);
+            patch_TF_PLATFORM(target_task);
+            // this is a must-patch in order to get task-mani api to work
+        }
+        
+        myold_cred3 = ReadKernel64(target_proc + koffset(KSTRUCT_OFFSET_PROC_UCRED));
+        util_info("myold_cred3: 0x%llx\n", myold_cred3);
+        WriteKernel64(target_proc + koffset(KSTRUCT_OFFSET_PROC_UCRED), containermanagerd_proc_cred);
     }
-    
-    myold_cred3 = ReadKernel64(target_proc + koffset(KSTRUCT_OFFSET_PROC_UCRED));
-    util_info("myold_cred3: 0x%llx\n", myold_cred3);
-    WriteKernel64(target_proc + koffset(KSTRUCT_OFFSET_PROC_UCRED), containermanagerd_proc_cred);
 }
 
 void safepatch_unswap_containermanagerd_cred(uint64_t target_proc){
-    WriteKernel64(target_proc + koffset(KSTRUCT_OFFSET_PROC_UCRED), myold_cred3);
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+        wk64(target_proc + koffset(KSTRUCT_OFFSET_PROC_UCRED), myold_cred3);
+    } else {
+        WriteKernel64(target_proc + koffset(KSTRUCT_OFFSET_PROC_UCRED), myold_cred3);
+    }
 }
 
 void safepatch_swap_spindump_cred(uint64_t target_proc){
@@ -313,38 +354,48 @@ void safepatch_swap_spindump_cred(uint64_t target_proc){
             while(!(spindump_pid = look_for_proc("/usr/sbin/spindump"))){}
         }
         kill(spindump_pid, SIGSTOP);
+         
         uint64_t spindump_proc = get_proc_struct_for_pid(spindump_pid);
          util_info("spindump_proc: 0x%llx", spindump_proc);
-        spindump_proc_cred = ReadKernel64(spindump_proc + koffset(KSTRUCT_OFFSET_PROC_UCRED));
-         util_info("spindump_proc_cred: 0x%llx", spindump_proc_cred);
-         uint64_t target_task = ReadKernel64(target_proc + koffset(KSTRUCT_OFFSET_PROC_TASK));//OFFSET_bsd_info_task);
-         util_info("target_task: 0x%llx", target_task);
-        patch_TF_PLATFORM(target_task);
+         if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+            spindump_proc_cred = rk64(spindump_proc + koffset(KSTRUCT_OFFSET_PROC_UCRED));
+             util_info("spindump_proc_cred: 0x%llx", spindump_proc_cred);
+             uint64_t target_task = rk64(target_proc + koffset(KSTRUCT_OFFSET_PROC_TASK));//OFFSET_bsd_info_task);
+             util_info("target_task: 0x%llx", target_task);
+            patch_TF_PLATFORM(target_task);
+         } else {
+             spindump_proc_cred = ReadKernel64(spindump_proc + koffset(KSTRUCT_OFFSET_PROC_UCRED));
+              util_info("spindump_proc_cred: 0x%llx", spindump_proc_cred);
+              uint64_t target_task = ReadKernel64(target_proc + koffset(KSTRUCT_OFFSET_PROC_TASK));//OFFSET_bsd_info_task);
+              util_info("target_task: 0x%llx", target_task);
+             patch_TF_PLATFORM(target_task);
+         }
         // this is a must-patch in order to get task-mani api to work
     }
-    
-    myold_cred2 = ReadKernel64(target_proc + koffset(KSTRUCT_OFFSET_PROC_UCRED));
-    util_info("myold_cred2: 0x%llx", myold_cred2);
-    WriteKernel64(target_proc + koffset(KSTRUCT_OFFSET_PROC_UCRED), spindump_proc_cred);
-    has_entitlements = true;
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+        myold_cred2 = rk64(target_proc + koffset(KSTRUCT_OFFSET_PROC_UCRED));
+        util_info("myold_cred2: 0x%llx", myold_cred2);
+        wk64(target_proc + koffset(KSTRUCT_OFFSET_PROC_UCRED), spindump_proc_cred);
+        has_entitlements = true;
+    } else {
+        myold_cred2 = ReadKernel64(target_proc + koffset(KSTRUCT_OFFSET_PROC_UCRED));
+        util_info("myold_cred2: 0x%llx", myold_cred2);
+        WriteKernel64(target_proc + koffset(KSTRUCT_OFFSET_PROC_UCRED), spindump_proc_cred);
+        has_entitlements = true; }
 
 }
 
 void safepatch_unswap_spindump_cred(uint64_t target_proc){
-    
     if(spindump_proc_cred){
         kill(spindump_pid, SIGCONT);
         kill(spindump_pid, SIGKILL);
-        
         spindump_pid = 0;
-        spindump_proc_cred = 0;
-    }
-    
-    WriteKernel64(target_proc + koffset(KSTRUCT_OFFSET_PROC_UCRED), myold_cred2);
+        spindump_proc_cred = 0;}
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+        wk64(target_proc + koffset(KSTRUCT_OFFSET_PROC_UCRED), myold_cred2);
+    } else {
+        WriteKernel64(target_proc + koffset(KSTRUCT_OFFSET_PROC_UCRED), myold_cred2); }
 }
-
-
-
 
 int parse_superblob(uint8_t *code_dir, uint8_t dst[CS_CDHASH_LEN]) {
     int ret = 1;
@@ -382,17 +433,30 @@ void platformize_amfi(pid_t pid) {
     //  https://github.com/apple/darwin-xnu/blob/main/osfmk/kern/task.h#L264
     
     if (!pid) return;
-    
-    uint64_t proc = get_proc_struct_for_pid(pid);
-    uint64_t task = ReadKernel64(proc + koffset(KSTRUCT_OFFSET_PROC_TASK));
-    
-    uint32_t t_flags = ReadKernel32(task + koffset(KSTRUCT_OFFSET_TASK_TFLAGS));
-    WriteKernel32(task+koffset(KSTRUCT_OFFSET_TASK_TFLAGS), t_flags | TF_PLATFORM);
-    
-    uint32_t csflags = ReadKernel32(proc + koffset(KSTRUCT_OFFSET_PROC_P_CSFLAGS));
-    csflags = csflags | CS_PLATFORM_BINARY | CS_INSTALLER | CS_GET_TASK_ALLOW;
-    csflags &= ~(CS_RESTRICT | CS_HARD | CS_KILL);
-    WriteKernel32(proc + koffset(KSTRUCT_OFFSET_PROC_P_CSFLAGS), csflags);
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+        uint64_t proc = get_proc_struct_for_pid(pid);
+        uint64_t task = rk64(proc + koffset(KSTRUCT_OFFSET_PROC_TASK));
+        
+        uint32_t t_flags = rk32(task + koffset(KSTRUCT_OFFSET_TASK_TFLAGS));
+        wk32(task+koffset(KSTRUCT_OFFSET_TASK_TFLAGS), t_flags | TF_PLATFORM);
+        
+        uint32_t csflags = rk32(proc + koffset(KSTRUCT_OFFSET_PROC_P_CSFLAGS));
+        csflags = csflags | CS_PLATFORM_BINARY | CS_INSTALLER | CS_GET_TASK_ALLOW;
+        csflags &= ~(CS_RESTRICT | CS_HARD | CS_KILL);
+        wk32(proc + koffset(KSTRUCT_OFFSET_PROC_P_CSFLAGS), csflags);
+    } else {
+        uint64_t proc = get_proc_struct_for_pid(pid);
+        uint64_t task = ReadKernel64(proc + koffset(KSTRUCT_OFFSET_PROC_TASK));
+        
+        uint32_t t_flags = ReadKernel32(task + koffset(KSTRUCT_OFFSET_TASK_TFLAGS));
+        WriteKernel32(task+koffset(KSTRUCT_OFFSET_TASK_TFLAGS), t_flags | TF_PLATFORM);
+        
+        uint32_t csflags = ReadKernel32(proc + koffset(KSTRUCT_OFFSET_PROC_P_CSFLAGS));
+        csflags = csflags | CS_PLATFORM_BINARY | CS_INSTALLER | CS_GET_TASK_ALLOW;
+        csflags &= ~(CS_RESTRICT | CS_HARD | CS_KILL);
+        WriteKernel32(proc + koffset(KSTRUCT_OFFSET_PROC_P_CSFLAGS), csflags);
+
+    }
 }
 
 bool grabEntitlements(uint64_t selfProc) {
@@ -413,26 +477,35 @@ bool grabEntitlements(uint64_t selfProc) {
     uint64_t sysdiagnose_proc = get_proc_struct_for_pid(pid);
     if(!sysdiagnose_proc)
         return false;
-    
-    uint64_t selfCreds = ReadKernel64(selfProc + koffset(KSTRUCT_OFFSET_PROC_UCRED));
-    uint64_t sysdiagnoseCreds = ReadKernel64(sysdiagnose_proc + koffset(KSTRUCT_OFFSET_PROC_UCRED));
-    
-    selfEnts = ReadKernel64(ReadKernel64(selfCreds + koffset(KSTRUCT_OFFSET_UCRED_CR_LABEL)) + koffset(KSTRUCT_AMFI_SLOT));
-    sysdiagnoseEnts = ReadKernel64(ReadKernel64(sysdiagnoseCreds + koffset(KSTRUCT_OFFSET_UCRED_CR_LABEL)) + koffset(KSTRUCT_AMFI_SLOT));
-    
-    WriteKernel64(ReadKernel64(selfCreds + koffset(KSTRUCT_OFFSET_UCRED_CR_LABEL)) + koffset(KSTRUCT_AMFI_SLOT), sysdiagnoseEnts);
-    
-    has_entitlements = true;
-    return true;
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+        uint64_t selfCreds = rk64(selfProc + koffset(KSTRUCT_OFFSET_PROC_UCRED));
+        uint64_t sysdiagnoseCreds = rk64(sysdiagnose_proc + koffset(KSTRUCT_OFFSET_PROC_UCRED));
+        selfEnts = rk64(rk64(selfCreds + koffset(KSTRUCT_OFFSET_UCRED_CR_LABEL)) + koffset(KSTRUCT_AMFI_SLOT));
+        sysdiagnoseEnts = rk64(rk64(sysdiagnoseCreds + koffset(KSTRUCT_OFFSET_UCRED_CR_LABEL)) + koffset(KSTRUCT_AMFI_SLOT));
+        wk64(rk64(selfCreds + koffset(KSTRUCT_OFFSET_UCRED_CR_LABEL)) + koffset(KSTRUCT_AMFI_SLOT), sysdiagnoseEnts);
+        has_entitlements = true;
+        return true;}
+    else {
+        uint64_t selfCreds = ReadKernel64(selfProc + koffset(KSTRUCT_OFFSET_PROC_UCRED));
+        uint64_t sysdiagnoseCreds = ReadKernel64(sysdiagnose_proc + koffset(KSTRUCT_OFFSET_PROC_UCRED));
+        selfEnts = ReadKernel64(ReadKernel64(selfCreds + koffset(KSTRUCT_OFFSET_UCRED_CR_LABEL)) + koffset(KSTRUCT_AMFI_SLOT));
+        sysdiagnoseEnts = ReadKernel64(ReadKernel64(sysdiagnoseCreds + koffset(KSTRUCT_OFFSET_UCRED_CR_LABEL)) + koffset(KSTRUCT_AMFI_SLOT));
+        WriteKernel64(ReadKernel64(selfCreds + koffset(KSTRUCT_OFFSET_UCRED_CR_LABEL)) + koffset(KSTRUCT_AMFI_SLOT), sysdiagnoseEnts);
+        has_entitlements = true;
+        return true; }
 }
 
 void resetEntitlements(uint64_t selfProc) {
     if(!has_entitlements)
         return;
-    
     has_entitlements = false;
-    uint64_t selfCreds = ReadKernel64(selfProc + koffset(KSTRUCT_OFFSET_PROC_UCRED));
-    WriteKernel64(ReadKernel64(selfCreds + koffset(KSTRUCT_OFFSET_UCRED_CR_LABEL)) + koffset(KSTRUCT_AMFI_SLOT), selfEnts);
+    uint64_t selfCreds;
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+        selfCreds = rk64(selfProc + koffset(KSTRUCT_OFFSET_PROC_UCRED));
+        wk64(rk64(selfCreds + koffset(KSTRUCT_OFFSET_UCRED_CR_LABEL)) + koffset(KSTRUCT_AMFI_SLOT), selfEnts);
+    } else {
+        selfCreds = ReadKernel64(selfProc + koffset(KSTRUCT_OFFSET_PROC_UCRED));
+        WriteKernel64(ReadKernel64(selfCreds + koffset(KSTRUCT_OFFSET_UCRED_CR_LABEL)) + koffset(KSTRUCT_AMFI_SLOT), selfEnts); }
     kill(sysdiagnose_pid, SIGKILL);
 }
 
@@ -532,9 +605,12 @@ char **copy_amfi_entitlements(kptr_t present) {
     char **entitlements = malloc(arraySize + bufferSize);
     if (entitlements == NULL) return NULL;
     entitlements[itemCount] = NULL;
-    
+    kptr_t item;
     for (int i = 0; i < itemCount; i++) {
-        kptr_t item = ReadKernel64(itemBuffer + (i * sizeof(kptr_t)));
+        if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+            item = rk64(itemBuffer + (i * sizeof(kptr_t))); }
+        else {
+            item = ReadKernel64(itemBuffer + (i * sizeof(kptr_t))); }
         char *entitlementString = OSString_CopyString(item);
         if (!entitlementString) {
             SafeFreeNULL(entitlements);
@@ -627,13 +703,17 @@ out:;
 kptr_t get_amfi_entitlements(kptr_t cr_label) {
     kptr_t amfi_entitlements = KPTR_NULL;
     _assertu(KERN_POINTER_VALID(cr_label));
-    amfi_entitlements = ReadKernel64(cr_label + 0x8);
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+        amfi_entitlements = rk64(cr_label + 0x8); }
+    else {
+        amfi_entitlements = ReadKernel64(cr_label + 0x8); }
 out:;
     return amfi_entitlements;
 }
 
 
 void takeoverAmfid(int amfidPid) {
+    
     safepatch_swap_spindump_cred(our_procStruct_addr_exported);
     if(!has_entitlements)
         return;
@@ -648,26 +728,26 @@ void takeoverAmfid(int amfidPid) {
     platformize_amfi(getpid());
     platformize_amfi(amfidPid);
     uint64_t AMFIproc = get_proc_struct_for_pid(amfidPid);
-    uint64_t amfi_task = ReadKernel64(AMFIproc + koffset(KSTRUCT_OFFSET_PROC_TASK));
-    
-    uint32_t amfi_t_flags = ReadKernel32(amfi_task + koffset(KSTRUCT_OFFSET_TASK_TFLAGS));
-    WriteKernel32(amfi_task + koffset(KSTRUCT_OFFSET_TASK_TFLAGS), amfi_t_flags | TF_PLATFORM);
-    
-    //patch_retrieve_tfp0();
-
-    //  set the exception handler
+    uint64_t amfi_task;
+    uint32_t amfi_t_flags;
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+        amfi_task = rk64(AMFIproc + koffset(KSTRUCT_OFFSET_PROC_TASK));
+        amfi_t_flags = rk32(amfi_task + koffset(KSTRUCT_OFFSET_TASK_TFLAGS));
+        wk32(amfi_task + koffset(KSTRUCT_OFFSET_TASK_TFLAGS), amfi_t_flags | TF_PLATFORM); }
+    else {
+        amfi_task = ReadKernel64(AMFIproc + koffset(KSTRUCT_OFFSET_PROC_TASK));
+        
+        amfi_t_flags = ReadKernel32(amfi_task + koffset(KSTRUCT_OFFSET_TASK_TFLAGS));
+        WriteKernel32(amfi_task + koffset(KSTRUCT_OFFSET_TASK_TFLAGS), amfi_t_flags | TF_PLATFORM); }
+    //patch_retrieve_tfp0();//  set the exception handler
     retVal = mach_port_allocate(mach_task_self(), MACH_PORT_RIGHT_RECEIVE, &exceptionPort);
     if(retVal != KERN_SUCCESS) {
         printf("Failed mach_port_allocate: %s\n", mach_error_string(retVal));
-        return;
-    }
-    
+        return; }
     retVal = mach_port_insert_right(mach_task_self(), exceptionPort, exceptionPort, MACH_MSG_TYPE_MAKE_SEND);
     if(retVal != KERN_SUCCESS) {
         util_error("Failed mach_port_insert_right: %s", mach_error_string(retVal));
-        return;
-    }
-    
+        return; }
     retVal = task_set_exception_ports(amfid_task_port, EXC_MASK_BAD_ACCESS, exceptionPort, EXCEPTION_DEFAULT, ARM_THREAD_STATE64);//ARM_EXCEPTION_STATE64
     if(retVal != KERN_SUCCESS) {
         util_error("Failed task_set_exception_ports: %s", mach_error_string(retVal));
@@ -898,19 +978,28 @@ bool grabEntitlementsForRootFS(uint64_t selfProc) {
     kill(pid, SIGSTOP); // suspend
     //platformize_amfi(pid);
     fsck_apfs_pid = pid;
-    
-    uint64_t fsck_apfs_proc = get_proc_struct_for_pid(pid);
+    uint64_t fsck_apfs_proc;
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+        fsck_apfs_proc = get_proc_struct_for_pid(pid);
     if(!fsck_apfs_proc)
         return false;
-    
-    uint64_t selfCreds = ReadKernel64(selfProc + koffset(KSTRUCT_OFFSET_PROC_UCRED));
-    uint64_t fsckapfsCreds = ReadKernel64(fsck_apfs_proc + koffset(KSTRUCT_OFFSET_PROC_UCRED));
-    
-    selfEnts = ReadKernel64(ReadKernel64(selfCreds + koffset(KSTRUCT_OFFSET_UCRED_CR_LABEL)) + koffset(KSTRUCT_AMFI_SLOT));
-    fsckapfsEnts = ReadKernel64(ReadKernel64(fsckapfsCreds + koffset(KSTRUCT_OFFSET_UCRED_CR_LABEL)) + koffset(KSTRUCT_AMFI_SLOT));
-    
-    WriteKernel64(ReadKernel64(selfCreds +koffset(KSTRUCT_OFFSET_UCRED_CR_LABEL)) + koffset(KSTRUCT_AMFI_SLOT), fsckapfsEnts);
-    
+    } else {
+        fsck_apfs_proc = get_proc_struct_for_pid(pid);
+        if(!fsck_apfs_proc)
+            return false;
+    }
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+        uint64_t selfCreds = rk64(selfProc + koffset(KSTRUCT_OFFSET_PROC_UCRED));
+        uint64_t fsckapfsCreds = rk64(fsck_apfs_proc + koffset(KSTRUCT_OFFSET_PROC_UCRED));
+        selfEnts = rk64(rk64(selfCreds + koffset(KSTRUCT_OFFSET_UCRED_CR_LABEL)) + koffset(KSTRUCT_AMFI_SLOT));
+        fsckapfsEnts = rk64(rk64(fsckapfsCreds + koffset(KSTRUCT_OFFSET_UCRED_CR_LABEL)) + koffset(KSTRUCT_AMFI_SLOT));
+        wk64(rk64(selfCreds +koffset(KSTRUCT_OFFSET_UCRED_CR_LABEL)) + koffset(KSTRUCT_AMFI_SLOT), fsckapfsEnts); }
+    else {
+        uint64_t selfCreds = ReadKernel64(selfProc + koffset(KSTRUCT_OFFSET_PROC_UCRED));
+        uint64_t fsckapfsCreds = ReadKernel64(fsck_apfs_proc + koffset(KSTRUCT_OFFSET_PROC_UCRED));
+        selfEnts = ReadKernel64(ReadKernel64(selfCreds + koffset(KSTRUCT_OFFSET_UCRED_CR_LABEL)) + koffset(KSTRUCT_AMFI_SLOT));
+        fsckapfsEnts = ReadKernel64(ReadKernel64(fsckapfsCreds + koffset(KSTRUCT_OFFSET_UCRED_CR_LABEL)) + koffset(KSTRUCT_AMFI_SLOT));
+        WriteKernel64(ReadKernel64(selfCreds +koffset(KSTRUCT_OFFSET_UCRED_CR_LABEL)) + koffset(KSTRUCT_AMFI_SLOT), fsckapfsEnts); }
     has_entitlements_rootfs = true;
     return true;
 }
@@ -920,8 +1009,12 @@ void resetEntitlementsForRootFS(uint64_t selfProc) {
         return;
     
     has_entitlements_rootfs = false;
-    uint64_t selfCreds = ReadKernel64(selfProc + koffset(KSTRUCT_OFFSET_PROC_UCRED));//KSTRUCT_OFFSET_PROC_UCRED);
-    
-    WriteKernel64(ReadKernel64(selfCreds + koffset(KSTRUCT_OFFSET_UCRED_CR_LABEL)) + koffset(KSTRUCT_AMFI_SLOT), selfEnts);
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+        uint64_t selfCreds = rk64(selfProc + koffset(KSTRUCT_OFFSET_PROC_UCRED));//KSTRUCT_OFFSET_PROC_UCRED);
+        wk64(rk64(selfCreds + koffset(KSTRUCT_OFFSET_UCRED_CR_LABEL)) + koffset(KSTRUCT_AMFI_SLOT), selfEnts);
+    } else {
+        uint64_t selfCreds = ReadKernel64(selfProc + koffset(KSTRUCT_OFFSET_PROC_UCRED));//KSTRUCT_OFFSET_PROC_UCRED);
+        WriteKernel64(ReadKernel64(selfCreds + koffset(KSTRUCT_OFFSET_UCRED_CR_LABEL)) + koffset(KSTRUCT_AMFI_SLOT), selfEnts);
+    }
     kill(fsck_apfs_pid, SIGKILL);
 }

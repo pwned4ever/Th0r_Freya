@@ -10,6 +10,7 @@
 #include "common.h"
 #include "OffsetHolder.h"
 #include "KernelUtils.h"
+#include "KernelRwWrapper.h"
 #include "ImportantHolders.h"
 
 /*
@@ -235,21 +236,27 @@ uint64_t find_port_via_proc_pidlistuptrs_bug(mach_port_t port, int disposition)
     return best_guess;
 }
 
-uint64_t find_port_via_kmem_read(mach_port_name_t port)
-{
-    uint64_t task_port_addr = task_self_addr();
-    
-    uint64_t task_addr = kernel_read64(task_port_addr + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_KOBJECT));
-    
-    uint64_t itk_space = kernel_read64(task_addr + koffset(KSTRUCT_OFFSET_TASK_ITK_SPACE));
-    
-    uint64_t is_table = kernel_read64(itk_space + koffset(KSTRUCT_OFFSET_IPC_SPACE_IS_TABLE));
-    
-    uint32_t port_index = port >> 8;
-    const int sizeof_ipc_entry_t = 0x18;
-    
-    uint64_t port_addr = kernel_read64(is_table + (port_index * sizeof_ipc_entry_t));
-    return port_addr;
+uint64_t find_port_via_kmem_read(mach_port_name_t port) {
+    if (kCFCoreFoundationVersionNumber >= 1751.108) {//1556.00 = 12.4) {//1751.108=14.0
+        uint64_t task_port_addr = task_self_addr();
+        uint64_t task_addr = rk64(task_port_addr + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_KOBJECT));
+        uint64_t itk_space = rk64(task_addr + koffset(KSTRUCT_OFFSET_TASK_ITK_SPACE));
+        uint64_t is_table = rk64(itk_space + koffset(KSTRUCT_OFFSET_IPC_SPACE_IS_TABLE));
+        uint32_t port_index = port >> 8;
+        const int sizeof_ipc_entry_t = 0x18;
+        uint64_t port_addr = rk64(is_table + (port_index * sizeof_ipc_entry_t));
+        return port_addr;
+
+    } else {
+        uint64_t task_port_addr = task_self_addr();
+        uint64_t task_addr = kernel_read64(task_port_addr + koffset(KSTRUCT_OFFSET_IPC_PORT_IP_KOBJECT));
+        uint64_t itk_space = kernel_read64(task_addr + koffset(KSTRUCT_OFFSET_TASK_ITK_SPACE));
+        uint64_t is_table = kernel_read64(itk_space + koffset(KSTRUCT_OFFSET_IPC_SPACE_IS_TABLE));
+        uint32_t port_index = port >> 8;
+        const int sizeof_ipc_entry_t = 0x18;
+        uint64_t port_addr = kernel_read64(is_table + (port_index * sizeof_ipc_entry_t));
+        return port_addr;
+    }
 }
 
 uint64_t find_port_via_kmem_read_not(mach_port_name_t port)
