@@ -202,10 +202,10 @@ double uptime(void){
 }
 
 
-NSString *freyaversion = @"1.3.7⚡️";
-char *freyaversionnew = "1.3.7⚡️";
+NSString *freyaversion = @"1.3.7~1⚡️";
+char *freyaversionnew = "1.3.7~1⚡️";
 
-char *freyaupdateDate = "1:00PM 2/10/23";
+char *freyaupdateDate = "3:00PM 2/10/23";
 char *freyaurlDownload = "github.com/pwned4ever/Th0r_Freya/tree/main/Releases/Freya.ipa";//github.com/pwned4ever/Th0r_Freya/blob/main/Releases/Freya.ipa";// "mega.nz/file/BhNxBSgJ#gNcngNQBtXS0Ipa5ivX09-jtIr7BckUhrA7YMkSFaNM"//
 
 - (void)u0alertreboot {
@@ -949,6 +949,8 @@ void wannaSliceOfMe(void) { //Run The Exploit
         dothepatch();
         ourprogressMeter();
         offs_init();
+        //getOffsets();
+
         yeasnapshot();
         remountFS(restore_fs);
         getOffsets();

@@ -3096,7 +3096,7 @@ void remountFS(bool shouldRestore) {
         
     }
         
-    if (kCFCoreFoundationVersionNumber >= 1556.00) {// ios 12           1452.23) {// <- ios 11.3  .............->  1556.00) {// ios 12
+    if (kCFCoreFoundationVersionNumber >= 1452.23){//1556.00) {// ios 12  1452.23) {// <- ios 11.3  .->  1556.00) {// ios 12
         
         bool resultofMountattempt = remount(islaunchdProcstruct);
         printf("resultofMountattempt true = 1: %d\n", resultofMountattempt);
